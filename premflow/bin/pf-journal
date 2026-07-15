@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# pf-journal — agent-safe journal path.
+# Default: premflow journal --ensure (create template, print path, NO editor).
+# --open: after ensure, open $EDITOR in an external terminal (non-blocking spawn).
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+OPEN=0
+DRY=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --open) OPEN=1; shift ;;
+    --dry-run) DRY=1; shift ;;
+    *) shift ;;
+  esac
+done
+
+resolve_pf() {
+  if [[ -n "${PREMFLOW_BIN:-}" && -x "${PREMFLOW_BIN}" ]]; then
+    echo "$PREMFLOW_BIN"
+    return
+  fi
+  local cand abs
+  for cand in \
+    "$HOME/Work/personal/premflow/build/premflow" \
+    "$ROOT/../../premflow/build/premflow" \
+    "/home/sustainableabundance/Work/personal/premflow/build/premflow" \
+    "./build/premflow"; do
+    if [[ -x "$cand" ]]; then
+      abs="$(cd "$(dirname "$cand")" && pwd)/$(basename "$cand")"
+      echo "$abs"
+      return
+    fi
+  done
+  if command -v premflow >/dev/null 2>&1; then
+    command -v premflow
+    return
+  fi
+  echo "premflow"
+}
+
+PF="$(resolve_pf)"
+
+if [[ $DRY -eq 1 ]]; then
+  echo "dry-run: $PF journal --ensure"
+  exit 0
+fi
+
+# Always ensure via CLI (prints absolute path on last line / or alone)
+OUT="$("$PF" journal --ensure 2>&1)" || true
+# Extract path line (last line that looks like …/journal-….txt)
+PATH_LINE="$(printf '%s\n' "$OUT" | grep -E 'journal-[0-9]{4}-[0-9]{2}-[0-9]{2}\.txt$' | tail -1 || true)"
+if [[ -z "$PATH_LINE" ]]; then
+  # maybe entire stdout is the path
+  PATH_LINE="$(printf '%s\n' "$OUT" | tail -1)"
+fi
+
+printf '%s\n' "$OUT"
+if [[ -z "$PATH_LINE" || ! -f "$PATH_LINE" ]]; then
+  echo "⚠ Could not resolve journal path from CLI output" >&2
+  exit 1
+fi
+
+if [[ $OPEN -eq 0 ]]; then
+  echo "→ Agent: read/edit $PATH_LINE or open in the user's editor outside this shell."
+  exit 0
+fi
+
+EDITOR_BIN="${EDITOR:-nano}"
+# Prefer opening file in external terminal with editor so agent does not block
+TERM_EMU=""
+for t in "${PREMFLOW_TERMINAL:-}" ghostty alacritty kitty foot xterm; do
+  [[ -z "$t" ]] && continue
+  if command -v "$t" >/dev/null 2>&1; then
+    TERM_EMU="$t"
+    break
+  fi
+done
+
+if [[ -n "$TERM_EMU" ]]; then
+  case "$TERM_EMU" in
+    ghostty) ghostty -e "$EDITOR_BIN" "$PATH_LINE" & ;;
+    alacritty) alacritty -e "$EDITOR_BIN" "$PATH_LINE" & ;;
+    kitty) kitty "$EDITOR_BIN" "$PATH_LINE" & ;;
+    *) "$TERM_EMU" -e "$EDITOR_BIN" "$PATH_LINE" & ;;
+  esac
+  echo "📖 Journal opened in $TERM_EMU with $EDITOR_BIN (non-blocking)."
+else
+  echo "→ No terminal emulator; open manually: $EDITOR_BIN $(printf '%q' "$PATH_LINE")"
+fi
+exit 0

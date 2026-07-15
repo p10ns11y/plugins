@@ -1,0 +1,8 @@
+# OS / editor
+.DS_Store
+*~
+*.swp
+
+# local secrets
+.env
+.env.*

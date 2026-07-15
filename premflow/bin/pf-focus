@@ -1,0 +1,250 @@
+#!/usr/bin/env bash
+# pf-focus — interactive premflow pomo outside the agent tool shell.
+#
+# Surface preference (PREMFLOW_FOCUS_SURFACE):
+#   auto   — kitty remote tab if available; else Ghostty same-app window (D-Bus);
+#            else new process window
+#   tab    — require tab (kitty @ launch); else print how-to + fall back
+#   window — prefer Ghostty D-Bus new-window-command / new emulator window
+#
+# Never blocks the agent for multi-minute countdowns.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+DRY=0
+PRINT=0
+SURFACE="${PREMFLOW_FOCUS_SURFACE:-auto}"
+ARGS=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run) DRY=1; shift ;;
+    --print-only|--print) PRINT=1; shift ;;
+    --tab) SURFACE=tab; shift ;;
+    --window) SURFACE=window; shift ;;
+    --) shift; ARGS+=("$@"); break ;;
+    *) ARGS+=("$1"); shift ;;
+  esac
+done
+
+resolve_pf() {
+  if [[ -n "${PREMFLOW_BIN:-}" && -x "${PREMFLOW_BIN}" ]]; then
+    echo "$PREMFLOW_BIN"
+    return
+  fi
+  local cand abs
+  for cand in \
+    "$HOME/Work/personal/premflow/build/premflow" \
+    "$ROOT/../../premflow/build/premflow" \
+    "/home/sustainableabundance/Work/personal/premflow/build/premflow" \
+    "./build/premflow"; do
+    if [[ -x "$cand" ]]; then
+      abs="$(cd "$(dirname "$cand")" && pwd)/$(basename "$cand")"
+      echo "$abs"
+      return
+    fi
+  done
+  if command -v premflow >/dev/null 2>&1; then
+    command -v premflow
+    return
+  fi
+  echo "premflow"
+}
+
+PF="$(resolve_pf)"
+if [[ ${#ARGS[@]} -eq 0 ]]; then
+  ARGS=(25)
+fi
+
+CMD_STR="$PF pomo"
+for a in "${ARGS[@]}"; do
+  CMD_STR+=" $(printf '%q' "$a")"
+done
+
+if [[ $PRINT -eq 1 ]]; then
+  printf '%s\n' "$CMD_STR"
+  exit 0
+fi
+
+pick_term() {
+  if [[ -n "${PREMFLOW_TERMINAL:-}" ]] && command -v "$PREMFLOW_TERMINAL" >/dev/null 2>&1; then
+    echo "$PREMFLOW_TERMINAL"
+    return
+  fi
+  local t
+  for t in ghostty alacritty kitty foot wezterm gnome-terminal xterm; do
+    if command -v "$t" >/dev/null 2>&1; then
+      echo "$t"
+      return
+    fi
+  done
+  echo ""
+}
+
+# True if kitty remote control is live
+kitty_remote_ok() {
+  command -v kitty >/dev/null 2>&1 || return 1
+  kitty @ ls >/dev/null 2>&1
+}
+
+# True if Ghostty is on the session bus
+ghostty_dbus_ok() {
+  command -v gdbus >/dev/null 2>&1 || return 1
+  gdbus call --session --dest com.mitchellh.ghostty \
+    --object-path /com/mitchellh/ghostty \
+    --method org.freedesktop.DBus.Peer.Ping >/dev/null 2>&1
+}
+
+# Launch command as a *tab* in an existing Kitty instance
+launch_kitty_tab() {
+  # shellcheck disable=SC2086
+  kitty @ launch --type=tab --title "premflow-pomo" --cwd current \
+    "$PF" pomo "${ARGS[@]}"
+}
+
+# Launch command as a new window in the *running* Ghostty app (same process; not a tab).
+# Ghostty D-Bus exposes new-tab without a command, and new-window-command with a command.
+launch_ghostty_dbus_window() {
+  python3 - "$PF" "${ARGS[@]}" <<'PY'
+import sys
+import subprocess
+
+pf, *args = sys.argv[1:]
+cmd = [pf, "pomo", *args]
+# Build GVariant: array of variants wrapping array of strings → [<['a','b']>]
+# gdbus wants: Activate(s action, av parameter, a{sv} platform_data)
+# parameter for new-window-command is type "as"
+parts = []
+for c in cmd:
+    # escape for gvariant string
+    c = c.replace("\\", "\\\\").replace("'", "\\'")
+    parts.append(f"'{c}'")
+inner = ", ".join(parts)
+param = f"[<[{inner}]>]"
+subprocess.check_call(
+    [
+        "gdbus",
+        "call",
+        "--session",
+        "--dest",
+        "com.mitchellh.ghostty",
+        "--object-path",
+        "/com/mitchellh/ghostty",
+        "--method",
+        "org.gtk.Actions.Activate",
+        "new-window-command",
+        param,
+        "{}",
+    ],
+    stdout=subprocess.DEVNULL,
+)
+print("ghostty-dbus-window")
+PY
+}
+
+# Open empty new tab in focused Ghostty window (no command — last resort UX)
+ghostty_new_tab_empty() {
+  local win
+  win="$(gdbus introspect --session --dest com.mitchellh.ghostty \
+    --object-path /com/mitchellh/ghostty/window 2>/dev/null \
+    | sed -n 's/.*node \([0-9][0-9]*\).*/\1/p' | head -1)"
+  [[ -n "$win" ]] || return 1
+  gdbus call --session --dest com.mitchellh.ghostty \
+    --object-path "/com/mitchellh/ghostty/window/$win" \
+    --method org.gtk.Actions.Activate new-tab "[]" "{}" >/dev/null
+}
+
+launch_process_window() {
+  local TERM_EMU="$1"
+  case "$TERM_EMU" in
+    ghostty) ghostty -e "$PF" pomo "${ARGS[@]}" & ;;
+    alacritty) alacritty -e "$PF" pomo "${ARGS[@]}" & ;;
+    kitty) kitty "$PF" pomo "${ARGS[@]}" & ;;
+    foot) foot "$PF" pomo "${ARGS[@]}" & ;;
+    wezterm) wezterm start -- "$PF" pomo "${ARGS[@]}" & ;;
+    gnome-terminal) gnome-terminal -- "$PF" pomo "${ARGS[@]}" & ;;
+    xterm) xterm -e "$PF" pomo "${ARGS[@]}" & ;;
+    *) "$TERM_EMU" -e "$PF" pomo "${ARGS[@]}" & ;;
+  esac
+}
+
+explain_tab_limit() {
+  cat <<EOF
+ℹ Ghostty can open a new *tab* (Ctrl+Shift+T) but has no D-Bus API to run a
+  command *inside* that tab yet — only empty tabs or a same-app *window* with a command.
+  For true command-in-tab: run Kitty with remote control, or paste after Ctrl+Shift+T:
+    $CMD_STR
+EOF
+}
+
+do_launch() {
+  local mode="$1"
+  case "$mode" in
+    kitty-tab)
+      launch_kitty_tab
+      echo "🍅 Focus launched in Kitty *tab* (interactive TTY)."
+      ;;
+    ghostty-dbus-window)
+      launch_ghostty_dbus_window
+      echo "🍅 Focus launched in Ghostty *same-app window* (D-Bus; not a tab — Ghostty limit)."
+      echo "   Tip: set PREMFLOW_FOCUS_SURFACE=tab and use Kitty for real tabs; or Ctrl+Shift+T + paste."
+      ;;
+    process-window)
+      local te
+      te="$(pick_term)"
+      if [[ -z "$te" ]]; then
+        echo "⚠ No terminal emulator found (set PREMFLOW_TERMINAL)."
+        echo "Paste in a real terminal:"
+        echo "  $CMD_STR"
+        return 0
+      fi
+      launch_process_window "$te"
+      echo "🍅 Focus launched in new $te window (interactive TTY)."
+      ;;
+    *)
+      echo "unknown mode $mode" >&2
+      return 1
+      ;;
+  esac
+  echo "   $CMD_STR"
+  echo "   Keys: space/p pause · r restart segment · R reset plan · q quit"
+}
+
+# Decide launch strategy
+STRATEGY=""
+if [[ "$SURFACE" == "tab" ]] || [[ "$SURFACE" == "auto" ]]; then
+  if kitty_remote_ok; then
+    STRATEGY=kitty-tab
+  elif [[ "$SURFACE" == "tab" ]]; then
+    explain_tab_limit
+    if ghostty_dbus_ok; then
+      STRATEGY=ghostty-dbus-window
+    else
+      STRATEGY=process-window
+    fi
+  fi
+fi
+
+if [[ -z "$STRATEGY" ]]; then
+  # window or auto without kitty
+  if ghostty_dbus_ok; then
+    STRATEGY=ghostty-dbus-window
+  else
+    STRATEGY=process-window
+  fi
+fi
+
+if [[ $DRY -eq 1 ]]; then
+  echo "dry-run: surface=$SURFACE strategy=$STRATEGY"
+  echo "dry-run: $CMD_STR"
+  if [[ "$STRATEGY" == "kitty-tab" ]]; then
+    echo "dry-run: kitty @ launch --type=tab --title premflow-pomo …"
+  elif [[ "$STRATEGY" == "ghostty-dbus-window" ]]; then
+    echo "dry-run: gdbus Activate new-window-command on com.mitchellh.ghostty"
+  else
+    echo "dry-run: spawn $(pick_term) -e …"
+  fi
+  exit 0
+fi
+
+do_launch "$STRATEGY"
+exit 0

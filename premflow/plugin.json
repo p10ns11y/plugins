@@ -1,0 +1,8 @@
+{
+  "name": "premflow",
+  "version": "1.0.0",
+  "description": "Capture notes, wins, tasks; review the day; launch interactive pomo in a real terminal; ensure journal without hanging the agent.",
+  "author": {
+    "name": "premflow"
+  }
+}
