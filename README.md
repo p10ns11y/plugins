@@ -4,21 +4,67 @@ Grok Build / agent plugins (installable skill + command packages).
 
 ## premflow
 
-Capture notes, wins, tasks; review; **coach** from real ledger data; interactive
-pomo in an external TTY; journal without hanging the agent.
+Grok skill + slash commands for notes, wins, tasks, review, coaching, external
+pomo, and agent-safe journal. The plugin drives the **premflow** CLI; it does
+not ship the binary.
 
-**CLI repo:** [https://github.com/thecuriousts/premflow](https://github.com/thecuriousts/premflow)
+| | |
+|--|--|
+| **Plugin** (this repo) | `premflow/` — skill, `/commands`, `bin/` helpers |
+| **CLI** (separate) | [github.com/thecuriousts/premflow](https://github.com/thecuriousts/premflow) — must be on `PATH` |
+| **Docs** | [premflow/README.md](premflow/README.md) |
+
+### 1. Install the CLI
+
+Needs: CMake 3.14+, C11 compiler, `git`, `make`. Installs to `~/.local/bin` (no sudo).
 
 ```bash
-# install plugin
-grok plugin install ./premflow --trust
-# or: ln -sfn "$(pwd)/premflow" ~/.grok/plugins/premflow
-
-# install CLI (on PATH) — or use /init inside Grok after plugin install
 git clone https://github.com/thecuriousts/premflow.git
-cd premflow && ./build.sh && make install   # → ~/.local/bin
+cd premflow
+./build.sh
+make install
 ```
 
-Slash commands: `/init` `/note` `/win` `/task` `/review` `/coach` `/focus` `/journal`.
+Put `~/.local/bin` on `PATH` if it is not already:
 
-See [premflow/README.md](premflow/README.md).
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+# persist in your shell config, then open a new shell
+```
+
+Check:
+
+```bash
+command -v premflow && premflow
+```
+
+**Alternative:** install this plugin first (step 2), then in Grok run `/init` and
+approve the download/build. Same end result: `premflow` on `PATH`.
+
+### 2. Install this plugin
+
+From a clone of **this** repo (`plugins`):
+
+```bash
+grok plugin install ./premflow --trust
+```
+
+Or symlink:
+
+```bash
+mkdir -p ~/.grok/plugins
+ln -sfn "$(pwd)/premflow" ~/.grok/plugins/premflow
+```
+
+Reload Grok (or Plugins tab → `r`).
+
+### 3. Use
+
+| Command | What it does |
+|---------|----------------|
+| `/init` | Check CLI; with consent, install/upgrade CLI |
+| `/note` `/win` `/task` | Capture via real CLI |
+| `/review` | Smart daily review |
+| `/coach` | Coach from real ledger data only |
+| `/focus` | Pomo in an external TTY (never blocks agent) |
+| `/journal` | Ensure journal path; no `$EDITOR` hang |
