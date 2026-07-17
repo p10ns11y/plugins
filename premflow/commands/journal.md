@@ -5,29 +5,34 @@ argument-hint: "[--open] optional external editor"
 
 # /journal — ensure path; never hang the agent on $EDITOR
 
-Assumes `premflow` is on PATH (system install). If missing → run `/init`.
+Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/init --yes` with consent).
 
 ## Policy (do not violate)
 
 - Bare `premflow journal` opens `$EDITOR` and **blocks until the editor exits** — **not** the default in-agent path.
 - **Default:** ensure today's file + print absolute path (template matches C writer).
+- User-facing: **`/journal`** and **`/journal --open`**. `pf-journal` is agent-internal only.
 
-## Default action
+## User examples
+
+```text
+/journal
+/journal --open
+```
+
+## Agent action (default)
 
 ```bash
 PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
-# Preferred helper (wraps journal --ensure; uses PATH via pf-resolve)
 "$PLUGIN/bin/pf-journal"
-
-# Equivalent:
-# premflow journal --ensure
+# equivalent CLI: premflow journal --ensure
 ```
 
 Then: show path; optional short preview of the file (head). User can edit outside.
 
-## Optional external editor (non-blocking spawn)
+## Agent action (external editor, non-blocking)
 
-If user wants editor now and `$ARGUMENTS` contains `--open`:
+If `$ARGUMENTS` contains `--open`:
 
 ```bash
 "$PLUGIN/bin/pf-journal" --open

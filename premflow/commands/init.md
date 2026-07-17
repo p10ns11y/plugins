@@ -5,9 +5,12 @@ argument-hint: "[--status] | [--yes] [--force]"
 
 # /init — premflow CLI install (with consent)
 
-The **Grok plugin** assumes the `premflow` binary is already on **PATH**. This
-command checks status and, only with **explicit user consent**, downloads and
-installs the CLI from the public repo.
+**User-facing surface:** `/init`, `/init --yes`, `/init --yes --force`.  
+Do not tell the user to run `pf-init` in a shell — that binary is agent-internal.
+
+The plugin assumes the `premflow` CLI is already on **PATH**. This command
+checks status and, only with **explicit user consent**, downloads and installs
+the CLI from the public repo.
 
 **Repo:** https://github.com/thecuriousts/premflow  
 **Install prefix (default):** `~/.local/bin` (no sudo)  
@@ -18,9 +21,12 @@ installs the CLI from the public repo.
 1. **Never** clone, build, or write under `~/.local` without the user agreeing.
 2. Status checks are always safe (read-only).
 3. If the user has **not** consented, explain what will happen and **ask** first.
-4. Do not use personal machine paths (`~/Work/personal/...`). System PATH only.
+4. No personal machine paths. System PATH only.
+5. Talk to the user in **slash-command** terms (`/init --yes`), not `pf-init`.
 
 ## Step 1 — Status (always run first)
+
+Agent-internal implementation (do not print this as the user instruction):
 
 ```bash
 PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
@@ -35,27 +41,28 @@ PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plug
 Tell the user clearly:
 
 - Source: `https://github.com/thecuriousts/premflow`
-- Actions: `git clone` → `./build.sh` → `make install` into `~/.local`
+- Actions: clone → build → install into `~/.local` (no sudo)
 - Needs: `git`, `cmake`, C11 compiler, `make`; network for first clone
 - PATH: `~/.local/bin` must be on PATH after install
 
 **Ask:** *May I download and install premflow now?*  
-Only after a clear **yes** (or if `$ARGUMENTS` already contains `--yes` from the user) proceed.
+Only after a clear **yes**, or if `$ARGUMENTS` already contains `--yes` from
+the user running `/init --yes`, proceed.
 
 ## Step 3 — Install (consent given)
+
+Agent-internal (maps from `/init --yes` / `/init --yes --force`):
 
 ```bash
 PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
 "$PLUGIN/bin/pf-init" --yes $ARGUMENTS
 ```
 
-Examples:
-
-```bash
-"$PLUGIN/bin/pf-init" --yes              # install if missing
-"$PLUGIN/bin/pf-init" --yes --force      # rebuild/reinstall
-"$PLUGIN/bin/pf-init" --status           # check only
-```
+| User runs | Agent runs |
+|-----------|------------|
+| `/init` | `pf-init --status` |
+| `/init --yes` | `pf-init --yes` |
+| `/init --yes --force` | `pf-init --yes --force` |
 
 ## Step 4 — Verify
 

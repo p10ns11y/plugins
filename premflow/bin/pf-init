@@ -17,6 +17,9 @@ FORCE=0
 
 usage() {
   cat <<EOF
+pf-init — agent-internal helper for Grok slash command /init
+(Users should run /init or /init --yes in Grok, not this script.)
+
 Usage: pf-init [--status] [--yes] [--force] [--prefix DIR] [--src-dir DIR]
 
   --status     Check whether premflow is on PATH (default if no --yes)
@@ -84,8 +87,9 @@ if [[ $STATUS_ONLY -eq 1 ]] || [[ $YES -eq 0 ]]; then
 
 premflow is not installed (or not on PATH).
 
-To install with consent, re-run:
-  pf-init --yes
+In Grok (after plugin install), run:
+  /init --yes
+(agent will ask for consent, then install)
 
 Manual install:
   git clone $REPO_URL

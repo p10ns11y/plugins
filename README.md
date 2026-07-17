@@ -10,7 +10,7 @@ not ship the binary.
 
 | | |
 |--|--|
-| **Plugin** (this repo) | `premflow/` — skill, `/commands`, `bin/` helpers |
+| **Plugin** (this repo) | `premflow/` — skill, slash commands, agent helpers |
 | **CLI** (separate) | [github.com/thecuriousts/premflow](https://github.com/thecuriousts/premflow) — must be on `PATH` |
 | **Docs** | [premflow/README.md](premflow/README.md) |
 
@@ -38,8 +38,8 @@ Check:
 command -v premflow && premflow
 ```
 
-**Alternative:** install this plugin first (step 2), then in Grok run `/init` and
-approve the download/build. Same end result: `premflow` on `PATH`.
+**Alternative:** finish step 2 first, then in Grok run `/init` (status) and, after
+you consent, **`/init --yes`**. Same end result: `premflow` on `PATH`.
 
 ### 2. Install this plugin
 
@@ -58,13 +58,17 @@ ln -sfn "$(pwd)/premflow" ~/.grok/plugins/premflow
 
 Reload Grok (or Plugins tab → `r`).
 
-### 3. Use
+### 3. Use (slash commands only)
 
 | Command | What it does |
 |---------|----------------|
-| `/init` | Check CLI; with consent, install/upgrade CLI |
+| `/init` | Check CLI on PATH |
+| `/init --yes` | Consent install/upgrade of CLI |
 | `/note` `/win` `/task` | Capture via real CLI |
 | `/review` | Smart daily review |
 | `/coach` | Coach from real ledger data only |
 | `/focus` | Pomo in an external TTY (never blocks agent) |
 | `/journal` | Ensure journal path; no `$EDITOR` hang |
+
+`bin/pf-*` scripts are **agent-internal** (what Grok runs for those slash commands).
+You do not call them from the shell for normal use.

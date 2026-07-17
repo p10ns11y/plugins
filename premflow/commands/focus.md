@@ -5,29 +5,29 @@ argument-hint: "[plan] [context…]" e.g. 25 ship PR  or  20,4 deep work
 
 # /focus — interactive pomo (external TTY only)
 
-Assumes `premflow` is on PATH (system install). If missing → run `/init`.
+Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/init --yes` with consent).
 
 ## Policy (do not violate)
 
 - **Never** run `premflow pomo …` and wait for completion inside the agent tool shell.
 - Agent stdin is not a TTY → pause/restart/reset keys will not work there.
-- **Always** use the plugin helper (spawns ghostty/alacritty/…) or print a paste-ready command.
+- **Always** spawn via the agent helper below, or print a paste-ready command.
+- User-facing examples use **`/focus …`**. The `pf-focus` path is agent-internal only.
 
-## Default action
+## User examples
+
+```text
+/focus 25 ship plugin
+/focus 20,4,20,4 deep work
+/focus --tab 25 prefer tab if Kitty remote works
+/focus --print-only 25 context
+```
+
+## Agent action
 
 ```bash
 PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
 "$PLUGIN/bin/pf-focus" $ARGUMENTS
-```
-
-Examples:
-
-```bash
-"$PLUGIN/bin/pf-focus" 25 "ship plugin"
-"$PLUGIN/bin/pf-focus" 20,4,20,4 "deep work"
-"$PLUGIN/bin/pf-focus" --tab 25 "prefer tab if Kitty remote works"
-"$PLUGIN/bin/pf-focus" --print-only 25 "context"   # paste-only
-"$PLUGIN/bin/pf-focus" --dry-run 25 "x"             # show spawn plan
 ```
 
 ### Tab vs window

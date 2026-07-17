@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# pf-journal — agent-safe journal path.
+# pf-journal — agent-internal helper for Grok slash command /journal.
+# Users run /journal or /journal --open; do not document this as user-facing CLI.
+#
 # Default: premflow journal --ensure (create template, print path, NO editor).
 # --open: after ensure, open $EDITOR in an external terminal (non-blocking spawn).
 set -euo pipefail

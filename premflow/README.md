@@ -1,15 +1,24 @@
 # premflow — Grok plugin
 
-Skill + slash commands + helpers. Grok runs the **premflow** CLI for capture and
-review; interactive pomo and full `$EDITOR` journal stay outside the agent shell.
+Skill + slash commands. Grok runs the **premflow** CLI for capture and review;
+interactive pomo and full `$EDITOR` journal stay outside the agent shell.
 
-| Slash / path | Role |
-|--------------|------|
-| `/init` | Status or (with consent) install the CLI |
-| `/note` `/win` `/task` `/review` | In-session CLI |
+## What you run (slash commands)
+
+| Command | Role |
+|---------|------|
+| `/init` | Check whether the CLI is on PATH (safe) |
+| `/init --yes` | After you consent: download, build, install CLI |
+| `/init --yes --force` | Rebuild/reinstall even if already present |
+| `/note` `/win` `/task` | Capture via real CLI |
+| `/review` | Smart daily review |
 | `/coach` | Review + tasks + journal → coach (no invented facts) |
-| `/focus` | `bin/pf-focus` → interactive pomo in a real TTY |
-| `/journal` | `bin/pf-journal` / `journal --ensure` (path only) |
+| `/focus` | Interactive pomo in a real TTY (never blocks the agent) |
+| `/journal` | Ensure journal path; no `$EDITOR` hang |
+| `/journal --open` | Ensure path, then open editor in an external terminal |
+
+You do **not** need to call `pf-*` scripts yourself. Those are agent-internal
+helpers the slash commands use under the hood.
 
 ---
 
@@ -47,10 +56,10 @@ command -v premflow   # must print a path
 premflow              # prints help
 ```
 
-If either fails, the plugin commands will fail until the CLI is fixed.
+If either fails, slash commands that need the CLI will fail until this is fixed.
 
-**Optional later:** a package install will replace clone/build; until then use
-manual install or `/init` (step 3).
+**Optional later:** a package install will replace clone/build. Until then use
+manual install (this step) or `/init --yes` after the plugin is installed (step 3).
 
 ### Step 2 — Install this Grok plugin
 
@@ -73,19 +82,14 @@ ln -sfn /path/to/plugins/premflow/skills/premflow ~/.grok/skills/premflow
 
 Reload Grok, or in the Plugins tab press `r`.
 
-### Step 3 — If the CLI is still missing: `/init`
-
-Only needed when step 1 was skipped or `premflow` is not on `PATH`.
+### Step 3 — If the CLI is still missing
 
 1. In Grok, run **`/init`** (status only — safe).
-2. Agent explains clone → build → `~/.local` install and **asks for consent**.
-3. After you say yes (or pass `--yes`), it runs `bin/pf-init --yes`:
-   - clone/update → `~/.cache/premflow/src`
-   - `./build.sh`
-   - `make install` → `~/.local/bin/premflow`
-4. Confirm again: `command -v premflow`.
+2. The agent explains clone → build → `~/.local` install and **asks for consent**.
+3. Approve, then run **`/init --yes`** (or answer yes when asked).
+4. Confirm: `command -v premflow`.
 
-Never installs without consent. `--force` rebuilds even if already on `PATH`.
+Use **`/init --yes --force`** only to rebuild/reinstall on purpose.
 
 ### Step 4 — Optional environment
 
@@ -96,7 +100,7 @@ export PREMFLOW_BIN=/path/to/premflow
 # preferred terminal for /focus spawn (else auto: ghostty, alacritty, kitty, …)
 export PREMFLOW_TERMINAL=ghostty
 
-# force tab vs window strategy for pf-focus
+# force tab vs window strategy for /focus
 export PREMFLOW_FOCUS_SURFACE=auto   # or tab | window
 ```
 
@@ -107,23 +111,24 @@ export PREMFLOW_FOCUS_SURFACE=auto   # or tab | window
 ### Pomo
 
 Interactive countdown **must** run in a real terminal (TTY keys: space/p, r, R, q).
-The agent must **not** wait on `premflow pomo` in the tool shell — only
-`bin/pf-focus` (spawn or print-only).
+Use **`/focus`** — never wait on `premflow pomo` inside the agent tool shell.
 
 ### Journal
 
 - `premflow journal` alone opens `$EDITOR` and **blocks** — avoid in-agent.
-- Default: `premflow journal --ensure` or `bin/pf-journal` → create template,
-  **print absolute path**, no editor wait.
-- `bin/pf-journal --open` spawns editor in an external terminal (non-blocking).
+- Default **`/journal`**: create template, **print absolute path**, no editor wait.
+- **`/journal --open`**: open editor in an external terminal (non-blocking).
 
 ---
 
-## Helpers
+## Agent internals (Grok Build only)
 
-| Script | Role |
-|--------|------|
-| `bin/pf-resolve` | Resolve `premflow` from `PATH` or `PREMFLOW_BIN`; exit 1 + hint if missing |
-| `bin/pf-init` | `--status` / `--yes` / `--force` CLI install |
-| `bin/pf-focus` | External TTY pomo |
-| `bin/pf-journal` | Agent-safe journal ensure (+ optional external editor) |
+Slash command implementations invoke helpers under `bin/`. Operators and end
+users should stick to `/…` commands above.
+
+| Script | Used by | Role |
+|--------|---------|------|
+| `bin/pf-resolve` | other helpers | Resolve `premflow` from `PATH` or `PREMFLOW_BIN` |
+| `bin/pf-init` | `/init` | Status / consent install of CLI |
+| `bin/pf-focus` | `/focus` | External TTY pomo |
+| `bin/pf-journal` | `/journal` | Agent-safe journal ensure (+ optional external editor) |

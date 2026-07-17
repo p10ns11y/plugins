@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# pf-focus — interactive premflow pomo outside the agent tool shell.
+# pf-focus — agent-internal helper for Grok slash command /focus.
+# Users run /focus … in Grok; do not document this as a user-facing CLI.
+#
 #
 # Surface preference (PREMFLOW_FOCUS_SURFACE):
 #   auto   — kitty remote tab if available; else Ghostty same-app window (D-Bus);
