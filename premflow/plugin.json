@@ -1,7 +1,7 @@
 {
   "name": "premflow",
-  "version": "1.0.0",
-  "description": "Capture notes, wins, tasks; review the day; launch interactive pomo in a real terminal; ensure journal without hanging the agent.",
+  "version": "1.1.0",
+  "description": "Capture notes, wins, tasks; review; coach; external pomo; agent-safe journal. CLI via PATH or /init (consent install from github.com/thecuriousts/premflow).",
   "author": {
     "name": "premflow"
   }

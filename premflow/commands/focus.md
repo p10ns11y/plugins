@@ -5,6 +5,8 @@ argument-hint: "[plan] [context…]" e.g. 25 ship PR  or  20,4 deep work
 
 # /focus — interactive pomo (external TTY only)
 
+Assumes `premflow` is on PATH (system install). If missing → run `/init`.
+
 ## Policy (do not violate)
 
 - **Never** run `premflow pomo …` and wait for completion inside the agent tool shell.
@@ -14,7 +16,7 @@ argument-hint: "[plan] [context…]" e.g. 25 ship PR  or  20,4 deep work
 ## Default action
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:-$HOME/Work/personal/plugins/premflow}"
+PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
 "$PLUGIN/bin/pf-focus" $ARGUMENTS
 ```
 

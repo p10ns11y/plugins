@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Shared binary resolution: system PATH only.
+# PREMFLOW_BIN overrides if set and executable (tests / packaging).
+# Prints absolute path to premflow or exits 1 with install hint.
+set -euo pipefail
+
+if [[ -n "${PREMFLOW_BIN:-}" ]]; then
+  if [[ -x "$PREMFLOW_BIN" ]]; then
+    # Prefer absolute path when possible
+    if [[ "$PREMFLOW_BIN" == /* ]]; then
+      printf '%s\n' "$PREMFLOW_BIN"
+    else
+      command -v "$PREMFLOW_BIN" 2>/dev/null || printf '%s\n' "$PREMFLOW_BIN"
+    fi
+    exit 0
+  fi
+  echo "premflow: PREMFLOW_BIN is set but not executable: $PREMFLOW_BIN" >&2
+  exit 1
+fi
+
+if command -v premflow >/dev/null 2>&1; then
+  command -v premflow
+  exit 0
+fi
+
+cat >&2 <<'EOF'
+premflow CLI not found on PATH.
+
+Install the CLI first:
+  /init          (plugin command — asks consent, then clones + builds + installs)
+  or see: https://github.com/thecuriousts/premflow
+
+Quick manual install (user-local, no sudo):
+  git clone https://github.com/thecuriousts/premflow.git
+  cd premflow && ./build.sh && make install
+  # ensure ~/.local/bin is on PATH
+EOF
+exit 1

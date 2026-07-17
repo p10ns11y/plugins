@@ -15,31 +15,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-resolve_pf() {
-  if [[ -n "${PREMFLOW_BIN:-}" && -x "${PREMFLOW_BIN}" ]]; then
-    echo "$PREMFLOW_BIN"
-    return
-  fi
-  local cand abs
-  for cand in \
-    "$HOME/Work/personal/premflow/build/premflow" \
-    "$ROOT/../../premflow/build/premflow" \
-    "/home/sustainableabundance/Work/personal/premflow/build/premflow" \
-    "./build/premflow"; do
-    if [[ -x "$cand" ]]; then
-      abs="$(cd "$(dirname "$cand")" && pwd)/$(basename "$cand")"
-      echo "$abs"
-      return
-    fi
-  done
-  if command -v premflow >/dev/null 2>&1; then
-    command -v premflow
-    return
-  fi
-  echo "premflow"
-}
-
-PF="$(resolve_pf)"
+# System PATH only (optional PREMFLOW_BIN). No personal project fallbacks.
+if ! PF="$("$ROOT/bin/pf-resolve")"; then
+  exit 1
+fi
 
 if [[ $DRY -eq 1 ]]; then
   echo "dry-run: $PF journal --ensure"

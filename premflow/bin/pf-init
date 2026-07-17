@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+# pf-init — install the premflow CLI (consent-gated).
+#
+# Default is dry / status-only. Real install requires --yes (user consent).
+# Source of truth until a package ships:
+#   https://github.com/thecuriousts/premflow
+#
+# Install target: ~/.local/bin/premflow (PREFIX=$HOME/.local)
+set -euo pipefail
+
+REPO_URL="${PREMFLOW_REPO_URL:-https://github.com/thecuriousts/premflow.git}"
+SRC_DIR="${PREMFLOW_SRC_DIR:-$HOME/.cache/premflow/src}"
+PREFIX="${PREMFLOW_PREFIX:-$HOME/.local}"
+YES=0
+STATUS_ONLY=0
+FORCE=0
+
+usage() {
+  cat <<EOF
+Usage: pf-init [--status] [--yes] [--force] [--prefix DIR] [--src-dir DIR]
+
+  --status     Check whether premflow is on PATH (default if no --yes)
+  --yes        Consent flag: clone, build, and install (required to mutate)
+  --force      Rebuild even if premflow is already on PATH
+  --prefix DIR Install prefix (default: ~/.local → bin/premflow)
+  --src-dir DIR Clone/build directory (default: ~/.cache/premflow/src)
+
+Environment:
+  PREMFLOW_REPO_URL  Git remote (default: $REPO_URL)
+  PREMFLOW_SRC_DIR   Clone path
+  PREMFLOW_PREFIX    Install prefix
+  PREMFLOW_BIN       Override binary path after install (tests)
+
+Repo: https://github.com/thecuriousts/premflow
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --status) STATUS_ONLY=1; shift ;;
+    --yes|-y) YES=1; shift ;;
+    --force) FORCE=1; shift ;;
+    --prefix) PREFIX="$2"; shift 2 ;;
+    --src-dir) SRC_DIR="$2"; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "unknown arg: $1" >&2; usage >&2; exit 2 ;;
+  esac
+done
+
+need_cmd() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "missing required command: $1" >&2
+    return 1
+  fi
+}
+
+status_report() {
+  echo "premflow CLI status"
+  echo "  repo:    $REPO_URL"
+  echo "  prefix:  $PREFIX"
+  echo "  src-dir: $SRC_DIR"
+  if command -v premflow >/dev/null 2>&1; then
+    local bin
+    bin="$(command -v premflow)"
+    echo "  found:   $bin"
+    if "$bin" 2>&1 | head -5; then
+      :
+    fi
+    return 0
+  fi
+  echo "  found:   (not on PATH)"
+  if [[ -x "$PREFIX/bin/premflow" ]]; then
+    echo "  note:    binary exists at $PREFIX/bin/premflow but PATH may not include $PREFIX/bin"
+  fi
+  return 1
+}
+
+if [[ $STATUS_ONLY -eq 1 ]] || [[ $YES -eq 0 ]]; then
+  if status_report; then
+    exit 0
+  fi
+  if [[ $YES -eq 0 ]]; then
+    cat <<EOF
+
+premflow is not installed (or not on PATH).
+
+To install with consent, re-run:
+  pf-init --yes
+
+Manual install:
+  git clone $REPO_URL
+  cd premflow && ./build.sh && make install
+  # ensure $PREFIX/bin is on PATH
+EOF
+    exit 1
+  fi
+fi
+
+# --- install path (consent given via --yes) ---
+if command -v premflow >/dev/null 2>&1 && [[ $FORCE -eq 0 ]]; then
+  echo "premflow already on PATH: $(command -v premflow)"
+  echo "Use --force to rebuild and reinstall."
+  exit 0
+fi
+
+need_cmd git
+need_cmd cmake
+need_cmd make
+if ! command -v cc >/dev/null 2>&1 && ! command -v gcc >/dev/null 2>&1 && ! command -v clang >/dev/null 2>&1; then
+  echo "need a C compiler (cc, gcc, or clang)" >&2
+  exit 1
+fi
+
+mkdir -p "$(dirname "$SRC_DIR")"
+if [[ -d "$SRC_DIR/.git" ]]; then
+  echo "→ updating $SRC_DIR"
+  git -C "$SRC_DIR" pull --ff-only || git -C "$SRC_DIR" fetch --all
+else
+  echo "→ cloning $REPO_URL → $SRC_DIR"
+  rm -rf "$SRC_DIR"
+  git clone --depth 1 "$REPO_URL" "$SRC_DIR"
+fi
+
+echo "→ building in $SRC_DIR"
+(
+  cd "$SRC_DIR"
+  if [[ -x ./build.sh ]]; then
+    ./build.sh
+  else
+    cmake -B build -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
+  fi
+)
+
+echo "→ installing to $PREFIX/bin (no sudo)"
+(
+  cd "$SRC_DIR"
+  make install PREFIX="$PREFIX"
+)
+
+BIN="$PREFIX/bin/premflow"
+if [[ ! -x "$BIN" ]]; then
+  # Some trees install via cmake only
+  if [[ -x "$SRC_DIR/build/premflow" ]]; then
+    mkdir -p "$PREFIX/bin"
+    install -m 755 "$SRC_DIR/build/premflow" "$BIN"
+  fi
+fi
+
+if [[ ! -x "$BIN" ]]; then
+  echo "install failed: $BIN not found" >&2
+  exit 1
+fi
+
+if ! command -v premflow >/dev/null 2>&1; then
+  cat <<EOF
+✓ Installed $BIN
+
+Add to PATH (shell config):
+  export PATH="$PREFIX/bin:\$PATH"
+
+Then reopen the shell / Grok session and verify:
+  premflow
+EOF
+  exit 0
+fi
+
+echo "✓ premflow ready: $(command -v premflow)"
+exit 0

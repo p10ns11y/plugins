@@ -5,8 +5,10 @@ argument-hint: what went well
 
 # /win — celebrate into the ledger
 
+Assumes `premflow` is on PATH (system install). If missing → run `/init`.
+
 ```bash
-PF=$(command -v premflow || echo "$HOME/Work/personal/premflow/build/premflow")
+PF=$(command -v premflow) || { echo "premflow not on PATH — run /init"; exit 1; }
 $PF win "$ARGUMENTS"
 ```
 

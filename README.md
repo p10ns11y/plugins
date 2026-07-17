@@ -1,24 +1,24 @@
 # plugins
 
-Personal Grok Build / agent plugins (installable skill + command packages).
+Grok Build / agent plugins (installable skill + command packages).
 
 ## premflow
 
 Capture notes, wins, tasks; review; **coach** from real ledger data; interactive
 pomo in an external TTY; journal without hanging the agent.
 
-```bash
-# discover
-ln -sfn ~/Work/personal/plugins/premflow ~/.grok/plugins/premflow
-ln -sfn ~/Work/personal/plugins/premflow/skills/premflow ~/.grok/skills/premflow
+**CLI repo:** [https://github.com/thecuriousts/premflow](https://github.com/thecuriousts/premflow)
 
-# or
-grok plugin install ~/Work/personal/plugins/premflow --trust
+```bash
+# install plugin
+grok plugin install ./premflow --trust
+# or: ln -sfn "$(pwd)/premflow" ~/.grok/plugins/premflow
+
+# install CLI (on PATH) — or use /init inside Grok after plugin install
+git clone https://github.com/thecuriousts/premflow.git
+cd premflow && ./build.sh && make install   # → ~/.local/bin
 ```
 
-Requires [premflow](https://github.com/thecuriousts/premflow) CLI on PATH (or
-`~/Work/personal/premflow/build/premflow`).
-
-Slash commands: `/note` `/win` `/task` `/review` `/coach` `/focus` `/journal`.
+Slash commands: `/init` `/note` `/win` `/task` `/review` `/coach` `/focus` `/journal`.
 
 See [premflow/README.md](premflow/README.md).

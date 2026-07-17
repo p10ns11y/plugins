@@ -15,10 +15,16 @@ description: >-
 
 ## Resolve binary
 
+System install only — no personal project path fallbacks:
+
 ```bash
-command -v premflow >/dev/null && PF=premflow || PF="$HOME/Work/personal/premflow/build/premflow"
-PLUGIN="${GROK_PLUGIN_ROOT:-$HOME/Work/personal/plugins/premflow}"
+PF=$(command -v premflow) || { echo "premflow not on PATH — run /init"; exit 1; }
+PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+# Optional override for tests/packaging: PREMFLOW_BIN=/path/to/premflow
 ```
+
+CLI source: https://github.com/thecuriousts/premflow  
+Missing binary → `/init` (consent-gated install) or manual install in the plugin README.
 
 ## Immutable rules
 
@@ -41,6 +47,7 @@ PLUGIN="${GROK_PLUGIN_ROOT:-$HOME/Work/personal/plugins/premflow}"
 | **Coach** | `/coach` — pull review + tasks + journal, then help (socratic, no invented facts) |
 | Focus / pomo | `$PLUGIN/bin/pf-focus [plan] [context…]` or `--print-only` |
 | Journal | `$PLUGIN/bin/pf-journal` → path; or `$PF journal --ensure` |
+| **Init CLI** | `/init` — status; with consent clone/build/install |
 
 ## Pomo policy (critical)
 
@@ -67,7 +74,7 @@ See [references/ledger-contract.md](references/ledger-contract.md):
 
 ## Slash commands
 
-Plugin ships `/note`, `/win`, `/task`, `/review`, `/coach`, `/focus`, `/journal` — same policies.
+Plugin ships `/init`, `/note`, `/win`, `/task`, `/review`, `/coach`, `/focus`, `/journal` — same policies.
 
 ## Coach (critical)
 
@@ -76,13 +83,3 @@ When user wants help planning, reflecting, or unsticking:
 1. Run real `review`, `task list`, `stats`, `pf-journal` (+ head journal).
 2. Coach from that signal only — structure in `commands/coach.md`.
 3. Offer next focus via `pf-focus` or capture via CLI; never invent ledger events.
-
-## Install
-
-```bash
-ln -sfn ~/Work/personal/plugins/premflow ~/.grok/plugins/premflow
-# optional dual skill discovery:
-ln -sfn ~/Work/personal/plugins/premflow/skills/premflow ~/.grok/skills/premflow
-```
-
-Reload Grok session or Plugins tab `r`.

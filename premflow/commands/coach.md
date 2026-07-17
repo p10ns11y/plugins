@@ -7,6 +7,8 @@ argument-hint: "[optional focus] e.g. evening · stuck on X · plan tomorrow"
 
 You are a **private daily coach**. Use only what premflow actually returns. Optional `$ARGUMENTS` is the user's ask (e.g. evening, stuck, plan tomorrow).
 
+Assumes `premflow` is on PATH (system install). If missing → run `/init`.
+
 ## Policy
 
 1. **Gather real signal first** (run these — do not invent wins/tasks/pomos).
@@ -18,10 +20,8 @@ You are a **private daily coach**. Use only what premflow actually returns. Opti
 ## Step 1 — Gather (always)
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:-$HOME/Work/personal/plugins/premflow}"
-PF=$(command -v premflow 2>/dev/null || true)
-[[ -x "$HOME/Work/personal/premflow/build/premflow" ]] && PF="$HOME/Work/personal/premflow/build/premflow"
-[[ -z "$PF" ]] && PF=premflow
+PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PF=$(command -v premflow) || { echo "premflow not on PATH — run /init"; exit 1; }
 export PREMFLOW_BIN="$PF"
 
 $PF review
