@@ -4,13 +4,22 @@
 
 ## Install into Grok
 
+Preferred (trust + enable like premflow):
+
 ```bash
-ln -sfn "$HOME/Work/personal/plugins/arch-machine" "$HOME/.grok/plugins/arch-machine"
-grok plugin validate "$HOME/Work/personal/plugins/arch-machine"
-grok plugin list
+grok plugin install "$HOME/Work/personal/plugins/arch-machine" --trust
+grok plugin enable arch-machine   # if listed but disabled
 ```
 
-Or: `grok plugin install /path/to/Work/personal/plugins/arch-machine`
+Dev symlink (discover path only; still enable in `~/.grok/config.toml` `[plugins].enabled`):
+
+```bash
+mkdir -p "$HOME/.grok/plugins"
+ln -sfn "$HOME/Work/personal/plugins/arch-machine" "$HOME/.grok/plugins/arch-machine"
+grok plugin validate "$HOME/Work/personal/plugins/arch-machine"
+```
+
+Confirm `arch-machine` appears under `grok plugin list` and in `[plugins].enabled`.
 
 ## Slash commands
 
@@ -38,4 +47,15 @@ test/                  # unit + consent tests
 ```bash
 ./test/test-core-map.sh
 ./test/test-expand-consent.sh
+./test/test-expand-real.sh   # honest --yes expand on fixtures/mock-arch
 ```
+
+## Expand behavior (not a no-op)
+
+With `/arch-expand security --yes`:
+
+1. Ensure arch-machine repo (clone/pull if needed).
+2. Run `modules/security/install.sh --agent-expand` (real prep + `.agent-expanded`).
+3. Write `.arch-expand-state/security.stamp`.
+
+See `docs/BOUNDARY.md`.

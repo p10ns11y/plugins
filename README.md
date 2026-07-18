@@ -2,6 +2,22 @@
 
 Grok Build / agent plugins (installable skill + command packages).
 
+**Location:** `~/Work/personal/plugins` (not `~/plugins`).
+
+| Plugin | Role |
+|--------|------|
+| **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface |
+| **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI (prefer over `tinfoil tui`) |
+
+## arch-machine
+
+```bash
+grok plugin install ./arch-machine --trust
+# slash: /arch-status · /arch-init · /arch-audit · /arch-expand
+```
+
+See [arch-machine/README.md](arch-machine/README.md) and `arch-machine/docs/BOUNDARY.md`.
+
 ## premflow
 
 Grok skill + slash commands for notes, wins, tasks, review, coaching, external

@@ -1,25 +1,24 @@
 #!/usr/bin/env bash
-# am-expand — pull/install expandable tier (consent-gated, fail closed).
+# am-expand — real consent-gated pull/install of expandable tiers.
 set -euo pipefail
 # shellcheck source=am-lib.sh
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/am-lib.sh"
 
 YES=0
 DRY=0
+PULL=1
 TARGET=""
 
 usage() {
   cat <<EOF
 am-expand — agent-internal helper for /arch-expand
-Usage: am-expand <profile|module> [--yes] [--dry-run]
-
-Examples:
-  am-expand security --dry-run
-  am-expand security --yes
-  am-expand ml-dev --yes
+Usage: am-expand <profile|module> [--yes] [--dry-run] [--no-pull]
 
 Without --yes: always fail closed (exit 2).
-Never auto-installs full profiles without consent.
+With --yes: ensure repo (clone/pull if needed), then expand.
+
+Modules: run modules/<name>/install.sh --agent-expand (real work + stamp).
+Profiles: tinfoil install --profile / install.sh --profile.
 EOF
 }
 
@@ -27,6 +26,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --yes|-y) YES=1; shift ;;
     --dry-run) DRY=1; shift ;;
+    --no-pull) PULL=0; shift ;;
     -h|--help) usage; exit 0 ;;
     -*)
       echo "unknown flag: $1" >&2
@@ -46,60 +46,72 @@ fi
 
 if ! am_is_expandable "$TARGET"; then
   echo "not expandable (unknown profile/module): $TARGET" >&2
-  echo "see core-map.json expandable.profiles / expandable.modules" >&2
   exit 2
 fi
 
-# Consent gate BEFORE any mutation or network
+# Fail closed before any network/fs mutate
 if [[ "$YES" -ne 1 ]]; then
   echo "consent_required: expand '$TARGET' needs --yes (fail closed)" >&2
-  am_consent_gate expand || true
   exit 2
 fi
 am_consent_gate expand --yes
 
-# Resolve kind
 KIND=$(jq -r --arg n "$TARGET" '
   if (.expandable.profiles | has($n)) then "profile"
   elif (.expandable.modules | has($n)) then "module"
   else "unknown" end
 ' "$(am_core_map_path)")
 
-if [[ "$DRY" -eq 1 ]]; then
-  echo "dry-run: expand kind=$KIND target=$TARGET"
-  if [[ "$KIND" == "profile" ]]; then
-    echo "dry-run: would run install.sh --profile $TARGET (or tinfoil install --profile $TARGET)"
-  else
-    PATH_MOD=$(jq -r --arg n "$TARGET" '.expandable.modules[$n].path' "$(am_core_map_path)")
-    echo "dry-run: would ensure module path $PATH_MOD present and invoke module installer if any"
-  fi
-  exit 0
-fi
+# Ensure code present (clone/pull) unless dry-run without repo and user only wants preview
+force_pull=0
+[[ "$PULL" -eq 1 && "$DRY" -eq 0 ]] && force_pull=1
 
-if ! repo="$(am_resolve_repo)"; then
-  echo "arch-machine repo not found — /arch-init --yes first" >&2
+if ! repo="$(am_ensure_repo "$force_pull" 2>/dev/null)"; then
+  if [[ "$DRY" -eq 1 ]]; then
+    echo "dry-run: would clone/ensure arch-machine then expand kind=$KIND target=$TARGET"
+    exit 0
+  fi
+  echo "failed to ensure arch-machine repo (set ARCH_MACHINE_ROOT or allow clone)" >&2
   exit 1
 fi
 
+echo "repo: $repo"
+echo "expand kind=$KIND target=$TARGET"
+
 if [[ "$KIND" == "profile" ]]; then
-  echo "expand profile: $TARGET from $repo"
-  if command -v tinfoil >/dev/null 2>&1; then
-    tinfoil install --profile "$TARGET" || (cd "$repo" && bash ./install.sh --profile "$TARGET")
-  else
-    (cd "$repo" && bash ./install.sh --profile "$TARGET")
+  if [[ "$DRY" -eq 1 ]]; then
+    echo "dry-run: would run install.sh --profile $TARGET (or tinfoil install --profile $TARGET)"
+    exit 0
   fi
-  exit 0
+  if command -v tinfoil >/dev/null 2>&1; then
+    tinfoil install --profile "$TARGET" && exit 0
+  fi
+  (cd "$repo" && bash ./install.sh --profile "$TARGET")
+  exit $?
 fi
 
-# module: ensure tree exists (already in full clone); document pull
-PATH_MOD=$(jq -r --arg n "$TARGET" '.expandable.modules[$n].path' "$(am_core_map_path)")
-if [[ -d "$repo/$PATH_MOD" ]]; then
-  echo "module present: $repo/$PATH_MOD"
-  if [[ -f "$repo/$PATH_MOD/install.sh" ]]; then
-    echo "module has install.sh — not auto-running without profile (see module README)"
-  fi
-  echo "expand module tier: present (use profile install for full tool wiring)"
-  exit 0
+# module
+if [[ "$KIND" != "module" ]]; then
+  echo "unknown kind" >&2
+  exit 2
 fi
-echo "module path missing: $repo/$PATH_MOD — refresh clone (git pull) with consent" >&2
-exit 1
+
+# If module tree missing, force pull/clone already attempted; re-check
+mod_path=$(jq -r --arg n "$TARGET" '.expandable.modules[$n].path' "$(am_core_map_path)")
+if [[ ! -d "$repo/$mod_path" ]]; then
+  if [[ "$DRY" -eq 1 ]]; then
+    echo "dry-run: module path missing; would pull remote and expand $TARGET"
+    exit 0
+  fi
+  # one more pull attempt
+  if [[ -d "$repo/.git" ]]; then
+    branch="$(am_map_get '.remote.default_branch' 2>/dev/null || echo sentinel)"
+    git -C "$repo" pull --ff-only origin "$branch" 2>/dev/null || true
+  fi
+  if [[ ! -d "$repo/$mod_path" ]]; then
+    echo "module path still missing: $repo/$mod_path" >&2
+    exit 1
+  fi
+fi
+
+am_run_module_expand "$repo" "$TARGET" "$DRY"

@@ -30,5 +30,5 @@ PLUGIN="${GROK_PLUGIN_ROOT:?}"
 | User | Result |
 |------|--------|
 | `/arch-expand security` | consent_required, exit 2 |
-| `/arch-expand security --yes --dry-run` | print planned action |
-| `/arch-expand security --yes` | perform expand (may need thin core present) |
+| `/arch-expand security --yes --dry-run` | print planned action (no stamp) |
+| `/arch-expand security --yes` | ensure repo → `install.sh --agent-expand` → stamp + marker (real work) |
