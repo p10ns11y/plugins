@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# am-init — thin install / clone path (consent-gated).
+# Default: status. Mutating thin install requires --yes.
+set -euo pipefail
+# shellcheck source=am-lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/am-lib.sh"
+
+YES=0
+STATUS_ONLY=0
+FORCE=0
+DRY=0
+PREFIX="${ARCH_MACHINE_PREFIX:-}"
+
+usage() {
+  cat <<EOF
+am-init — agent-internal helper for /arch-init
+Usage: am-init [--status] [--yes] [--force] [--dry-run]
+
+  --status   Report PATH/repo (default without --yes)
+  --yes      Consent: run thin install or clone into cache
+  --force    Re-run thin install even if tinfoil present
+  --dry-run  Print actions only (still requires --yes for "would mutate" gate)
+
+Fail closed: without --yes, never installs or clones.
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --status) STATUS_ONLY=1; shift ;;
+    --yes|-y) YES=1; shift ;;
+    --force) FORCE=1; shift ;;
+    --dry-run) DRY=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "unknown: $1" >&2; usage >&2; exit 2 ;;
+  esac
+done
+
+BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "$STATUS_ONLY" -eq 1 || "$YES" -eq 0 ]]; then
+  "$BIN_DIR/am-status" || true
+  if [[ "$YES" -eq 0 ]]; then
+    echo
+    echo "consent: not given. To thin-install: /arch-init --yes"
+    exit 0
+  fi
+fi
+
+# Mutating path
+ARGS=(--yes)
+[[ "$FORCE" -eq 1 ]] && ARGS+=(--force)
+am_consent_gate init "${ARGS[@]}" || exit $?
+
+REPO_URL="$(am_map_get '.remote.repo' 2>/dev/null || echo 'https://github.com/p10ns11y/arch-machine.git')"
+CACHE="$(am_expand_home "$(am_map_get '.remote.default_cache_dir' 2>/dev/null || echo '~/.cache/arch-machine/src')")"
+BRANCH="$(am_map_get '.remote.default_branch' 2>/dev/null || echo sentinel)"
+
+if [[ "$DRY" -eq 1 ]]; then
+  echo "dry-run: would ensure clone $REPO_URL → $CACHE (branch $BRANCH)"
+  echo "dry-run: would run: ./install.sh --thin  (from repo root)"
+  exit 0
+fi
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1" >&2; exit 1; }; }
+need git
+
+if [[ ! -d "$CACHE/.git" ]]; then
+  mkdir -p "$(dirname "$CACHE")"
+  git clone --branch "$BRANCH" --depth 1 "$REPO_URL" "$CACHE"
+else
+  git -C "$CACHE" fetch --depth 1 origin "$BRANCH" 2>/dev/null || true
+  git -C "$CACHE" checkout "$BRANCH" 2>/dev/null || true
+fi
+
+if command -v tinfoil >/dev/null 2>&1 && [[ "$FORCE" -eq 0 ]]; then
+  echo "tinfoil already on PATH: $(command -v tinfoil)"
+  echo "use --force with --yes to reinstall thin"
+  exit 0
+fi
+
+# Thin install may need sudo — surface clearly
+echo "running thin install from $CACHE"
+(cd "$CACHE" && bash ./install.sh --thin)
+command -v tinfoil && tinfoil version | head -3
+echo "thin init complete"

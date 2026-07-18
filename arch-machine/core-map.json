@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "name": "arch-machine",
+  "description": "Thin-first core vs expandable tiers for agent-as-TUI operator surface",
+  "remote": {
+    "repo": "https://github.com/p10ns11y/arch-machine.git",
+    "default_branch": "sentinel",
+    "cache_dir_env": "ARCH_MACHINE_SRC_DIR",
+    "default_cache_dir": "~/.cache/arch-machine/src"
+  },
+  "core": {
+    "tier": "thin",
+    "summary": "Essential sentinel: installable without full profiles; read-only ops + thin install path",
+    "install_flags": ["--thin"],
+    "binaries": ["tinfoil"],
+    "paths": {
+      "installed_runtime": "/usr/share/tinfoil",
+      "installed_bin": "/usr/local/bin/tinfoil"
+    },
+    "commands": [
+      "tinfoil version",
+      "tinfoil help",
+      "tinfoil audit",
+      "tinfoil audit ."
+    ],
+    "repo_paths": [
+      "install.sh",
+      "bin/tinfoil.go",
+      "lib/",
+      "config/profiles/minimal.yaml",
+      "AGENTS.md",
+      "README.md"
+    ],
+    "notes": "Default install.sh is thin (tinfoil CLI + runtime tree). Agent surface prefers slash commands over gum TUI."
+  },
+  "expandable": {
+    "profiles": {
+      "minimal": {
+        "file": "config/profiles/minimal.yaml",
+        "risk": "medium",
+        "requires_consent": true,
+        "summary": "Base tools beyond sentinel"
+      },
+      "ml-dev": {
+        "file": "config/profiles/ml-dev.yaml",
+        "risk": "high",
+        "requires_consent": true,
+        "summary": "ML/AI/ROCm stack — not default"
+      },
+      "security-dev": {
+        "file": "config/profiles/security-dev.yaml",
+        "risk": "high",
+        "requires_consent": true,
+        "summary": "K8s security + encrypted storage — not default"
+      }
+    },
+    "modules": {
+      "security": {
+        "path": "modules/security",
+        "risk": "high",
+        "requires_consent": true,
+        "summary": "Security tools + keeper threshold secrets"
+      },
+      "ml_ai": {
+        "path": "modules/ml_ai",
+        "risk": "high",
+        "requires_consent": true
+      },
+      "development": {
+        "path": "modules/development",
+        "risk": "medium",
+        "requires_consent": true
+      },
+      "productivity": {
+        "path": "modules/productivity",
+        "risk": "low",
+        "requires_consent": true
+      },
+      "system": {
+        "path": "modules/system",
+        "risk": "medium",
+        "requires_consent": true
+      }
+    }
+  },
+  "modes": {
+    "supervised": {
+      "description": "Preview/status always; any install/expand/mutate requires --yes after operator consent",
+      "default": true
+    },
+    "fsd": {
+      "description": "Unsupervised driver: only allowlisted read-only / non-mutating steps auto-run",
+      "allowlist": [
+        "status",
+        "version",
+        "audit",
+        "map",
+        "path-probe"
+      ],
+      "deny_without_yes": [
+        "init",
+        "expand",
+        "install",
+        "profile",
+        "pull"
+      ]
+    }
+  },
+  "policy": {
+    "never_auto_full_profile": true,
+    "default_install": "thin",
+    "public_isp_ip_not_trust": true,
+    "fail_closed_without_consent": true
+  }
+}

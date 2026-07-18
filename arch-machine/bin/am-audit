@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# am-audit — read-only audit via tinfoil (FSD-safe).
+set -euo pipefail
+# shellcheck source=am-lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/am-lib.sh"
+
+TARGET="${1:-.}"
+
+if ! command -v tinfoil >/dev/null 2>&1; then
+  echo "tinfoil not on PATH — run /arch-status or /arch-init first" >&2
+  exit 1
+fi
+
+# Prefer non-TUI audit
+echo "running: tinfoil audit $TARGET"
+tinfoil audit "$TARGET"

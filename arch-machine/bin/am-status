@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# am-status — read-only path/core probe for arch-machine (FSD-safe).
+set -euo pipefail
+# shellcheck source=am-lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/am-lib.sh"
+
+echo "arch-machine operator status"
+echo "  plugin:   $(am_plugin_root)"
+echo "  core-map: $(am_core_map_path)"
+
+if am_need_jq 2>/dev/null; then
+  echo "  default:  $(am_map_get '.policy.default_install')"
+  echo "  remote:   $(am_map_get '.remote.repo')"
+  echo "  fsd_allow:$(am_map_get '.modes.fsd.allowlist | join(",")')"
+else
+  echo "  jq:       missing (map details skipped)"
+fi
+
+echo "  tinfoil:  $(command -v tinfoil 2>/dev/null || echo '(not on PATH)')"
+if command -v tinfoil >/dev/null 2>&1; then
+  tinfoil version 2>&1 | head -3 | sed 's/^/    /' || true
+fi
+
+if repo="$(am_resolve_repo 2>/dev/null)"; then
+  echo "  repo:     $repo"
+  echo "  install:  $repo/install.sh"
+  if [[ -x "$repo/install.sh" || -f "$repo/install.sh" ]]; then
+    echo "  install_sh: present"
+  fi
+else
+  echo "  repo:     (not found — run /arch-init to thin-install or clone)"
+  exit 1
+fi
+
+# Core binary from map
+if am_is_core_binary tinfoil 2>/dev/null; then
+  if command -v tinfoil >/dev/null 2>&1; then
+    echo "  core:     tinfoil OK"
+    exit 0
+  fi
+  echo "  core:     tinfoil MISSING (thin install incomplete)"
+  exit 1
+fi
+exit 0

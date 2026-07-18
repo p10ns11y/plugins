@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# am-map — print core vs expandable boundary (FSD-safe, read-only).
+set -euo pipefail
+# shellcheck source=am-lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/am-lib.sh"
+
+am_need_jq
+MAP="$(am_core_map_path)"
+echo "=== CORE (thin) ==="
+jq -r '.core | "tier=\(.tier)\nsummary=\(.summary)\nbinaries=\(.binaries|join(", "))\ninstall=\(.install_flags|join(" "))"' "$MAP"
+echo
+echo "=== EXPANDABLE PROFILES ==="
+jq -r '.expandable.profiles | to_entries[] | "\(.key)\trisk=\(.value.risk)\tconsent=\(.value.requires_consent)"' "$MAP"
+echo
+echo "=== EXPANDABLE MODULES ==="
+jq -r '.expandable.modules | to_entries[] | "\(.key)\t\(.value.path // "")\trisk=\(.value.risk // "n/a")"' "$MAP"
+echo
+echo "=== FSD ==="
+jq -r '"allowlist: " + (.modes.fsd.allowlist|join(", "))' "$MAP"
+jq -r '"deny_without_yes: " + (.modes.fsd.deny_without_yes|join(", "))' "$MAP"
+echo
+echo "=== POLICY ==="
+jq -r '.policy | to_entries[] | "\(.key)=\(.value)"' "$MAP"
