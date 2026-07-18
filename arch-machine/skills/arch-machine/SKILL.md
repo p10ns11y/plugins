@@ -50,6 +50,14 @@ MAP="$PLUGIN/core-map.json"
 
 See `$PLUGIN/docs/BOUNDARY.md` and `$PLUGIN/core-map.json`. Thin core = sentinel `tinfoil` + `install.sh --thin`. Modules/profiles are expandable.
 
-## Remote pull
+## Remote pull + expand (real work)
 
 Cache default: `~/.cache/arch-machine/src` from `p10ns11y/arch-machine` (`sentinel`). Only with `/arch-init --yes` or expand with consent.
+
+`/arch-expand <module> --yes` is **not** a no-op:
+
+1. Ensure repo (clone/pull if needed; prefers `ARCH_MACHINE_ROOT` → `~/arch-machine` over system install).
+2. Run `modules/<name>/install.sh --agent-expand` when present (security: keeper check + `.agent-expanded`).
+3. Write `.arch-expand-state/<name>.stamp`.
+
+Full `ml-dev` / `security-dev` still require explicit profile name + `--yes` (never auto).
