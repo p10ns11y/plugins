@@ -1,17 +1,19 @@
 # arch-machine Grok plugin
 
-**Agent-as-TUI** for [arch-machine](https://github.com/p10ns11y/arch-machine): thin-first sentinel, consent-gated expand, supervised + FSD rails. Preferred operator surface over `tinfoil tui` (gum).
+**Agent-as-TUI** for [arch-machine](https://github.com/p10ns11y/arch-machine): thin-first sentinel, **archy** control plane, consent-gated expand, supervised + FSD rails.
+
+Preferred operator path: **slash commands** + **archy** — not gum `tinfoil tui`.
+
+Host architecture (Eagle + Satellites / offline jobs): see upstream `docs/archy.md` and threads linked from `crates/archy/README.md`.
 
 ## Install into Grok
-
-Preferred (trust + enable like premflow):
 
 ```bash
 grok plugin install "$HOME/Work/personal/plugins/arch-machine" --trust
 grok plugin enable arch-machine   # if listed but disabled
 ```
 
-Dev symlink (discover path only; still enable in `~/.grok/config.toml` `[plugins].enabled`):
+Dev symlink:
 
 ```bash
 mkdir -p "$HOME/.grok/plugins"
@@ -26,20 +28,21 @@ Confirm `arch-machine` appears under `grok plugin list` and in `[plugins].enable
 | Command | Mutates? |
 |---------|----------|
 | `/arch-status` · `/arch-status map` | No |
+| `/arch-control` · `--print-root` · `--run` | No (run = TTY) |
 | `/arch-init` · `/arch-init --yes` | Yes with `--yes` only |
-| `/arch-audit [path]` | No |
+| `/arch-audit [global\|path\|--dry-run]` | No |
 | `/arch-expand <tier> [--yes] [--dry-run]` | Yes with `--yes` only |
 
 ## Layout
 
 ```text
 plugin.json
-core-map.json          # machine-readable thin vs expandable
+core-map.json          # thin vs expandable + surfaces.primary=archy
 docs/BOUNDARY.md
-bin/am-*               # agent-internal helpers
+bin/am-*               # agent-internal helpers (incl. am-archy, am-audit → security-audit.sh)
 commands/              # slash commands
 skills/arch-machine/   # agent rails
-test/                  # unit + consent tests
+test/
 ```
 
 ## Tests
@@ -47,7 +50,8 @@ test/                  # unit + consent tests
 ```bash
 ./test/test-core-map.sh
 ./test/test-expand-consent.sh
-./test/test-expand-real.sh   # honest --yes expand on fixtures/mock-arch
+./test/test-expand-real.sh
+./test/test-audit-status.sh
 ```
 
 ## Expand behavior (not a no-op)
@@ -55,7 +59,7 @@ test/                  # unit + consent tests
 With `/arch-expand security --yes`:
 
 1. Ensure arch-machine repo (clone/pull if needed).
-2. Run `modules/security/install.sh --agent-expand` (real prep + `.agent-expanded`).
+2. Run `modules/security/install.sh --agent-expand` when present.
 3. Write `.arch-expand-state/security.stamp`.
 
 See `docs/BOUNDARY.md`.

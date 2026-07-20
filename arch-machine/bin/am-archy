@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# am-archy — launch or locate archy control plane (read-only probe unless --run).
+set -euo pipefail
+# shellcheck source=am-lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/am-lib.sh"
+
+RUN=0
+PRINT_ROOT=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --run) RUN=1; shift ;;
+    --print-root) PRINT_ROOT=1; shift ;;
+    -h|--help)
+      echo "am-archy — agent helper for /arch-control"
+      echo "  am-archy              locate binary / how to build"
+      echo "  am-archy --print-root print TINFOIL_ROOT-style root"
+      echo "  am-archy --run        run interactive archy (needs TTY)"
+      exit 0
+      ;;
+    *) shift ;;
+  esac
+done
+
+repo=""
+if repo="$(am_resolve_repo 2>/dev/null)"; then
+  :
+fi
+
+archy_bin=""
+if command -v archy >/dev/null 2>&1; then
+  archy_bin="$(command -v archy)"
+elif [[ -n "$repo" && -x "$repo/crates/archy/target/release/archy" ]]; then
+  archy_bin="$repo/crates/archy/target/release/archy"
+elif [[ -n "$repo" && -x "$repo/crates/archy/target/debug/archy" ]]; then
+  archy_bin="$repo/crates/archy/target/debug/archy"
+fi
+
+if [[ "$PRINT_ROOT" -eq 1 ]]; then
+  if [[ -n "$repo" ]]; then
+    echo "$repo"
+    exit 0
+  fi
+  echo "repo not found" >&2
+  exit 1
+fi
+
+echo "archy control plane"
+echo "  binary: ${archy_bin:-'(not built / not on PATH)'}"
+echo "  repo:   ${repo:-'(none)'}"
+if [[ -n "$repo" ]]; then
+  echo "  docs:   $repo/docs/archy.md"
+  echo "  build:  cargo build --release --manifest-path $repo/crates/archy/Cargo.toml"
+fi
+
+if [[ "$RUN" -eq 1 ]]; then
+  if [[ -z "$archy_bin" ]]; then
+    echo "archy binary missing — build first" >&2
+    exit 1
+  fi
+  if [[ -n "$repo" ]]; then
+    export TINFOIL_ROOT="$repo"
+    export ARCHY_ROOT="$repo"
+    cd "$repo"
+  fi
+  echo "running: $archy_bin"
+  exec "$archy_bin"
+fi
+
+[[ -n "$archy_bin" || -n "$repo" ]]

@@ -6,39 +6,49 @@ Machine-readable source of truth: `../core-map.json`.
 
 | What | Why essential |
 |------|----------------|
-| `install.sh --thin` | Default first install; sentinel only |
-| `tinfoil` binary on PATH | Audit + version + scriptable control |
+| `install.sh --thin` | Default first install; sentinel runtime |
+| **archy** (`crates/archy`) | Main control plane (Ratatui, Eagle+TEA) |
+| `tinfoil` binary (optional shim) | Thin CLI / legacy dispatch |
 | `/usr/share/tinfoil` or repo checkout | Runtime tree for scripts/config |
+| `maintenance/security-audit.sh` | Threat-focused host audit backend |
 | `lib/`, `config/profiles/minimal.yaml` | Resolve profiles later without shipping all modules |
 
 **Not core:** gum BubbleTea TUI (`tinfoil tui`), full `ml-dev` / `security-dev` profiles, GPU/ROCm, k8s stacks, optional modules under `modules/*`.
+
+## Surfaces (priority)
+
+1. **archy** interactive TUI (or `/arch-control`)
+2. Agent slash commands (`/arch-status`, `/arch-audit`, …)
+3. Shell backends (`maintenance/*.sh`)
+4. **Last resort:** `tinfoil tui` gum legacy
 
 ## Expandable (pull on demand, consent only)
 
 | Tier | What `--yes` actually does |
 |------|----------------------------|
-| **Module** (e.g. `security`) | 1) `am_ensure_repo` — resolve or **clone** remote (`sentinel`) into `~/.cache/arch-machine/src` (or `ARCH_MACHINE_ROOT`). 2) Optional **pull**. 3) Run `modules/<name>/install.sh --agent-expand` when the hook exists (real module prep: e.g. security verifies keeper crate, writes `.agent-expanded`). 4) Write `.arch-expand-state/<name>.stamp`. |
+| **Module** (e.g. `security`) | 1) `am_ensure_repo` — resolve or **clone** remote (`sentinel`) into `~/.cache/arch-machine/src` (or `ARCH_MACHINE_ROOT`). 2) Optional **pull**. 3) Run `modules/<name>/install.sh --agent-expand` when the hook exists. 4) Write `.arch-expand-state/<name>.stamp`. |
 | **Profile** (e.g. `ml-dev`) | After ensure repo: `tinfoil install --profile …` or `./install.sh --profile …` (heavy; never auto). |
 | **Without `--yes`** | **Fail closed** (exit 2). Dry-run alone is not consent. |
 
-- **Remote:** `https://github.com/p10ns11y/arch-machine` (`sentinel` branch)
+- **Remote:** `https://github.com/p10ns11y/arch-machine` (`sentinel` branch by default)
 - **Never** auto-expand full `ml-dev` / `security-dev` without explicit name + `--yes`
-- Module `--agent-expand` is **not** full profile install (no k3s/sudo by default). Full stacks stay profile path.
+- Module `--agent-expand` is **not** full profile install
 
-## Agent-as-TUI (replaces tinfoil TUI as primary surface)
+## Agent-as-TUI
 
 | Operator intent | Slash | Mutates? |
 |-----------------|-------|----------|
-| Health / PATH | `/arch-status` | No |
+| Health / PATH / archy probe | `/arch-status` | No |
+| Control plane locate/run | `/arch-control` | No / TTY run |
 | Thin install / clone | `/arch-init` then `/arch-init --yes` | Yes (consent) |
-| Audit | `/arch-audit` | No (read-only) |
+| Audit (threat areas) | `/arch-audit` | No (read-only) |
 | Expand module/profile | `/arch-expand …` then `--yes` | Yes (consent) |
 
-`bin/am-*` are agent-internal. Operators use slash commands only (same pattern as premflow).
+`bin/am-*` are agent-internal. Operators use slash commands only.
 
 ## FSD / unsupervised
 
-Allowlist auto: status, version, audit, map, path-probe.  
+Allowlist auto: status, version, audit, map, path-probe, archy-print-root.  
 Everything that installs or expands **fails closed** without `--yes`.
 
 ## Proof
@@ -46,5 +56,6 @@ Everything that installs or expands **fails closed** without `--yes`.
 ```bash
 ./test/test-core-map.sh
 ./test/test-expand-consent.sh
-./test/test-expand-real.sh   # --yes writes real markers (fixture, no dry-run)
+./test/test-expand-real.sh
+./test/test-audit-status.sh
 ```

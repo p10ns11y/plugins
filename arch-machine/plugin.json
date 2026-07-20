@@ -1,7 +1,7 @@
 {
   "name": "arch-machine",
-  "version": "0.1.0",
-  "description": "Agent-as-TUI for arch-machine: thin-first sentinel, consent-gated expand/pull, supervised + FSD rails. Prefer over gum tinfoil TUI.",
+  "version": "0.2.0",
+  "description": "Agent-as-TUI for arch-machine: archy control plane, thin-first sentinel, threat-focused audit, consent-gated expand. Prefer over gum tinfoil TUI.",
   "author": {
     "name": "p10ns11y"
   }

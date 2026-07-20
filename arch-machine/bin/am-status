@@ -10,35 +10,61 @@ echo "  core-map: $(am_core_map_path)"
 
 if am_need_jq 2>/dev/null; then
   echo "  default:  $(am_map_get '.policy.default_install')"
+  echo "  surface:  $(am_map_get '.surfaces.primary // "archy"')"
   echo "  remote:   $(am_map_get '.remote.repo')"
+  echo "  branch:   $(am_map_get '.remote.default_branch')"
   echo "  fsd_allow:$(am_map_get '.modes.fsd.allowlist | join(",")')"
 else
   echo "  jq:       missing (map details skipped)"
 fi
 
+echo "  archy:    $(command -v archy 2>/dev/null || echo '(not on PATH)')"
 echo "  tinfoil:  $(command -v tinfoil 2>/dev/null || echo '(not on PATH)')"
 if command -v tinfoil >/dev/null 2>&1; then
   tinfoil version 2>&1 | head -3 | sed 's/^/    /' || true
 fi
 
+missing=0
 if repo="$(am_resolve_repo 2>/dev/null)"; then
   echo "  repo:     $repo"
   echo "  install:  $repo/install.sh"
-  if [[ -x "$repo/install.sh" || -f "$repo/install.sh" ]]; then
+  if [[ -f "$repo/install.sh" ]]; then
     echo "  install_sh: present"
+  fi
+  if [[ -d "$repo/crates/archy" ]]; then
+    echo "  archy_src: $repo/crates/archy"
+    if [[ -x "$repo/crates/archy/target/release/archy" ]]; then
+      echo "  archy_bin: $repo/crates/archy/target/release/archy"
+    elif [[ -x "$repo/crates/archy/target/debug/archy" ]]; then
+      echo "  archy_bin: $repo/crates/archy/target/debug/archy (debug)"
+    else
+      echo "  archy_bin: (build with: cargo build --release --manifest-path crates/archy/Cargo.toml)"
+    fi
+  else
+    echo "  archy_src: missing (old checkout?)"
+    missing=1
+  fi
+  if [[ -f "$repo/maintenance/security-audit.sh" ]]; then
+    echo "  audit:    $repo/maintenance/security-audit.sh"
+  else
+    echo "  audit:    missing security-audit.sh"
+    missing=1
+  fi
+  if [[ -f "$repo/docs/archy.md" ]]; then
+    echo "  docs:     $repo/docs/archy.md"
   fi
 else
   echo "  repo:     (not found — run /arch-init to thin-install or clone)"
-  exit 1
+  missing=1
 fi
 
-# Core binary from map
-if am_is_core_binary tinfoil 2>/dev/null; then
-  if command -v tinfoil >/dev/null 2>&1; then
-    echo "  core:     tinfoil OK"
-    exit 0
-  fi
-  echo "  core:     tinfoil MISSING (thin install incomplete)"
+# Core readiness: prefer archy source or binary; tinfoil still counts as thin sentinel
+if command -v archy >/dev/null 2>&1 || command -v tinfoil >/dev/null 2>&1; then
+  echo "  core:     sentinel tools present (archy and/or tinfoil)"
+elif [[ "$missing" -eq 0 ]]; then
+  echo "  core:     repo OK — build archy or thin-install for PATH tools"
+else
+  echo "  core:     incomplete"
   exit 1
 fi
 exit 0

@@ -1,37 +1,53 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "arch-machine",
-  "description": "Thin-first core vs expandable tiers for agent-as-TUI operator surface",
+  "description": "Thin-first core vs expandable tiers; archy is the main control plane (not gum TUI)",
   "remote": {
     "repo": "https://github.com/p10ns11y/arch-machine.git",
     "default_branch": "sentinel",
     "cache_dir_env": "ARCH_MACHINE_SRC_DIR",
     "default_cache_dir": "~/.cache/arch-machine/src"
   },
+  "surfaces": {
+    "primary": "archy",
+    "primary_path": "crates/archy",
+    "docs": ["docs/archy.md", "crates/archy/README.md"],
+    "skill_in_repo": ".agents/skills/eagle-satellite-elomaxz",
+    "legacy_fallback": "tinfoil tui (gum)",
+    "notes": "Prefer archy (Ratatui Eagle+Satellites TEA). Agent slash commands for init/expand/audit. Avoid gum tinfoil TUI as default."
+  },
   "core": {
     "tier": "thin",
-    "summary": "Essential sentinel: installable without full profiles; read-only ops + thin install path",
+    "summary": "Essential sentinel: thin install + control plane source; read-only ops + optional archy binary",
     "install_flags": ["--thin"],
-    "binaries": ["tinfoil"],
+    "binaries": ["archy", "tinfoil"],
     "paths": {
       "installed_runtime": "/usr/share/tinfoil",
-      "installed_bin": "/usr/local/bin/tinfoil"
+      "installed_bin_tinfoil": "/usr/local/bin/tinfoil",
+      "archy_dev": "crates/archy/target/release/archy"
     },
     "commands": [
+      "archy --print-root",
       "tinfoil version",
       "tinfoil help",
-      "tinfoil audit",
-      "tinfoil audit ."
+      "bash maintenance/security-audit.sh --global",
+      "bash maintenance/security-audit.sh --global --dry-run",
+      "bash maintenance/inventory.sh --text"
     ],
     "repo_paths": [
       "install.sh",
+      "crates/archy/",
+      "maintenance/security-audit.sh",
+      "maintenance/inventory.sh",
       "bin/tinfoil.go",
       "lib/",
       "config/profiles/minimal.yaml",
+      "docs/archy.md",
       "AGENTS.md",
-      "README.md"
+      "README.md",
+      ".agents/skills/eagle-satellite-elomaxz/"
     ],
-    "notes": "Default install.sh is thin (tinfoil CLI + runtime tree). Agent surface prefers slash commands over gum TUI."
+    "notes": "Default install.sh is thin (runtime tree). Operator UI is archy; tinfoil is thin CLI shim. Audit = maintenance/security-audit.sh (threat-focused quiet format)."
   },
   "expandable": {
     "profiles": {
@@ -74,7 +90,8 @@
       "productivity": {
         "path": "modules/productivity",
         "risk": "low",
-        "requires_consent": true
+        "requires_consent": true,
+        "summary": "Includes eye-comfort themes / waybar wrappers"
       },
       "system": {
         "path": "modules/system",
@@ -95,7 +112,8 @@
         "version",
         "audit",
         "map",
-        "path-probe"
+        "path-probe",
+        "archy-print-root"
       ],
       "deny_without_yes": [
         "init",
@@ -110,6 +128,8 @@
     "never_auto_full_profile": true,
     "default_install": "thin",
     "public_isp_ip_not_trust": true,
-    "fail_closed_without_consent": true
+    "fail_closed_without_consent": true,
+    "prefer_archy_over_gum_tui": true,
+    "audit_script": "maintenance/security-audit.sh"
   }
 }
