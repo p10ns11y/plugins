@@ -22,6 +22,8 @@ Machine-readable source of truth: `../core-map.json`.
 3. Shell backends (`maintenance/*.sh`)
 4. **Last resort:** `tinfoil tui` gum legacy
 
+**Cycle:** Grok plugin drives host via `/arch-*`; archy reopens Grok with preloaded job context (`G` / `p`). See [CROSS-REF.md](CROSS-REF.md).
+
 ## Expandable (pull on demand, consent only)
 
 | Tier | What `--yes` actually does |

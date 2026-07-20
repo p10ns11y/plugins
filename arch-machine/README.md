@@ -6,6 +6,21 @@ Preferred operator path: **slash commands** + **archy** — not gum `tinfoil tui
 
 Host architecture (Eagle + Satellites / offline jobs): see upstream `docs/archy.md` and threads linked from `crates/archy/README.md`.
 
+## Cyclic loop (plugin ↔ archy)
+
+```text
+  Grok (+ this plugin)  ──/arch-*──►  arch-machine / archy / scripts
+         ▲                                      │
+         └──── G / p preloaded grok session ────┘
+```
+
+| From | To | How |
+|------|-----|-----|
+| **Grok** | host | `/arch-status`, `/arch-audit`, `/arch-control`, `/arch-init`, `/arch-expand` |
+| **archy** | Grok | NEXT `[p]`, brief Enter, `G` → interactive Grok with ask + context preloaded |
+
+Full how-to: **[docs/CROSS-REF.md](docs/CROSS-REF.md)**.
+
 ## Install into Grok
 
 ```bash
@@ -39,6 +54,7 @@ Confirm `arch-machine` appears under `grok plugin list` and in `[plugins].enable
 plugin.json
 core-map.json          # thin vs expandable + surfaces.primary=archy
 docs/BOUNDARY.md
+docs/CROSS-REF.md      # Grok plugin ↔ archy cycle
 bin/am-*               # agent-internal helpers (incl. am-archy, am-audit → security-audit.sh)
 commands/              # slash commands
 skills/arch-machine/   # agent rails

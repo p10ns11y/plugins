@@ -14,6 +14,21 @@ description: >-
 
 **User surface = slash commands.** `bin/am-*` are agent-internal — never tell the user to run `am-init` in a shell.
 
+## Cyclic: Grok plugin ↔ archy
+
+```text
+Grok (this skill/plugin) ── /arch-* ──► arch-machine backends / archy
+         ▲                                    │
+         └──── archy G/p preload launch ──────┘
+```
+
+| Direction | Operator action |
+|-----------|-----------------|
+| Stay in Grok | `/arch-status`, `/arch-audit`, `/arch-control`, `/arch-init`, `/arch-expand` |
+| Leave archy for Grok | In archy: job → NEXT `[p]` / brief Enter / `G` (preloaded prompt) |
+
+Detail: `$PLUGIN/docs/CROSS-REF.md` · host `docs/archy.md` section “Grok plugin”.
+
 ## Architecture (host repo)
 
 When the arch-machine checkout is present:
