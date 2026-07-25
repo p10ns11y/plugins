@@ -1,0 +1,16 @@
+---
+description: Drop cd && prefix inside verify_launch_pane when layout splits already supply -c $root; prevents duplicate scrollback lines
+alwaysApply: false
+---
+
+# remove-redundant-cd-prefix
+
+Drop cd && prefix inside verify_launch_pane when layout splits already supply -c $root; prevents duplicate scrollback lines
+
+## Constraints
+
+- read verify_launch_pane
+- evaluate -c behavior
+- strreplace to remove prefix
+
+Evidence: turn 1-2 narrative and tool calls

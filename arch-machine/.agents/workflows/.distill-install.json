@@ -1,0 +1,16 @@
+{
+  "profile": "arch-machine",
+  "source_drafts": "/home/sustainableabundance/Work/personal/agent-prompt-tuning-lab/data/distill/20260725-153622/drafts",
+  "installed_at": "2026-07-25T16:36:10.826Z",
+  "workflows": [
+    "eagle-satellite-architecture-delivery",
+    "eagle-tea-control-plane",
+    "verification-cockpit-extension",
+    "tmux-cockpit-layout-refactor"
+  ],
+  "skills": [],
+  "rules": [
+    "remove-redundant-cd-prefix.mdc",
+    "read-before-c-format.mdc"
+  ]
+}
