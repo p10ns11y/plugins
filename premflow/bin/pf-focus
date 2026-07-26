@@ -83,43 +83,12 @@ launch_kitty_tab() {
 }
 
 # Launch command as a new window in the *running* Ghostty app (same process; not a tab).
-# Ghostty D-Bus exposes new-tab without a command, and new-window-command with a command.
+# Prefer official CLI IPC: ghostty +new-window -e … (parses --command/-e and forwards via D-Bus).
+# Raw org.gtk.Actions.Activate new-window-command often opens an empty window without the command.
 launch_ghostty_dbus_window() {
-  python3 - "$PF" "${ARGS[@]}" <<'PY'
-import sys
-import subprocess
-
-pf, *args = sys.argv[1:]
-cmd = [pf, "pomo", *args]
-# Build GVariant: array of variants wrapping array of strings → [<['a','b']>]
-# gdbus wants: Activate(s action, av parameter, a{sv} platform_data)
-# parameter for new-window-command is type "as"
-parts = []
-for c in cmd:
-    # escape for gvariant string
-    c = c.replace("\\", "\\\\").replace("'", "\\'")
-    parts.append(f"'{c}'")
-inner = ", ".join(parts)
-param = f"[<[{inner}]>]"
-subprocess.check_call(
-    [
-        "gdbus",
-        "call",
-        "--session",
-        "--dest",
-        "com.mitchellh.ghostty",
-        "--object-path",
-        "/com/mitchellh/ghostty",
-        "--method",
-        "org.gtk.Actions.Activate",
-        "new-window-command",
-        param,
-        "{}",
-    ],
-    stdout=subprocess.DEVNULL,
-)
-print("ghostty-dbus-window")
-PY
+  command -v ghostty >/dev/null 2>&1 || return 1
+  # +new-window returns after IPC; -e takes the rest as the surface command argv.
+  ghostty +new-window -e "$PF" pomo "${ARGS[@]}"
 }
 
 # Open empty new tab in focused Ghostty window (no command — last resort UX)
@@ -165,9 +134,14 @@ do_launch() {
       echo "🍅 Focus launched in Kitty *tab* (interactive TTY)."
       ;;
     ghostty-dbus-window)
-      launch_ghostty_dbus_window
-      echo "🍅 Focus launched in Ghostty *same-app window* (D-Bus; not a tab — Ghostty limit)."
-      echo "   Tip: set PREMFLOW_FOCUS_SURFACE=tab and use Kitty for real tabs; or Ctrl+Shift+T + paste."
+      if launch_ghostty_dbus_window; then
+        echo "🍅 Focus launched in Ghostty *same-app window* (+new-window -e; not a tab — Ghostty limit)."
+        echo "   Tip: set PREMFLOW_FOCUS_SURFACE=tab and use Kitty for real tabs; or Ctrl+Shift+T + paste."
+      else
+        echo "⚠ Ghostty +new-window failed; falling back to new process window."
+        do_launch process-window
+        return 0
+      fi
       ;;
     process-window)
       local te
@@ -220,7 +194,7 @@ if [[ $DRY -eq 1 ]]; then
   if [[ "$STRATEGY" == "kitty-tab" ]]; then
     echo "dry-run: kitty @ launch --type=tab --title premflow-pomo …"
   elif [[ "$STRATEGY" == "ghostty-dbus-window" ]]; then
-    echo "dry-run: gdbus Activate new-window-command on com.mitchellh.ghostty"
+    echo "dry-run: ghostty +new-window -e … (IPC to running Ghostty)"
   else
     echo "dry-run: spawn $(pick_term) -e …"
   fi
