@@ -1,6 +1,6 @@
 {
   "profile": "arch-machine",
-  "source_drafts": "~/Work/personal/agent-prompt-tuning-lab/data/distill/20260725-153622/drafts",
+  "source_drafts": "data/distill/20260725-153622/drafts",
   "installed_at": "2026-07-25T16:36:10.826Z",
   "note": "Kept eagle-satellite and eagle-tea workflows only. Dropped tmux/verification cockpit workflows, C format rule, and shell cd-prefix rule (not plugin-scoped).",
   "workflows": [
@@ -8,5 +8,6 @@
     "eagle-tea-control-plane"
   ],
   "skills": [],
-  "rules": []
+  "rules": [],
+  "distill_run": "20260725-153622"
 }
