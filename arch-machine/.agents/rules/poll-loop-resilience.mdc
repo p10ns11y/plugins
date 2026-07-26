@@ -1,0 +1,16 @@
+---
+description: Wrap DM API calls so transient 429s or errors never kill the long-running poller
+alwaysApply: false
+---
+
+# poll-loop-resilience
+
+Wrap DM API calls so transient 429s or errors never kill the long-running poller
+
+## Constraints
+
+- catch rate-limit errors
+- log and continue
+- exponential backoff on send
+
+Evidence: turn 6-7 tool_sequence and background-task fixes
