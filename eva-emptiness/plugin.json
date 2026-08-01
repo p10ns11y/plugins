@@ -1,0 +1,8 @@
+{
+  "name": "eva-emptiness",
+  "version": "0.1.0",
+  "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents, /eva starter, Bash tether hook. Stays clipped when the map is missing.",
+  "author": {
+    "name": "p10ns11y"
+  }
+}

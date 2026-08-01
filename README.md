@@ -8,6 +8,9 @@ Grok Build / agent plugins (installable skill + command packages).
 |--------|------|
 | **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface |
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI (prefer over `tinfoil tui`) |
+| **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + Bash tether |
+
+Marketplace index: `.grok-plugin/marketplace.json` (local source). Add with `grok plugin marketplace add ./` from this repo, then `grok plugin install eva-emptiness --trust`.
 
 ## arch-machine
 
@@ -17,6 +20,16 @@ grok plugin install ./arch-machine --trust
 ```
 
 See [arch-machine/README.md](arch-machine/README.md) and `arch-machine/docs/BOUNDARY.md`.
+
+## eva-emptiness
+
+```bash
+grok plugin install ./eva-emptiness --trust
+# slash: /eva · /eva-emptiness
+# agents: prior-conservative · prior-generative · prior-causal
+```
+
+See [eva-emptiness/README.md](eva-emptiness/README.md).
 
 ## premflow
 

@@ -1,0 +1,40 @@
+{
+  "name": "p10ns11y-plugins",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness",
+  "owner": {
+    "name": "p10ns11y"
+  },
+  "plugins": [
+    {
+      "name": "premflow",
+      "description": "Capture notes, wins, tasks; review; coach; external pomo; agent-safe journal.",
+      "category": "productivity",
+      "source": { "type": "local", "path": "./premflow" },
+      "keywords": ["premflow", "notes", "coach", "pomo"]
+    },
+    {
+      "name": "arch-machine",
+      "description": "Agent-as-TUI for arch-machine: thin-first sentinel, audit, consent-gated expand.",
+      "category": "development",
+      "source": { "type": "local", "path": "./arch-machine" },
+      "keywords": ["arch-machine", "sentinel", "audit"]
+    },
+    {
+      "name": "eva-emptiness",
+      "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents + auth tether.",
+      "category": "development",
+      "source": { "type": "local", "path": "./eva-emptiness" },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "eva",
+        "epistemic-emptiness",
+        "blank-sheet",
+        "prior",
+        "probe",
+        "rdm",
+        "bias",
+        "plan-mode"
+      ]
+    }
+  ]
+}
