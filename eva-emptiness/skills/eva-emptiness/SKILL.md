@@ -110,10 +110,23 @@ Best answers under no data: **robust + humble**. Flashy certainty is free; wisdo
 | Surface | Load |
 |---------|------|
 | Cursor / library | this skill (`/eva-emptiness` when skill-linked) |
-| Grok plugin | `eva-emptiness` plugin: skill + prior agents + tether hooks + `/eva` |
+| Grok plugin | skill + prior agents + tether hooks + `/eva` |
+| Background workflow | `/workflow eva-emptiness {"goal":"…"}` after copying `.rhai` into `~/.grok/workflows/` or project `.grok/workflows/` (plugin install alone is not enough) |
 | Outer SM | `control-graph` owns phases; EVA owns Inner when gate fires |
 
 Feature→step map: [references/grok-build-map.md](references/grok-build-map.md).
+
+### Suggest workflows (do not silent-launch)
+
+After Score / ActOrAsk, **name** a next step for the human:
+
+| Signal | Suggest |
+|--------|---------|
+| Act + multi-worker / multi-PR | `/workflow multi-agent-delivery` |
+| Probe starved on cold/huge repo | `/workflow context-ignite` |
+| Unknowns are external/factual | `/deep-research …` |
+| Want host-phased EVA, not chat | `/workflow eva-emptiness {"goal":"…"}` |
+| `auth_horizon=hit` | stay interactive (`/eva` / HITL) — no background mutate |
 
 ---
 

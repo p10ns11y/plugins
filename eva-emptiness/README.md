@@ -3,49 +3,123 @@
 Grok Build plugin for **reasoning under epistemic emptiness**.
 
 Skeleton: **Prior → Probe → Simulate → Score → ActOrAsk** (EVA tether).  
-Jump into the void when the map is missing — stay clipped to probe budget, Claim-via-critical-path, and auth hard-stops. Flashy certainty is free; wisdom costs one good question.
+Jump into the void when the map is missing — stay clipped to probe budget, Claim-via-critical-path, and auth hard-stops.
 
-## Why a plugin (not only a skill)
+---
 
-| Component | What you get |
-|-----------|----------------|
-| **Skill** `/eva-emptiness` | Inner DAG + emptiness Card fields |
-| **Command** `/eva` | Plan-mode starter that runs the skeleton |
-| **Agents** `prior-conservative` · `prior-generative` · `prior-causal` | Prior-diverse Simulate forks → bias map |
-| **Hook** Bash PreToolUse tether | Denies push/yolo/reset-hard style trauma |
-| **Personas** (optional copy) | Same priors as subagent overlays |
+## Do not confuse these four surfaces
 
-Ships as one `grok plugin install` — marketplace-ready shape (skills + commands + agents + hooks).
+| Surface | What it is | How you invoke it | Where it lives |
+|---------|------------|-------------------|----------------|
+| **Skill** | Procedure the model follows | Auto-match / `/eva-emptiness` | `skills/eva-emptiness/` (this plugin) |
+| **Plugin** | Installable bundle (skill + `/eva` + agents + hook) | `grok plugin install … --trust` | this directory |
+| **`/eva` command** | Interactive plan/ask starter (human on gates) | `/eva <goal>` in TUI | `commands/eva.md` |
+| **Workflow `.rhai`** | Host-owned background phases (`agent()` rounds) | `/workflow eva-emptiness {"goal":"…"}` | `.grok/workflows/eva-emptiness.rhai` — **must copy** into `~/.grok/workflows/` or project `.grok/workflows/` |
+
+**Important:** Installing the plugin does **not** register the Rhai workflow. Grok only discovers workflows from project/user `.grok/workflows/*.rhai` (see [config](https://docs.x.ai/build/settings/reference)). Outer control-plane phases stay in the separate **control-graph** skill — never pasted into EVA.
+
+```text
+  Interactive (HITL-heavy)     Background (host-scheduled)
+  ─────────────────────        ──────────────────────────
+  /eva  → skill E0–E6          /workflow eva-emptiness
+         permission ask               ↓ /workflows dashboard
+         plan mode                    may SUGGEST next:
+                                      multi-agent-delivery
+                                      context-ignite
+                                      /deep-research
+```
+
+---
 
 ## Install
 
-From a clone of [plugins](https://github.com/p10ns11y/plugins) (or this monorepo path):
+### 1. Plugin (skill, agents, hook, `/eva`)
 
 ```bash
 grok plugin install ./eva-emptiness --trust
-# or: grok plugin marketplace add <your-plugins-repo> && grok plugin install eva-emptiness --trust
+# marketplace: grok plugin marketplace add https://github.com/p10ns11y/plugins.git
+#              grok plugin install eva-emptiness --trust
 ```
 
-Reload plugins (`r` in `/plugins`). Optional personas:
+Reload (`r` in `/plugins`). Optional personas:
 
 ```bash
 mkdir -p ~/.grok/personas
 ln -sfn "$(pwd)/eva-emptiness/personas/"*.toml ~/.grok/personas/
 ```
 
-Cursor / portable library: symlink the skill dir (already done if you use the skills library install).
+### 2. Workflow (optional — background EVA)
 
-## Use
-
-```text
-/eva <blank-sheet goal>
+```bash
+cp eva-emptiness/.grok/workflows/eva-emptiness.rhai ~/.grok/workflows/
+# or: mkdir -p .grok/workflows && cp … .grok/workflows/
 ```
 
-Or attach/load skill `eva-emptiness` and follow E0–E6. Pair with `control-graph` for Outer phases — do not paste CG into this skill.
+```text
+/workflow eva-emptiness {"goal":"Your blank-sheet outcome in one sentence"}
+```
 
-## Sellable pitch (one line)
+Watch runs in `/workflows` (pause / resume / stop by display name).
 
-**Process architecture for blank sheets** — turns Grok’s plan mode, explore children, worktree forks, and permission surface into an EVA harness that surfaces model/harness bias via prior disagreement instead of automating anxiety.
+---
+
+## What the plugin contains
+
+| Component | Role |
+|-----------|------|
+| **Skill** `/eva-emptiness` | Inner DAG + emptiness Card fields |
+| **Command** `/eva` | Interactive plan-mode starter |
+| **Agents** `prior-conservative` · `prior-generative` · `prior-causal` | Simulate forks → bias map |
+| **Hook** Bash PreToolUse | Denies push / yolo / reset-hard |
+| **Personas** (optional) | Same priors as overlays |
+| **Workflow** `.grok/workflows/eva-emptiness.rhai` | Background EVA — copy to install |
+
+---
+
+## Solid use cases (when to reach for EVA)
+
+### Use `/eva` (interactive) when…
+
+1. **Greenfield with no design doc** — “Build billing v2 flags” but only three anecdotes exist; you want Q&A + plan approve before edits.
+2. **Auth is the real unknown** — agent is ready to ship, but who may mutate prod / push / spend is unclear → Ask, not Act.
+3. **Two stakeholders disagree** — product wants speed, security wants refuse; run prior forks and decide from `bias_map`.
+4. **You distrust model confidence** — spreadsheet is mostly whitespace; force IDK + one DOE question before any write.
+
+### Use `/workflow eva-emptiness` when…
+
+5. **Same blank-sheet problem, but you want host-phased background work** — kick `/workflow`, keep coding elsewhere; check `/workflows` later.
+6. **Repeated emptiness ritual** — same Prior→Score shape every Monday planning; save args.goal and re-launch.
+
+### After EVA, suggest (don’t auto-chain blindly)
+
+| Signal | Suggest |
+|--------|---------|
+| Act approved + multi-file / multi-worker | `/workflow multi-agent-delivery` |
+| Cold / huge repo before Probe | `/workflow context-ignite` |
+| Need claim-checked external research | `/deep-research …` |
+| Human must approve every gate | stay on `/eva`; do not background |
+
+### Skip EVA when…
+
+- ≤2-file obvious fix with clear verify cmds  
+- Mechanical refactor already covered by tests  
+- You only need a note/win capture → **premflow**  
+- You only need host archy sentinel → **arch-machine**
+
+---
+
+## EVA suggests workflows (skill behavior)
+
+When the skill or `/eva` finishes Score/ActOrAsk, it should **name** a next workflow (not silently launch):
+
+```text
+Suggest: /workflow multi-agent-delivery {"goal":"…"}   # if Act + multi-worker
+Suggest: /workflow context-ignite                      # if Probe starved on repo map
+Suggest: /deep-research …                              # if unknowns are factual/external
+Stay on /eva                                           # if auth_horizon=hit
+```
+
+---
 
 ## Trust
 

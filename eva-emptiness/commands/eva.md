@@ -22,6 +22,13 @@ Load skill **eva-emptiness** (this plugin). Follow its Inner DAG; Outer phases s
    Prefer worktree isolation for forks that edit.
 6. Blind **Score** in a fresh context (plan + diffs + verify logs only). Build `bias_map` from fork disagreement.
 7. **ActOrAsk** — Act only with Claim-via-critical-path; Ask on auth horizon / contradiction.
+8. **Suggest** (do not silent-launch) a next workflow when useful:
+   - background EVA instead: `/workflow eva-emptiness {"goal":"…"}` (requires `.rhai` installed under `~/.grok/workflows/` or project `.grok/workflows/`)
+   - multi-worker delivery: `/workflow multi-agent-delivery`
+   - cold repo map: `/workflow context-ignite`
+   - external claims: `/deep-research …`
+
+`/eva` = interactive HITL. `/workflow eva-emptiness` = host-scheduled background. Plugin install ≠ workflow install.
 
 Goal context from user (may be empty):
 

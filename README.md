@@ -1,35 +1,77 @@
 # plugins
 
-Grok Build / agent plugins (installable skill + command packages).
+Grok Build / agent **marketplace plugins** (installable skill + command + agent + hook packages).
 
-**Location:** `~/Work/personal/plugins` (not `~/plugins`).
+**Location:** `~/Work/personal/plugins` (not `~/plugins`).  
+**Catalog:** `.grok-plugin/marketplace.json`
 
-| Plugin | Role |
-|--------|------|
-| **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface |
-| **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI (prefer over `tinfoil tui`) |
-| **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + Bash tether |
+```bash
+grok plugin marketplace add https://github.com/p10ns11y/plugins.git
+# or local: grok plugin marketplace add ~/Work/personal/plugins
+grok plugin install eva-emptiness --trust
+```
 
-Marketplace index: `.grok-plugin/marketplace.json` (local source). Add with `grok plugin marketplace add ./` from this repo, then `grok plugin install eva-emptiness --trust`.
+---
+
+## Layers (avoid confusion)
+
+| Layer | Repo / path | Job | Invoke |
+|-------|-------------|-----|--------|
+| **Plugin** | this repo (`premflow/`, `eva-emptiness/`, …) | Bundle for `/plugins` + marketplace | `grok plugin install <name> --trust` |
+| **Skill** | inside plugin `skills/` (often symlinked from [skills](https://github.com/p10ns11y/skills) library) | Procedure text agents load | auto-match or `/skill-name` |
+| **Slash command** | plugin `commands/*.md` | Thin TUI entry | `/eva`, `/note`, … |
+| **Workflow `.rhai`** | `~/.grok/workflows/` or project `.grok/workflows/` | Host-owned background `agent()` phases | `/workflow <meta.name>` · dashboard `/workflows` |
+| **Portable skill library** | [p10ns11y/skills](https://github.com/p10ns11y/skills) | Cursor + shared procedures; workflow *docs* + some `.rhai` | symlink skills; **copy** `.rhai` into Grok workflows dirs |
+
+**Plugins do not auto-register Rhai.** If a plugin ships `.grok/workflows/*.rhai` (eva-emptiness, arch-machine), you still **copy** (or symlink) into a discovery root. Official discovery: project `<repo-root>/.grok/workflows/`, user `~/.grok/workflows/` ([Grok config](https://docs.x.ai/build)).
+
+```text
+skills library ──symlink──► plugin skills/     (procedure SoT for Cursor + Grok)
+plugin install  ──trust───► agents, hooks, /commands
+.rhai file      ──cp/ln───► ~/.grok/workflows/  (background engine)
+```
+
+---
+
+## Plugin catalog
+
+| Plugin | Role | Typical invoke |
+|--------|------|----------------|
+| **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + Bash tether | `/eva` · `/workflow eva-emptiness` |
+| **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface | `/note` `/focus` `/journal` |
+| **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
+
+---
+
+## eva-emptiness
+
+Blank-sheet / epistemic emptiness. Full scenarios: [eva-emptiness/README.md](eva-emptiness/README.md).
+
+```bash
+grok plugin install ./eva-emptiness --trust
+cp eva-emptiness/.grok/workflows/eva-emptiness.rhai ~/.grok/workflows/   # optional background
+```
+
+| Scenario | Use |
+|----------|-----|
+| No design doc; rumors only; need plan approve | `/eva <goal>` |
+| Same problem, run phases in background | `/workflow eva-emptiness {"goal":"…"}` |
+| After Act, multi-worker delivery | suggest `/workflow multi-agent-delivery` |
+| Obvious bugfix | skip EVA |
+
+---
 
 ## arch-machine
 
 ```bash
 grok plugin install ./arch-machine --trust
 # slash: /arch-status · /arch-init · /arch-audit · /arch-expand
+# optional: copy arch-machine/.grok/workflows/*.rhai → ~/.grok/workflows/
 ```
 
 See [arch-machine/README.md](arch-machine/README.md) and `arch-machine/docs/BOUNDARY.md`.
 
-## eva-emptiness
-
-```bash
-grok plugin install ./eva-emptiness --trust
-# slash: /eva · /eva-emptiness
-# agents: prior-conservative · prior-generative · prior-causal
-```
-
-See [eva-emptiness/README.md](eva-emptiness/README.md).
+---
 
 ## premflow
 

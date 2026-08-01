@@ -13,6 +13,10 @@ Load **only if** wiring a skeleton step to a concrete Grok Build feature. Offici
 | Ask | Plan `a/s/c/q`; `permission_mode=ask` | Auth event horizon |
 | Tether | `--max-turns`, plugin PreToolUse hook, `/rewind` | Bound surprise; deny trauma bash |
 | Capture | `/skillify` successful EVA | Compounds process |
+| Background EVA | `/workflow eva-emptiness` after `.rhai` in `.grok/workflows/` | Host `agent()` phases; `/workflows` dashboard |
+| Suggest next | `/workflow multi-agent-delivery`, `context-ignite`, `/deep-research` | Skill names them; human launches |
+
+**Workflow discovery (official):** project `<repo>/.grok/workflows/*.rhai`, user `~/.grok/workflows/*.rhai`. Filename ≈ `meta.name`. Built-in > project > user on name clash. Disable: `[workflows] enabled=false` or `GROK_WORKFLOWS=0`.
 
 **Refuse under EVA:** `--always-approve`, `--yolo`, `permission_mode=always-approve`. Plan mode does **not** gate bash writes — tether hook + deny rules cover destructive shell.
 

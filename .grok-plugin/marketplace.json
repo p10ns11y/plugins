@@ -33,7 +33,9 @@
         "probe",
         "rdm",
         "bias",
-        "plan-mode"
+        "plan-mode",
+        "workflow",
+        "rhai"
       ]
     }
   ]
