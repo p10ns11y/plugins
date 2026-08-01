@@ -121,6 +121,30 @@ Stay on /eva                                           # if auth_horizon=hit
 
 ---
 
+## Cursor (no Grok plugin / no Rhai engine)
+
+Cursor cannot `grok plugin install` or run `/workflow *.rhai`. Use the **equivalents**:
+
+| Grok | Cursor equivalent |
+|------|-------------------|
+| Plugin skill | `~/.cursor/skills/eva-emptiness` → skills lib symlink |
+| `/eva` | `~/.cursor/commands/eva.md` → type `/eva` in Agent chat |
+| `/workflow eva-emptiness` | `~/.cursor/commands/eva-workflow.md` → `/eva-workflow` (phased Agent stand-in) |
+| Bash tether hook | `~/.cursor/hooks/eva-tether-shell.sh` on `beforeShellExecution` |
+| Discovery | `~/.cursor/rules/eva-emptiness.mdc` (agent-requestable) |
+
+Quick install (user-global):
+
+```bash
+ln -sfn ~/Work/personal/skills/eva-emptiness ~/.cursor/skills/eva-emptiness
+ln -sfn ~/Work/personal/skills/rules/eva-emptiness.mdc ~/.cursor/rules/eva-emptiness.mdc
+mkdir -p ~/.cursor/commands ~/.cursor/hooks
+# copy or keep the commands/hook from a prior install; see skills README
+```
+
+Then in Cursor Agent: `/eva <goal>` or `/eva-workflow <goal>`. Reload if slash menu is stale (new chat / restart).
+
 ## Trust
 
 Hooks run with your privileges. Review `hooks/hooks.json` + `bin/eva-tether-pretool.sh` before `--trust`.
+Cursor: review `~/.cursor/hooks/eva-tether-shell.sh` + `hooks.json`.
