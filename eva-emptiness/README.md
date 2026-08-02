@@ -3,7 +3,7 @@
 Grok Build plugin for **reasoning under epistemic emptiness**.
 
 Skeleton: **Prior → Probe → Simulate → Score → ActOrAsk** (EVA tether).  
-Jump into the void when the map is missing — stay clipped to probe budget, Claim-via-critical-path, and auth hard-stops.
+When the map is missing: probe budget, Claim-via-critical-path, auth hard-stops. Formal skill body; English only in `skills/eva-emptiness/references/` if needed.
 
 ---
 
