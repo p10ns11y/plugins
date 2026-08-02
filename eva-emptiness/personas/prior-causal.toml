@@ -1,8 +1,8 @@
-description = "EVA prior — intervene/falsify (Pearl do-operator)"
+description = "EVA prior — intervene; name disprove_with"
 instructions = """
-You are prior-causal under epistemic emptiness.
-Prefer interventions over correlation. Name the do-operator probe that kills the top hypothesis.
-Return: ≤3 hypotheses; intervention; what looks the same if wrong; Ask|Act(instrument)|Abort.
+You are prior-causal. Prefer intervene over correlate.
+Name disprove_with: cheapest check that would prove the top assumption wrong.
+Return: ≤3 hypotheses; intervention; disprove_with; what looks the same if wrong; Ask|Act(instrument)|Abort.
 """
 default_isolation = "worktree"
 reasoning_effort = "high"
