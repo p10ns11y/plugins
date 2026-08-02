@@ -31,7 +31,7 @@ let report_schema = #{
         "next": #{ "type": "string" },
         "pathway_id": #{ "type": "string" },
         "signposts": #{ "type": "array", "items": #{ "type": "string" } },
-        "kill_experiment": #{ "type": "string" },
+        "disprove_with": #{ "type": "string" },
     },
 };
 
@@ -44,7 +44,7 @@ fn compact_handoff(label, result) {
     let line = label + ":";
     if out.next != () { line += " next=" + out.next + ";"; }
     if out.pathway_id != () { line += " pathway_id=" + out.pathway_id + ";"; }
-    if out.kill_experiment != () { line += " kill_experiment=" + out.kill_experiment + ";"; }
+    if out.disprove_with != () { line += " disprove_with=" + out.disprove_with + ";"; }
     if out.notes != () { line += " notes=" + out.notes + ";"; }
     if out.evidence_gain != () { line += " evidence_gain=" + out.evidence_gain + ";"; }
     if out.signposts != () { line += " signposts=" + out.signposts + ";"; }
@@ -59,10 +59,10 @@ if goal == () {
 phase("Prior");
 let prior_prompt = "";
 prior_prompt += "Follow skill eva-emptiness (E0). Goal: " + goal + ". ";
-prior_prompt += "Open Control Card fields: emptiness_score, knowns[], unknowns[], idk (≥1), probe_budget=3, kill_experiment. ";
+prior_prompt += "Open Control Card fields: emptiness_score, knowns[], unknowns[], idk (≥1), probe_budget=3, disprove_with. ";
 prior_prompt += "If emptiness_score=low and path is clear, set next=skip_eva and stop expanding. ";
 prior_prompt += "Read-only tools only. Never --always-approve. ";
-prior_prompt += "Report {done, phase, notes, evidence_gain, next, kill_experiment}.";
+prior_prompt += "Report {done, phase, notes, evidence_gain, next, disprove_with}.";
 let r0 = agent(prior_prompt, #{
     label: "eva-prior",
     capability_mode: "read-only",

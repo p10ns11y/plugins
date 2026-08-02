@@ -65,7 +65,7 @@ Trigger EVA Inner when ≥2 hold; write on Card:
 | `evidence_gain` | list; append only on new falsify/confirm |
 | `bias_map` | prior-fork disagreements (after Simulate) |
 | `auth_horizon` | none \| hit (HITL required) |
-| `kill_experiment` | cheapest falsifier for #1 assumption (Prior/self-bias) |
+| `disprove_with` | cheapest check that would prove the #1 assumption wrong |
 | `pathway_active` | id of live pathway under Act (optional until Simulate) |
 | `signposts[]` | `{id, watch, fires_when → continue\|switch\|Ask}` — monitors only |
 
@@ -94,9 +94,9 @@ E0 Prior+IDK → E1 one DOE Q → E2 explore probes → E3 prior forks
 |-------|------|--------|
 | `prior-conservative` | refuse / delete | missing evidence → don’t ship |
 | `prior-generative` | structure from analogy | fluid abstraction when data≈none |
-| `prior-causal` | intervene / falsify | Pearl do-operator; name killing experiment |
+| `prior-causal` | intervene / falsify | Pearl do-operator; name `disprove_with` |
 
-**Self-bias probe (once per emptiness session):** list assumptions treated as facts; rank blast radius; write `kill_experiment` for #1. If model cannot name assumptions → Ask, do not Act.
+**Self-bias probe (once per emptiness session):** list assumptions treated as facts; rank blast radius; write `disprove_with` for #1. If model cannot name assumptions → Ask, do not Act.
 
 **Simulate pathways (when emptiness_score med\|high):** each prior fork returns a pathway stub — short-term action, tipping/failure condition, and which signpost would force switch. Prefer vulnerability note (“under which futures does this break?”) over long prose.
 
@@ -144,7 +144,7 @@ After Score / ActOrAsk, **name** a next step for the human:
 
 ## Done when
 
-- Card updated: `emptiness_score`, `evidence_gain`, `bias_map`, `kill_experiment`, continue **or** switch **or** Ask reason  
+- Card updated: `emptiness_score`, `evidence_gain`, `bias_map`, `disprove_with`, continue **or** switch **or** Ask reason  
 - If continue: verify cmds run; Claim-via-critical-path holds; option space not collapsed under high emptiness  
 - If Ask: structured HITL preview only (approve/amend/abort) — no transcript dump  
 - No `--always-approve` / `--yolo` used under EVA  
