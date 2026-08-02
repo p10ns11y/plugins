@@ -14,14 +14,15 @@ Load skill **eva-emptiness** (this plugin). Follow its Inner DAG; Outer phases s
 3. On the Control Card (or plan), write:
    - `emptiness_score`, `knowns[]`, `unknowns[]`, at least one `idk`
    - `probe_budget` (default 3)
+   - `disprove_with` (cheapest check that would prove the #1 assumption wrong)
 4. Ask **one** DOE clarifying question that most reduces ignorance (use Grok Q&A if available).
 5. After answers: spawn parallel **explore** probes, then Simulate with prior agents:
    - `eva-emptiness:prior-conservative`
    - `eva-emptiness:prior-generative`
    - `eva-emptiness:prior-causal`
-   Prefer worktree isolation for forks that edit.
+   Prefer worktree isolation for forks that edit. Each fork should return `disprove_with`.
 6. Blind **Score** in a fresh context (plan + diffs + verify logs only). Build `bias_map` from fork disagreement.
-7. **ActOrAsk** — Act only with Claim-via-critical-path; Ask on auth horizon / contradiction.
+7. **ActOrAsk** — continue \| switch \| Ask; Act only with Claim-via-critical-path; Ask on auth horizon / contradiction.
 8. **Suggest** (do not silent-launch) a next workflow when useful:
    - background EVA instead: `/workflow eva-emptiness {"goal":"…"}` (requires `.rhai` installed under `~/.grok/workflows/` or project `.grok/workflows/`)
    - multi-worker delivery: `/workflow multi-agent-delivery`

@@ -86,7 +86,7 @@ let probe_prompt = "";
 probe_prompt += "Follow skill eva-emptiness (E1–E2). Goal: " + goal + ". ";
 probe_prompt += "Prior handoff (compact): " + compact_handoff("prior", r0) + " ";
 probe_prompt += "Ask/record ONE DOE question that most reduces ignorance, then run explore-style probes. ";
-probe_prompt += "Append evidence_gain only for new confirm/falsify. Stay in ask/plan discipline. ";
+probe_prompt += "Append evidence_gain only for new confirm/disprove. Stay in ask/plan discipline. ";
 probe_prompt += "Report {done, phase, notes, evidence_gain, next}.";
 let r1 = agent(probe_prompt, #{
     label: "eva-probe",

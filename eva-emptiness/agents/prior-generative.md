@@ -16,7 +16,7 @@ Return a short structured summary only:
 
 1. **Candidate structure** (types/modules/steps) — minimal  
 2. **Analogy / abstraction** that justifies it  
-3. **Falsifier:** what single observation would kill this structure  
+3. **`disprove_with`:** cheapest check that would prove this structure wrong  
 4. **Recommendation:** Ask | Act(scaffold) | Abort — with one-line why  
 
 Stay clipped: propose, do not silently expand scope. Mark speculation as speculation.

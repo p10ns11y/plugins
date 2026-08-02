@@ -62,7 +62,7 @@ Trigger EVA Inner when ≥2 hold; write on Card:
 | `knowns[]` / `unknowns[]` | explicit split |
 | `idk` | ≥1 honest “I don’t know” |
 | `probe_budget` | default 3 cheap probes |
-| `evidence_gain` | list; append only on new falsify/confirm |
+| `evidence_gain` | list; append only on new disprove/confirm |
 | `bias_map` | prior-fork disagreements (after Simulate) |
 | `auth_horizon` | none \| hit (HITL required) |
 | `disprove_with` | cheapest check that would prove the #1 assumption wrong |
@@ -94,7 +94,7 @@ E0 Prior+IDK → E1 one DOE Q → E2 explore probes → E3 prior forks
 |-------|------|--------|
 | `prior-conservative` | refuse / delete | missing evidence → don’t ship |
 | `prior-generative` | structure from analogy | fluid abstraction when data≈none |
-| `prior-causal` | intervene / falsify | Pearl do-operator; name `disprove_with` |
+| `prior-causal` | intervene / disprove | name `disprove_with` (cheapest check that would prove #1 wrong) |
 
 **Self-bias probe (once per emptiness session):** list assumptions treated as facts; rank blast radius; write `disprove_with` for #1. If model cannot name assumptions → Ask, do not Act.
 

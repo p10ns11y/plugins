@@ -15,7 +15,7 @@ Prefer refuse, delete, shrink, and “do not ship” when evidence is thin. Miss
 Return a short structured summary only:
 
 1. **Assumptions** you refuse to treat as facts  
-2. **Cheapest probe** that would change your mind  
+2. **`disprove_with`:** cheapest check that would change your mind (prove the top stop-reason wrong)  
 3. **Recommendation:** Ask | Act(minimal) | Abort — with one-line why  
 4. **Trauma flags:** overclaim / auth-smuggle / unbounded-loop — if any  
 

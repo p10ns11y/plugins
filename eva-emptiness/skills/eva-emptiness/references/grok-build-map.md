@@ -4,9 +4,9 @@ Load **only if** wiring a skeleton step to a concrete Grok Build feature. Offici
 
 | Skeleton | Grok feature | Notes |
 |----------|--------------|-------|
-| Prior | `/remember`, `/memory`, `/dream`, AGENTS.md, `/effort` high | Strong priors; consolidate without panic-forgetting |
+| Prior | `/remember`, `/memory`, `/dream`, AGENTS.md, `/effort` high | Strong priors; Card includes `disprove_with` |
 | Notice IDK | `/plan`, clarifying Q&A | Plan mode gates edits until approve |
-| Probe | `explore` subagents; one Q&A | Cheap; not doom-scroll |
+| Probe | `explore` subagents; one Q&A | Cheap; evidence_gain = confirm/disprove only |
 | Simulate | `/fork --worktree`, `grok -w`, plugin agents `prior-*` | Prior-diverse **pathways**; isolation=worktree |
 | Score | Fresh session / review Role; `grok -p … --output-format json --max-turns N` | ⊥ implementer; include robust-satisficing + option-preserve |
 | continue | Leave plan after approve; diffs | Claim-via-critical-path on `pathway_active` |
