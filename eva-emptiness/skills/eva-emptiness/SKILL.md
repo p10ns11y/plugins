@@ -21,18 +21,20 @@ EVA         : Extra-Vehicular Activity under epistemic emptiness
 Skeleton    : Prior → Probe → Simulate → Score → ActOrAsk
 Trauma ¬    : overclaim · unbounded ReAct · catastrophic forgetting ·
               auto-approve when unknown = authorization
-Progress    : evidence_gain on Card (not “still working”)
-Tether      : probe_budget · Claim-via-critical-path · auth hard-stop
+Progress    : evidence_gain on Card vs pathway assumptions / signposts
+Tether      : probe_budget · Claim-via-critical-path · auth hard-stop · signposts
+ActOrAsk    : continue | switch | Ask
 
 // Axioms
 A1  Emptiness gate before EVA Inner — skip if path already clear
 A2  Notice IDK on Card before first Probe
 A3  One DOE question per Probe round (max ignorance reduction)
-A4  Simulate ≥2 prior-diverse forks before Act when emptiness_score high
+A4  Simulate ≥2 prior-diverse pathways (forks + tipping points) when emptiness_score high
 A5  Score ⊥ ImplementerContext (plan + diffs + verify logs only)
-A6  Act only via critical_path claims; else Ask (HITL)
+A6  Act only via critical_path claims; else Ask (HITL); switch ≠ silent Act
 A7  Never cut auth tether (--always-approve / --yolo under EVA = CANCELLED)
-A8  Evaluate(δ) ≔ (Correctness, Effectiveness, Efficiency)
+A8  Evaluate(δ) ≔ (Correctness, Effectiveness, Efficiency,
+                   RobustSatisficing, OptionPreserve)
 ```
 
 Related skills (load by name): `control-graph` · `concurrent-cli-agents` · `adversarial-audit` · `higher-order-decision-architect`.
@@ -63,6 +65,9 @@ Trigger EVA Inner when ≥2 hold; write on Card:
 | `evidence_gain` | list; append only on new falsify/confirm |
 | `bias_map` | prior-fork disagreements (after Simulate) |
 | `auth_horizon` | none \| hit (HITL required) |
+| `kill_experiment` | cheapest falsifier for #1 assumption (Prior/self-bias) |
+| `pathway_active` | id of live pathway under Act (optional until Simulate) |
+| `signposts[]` | `{id, watch, fires_when → continue\|switch\|Ask}` — monitors only |
 
 ---
 
@@ -78,9 +83,9 @@ E0 Prior+IDK → E1 one DOE Q → E2 explore probes → E3 prior forks
 | E0 | Card has knowns/unknowns/priors + `idk` | deep | abort_batch |
 | E1 | Human answer **or** recorded HOOTL default | human\|fast | escalate_HITL |
 | E2 | ≥2 explore summaries **or** probe_budget 0 | explore | continue_siblings |
-| E3 | ≥2 prior-diverse fork returns (default triad) | deep\|coding | escalate_HITL |
-| E4 | scores + `bias_map` + trauma_flags | review | abort_batch |
-| E5 | Act plan approved **or** HITL Ask | human\|deep | escalate_HITL |
+| E3 | ≥2 prior-diverse **pathways** (short-term step + tipping + switch) | deep\|coding | escalate_HITL |
+| E4 | scores + `bias_map` + trauma_flags + robust/option axes | review | abort_batch |
+| E5 | continue **or** switch **or** Ask | human\|deep | escalate_HITL |
 | E6 | verify cmds pass; every Act step cites Probe artifact | coding | continue → REPAIR via CG |
 
 **Prior triad (default fork count = 3):**
@@ -91,15 +96,21 @@ E0 Prior+IDK → E1 one DOE Q → E2 explore probes → E3 prior forks
 | `prior-generative` | structure from analogy | fluid abstraction when data≈none |
 | `prior-causal` | intervene / falsify | Pearl do-operator; name killing experiment |
 
-**Self-bias probe (once per emptiness session):** list assumptions treated as facts; rank blast radius; propose cheapest probe that kills #1. If model cannot name assumptions → Ask, do not Act.
+**Self-bias probe (once per emptiness session):** list assumptions treated as facts; rank blast radius; write `kill_experiment` for #1. If model cannot name assumptions → Ask, do not Act.
+
+**Simulate pathways (when emptiness_score med\|high):** each prior fork returns a pathway stub — short-term action, tipping/failure condition, and which signpost would force switch. Prefer vulnerability note (“under which futures does this break?”) over long prose.
+
+**Score axes (extend A8):** prefer pathways that keep essential Correctness/Effectiveness under larger emptiness (**robust-satisficing**) and that preserve at least one high-value alternative (**option-preserve / low regret**). Penalize winners that only look good under the nominal prior.
 
 ---
 
 ## ActOrAsk
 
-| Act | Ask (HITL) |
-|-----|------------|
-| Robust across forks; trauma_flags empty; critical_path cited | Auth event horizon · fork contradiction · probe_budget 0 with ignorance high · overclaim |
+| Choice | When |
+|--------|------|
+| **continue** | Robust across pathways; trauma_flags empty; critical_path cited; first step of `pathway_active` |
+| **switch** | Signpost fired · pathway tipping hit · fork contradiction → set new `pathway_active`; re-ORIENT/re-PLAN via **control-graph** (not silent Act) |
+| **Ask** (HITL) | Auth event horizon · probe_budget 0 with ignorance high · overclaim · switch needs human ack |
 
 Best answers under no data: **robust + humble**. Flashy certainty is free; wisdom costs one good question.
 
@@ -127,13 +138,14 @@ After Score / ActOrAsk, **name** a next step for the human:
 | Unknowns are external/factual | `/deep-research …` |
 | Want host-phased EVA, not chat | `/workflow eva-emptiness {"goal":"…"}` |
 | `auth_horizon=hit` | stay interactive (`/eva` / HITL) — no background mutate |
+| `next=switch` | stay `/eva` or re-enter Prior with new `pathway_active` |
 
 ---
 
 ## Done when
 
-- Card updated: `emptiness_score`, `evidence_gain`, `bias_map`, Act **or** Ask reason  
-- If Act: verify cmds run; Claim-via-critical-path holds  
+- Card updated: `emptiness_score`, `evidence_gain`, `bias_map`, `kill_experiment`, continue **or** switch **or** Ask reason  
+- If continue: verify cmds run; Claim-via-critical-path holds; option space not collapsed under high emptiness  
 - If Ask: structured HITL preview only (approve/amend/abort) — no transcript dump  
 - No `--always-approve` / `--yolo` used under EVA  
 
