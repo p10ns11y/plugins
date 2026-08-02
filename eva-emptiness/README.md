@@ -133,18 +133,29 @@ Cursor cannot `grok plugin install` or run `/workflow *.rhai`. Use the **equival
 | Bash tether hook | `~/.cursor/hooks/eva-tether-shell.sh` on `beforeShellExecution` |
 | Discovery | `~/.cursor/rules/eva-emptiness.mdc` (agent-requestable) |
 
-Quick install (user-global):
+Quick install (user-global) from this repo:
 
 ```bash
-ln -sfn ~/Work/personal/skills/eva-emptiness ~/.cursor/skills/eva-emptiness
-ln -sfn ~/Work/personal/skills/rules/eva-emptiness.mdc ~/.cursor/rules/eva-emptiness.mdc
+# from plugins checkout
+PLUGIN="$(pwd)/eva-emptiness"
+
+ln -sfn "$PLUGIN/skills/eva-emptiness" ~/.cursor/skills/eva-emptiness
+# optional discovery rule (if you keep rules next to skills):
+# ln -sfn ~/Work/personal/skills/rules/eva-emptiness.mdc ~/.cursor/rules/eva-emptiness.mdc
+
 mkdir -p ~/.cursor/commands ~/.cursor/hooks
-# copy or keep the commands/hook from a prior install; see skills README
+cp "$PLUGIN/cursor/commands/eva.md" ~/.cursor/commands/eva.md
+cp "$PLUGIN/cursor/commands/eva-workflow.md" ~/.cursor/commands/eva-workflow.md
+cp "$PLUGIN/cursor/hooks/eva-tether-shell.sh" ~/.cursor/hooks/eva-tether-shell.sh
+chmod +x ~/.cursor/hooks/eva-tether-shell.sh
+# Wire beforeShellExecution → eva-tether-shell.sh in ~/.cursor/hooks.json
 ```
+
+Canonical Cursor assets live under `eva-emptiness/cursor/` (commands + shell tether). Grok keeps `commands/eva.md` + `bin/eva-tether-pretool.sh` unchanged.
 
 Then in Cursor Agent: `/eva <goal>` or `/eva-workflow <goal>`. Reload if slash menu is stale (new chat / restart).
 
 ## Trust
 
 Hooks run with your privileges. Review `hooks/hooks.json` + `bin/eva-tether-pretool.sh` before `--trust`.
-Cursor: review `~/.cursor/hooks/eva-tether-shell.sh` + `hooks.json`.
+Cursor: review `cursor/hooks/eva-tether-shell.sh` + your `~/.cursor/hooks.json`.
