@@ -23,11 +23,13 @@ case "$blob" in
     ;;
 esac
 
-if printf '%s' "$blob" | grep -Eqi '(^|[[:space:];|&])git[[:space:]]+push([[:space:]]|$)'; then
-  deny "git push requires human Ask (remote mutate)"
-fi
+# Force HITL Ask (not hard-deny) so an explicit human approval can proceed.
 if printf '%s' "$blob" | grep -Eqi 'git[[:space:]]+push[[:space:]]+(-f|--force)'; then
   deny "force-push blocked"
+fi
+if printf '%s' "$blob" | grep -Eqi '(^|[[:space:];|&])git[[:space:]]+push([[:space:]]|$)'; then
+  printf '%s\n' "{\"permission\":\"ask\",\"user_message\":\"eva-emptiness tether: git push requires human Ask (remote mutate)\",\"agent_message\":\"HITL Ask for git push — proceed only after explicit human approval for this remote mutate.\"}"
+  exit 0
 fi
 if printf '%s' "$blob" | grep -Eqi 'git[[:space:]]+reset[[:space:]]+--hard'; then
   deny "git reset --hard blocked"

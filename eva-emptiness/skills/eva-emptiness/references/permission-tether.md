@@ -12,14 +12,19 @@ Load when configuring Grok deny rules or reviewing hook behavior.
 | Subagents for Probe | prefer `explore` (no edits) |
 | Simulate forks | worktree isolation |
 
-## Deny patterns (config or hook)
+## Deny / Ask patterns (config or hook)
 
-Block or force-HITL:
+| Pattern | Cursor `eva-tether-shell.sh` | Grok `eva-tether-pretool.sh` |
+|---------|------------------------------|------------------------------|
+| `git push` (ordinary) | `permission: ask` (HITL) | `decision: deny` (force HITL — Grok has no ask JSON) |
+| `git push --force` / `-f` | `deny` | `deny` |
+| `git reset --hard` | `deny` | `deny` |
+| `rm -rf /` (root) | `deny` | `deny` |
+| `--always-approve` / `--yolo` | `deny` | `deny` |
 
-- `git push`, `git push --force`, `git reset --hard`
-- `rm -rf /`, recursive deletes outside the worktree
-- Invoking `grok` / agents with `--always-approve` or `--yolo`
-- Production deploy / secret-exfiltrating curl patterns (project-specific)
+Also project-specific: production deploy / secret-exfiltrating curl patterns.
+
+Ordinary `git push` must not hard-deny forever — after explicit human approval the push should proceed. Force-push stays deny.
 
 Plugin hook `bin/eva-tether-pretool.sh` implements a portable subset for `Bash` PreToolUse. Fail-open on hook crash — keep explicit `deny` JSON for real blocks.
 
