@@ -5,7 +5,7 @@ description: >-
   ActOrAsk (EVA tether). Use when the map/data is missing, unknowns dominate,
   requirements are rumor-thin, or authorization is the real unknown — not when
   the fix path is already clear. Composes with control-graph Outer; Grok Build
-  plugin adds prior-agents + tether hooks. Triggers: eva-emptiness, /eva-emptiness,
+  plugin adds prior-agents + C/shell tether hooks. Triggers: eva-emptiness, /eva-emptiness,
   epistemic emptiness, blank sheet, EVA, Prior Probe Simulate Score ActOrAsk,
   trauma-shaped answers, robust decision making under uncertainty.
 ---
@@ -120,11 +120,12 @@ E0 Prior+IDK → E1 one DOE Q → E2 explore probes → E3 Pathways
 | Surface | Load |
 |---------|------|
 | Cursor / library | this skill (`/eva-emptiness`) |
-| Grok plugin | skill + prior agents + tether + `/eva` |
+| Grok plugin | skill + prior agents + tether + `/eva` + `/eva-tether-init` |
+| Auth tether | C `bin/eva-tether` preferred; portable shell fallback (zsh first); see [permission-tether.md](references/permission-tether.md) |
 | Background | `/workflow eva-emptiness {"goal":"…"}` after `.rhai` copy to `~/.grok/workflows/` or project `.grok/workflows/` |
 | Outer SM | control-graph; EVA owns Inner when gate fires |
 
-Map: [references/grok-build-map.md](references/grok-build-map.md).
+Map: [references/grok-build-map.md](references/grok-build-map.md). Compile C tether only with consent: `/eva-tether-init --yes`.
 
 ### Suggest (name only — do not silent-launch)
 
@@ -145,6 +146,7 @@ Map: [references/grok-build-map.md](references/grok-build-map.md).
 - continue → verify cmds pass; Claim-via-critical-path; OptionPreserve under high emptiness  
 - Ask → HITL preview only (approve/amend/abort) — no transcript dump  
 - No `--always-approve` / `--yolo`  
+- Tether hook active (C binary or shell fallback) for trauma bash  
 
 ## Do not
 
@@ -152,6 +154,7 @@ Map: [references/grok-build-map.md](references/grok-build-map.md).
 - Auto-approve because the model “seems sure”  
 - Mega-step “implement everything” before Score  
 - Treat third-party “Arena Mode” as SoT — use forks + blind Score  
+- Compile `bin/eva-tether` without user consent (`/eva-tether-init --yes`)  
 
 ## Reference
 

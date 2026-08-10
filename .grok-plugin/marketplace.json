@@ -21,7 +21,7 @@
     },
     {
       "name": "eva-emptiness",
-      "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents + auth tether.",
+      "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents + C/shell auth tether (consent compile).",
       "category": "development",
       "source": { "type": "local", "path": "./eva-emptiness" },
       "homepage": "https://github.com/p10ns11y/plugins",
@@ -35,7 +35,9 @@
         "bias",
         "plan-mode",
         "workflow",
-        "rhai"
+        "rhai",
+        "tether",
+        "auth"
       ]
     }
   ]
