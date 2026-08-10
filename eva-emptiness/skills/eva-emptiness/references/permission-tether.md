@@ -57,3 +57,9 @@ Fail-open on hook crash — keep explicit `deny` / `ask` JSON for real blocks.
 ## Card signal
 
 On any permission deny or human reject of a dangerous tool: set `auth_horizon=hit` and transition to HITL Ask.
+
+## Future: elomaxz (not for the hook)
+
+The one-shot C classifier stays a **leaf** (stdin → verdict → emit). Do **not** wrap it in [elomaxz](https://github.com/p10ns11y/elomaxz) MVU.
+
+elomaxz **does** fit later if this plugin grows into a **graph flow manager** with many actions and a durable interactive model (e.g. live Card, multi-phase cockpit, multi-step consent wizard). Then: TEA loop owns phases/actions; `eva_tether_classify` remains a pure leaf the graph calls.
