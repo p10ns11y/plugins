@@ -1,42 +1,66 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # Cursor beforeShellExecution tether (eva-emptiness).
-# Deny trauma patterns; fail-open if JSON unreadable.
-set -euo pipefail
+# Prefers C binary (eva-tether); falls back to portable shell.
+# Shell preference: re-exec under zsh when available; bash/dash/sh must work.
+# Deny trauma patterns; fail-open if unreadable. No eval.
 
-input="$(cat || true)"
-command=""
-if command -v jq >/dev/null 2>&1; then
-  command="$(printf '%s' "$input" | jq -r '.command // .tool_input.command // .toolInput.command // empty' 2>/dev/null || true)"
+# Capture script path at top level (zsh: $0 inside functions is the function name).
+EVA_TETHER_ARG0=$0
+
+if [ -z "${EVA_TETHER_REEXEC:-}" ] && [ -z "${ZSH_VERSION:-}" ]; then
+  if command -v zsh >/dev/null 2>&1; then
+    EVA_TETHER_REEXEC=1
+    export EVA_TETHER_REEXEC
+    exec zsh "$EVA_TETHER_ARG0" "$@"
+  fi
 fi
-blob="${command:-$input}"
 
-deny() {
-  reason="$1"
-  # Cursor: permission deny + messages
-  printf '%s\n' "{\"permission\":\"deny\",\"user_message\":\"eva-emptiness tether: ${reason}\",\"agent_message\":\"Blocked by eva-emptiness tether: ${reason}. Use HITL Ask — do not bypass with yolo/always-approve.\"}"
+set -eu
+# shellcheck disable=SC3040
+(set -o pipefail) 2>/dev/null && set -o pipefail
+
+EVA_TETHER_MODE=cursor
+export EVA_TETHER_MODE
+
+HERE=$(CDPATH= cd -- "$(dirname -- "$EVA_TETHER_ARG0")" && pwd)
+ROOT=${GROK_PLUGIN_ROOT:-}
+if [ -z "$ROOT" ]; then
+  for _try in \
+    "${HERE}/../.." \
+    "${HOME}/Work/personal/plugins/eva-emptiness" \
+    "${HOME}/.grok/plugins/eva-emptiness"
+  do
+    if [ -x "${_try}/bin/eva-tether" ] || [ -f "${_try}/bin/eva-tether-shell.inc" ]; then
+      ROOT=$(CDPATH= cd -- "$_try" && pwd)
+      break
+    fi
+  done
+fi
+
+for _cand in \
+  "${HERE}/eva-tether" \
+  "${ROOT:+$ROOT/bin/eva-tether}" \
+  "${HOME}/.local/bin/eva-tether"
+do
+  if [ -n "$_cand" ] && [ -x "$_cand" ]; then
+    exec "$_cand" --mode=cursor
+  fi
+done
+
+INC=""
+if [ -f "${HERE}/eva-tether-shell.inc" ]; then
+  INC="${HERE}/eva-tether-shell.inc"
+elif [ -n "${ROOT:-}" ] && [ -f "${ROOT}/bin/eva-tether-shell.inc" ]; then
+  INC="${ROOT}/bin/eva-tether-shell.inc"
+fi
+
+if [ -n "$INC" ]; then
+  # shellcheck source=../../bin/eva-tether-shell.inc
+  . "$INC"
+  eva_tether_shell_main
   exit 0
-}
-
-case "$blob" in
-  *'--always-approve'*|*'--yolo'*|*permission_mode=always-approve*)
-    deny "refusing always-approve/yolo (auth event horizon)"
-    ;;
-esac
-
-# Force HITL Ask (not hard-deny) so an explicit human approval can proceed.
-if printf '%s' "$blob" | grep -Eqi 'git[[:space:]]+push[[:space:]]+(-f|--force)'; then
-  deny "force-push blocked"
-fi
-if printf '%s' "$blob" | grep -Eqi '(^|[[:space:];|&])git[[:space:]]+push([[:space:]]|$)'; then
-  printf '%s\n' "{\"permission\":\"ask\",\"user_message\":\"eva-emptiness tether: git push requires human Ask (remote mutate)\",\"agent_message\":\"HITL Ask for git push — proceed only after explicit human approval for this remote mutate.\"}"
-  exit 0
-fi
-if printf '%s' "$blob" | grep -Eqi 'git[[:space:]]+reset[[:space:]]+--hard'; then
-  deny "git reset --hard blocked"
-fi
-if printf '%s' "$blob" | grep -Eqi 'rm[[:space:]]+(-[a-zA-Z]*r[a-zA-Z]*|--recursive).*[[:space:]]/($|[[:space:]])'; then
-  deny "recursive delete targeting filesystem root blocked"
 fi
 
+# Fail-open for Cursor: explicit allow
 printf '%s\n' '{"permission":"allow"}'
 exit 0

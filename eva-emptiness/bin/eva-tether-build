@@ -1,0 +1,180 @@
+#!/usr/bin/env sh
+# eva-tether-build — consent-gated compile of the C tether binary.
+#
+# Default: status only (read-only). Real compile requires --yes.
+# Output: <plugin>/bin/eva-tether (kept next to hooks).
+# Optional: also install to ~/.local/bin/eva-tether with --prefix.
+#
+# Shell preference: zsh first when available; bash/sh must work.
+# No eval. No network. No sudo.
+
+# Capture script path at top level (zsh: $0 inside functions is the function name).
+EVA_TETHER_ARG0=$0
+
+if [ -z "${EVA_TETHER_REEXEC:-}" ] && [ -z "${ZSH_VERSION:-}" ]; then
+  if command -v zsh >/dev/null 2>&1; then
+    EVA_TETHER_REEXEC=1
+    export EVA_TETHER_REEXEC
+    exec zsh "$EVA_TETHER_ARG0" "$@"
+  fi
+fi
+
+set -eu
+# shellcheck disable=SC3040
+(set -o pipefail) 2>/dev/null && set -o pipefail
+
+YES=0
+STATUS_ONLY=0
+FORCE=0
+PREFIX=""
+
+usage() {
+  cat <<'EOF'
+eva-tether-build — agent-internal helper for /eva-tether-init
+(Users should run /eva-tether-init or /eva-tether-init --yes in Grok.)
+
+Usage: eva-tether-build [--status] [--yes] [--force] [--prefix DIR]
+
+  --status      Report whether bin/eva-tether exists (default without --yes)
+  --yes         Consent: compile C11 sources into bin/eva-tether
+  --force       Rebuild even if binary already exists
+  --prefix DIR  Also install a copy to DIR/bin/eva-tether (e.g. ~/.local)
+
+Needs: C11 compiler (cc, gcc, or clang), make (optional; falls back to cc).
+No network. No sudo.
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case $1 in
+    --status) STATUS_ONLY=1; shift ;;
+    --yes|-y) YES=1; shift ;;
+    --force) FORCE=1; shift ;;
+    --prefix)
+      if [ $# -lt 2 ]; then
+        echo "eva-tether-build: --prefix needs DIR" >&2
+        exit 2
+      fi
+      PREFIX=$2
+      shift 2
+      ;;
+    -h|--help) usage; exit 0 ;;
+    *)
+      echo "eva-tether-build: unknown arg: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+
+HERE=$(CDPATH= cd -- "$(dirname -- "$EVA_TETHER_ARG0")" && pwd)
+PLUGIN_ROOT=$(CDPATH= cd -- "$HERE/.." && pwd)
+SRC_DIR="$PLUGIN_ROOT/c"
+OUT="$PLUGIN_ROOT/bin/eva-tether"
+
+find_cc() {
+  if command -v cc >/dev/null 2>&1; then
+    command -v cc
+    return 0
+  fi
+  if command -v gcc >/dev/null 2>&1; then
+    command -v gcc
+    return 0
+  fi
+  if command -v clang >/dev/null 2>&1; then
+    command -v clang
+    return 0
+  fi
+  return 1
+}
+
+status_report() {
+  echo "eva-tether status"
+  echo "  plugin:  $PLUGIN_ROOT"
+  echo "  source:  $SRC_DIR"
+  echo "  binary:  $OUT"
+  if [ -x "$OUT" ]; then
+    echo "  found:   yes (executable)"
+    if command -v file >/dev/null 2>&1; then
+      file "$OUT" | sed 's/^/  file:    /'
+    fi
+    return 0
+  fi
+  if [ -f "$OUT" ]; then
+    echo "  found:   yes (not executable)"
+    return 1
+  fi
+  echo "  found:   no"
+  if find_cc >/dev/null 2>&1; then
+    echo "  compiler: $(find_cc) (can build with --yes)"
+  else
+    echo "  compiler: missing — shell fallback only"
+  fi
+  return 1
+}
+
+if [ "$STATUS_ONLY" -eq 1 ] || [ "$YES" -eq 0 ]; then
+  if status_report; then
+    exit 0
+  fi
+  if [ "$YES" -eq 0 ]; then
+    cat <<EOF
+
+C tether binary is not ready.
+
+In Grok (after plugin install), run:
+  /eva-tether-init --yes
+(agent asks for consent, then compiles)
+
+Manual:
+  cd $SRC_DIR && make
+  # or: cc -std=c11 -Wall -Wextra -Werror -O2 -o $OUT eva_tether.c main.c
+
+Hooks fall back to portable shell until the binary exists.
+EOF
+    exit 1
+  fi
+fi
+
+# --- compile path (consent via --yes) ---
+if [ -x "$OUT" ] && [ "$FORCE" -eq 0 ]; then
+  echo "eva-tether already built: $OUT"
+  echo "Use --force to rebuild."
+  exit 0
+fi
+
+if [ ! -f "$SRC_DIR/eva_tether.c" ] || [ ! -f "$SRC_DIR/main.c" ]; then
+  echo "eva-tether-build: missing sources under $SRC_DIR" >&2
+  exit 1
+fi
+
+CC_BIN=$(find_cc) || {
+  echo "eva-tether-build: need a C11 compiler (cc, gcc, or clang)" >&2
+  echo "Hooks will keep using the shell fallback." >&2
+  exit 1
+}
+
+echo "→ compiling eva-tether with $CC_BIN"
+mkdir -p "$PLUGIN_ROOT/bin"
+if [ -f "$SRC_DIR/Makefile" ] && command -v make >/dev/null 2>&1; then
+  make -C "$SRC_DIR" CC="$CC_BIN" all
+else
+  "$CC_BIN" -std=c11 -Wall -Wextra -Werror -Wconversion -Wshadow -O2 \
+    -I"$SRC_DIR" -o "$OUT" "$SRC_DIR/eva_tether.c" "$SRC_DIR/main.c"
+fi
+
+if [ ! -x "$OUT" ]; then
+  echo "eva-tether-build: compile failed (no $OUT)" >&2
+  exit 1
+fi
+
+chmod 755 "$OUT"
+echo "✓ built $OUT"
+
+if [ -n "$PREFIX" ]; then
+  mkdir -p "$PREFIX/bin"
+  install -m 755 "$OUT" "$PREFIX/bin/eva-tether"
+  echo "✓ installed $PREFIX/bin/eva-tether"
+fi
+
+exit 0

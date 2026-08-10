@@ -10,7 +10,7 @@ Load skill **eva-emptiness** (this plugin). Follow its Inner DAG; Outer phases s
 ## Immediate actions
 
 1. Enter **plan mode** (`/plan`) before any file edits.
-2. Stay on permission **ask** — never `--always-approve` / `--yolo`.
+2. Stay on permission **ask** — never `--always-approve` / `--yolo`. Plugin PreToolUse tether (C `bin/eva-tether` or shell fallback) enforces trauma denies; optional secure compile: `/eva-tether-init --yes`.
 3. On the Control Card (or plan), write:
    - `emptiness_score`, `knowns[]`, `unknowns[]`, at least one `idk`
    - `probe_budget` (default 3)
@@ -29,7 +29,8 @@ Load skill **eva-emptiness** (this plugin). Follow its Inner DAG; Outer phases s
    - cold repo map: `/workflow context-ignite`
    - external claims: `/deep-research …`
 
-`/eva` = interactive HITL. `/workflow eva-emptiness` = host-scheduled background. Plugin install ≠ workflow install.
+`/eva` = interactive HITL. `/workflow eva-emptiness` = host-scheduled background. Plugin install ≠ workflow install.  
+`/eva-tether-init` = status/compile of the secure C tether (consent with `--yes`).
 
 Goal context from user (may be empty):
 

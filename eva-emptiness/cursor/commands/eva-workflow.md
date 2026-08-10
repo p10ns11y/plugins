@@ -24,6 +24,7 @@ Follow skill **eva-emptiness**. After each phase, short Card update only (no tra
 
 - Skip EVA if emptiness_score=low and path is clear.
 - Never always-approve / yolo; auth unknown → Ask.
+- Keep Cursor `beforeShellExecution` tether wired (`eva-tether-shell.sh` → prefers C `bin/eva-tether`, shell fallback).
 - Fan-out independent Simulate forks; serialize human asks.
 - End by **suggesting** (not launching): next workflow/skill names for delivery or research.
 

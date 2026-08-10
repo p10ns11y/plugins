@@ -48,6 +48,28 @@ mkdir -p ~/.grok/personas
 ln -sfn "$(pwd)/eva-emptiness/personas/"*.toml ~/.grok/personas/
 ```
 
+### 1b. Secure C tether (optional — consent compile)
+
+Hooks **prefer** the C classifier `bin/eva-tether` (bounded stdin, no shell parse of the command).  
+If the binary is missing, they use a **portable shell fallback** (zsh preferred when available; bash and other POSIX shells work).
+
+After plugin install, in Grok:
+
+```text
+/eva-tether-init          # status only
+/eva-tether-init --yes    # consent: compile C11 → bin/eva-tether
+```
+
+Manual (same result):
+
+```bash
+cd eva-emptiness/c && make    # → ../bin/eva-tether
+# or: ../bin/eva-tether-build --yes
+```
+
+Needs: C11 compiler (`cc` / `gcc` / `clang`). No network. No sudo.  
+Ship tree may already include a prebuilt `bin/eva-tether` for your platform; rebuild with `--force` after source changes.
+
 ### 2. Workflow (optional — background EVA)
 
 ```bash
@@ -69,8 +91,10 @@ Watch runs in `/workflows` (pause / resume / stop by display name).
 |-----------|------|
 | **Skill** `/eva-emptiness` | Inner DAG + emptiness Card fields |
 | **Command** `/eva` | Interactive plan-mode starter |
+| **Command** `/eva-tether-init` | Consent-gated compile of C tether |
 | **Agents** `prior-conservative` · `prior-generative` · `prior-causal` | Simulate forks → bias map |
-| **Hook** Bash PreToolUse | Denies push / yolo / reset-hard |
+| **C tether** `bin/eva-tether` | Secure classifier (prefer) |
+| **Hook** Bash PreToolUse | C-first, shell fallback; deny/ask trauma cmds |
 | **Personas** (optional) | Same priors as overlays |
 | **Workflow** `.grok/workflows/eva-emptiness.rhai` | Background EVA — copy to install |
 
@@ -130,7 +154,7 @@ Cursor cannot `grok plugin install` or run `/workflow *.rhai`. Use the **equival
 | Plugin skill | `~/.cursor/skills/eva-emptiness` → skills lib symlink |
 | `/eva` | `~/.cursor/commands/eva.md` → type `/eva` in Agent chat |
 | `/workflow eva-emptiness` | `~/.cursor/commands/eva-workflow.md` → `/eva-workflow` (phased Agent stand-in) |
-| Bash tether hook | `~/.cursor/hooks/eva-tether-shell.sh` on `beforeShellExecution` |
+| C/shell tether hook | `~/.cursor/hooks/eva-tether-shell.sh` on `beforeShellExecution` (C `bin/eva-tether` preferred) |
 | Discovery | `~/.cursor/rules/eva-emptiness.mdc` (agent-requestable) |
 
 Quick install (user-global) from this repo:
@@ -146,16 +170,19 @@ ln -sfn "$PLUGIN/skills/eva-emptiness" ~/.cursor/skills/eva-emptiness
 mkdir -p ~/.cursor/commands ~/.cursor/hooks
 cp "$PLUGIN/cursor/commands/eva.md" ~/.cursor/commands/eva.md
 cp "$PLUGIN/cursor/commands/eva-workflow.md" ~/.cursor/commands/eva-workflow.md
-cp "$PLUGIN/cursor/hooks/eva-tether-shell.sh" ~/.cursor/hooks/eva-tether-shell.sh
-chmod +x ~/.cursor/hooks/eva-tether-shell.sh
+# Prefer symlink so the hook can find bin/eva-tether + shell.inc
+ln -sfn "$PLUGIN/cursor/hooks/eva-tether-shell.sh" ~/.cursor/hooks/eva-tether-shell.sh
+# Optional: compile C tether (same binary Grok uses)
+( cd "$PLUGIN/c" && make )
 # Wire beforeShellExecution → eva-tether-shell.sh in ~/.cursor/hooks.json
 ```
 
-Canonical Cursor assets live under `eva-emptiness/cursor/` (commands + shell tether). Grok keeps `commands/eva.md` + `bin/eva-tether-pretool.sh` unchanged.
+Canonical Cursor assets live under `eva-emptiness/cursor/` (commands + shell tether). Grok keeps `commands/eva.md` + `bin/eva-tether-pretool.sh` (C-first).
 
 Then in Cursor Agent: `/eva <goal>` or `/eva-workflow <goal>`. Reload if slash menu is stale (new chat / restart).
 
 ## Trust
 
-Hooks run with your privileges. Review `hooks/hooks.json` + `bin/eva-tether-pretool.sh` before `--trust`.
-Cursor: review `cursor/hooks/eva-tether-shell.sh` + your `~/.cursor/hooks.json`.
+Hooks run with your privileges. Review `hooks/hooks.json`, `bin/eva-tether-pretool.sh`, `c/`, and `bin/eva-tether` (if present) before `--trust`.
+Cursor: review `cursor/hooks/eva-tether-shell.sh` + your `~/.cursor/hooks.json`.  
+Compile only after consent (`/eva-tether-init --yes`).

@@ -37,7 +37,7 @@ plugin install  ──trust───► agents, hooks, /commands
 
 | Plugin | Role | Typical invoke |
 |--------|------|----------------|
-| **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + Bash tether | `/eva` · `/workflow eva-emptiness` |
+| **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + C/shell auth tether | `/eva` · `/eva-tether-init` · `/workflow eva-emptiness` |
 | **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface | `/note` `/focus` `/journal` |
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
 
@@ -49,12 +49,14 @@ Blank-sheet / epistemic emptiness. Full scenarios: [eva-emptiness/README.md](eva
 
 ```bash
 grok plugin install ./eva-emptiness --trust
+# optional: secure C tether (consent) — /eva-tether-init --yes  (or: cd eva-emptiness/c && make)
 cp eva-emptiness/.grok/workflows/eva-emptiness.rhai ~/.grok/workflows/   # optional background
 ```
 
 | Scenario | Use |
 |----------|-----|
 | No design doc; rumors only; need plan approve | `/eva <goal>` |
+| Compile C auth tether (consent) | `/eva-tether-init --yes` |
 | Same problem, run phases in background | `/workflow eva-emptiness {"goal":"…"}` |
 | After Act, multi-worker delivery | suggest `/workflow multi-agent-delivery` |
 | Obvious bugfix | skip EVA |

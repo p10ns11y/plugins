@@ -18,4 +18,6 @@ Load and follow the **eva-emptiness** skill. Pair with **control-graph** for Out
 
 If I pasted a goal after `/eva`, use it. Otherwise ask for one sentence.
 
+**Auth tether:** `~/.cursor/hooks/eva-tether-shell.sh` on `beforeShellExecution` (prefers plugin `bin/eva-tether` C binary; portable shell fallback). Symlink from the plugin so the hook can find `bin/`. Ordinary `git push` → ask; force-push / yolo / reset-hard → deny.
+
 **Cursor vs Grok:** This is the interactive path. For a phased stand-in of Grok’s Rhai workflow, use `/eva-workflow`.
