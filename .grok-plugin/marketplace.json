@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map",
   "owner": {
     "name": "p10ns11y"
   },
@@ -38,6 +38,21 @@
         "rhai",
         "tether",
         "auth"
+      ]
+    },
+    {
+      "name": "mission-map",
+      "description": "Mission-Impossible-style ops map: steps, calculated risks, replan on shocks. C PERT/MC + Rust critical path.",
+      "category": "development",
+      "source": { "type": "local", "path": "./mission-map" },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "mission-map",
+        "critical-path",
+        "pert",
+        "monte-carlo",
+        "calculated-risk",
+        "replan"
       ]
     }
   ]

@@ -1,0 +1,8 @@
+{
+  "name": "mission-map",
+  "version": "0.1.0",
+  "description": "Mission-Impossible-style ops map: steps, calculated risks, what/how/when, replan on outside shocks. C PERT/MC kernels + Rust critical path. Slash /mission-map.",
+  "author": {
+    "name": "p10ns11y"
+  }
+}

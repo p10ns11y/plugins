@@ -7,6 +7,10 @@
 .env
 .env.*
 
+# built kernels
+mission-map/bin/
+mission-map/rust/target/
+
 # arch-machine expand test artifacts
 **/fixtures/**/.arch-expand-state/
 **/fixtures/**/.agent-expanded
