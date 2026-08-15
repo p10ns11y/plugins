@@ -1,0 +1,15 @@
+fn main() {
+    cc::Build::new()
+        .file("../c/mm_pert.c")
+        .file("../c/mm_mc.c")
+        .file("../c/mm_grad.c")
+        .include("../c")
+        .flag_if_supported("-std=c11")
+        .flag_if_supported("-Wall")
+        .flag_if_supported("-Wextra")
+        .compile("mm_kern");
+    println!("cargo:rustc-link-lib=m");
+    println!("cargo:rerun-if-changed=../c/mm_pert.c");
+    println!("cargo:rerun-if-changed=../c/mm_mc.c");
+    println!("cargo:rerun-if-changed=../c/mm_grad.c");
+}
