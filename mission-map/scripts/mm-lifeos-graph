@@ -273,7 +273,7 @@ if pipe_body:
             continue  # dup / broken Deel urls
         submitted.append(cells)
 for i, cells in enumerate(submitted[:8], 1):
-    nid = f"A{i}"
+    anode = f"A{i}"
     co = cells[2] if cells[2] not in ("—", "-") else ""
     ti = cells[3] if cells[3] not in ("—", "-") else ""
     url = cells[5] if len(cells) > 5 else ""
@@ -284,8 +284,8 @@ for i, cells in enumerate(submitted[:8], 1):
     if not co:
         co = url.split("/")[2] if "://" in url else f"opp {cells[0]}"
     label = "{co} — {ti} ({st})".format(co=co, ti=(ti or "role")[:40], st=cells[1])
-    priv_mermaid.append(f'  {nid}["{label.replace(chr(34), chr(39))}"]')
-    priv_mermaid.append(f"  you --> {nid}")
+    priv_mermaid.append(f'  {anode}["{label.replace(chr(34), chr(39))}"]')
+    priv_mermaid.append(f"  you --> {anode}")
 priv_mermaid.append('  nxt["Next: submit this week\'s pack"]')
 priv_mermaid.append('  intro["Live intro — same-day reply / nudge if silent"]')
 priv_mermaid.append('  cal["Interview calendars"]')
@@ -345,6 +345,16 @@ print("act_title=" + shlex.quote(act_title))
 print("act_body=" + shlex.quote(act_local))
 print("act_pub=" + shlex.quote(act_pub))
 print("next_human=" + shlex.quote(lab(nid) if nid else act_title))
+print("time_note=" + shlex.quote((m.get("time_note") or "").strip()))
+
+def pert(s):
+    if (s.get("class") or "").lower() == "done":
+        return 0.0
+    return (float(s["a"]) + 4.0 * float(s["m"]) + float(s["b"])) / 6.0
+
+live_ids = ["S0", "S4", "S4b", "S5"]
+live_te = sum(pert(by_id[i]) for i in live_ids if i in by_id)
+print("live_te=" + shlex.quote(f"{live_te:.2f}"))
 PY
 )"
 
@@ -378,11 +388,14 @@ Contact mail and posting URLs: \`~/.grok/mission-maps/contacts.md\`.
 |--|--|
 | **Arrive when** | $g |
 | **Do this now** | ${next_human:-$act_title} |
-| **Weeks still expected** | $path_te |
+| **Live thread (intro already happened)** | ${live_te:-$path_te} weeks typical |
+| **If that thread dies** | you usually know within ~1 week of silence — not 12 weeks |
+| **Longest remaining chain** | $path_te weeks (kernel; not a destiny date) |
 | **Change since last snapshot** | ${delta_te:-none} |
 
 $note
 $(if [ -n "$policy" ]; then printf '\n## How to push\n\n%s\n' "$policy"; fi)
+$(if [ -n "${time_note:-}" ]; then printf '\n## How long (Sweden rounds)\n\n%s\n' "$time_note"; fi)
 
 ## Stages
 
