@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""Pull processed collab-finder opportunities into local mission-map contacts.
+
+Reads ~/.local/share/collab-finder/collab-finder.db (read-only).
+Writes ~/.grok/mission-maps/collab-finder-pipeline.md and patches
+cash-path-now.json contact fields. Never writes emails into life-os/.
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import sqlite3
+from pathlib import Path
+
+DB = Path.home() / ".local/share/collab-finder/collab-finder.db"
+PACKS = Path.home() / ".local/share/collab-finder/application_packs"
+MAPS = Path(os.environ.get("MISSION_MAPS", Path.home() / ".grok" / "mission-maps"))
+NOW = Path(os.environ.get("MISSION_MAP_NOW", MAPS / "cash-path-now.json"))
+
+EMAIL_RE = re.compile(r"[\w.+\-]+@[\w.\-]+\.\w+")
+URL_RE = re.compile(r"https?://[^\s)>\"]+")
+
+
+def load_opps() -> list[dict]:
+    con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+    con.row_factory = sqlite3.Row
+    rows = con.execute(
+        """
+        SELECT id, status, kind, company, title, source_url, source_ref,
+               notes, last_updated, analysis_json, prep_artifacts_json
+        FROM opportunities
+        WHERE status IN ('applied','prepped','analyzed','archived','new')
+        ORDER BY CASE status
+          WHEN 'applied' THEN 0 WHEN 'prepped' THEN 1
+          WHEN 'analyzed' THEN 2 ELSE 3 END,
+          last_updated DESC
+        """
+    ).fetchall()
+    out = []
+    for r in rows:
+        art = json.loads(r["prep_artifacts_json"] or "{}")
+        ana = json.loads(r["analysis_json"] or "{}")
+        fit = ana.get("fit") if isinstance(ana.get("fit"), dict) else {}
+        blob = " ".join(
+            str(art.get(k) or "")
+            for k in ("email_draft", "research_notes", "cover_letter")
+        )
+        notes = r["notes"] or ""
+        slug = ""
+        m = re.search(r"pack_slug=([^\s]+)", notes)
+        if m:
+            slug = m.group(1)
+        export = ""
+        m = re.search(r"export_path=([^\s]+)", notes)
+        if m:
+            export = m.group(1)
+        out.append(
+            {
+                "id": r["id"],
+                "status": r["status"],
+                "kind": r["kind"],
+                "company": r["company"] or "",
+                "title": r["title"] or "",
+                "url": r["source_url"] or "",
+                "ref": r["source_ref"] or "",
+                "updated": r["last_updated"],
+                "pack_slug": slug,
+                "export_path": export,
+                "emails": sorted(set(EMAIL_RE.findall(blob))),
+                "urls": sorted(set(URL_RE.findall(blob)))[:8],
+                "fit": fit.get("overall"),
+                "action": (fit.get("recommended_action") or "")[:240],
+            }
+        )
+    return out
+
+
+def patch_map(opps: list[dict]) -> None:
+    if not NOW.is_file():
+        return
+    m = json.loads(NOW.read_text())
+    by_url = {o["url"]: o for o in opps if o["url"]}
+    # Known live threads
+    qred = next((o for o in opps if "qred.com/jobs/7931564" in (o["url"] or "")), None)
+    vend = next((o for o in opps if o["id"] == 53 or "Vend" in o["company"]), None)
+    anyfin = next(
+        (o for o in opps if "Anyfin" in o["company"] and "Fullstack" in o["title"]),
+        None,
+    )
+    for s in m.get("stages", []):
+        c = s.setdefault("contact", {})
+        if s.get("id") == "S0" and qred:
+            c["url"] = qred["url"]
+            c["cf_opp"] = qred["id"]
+            c["pack"] = qred["export_path"] or qred["pack_slug"]
+            c["last_touch"] = c.get("last_touch") or f"cf {qred['status']} {qred['updated'][:10]}"
+        if s.get("id") == "S1" and vend:
+            c["url"] = vend["url"]
+            c["cf_opp"] = vend["id"]
+            c["pack"] = vend["export_path"] or vend["pack_slug"]
+            if vend["emails"]:
+                # apply mailbox first if present
+                apply = [e for e in vend["emails"] if "clayton" in e] or vend["emails"]
+                c["email"] = apply[0]
+            c["followup_stage"] = "await screen (submitted)"
+            c["last_touch"] = f"applied {vend['updated'][:10]}"
+        if s.get("id") == "S3":
+            # next unapplied relevant cash: prefer Anyfin if still not applied
+            nxt = None
+            if anyfin and anyfin["status"] in ("new", "analyzed", "prepped"):
+                nxt = anyfin
+            if nxt is None:
+                nxt = next(
+                    (
+                        o
+                        for o in opps
+                        if o["status"] in ("analyzed", "prepped", "new")
+                        and o["url"]
+                        and "Epidemic" not in o["company"]
+                    ),
+                    None,
+                )
+            if nxt:
+                c["url"] = nxt["url"]
+                c["cf_opp"] = nxt["id"]
+                c["chip"] = "Apply"
+                c["followup_stage"] = f"submit {nxt['company'] or 'next'} pack"
+                if nxt["emails"]:
+                    c["email"] = nxt["emails"][0]
+    NOW.write_text(json.dumps(m, indent=2) + "\n")
+
+
+def write_pipeline(opps: list[dict]) -> None:
+    MAPS.mkdir(parents=True, exist_ok=True)
+    lines = [
+        "# Collab-finder pipeline (local — not for git)",
+        "",
+        f"Source: `{DB}`",
+        "",
+        "| cf | status | company | title | fit | url | pack | emails |",
+        "|----|--------|---------|-------|-----|-----|------|--------|",
+    ]
+    for o in opps:
+        lines.append(
+            "| {id} | {st} | {co} | {ti} | {fit} | {url} | {pack} | {em} |".format(
+                id=o["id"],
+                st=o["status"],
+                co=(o["company"] or "—").replace("|", "/"),
+                ti=(o["title"] or "—").replace("|", "/")[:48],
+                fit=o["fit"] if o["fit"] is not None else "—",
+                url=o["url"] or "—",
+                pack=(o["pack_slug"] or "—")[:40],
+                em=", ".join(o["emails"][:3]) or "—",
+            )
+        )
+    lines.append("")
+    lines.append("## Recommended actions (from fit)")
+    for o in opps:
+        if o["action"]:
+            lines.append(f"- **#{o['id']} {o['company'] or o['url']}:** {o['action']}")
+    (MAPS / "collab-finder-pipeline.md").write_text("\n".join(lines) + "\n")
+
+
+def main() -> int:
+    if not DB.is_file():
+        print("mm-sync-collab-finder: no db at", DB)
+        return 1
+    opps = load_opps()
+    write_pipeline(opps)
+    patch_map(opps)
+    print(f"synced {len(opps)} opps → {MAPS / 'collab-finder-pipeline.md'}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

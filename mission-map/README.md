@@ -101,6 +101,7 @@ Grok `/loop` is **interval-only** and expires in 7 days. It cannot hit 20:00.
 Use the user systemd timer (same pattern as north-star nudge).
 
 ```bash
+scripts/mm-sync-collab-finder   # local pipeline + contact URLs from CF sqlite
 chmod +x scripts/mm-lifeos-graph
 ln -sfn "$(pwd)/scripts/mm-lifeos-graph" "$HOME/.local/bin/mm-lifeos-graph"
 cp host/systemd/mission-map-graph.{service,timer} "$HOME/.config/systemd/user/"
