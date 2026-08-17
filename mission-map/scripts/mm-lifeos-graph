@@ -116,23 +116,98 @@ fi
 
 when="$(date +%Y-%m-%dT%H:%M:%S%z)"
 day="$(date +%Y-%m-%d)"
-key_table="$(python3 - "$NOW_JSON" <<'PY'
-import json, sys
+eval "$(python3 - "$NOW_JSON" "${next_do:-}" <<'PY'
+import json, os, shlex, sys
+
 m = json.load(open(sys.argv[1]))
-lines = [
-    "| id | class | what |",
-    "|----|-------|------|",
-]
-for s in m.get("stages", []):
-    what = (s.get("what") or "—").replace("|", "/")
-    lines.append(f"| {s.get('id','')} | {s.get('class','')} | {what} |")
-print("\n".join(lines))
-PY
-)"
-policy="$(python3 - "$NOW_JSON" <<'PY'
-import json, sys
-m = json.load(open(sys.argv[1]))
-print((m.get("policy") or "").strip())
+nid = (sys.argv[2] if len(sys.argv) > 2 else "") or ""
+stages = m.get("stages") or []
+by_id = {s.get("id"): s for s in stages if s.get("id")}
+nxt = by_id.get(nid) or next((s for s in stages if (s.get("class") or "").lower() == "do"), None)
+
+def esc(s):
+    return (s or "").replace("|", "/")
+
+def contact(s):
+    c = s.get("contact") if isinstance(s.get("contact"), dict) else {}
+    return c or {}
+
+# Public table: no emails.
+lines = ["| id | class | what | follow-up | when |", "|----|-------|------|-----------|------|"]
+for s in stages:
+    c = contact(s)
+    lines.append(
+        "| {id} | {cl} | {what} | {fu} | {when} |".format(
+            id=esc(s.get("id")),
+            cl=esc(s.get("class")),
+            what=esc(s.get("what") or "—"),
+            fu=esc(c.get("followup_stage") or "—"),
+            when=esc(c.get("followup_when") or "—"),
+        )
+    )
+
+act_title = "Do this now"
+act_pub = "No Do on the map."
+act_local = act_pub
+if nxt:
+    c = contact(nxt)
+    what = (nxt.get("what") or nxt.get("id") or "next step").strip()
+    act_title = what
+    pub = [what + "."]
+    if c.get("followup_stage"):
+        pub.append(c["followup_stage"] + (f" ({c['followup_when']})" if c.get("followup_when") else "") + ".")
+    loc = list(pub)
+    if c.get("last_touch"):
+        loc.append("Last: " + c["last_touch"] + ".")
+    if c.get("url"):
+        loc.append(c["url"])
+    if c.get("email"):
+        loc.append("Mail: " + c["email"])
+    waits = []
+    for s in stages:
+        if (s.get("class") or "").lower() != "wait":
+            continue
+        cc = contact(s)
+        if cc.get("followup_when") or cc.get("followup_stage"):
+            waits.append(s)
+    if waits:
+        w = waits[0]
+        wc = contact(w)
+        extra = "Also: {what} — {fu}{when}.".format(
+            what=(w.get("what") or w.get("id")),
+            fu=wc.get("followup_stage") or "follow up",
+            when=(" " + wc["followup_when"]) if wc.get("followup_when") else "",
+        )
+        pub.append(extra)
+        loc.append(extra)
+        if wc.get("email"):
+            loc.append("Mail: " + wc["email"])
+        if wc.get("url"):
+            loc.append(wc["url"])
+    act_pub = " ".join(pub)
+    act_local = " ".join(loc)
+
+# Local contacts file (emails OK — this path is not the public vault).
+local_lines = ["# Local contacts (not for git / not for UI/Mission.md)", ""]
+for s in stages:
+    c = contact(s)
+    if not c:
+        continue
+    local_lines.append("## {id} — {what}".format(id=s.get("id"), what=s.get("what") or ""))
+    for k in ("followup_stage", "followup_when", "last_touch", "email", "url"):
+        if c.get(k):
+            local_lines.append("- {k}: {v}".format(k=k, v=c[k]))
+    local_lines.append("")
+
+out_dir = os.environ.get("MISSION_MAPS") or os.path.expanduser("~/.grok/mission-maps")
+os.makedirs(out_dir, exist_ok=True)
+open(os.path.join(out_dir, "contacts.md"), "w").write("\n".join(local_lines) + "\n")
+
+print("key_table=" + shlex.quote("\n".join(lines)))
+print("policy=" + shlex.quote((m.get("policy") or "").strip()))
+print("act_title=" + shlex.quote(act_title))
+print("act_body=" + shlex.quote(act_local))
+print("act_pub=" + shlex.quote(act_pub))
 PY
 )"
 
@@ -151,6 +226,12 @@ review_date: $day
 # Mission heading
 
 Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m/b overwrite.
+
+**Do this now:** $act_title
+
+$act_pub
+
+Emails and posting URLs: local \`~/.grok/mission-maps/contacts.md\` (not this page).
 
 **Updated:** $when  
 **Verdict:** **$kind**
@@ -174,7 +255,7 @@ $(if [ -n "$policy" ]; then printf '\n## Push rule\n\n%s\n' "$policy"; fi)
 
 ## Key
 
-Ids are handles. \`what\` is the public-safe label (no amounts, tickets, or case IDs).
+Ids are handles. Follow-up stage is what to do next. Emails are local-only.
 
 $key_table
 
@@ -196,13 +277,13 @@ printf '%s kind=%s heading=%s cos=%s next_do=%s delta_te=%s completed=%s\n' \
 
 case "$kind" in
   deviation)
-    notify critical "Mission deviation" "cosθ=${cos:-—} heading=$heading. $note"
+    notify critical "Stop: ${act_title:-off path}" "${act_body:-$note}"
     ;;
   wait)
-    notify low "Mission wait" "${next_do:-no Do}. $note"
+    notify low "Waiting: ${act_title:-no Do}" "${act_body:-$note}"
     ;;
   *)
-    notify normal "Mission on-path" "cosθ=${cos:-1} next=${next_do:-—}"
+    notify normal "Do this: ${act_title:-next step}" "${act_body:-$note}"
     ;;
 esac
 
