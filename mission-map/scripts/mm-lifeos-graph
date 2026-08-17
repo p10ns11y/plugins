@@ -280,7 +280,7 @@ for i, cells in enumerate(submitted[:8], 1):
     if not co and "qred.com" in url:
         co, ti = "Qred", "Fullstack TypeScript"
     if not co and "greenhouse.io/xai" in url:
-        co, ti = "SpaceXAI", "Exceptional SWE (closed)"
+        co, ti = "SpaceXAI", "Exceptional SWE only — other roles still open"
     if not co:
         co = url.split("/")[2] if "://" in url else f"opp {cells[0]}"
     label = "{co} — {ti} ({st})".format(co=co, ti=(ti or "role")[:40], st=cells[1])
