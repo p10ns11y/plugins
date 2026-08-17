@@ -9,10 +9,16 @@ from pathlib import Path
 
 MAPS = Path(os.environ.get("MISSION_MAPS", Path.home() / ".grok" / "mission-maps"))
 CHIP = MAPS / "waybar.json"
-CF_CLASS_NEEDLES = ("kanithanj.ai", "collab-finder", "com.p10ns11y.collab-finder")
+
+# Product window (installed release). Debug Tauri keeps class/title "collab-finder"
+# and loads http://localhost:5173 — Apply must never spawn or focus that webview.
+PRODUCT_NEEDLES = ("kanithanj.ai",)
+DEV_WINDOW_TITLE = "collab-finder"
 
 
 def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "self-test":
+        return run_self_test()
     if len(sys.argv) > 1 and sys.argv[1] == "notify":
         payload = load()
         tip = payload.get("tooltip") or payload.get("text") or "No mission map"
@@ -64,24 +70,33 @@ def hypr_clients() -> list[dict]:
         return []
 
 
-def find_cf_address() -> str | None:
-    for client in hypr_clients():
-        blob = " ".join(
-            str(client.get(k) or "")
-            for k in ("class", "initialClass", "title")
-        )
-        if any(n in blob for n in CF_CLASS_NEEDLES):
-            addr = client.get("address")
-            if addr:
-                return str(addr)
+def is_product_window(client: dict) -> bool:
+    """Installed kanithanj.ai only — not the debug Vite webview."""
+    title = str(client.get("title") or "")
+    if title == DEV_WINDOW_TITLE:
+        return False
+    blob = " ".join(
+        str(client.get(field) or "")
+        for field in ("class", "initialClass", "title")
+    )
+    return any(needle in blob for needle in PRODUCT_NEEDLES)
+
+
+def find_product_address(clients: list[dict]) -> str | None:
+    for client in clients:
+        if not is_product_window(client):
+            continue
+        addr = client.get("address")
+        if addr:
+            return str(addr)
     return None
 
 
 def launch_collab_finder() -> int:
-    """Focus running CF or start one binary. Never spawn a second window."""
+    """Focus running product or start the installed binary. Never spawn debug."""
     import subprocess
 
-    addr = find_cf_address()
+    addr = find_product_address(hypr_clients())
     if addr:
         subprocess.run(
             ["hyprctl", "dispatch", "focuswindow", f"address:{addr}"],
@@ -92,19 +107,43 @@ def launch_collab_finder() -> int:
 
     home = Path.home()
     candidates = [
-        home / "Work/personal/collab-finder/src-tauri/target/debug/collab-finder",
         home / ".local/bin/kanithanj.ai",
         home / "Work/personal/collab-finder/src-tauri/target/release/collab-finder",
     ]
-    for bin in candidates:
-        if bin.is_file() and os.access(bin, os.X_OK):
-            subprocess.Popen([str(bin)], start_new_session=True)
+    for binary_path in candidates:
+        if binary_path.is_file() and os.access(binary_path, os.X_OK):
+            subprocess.Popen([str(binary_path)], start_new_session=True)
             return 0
     note = home / "life-os" / "UI" / "_private.Mission.md"
     if not note.is_file():
         note = home / "life-os" / "UI" / "Mission.md"
     os.execvp("xdg-open", ["xdg-open", str(note)])
     return 1
+
+
+def run_self_test() -> int:
+    debug_only = [
+        {
+            "address": "0xdebug",
+            "class": "collab-finder",
+            "initialClass": "collab-finder",
+            "title": "collab-finder",
+        }
+    ]
+    product = [
+        {
+            "address": "0xprod",
+            "class": "collab-finder",
+            "initialClass": "collab-finder",
+            "title": "kanithanj.ai",
+        }
+    ]
+    mixed = debug_only + product
+    assert find_product_address(debug_only) is None, "must skip debug Vite window"
+    assert find_product_address(product) == "0xprod"
+    assert find_product_address(mixed) == "0xprod"
+    sys.stdout.write("mm-waybar self-test ok\n")
+    return 0
 
 
 if __name__ == "__main__":
