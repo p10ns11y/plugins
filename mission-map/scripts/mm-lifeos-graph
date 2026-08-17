@@ -87,7 +87,8 @@ path_te_was="$(field "$report" path_te_was)"
 mermaid="$(printf '%s\n' "$report" | awk 'f{print} /^--- mermaid$/{f=1}')"
 
 kind="on-path"
-note="This week's act is on the path to a start date."
+note="This week's act is on the path to a start date.
+$(if [ -n "${tick_why:-}" ]; then printf '\n%s\n' "$tick_why"; fi)"
 if [ "$heading" = "park" ] || [ "$cos" = "0" ]; then
   kind="deviation"
   note="cosθ=0 — this tick is orthogonal to G (Park / shiny)."
@@ -346,6 +347,12 @@ print("act_body=" + shlex.quote(act_local))
 print("act_pub=" + shlex.quote(act_pub))
 print("next_human=" + shlex.quote(lab(nid) if nid else act_title))
 print("time_note=" + shlex.quote((m.get("time_note") or "").strip()))
+_tick = m.get("tick") if isinstance(m.get("tick"), dict) else {}
+print("tick_date=" + shlex.quote(str(_tick.get("date") or "")))
+print("tick_cos=" + shlex.quote(str(_tick.get("cos") if _tick.get("cos") is not None else "")))
+print("tick_did=" + shlex.quote(str(_tick.get("did") or "")))
+print("tick_why=" + shlex.quote(str(_tick.get("why") or "")))
+print("tick_named=" + shlex.quote(str(_tick.get("named_do") or "")))
 
 def pert(s):
     if (s.get("class") or "").lower() == "done":
@@ -392,6 +399,9 @@ Contact mail and posting URLs: \`~/.grok/mission-maps/contacts.md\`.
 | **If that thread dies** | you usually know within ~1 week of silence — not 12 weeks |
 | **Longest remaining chain** | $path_te weeks (kernel; not a destiny date) |
 | **Change since last snapshot** | ${delta_te:-none} |
+$(if [ -n "${tick_cos:-}" ]; then printf '| **This tick cosθ** | %s |\n' "$tick_cos"; fi)
+$(if [ -n "${tick_did:-}" ]; then printf '| **This tick did** | %s |\n' "$tick_did"; fi)
+$(if [ -n "${tick_named:-}" ]; then printf '| **Named Do (still)** | %s |\n' "$tick_named"; fi)
 
 $note
 $(if [ -n "$policy" ]; then printf '\n## How to push\n\n%s\n' "$policy"; fi)
