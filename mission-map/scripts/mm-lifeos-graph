@@ -203,6 +203,23 @@ out_dir = os.environ.get("MISSION_MAPS") or os.path.expanduser("~/.grok/mission-
 os.makedirs(out_dir, exist_ok=True)
 open(os.path.join(out_dir, "contacts.md"), "w").write("\n".join(local_lines) + "\n")
 
+chip = "Map"
+chip_class = "empty"
+if nxt:
+    cc = contact(nxt)
+    chip = (cc.get("chip") or nxt.get("chip") or "Apply").strip()
+    chip_class = "do"
+elif any((s.get("class") or "").lower() == "wait" for s in stages):
+    chip = "Wait"
+    chip_class = "wait"
+waybar = {
+    "text": chip,
+    "tooltip": act_local.replace("\n", "\n"),
+    "class": chip_class,
+    "alt": chip_class,
+}
+open(os.path.join(out_dir, "waybar.json"), "w").write(json.dumps(waybar, ensure_ascii=False) + "\n")
+
 print("key_table=" + shlex.quote("\n".join(lines)))
 print("policy=" + shlex.quote((m.get("policy") or "").strip()))
 print("act_title=" + shlex.quote(act_title))
@@ -275,16 +292,19 @@ cp -f "$NOW_JSON" "$LAST_JSON"
 printf '%s kind=%s heading=%s cos=%s next_do=%s delta_te=%s completed=%s\n' \
   "$when" "$kind" "$heading" "${cos:-}" "${next_do:-}" "${delta_te:-}" "${completed:-}" >>"$LOG"
 
-case "$kind" in
-  deviation)
-    notify critical "Stop: ${act_title:-off path}" "${act_body:-$note}"
-    ;;
-  wait)
-    notify low "Waiting: ${act_title:-no Do}" "${act_body:-$note}"
-    ;;
-  *)
-    notify normal "Do this: ${act_title:-next step}" "${act_body:-$note}"
-    ;;
-esac
+should_notify=0
+if [ "${MISSION_MAP_NOTIFY:-}" = "1" ]; then
+  should_notify=1
+elif [ "${MISSION_MAP_NOTIFY:-}" != "0" ] && [ "$LIFEOS" = "${HOME}/life-os" ]; then
+  should_notify=1
+fi
+if [ "$should_notify" = 1 ] && [ -n "${act_title:-}" ] && [ "${act_title}" != "Do this now" ]; then
+  case "$kind" in
+    deviation) notify critical "Stop: $act_title" "${act_body:-}" ;;
+    wait) notify low "Waiting: $act_title" "${act_body:-}" ;;
+    *) notify normal "Do this: $act_title" "${act_body:-}" ;;
+  esac
+fi
+pkill -RTMIN+12 waybar 2>/dev/null || true
 
 printf '%s\n' "$kind"

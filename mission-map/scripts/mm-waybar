@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""Waybar chip: next mission act. Reads ~/.grok/mission-maps/waybar.json."""
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+MAPS = Path(os.environ.get("MISSION_MAPS", Path.home() / ".grok" / "mission-maps"))
+CHIP = MAPS / "waybar.json"
+
+
+def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "notify":
+        payload = load()
+        tip = payload.get("tooltip") or payload.get("text") or "No mission map"
+        title = "Do this: " + (payload.get("text") or "next")
+        os.execvp(
+            "notify-send",
+            [
+                "notify-send",
+                "--urgency=normal",
+                "--expire-time=20000",
+                "--app-name=Mission map",
+                "--icon=appointment-soon",
+                title,
+                tip,
+            ],
+        )
+    if len(sys.argv) > 1 and sys.argv[1] == "open":
+        note = Path.home() / "life-os" / "UI" / "Mission.md"
+        contacts = MAPS / "contacts.md"
+        target = str(contacts if contacts.is_file() else note)
+        os.execvp("xdg-open", ["xdg-open", target])
+    sys.stdout.write(json.dumps(load(), ensure_ascii=False) + "\n")
+    return 0
+
+
+def load() -> dict:
+    try:
+        return json.loads(CHIP.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {
+            "text": "Map?",
+            "tooltip": "Run mm-lifeos-graph",
+            "class": "empty",
+        }
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

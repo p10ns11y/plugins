@@ -95,6 +95,8 @@ missing.
 
 ### 3. Nightly vault graph (optional — 20:00 local)
 
+Waybar chip (optional): `custom/mission-map` exec `mm-waybar` (signal 12). Click = notify with mail/URL; right-click = open `contacts.md`. Survives only in `~/.config/waybar/` — re-add after `omarchy refresh waybar`.
+
 Grok `/loop` is **interval-only** and expires in 7 days. It cannot hit 20:00.
 Use the user systemd timer (same pattern as north-star nudge).
 

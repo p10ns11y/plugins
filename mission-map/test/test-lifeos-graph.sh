@@ -9,6 +9,7 @@ cp "$ROOT/examples/sample-map.json" "$TMP/maps/cash-path-now.json"
 
 # First night: no last-run → no delta.
 kind=$(
+  MISSION_MAP_NOTIFY=0 \
   MISSION_MAPS="$TMP/maps" \
   LIFEOS="$TMP/life" \
   MISSION_MAP_GRAPH="$ROOT/rust/target/debug/mission-map-graph" \
@@ -35,6 +36,7 @@ with open(p, "w") as f:
 PY
 
 kind=$(
+  MISSION_MAP_NOTIFY=0 \
   MISSION_MAPS="$TMP/maps" \
   LIFEOS="$TMP/life" \
   MISSION_MAP_GRAPH="$ROOT/rust/target/debug/mission-map-graph" \
