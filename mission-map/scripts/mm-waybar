@@ -9,6 +9,7 @@ from pathlib import Path
 
 MAPS = Path(os.environ.get("MISSION_MAPS", Path.home() / ".grok" / "mission-maps"))
 CHIP = MAPS / "waybar.json"
+CF_CLASS_NEEDLES = ("kanithanj.ai", "collab-finder", "com.p10ns11y.collab-finder")
 
 
 def main() -> int:
@@ -47,28 +48,53 @@ def load() -> dict:
         }
 
 
-def launch_collab_finder() -> int:
-    """Focus running CF or start the debug/release binary. Cluster: open is free."""
+def hypr_clients() -> list[dict]:
     import subprocess
 
-    focused = subprocess.run(
-        ["hyprctl", "dispatch", "focuswindow", "class:^(collab-finder)$"],
-        check=False,
-        capture_output=True,
-    )
-    if focused.returncode == 0 and b"ok" in (focused.stdout + focused.stderr).lower():
+    try:
+        out = subprocess.run(
+            ["hyprctl", "clients", "-j"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        data = json.loads(out.stdout or "[]")
+        return data if isinstance(data, list) else []
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
+def find_cf_address() -> str | None:
+    for client in hypr_clients():
+        blob = " ".join(
+            str(client.get(k) or "")
+            for k in ("class", "initialClass", "title")
+        )
+        if any(n in blob for n in CF_CLASS_NEEDLES):
+            addr = client.get("address")
+            if addr:
+                return str(addr)
+    return None
+
+
+def launch_collab_finder() -> int:
+    """Focus running CF or start one binary. Never spawn a second window."""
+    import subprocess
+
+    addr = find_cf_address()
+    if addr:
+        subprocess.run(
+            ["hyprctl", "dispatch", "focuswindow", f"address:{addr}"],
+            check=False,
+            capture_output=True,
+        )
         return 0
-    # Tauri 2 often uses the identifier as class.
-    focused = subprocess.run(
-        ["hyprctl", "dispatch", "focuswindow", "class:^(com.p10ns11y.collab-finder)$"],
-        check=False,
-        capture_output=True,
-    )
+
     home = Path.home()
     candidates = [
+        home / "Work/personal/collab-finder/src-tauri/target/debug/collab-finder",
         home / ".local/bin/kanithanj.ai",
         home / "Work/personal/collab-finder/src-tauri/target/release/collab-finder",
-        home / "Work/personal/collab-finder/src-tauri/target/debug/collab-finder",
     ]
     for bin in candidates:
         if bin.is_file() and os.access(bin, os.X_OK):
