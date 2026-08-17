@@ -29,10 +29,9 @@ def main() -> int:
             ],
         )
     if len(sys.argv) > 1 and sys.argv[1] == "open":
-        note = Path.home() / "life-os" / "UI" / "Mission.md"
-        contacts = MAPS / "contacts.md"
-        target = str(contacts if contacts.is_file() else note)
-        os.execvp("xdg-open", ["xdg-open", target])
+        MAPS.mkdir(parents=True, exist_ok=True)
+        (MAPS / "open-route").write_text("heading\n", encoding="utf-8")
+        return launch_collab_finder()
     sys.stdout.write(json.dumps(load(), ensure_ascii=False) + "\n")
     return 0
 
@@ -46,6 +45,39 @@ def load() -> dict:
             "tooltip": "Run mm-lifeos-graph",
             "class": "empty",
         }
+
+
+def launch_collab_finder() -> int:
+    """Focus running CF or start the debug/release binary. Cluster: open is free."""
+    import subprocess
+
+    focused = subprocess.run(
+        ["hyprctl", "dispatch", "focuswindow", "class:^(collab-finder)$"],
+        check=False,
+        capture_output=True,
+    )
+    if focused.returncode == 0 and b"ok" in (focused.stdout + focused.stderr).lower():
+        return 0
+    # Tauri 2 often uses the identifier as class.
+    focused = subprocess.run(
+        ["hyprctl", "dispatch", "focuswindow", "class:^(com.p10ns11y.collab-finder)$"],
+        check=False,
+        capture_output=True,
+    )
+    home = Path.home()
+    candidates = [
+        home / "Work/personal/collab-finder/src-tauri/target/release/collab-finder",
+        home / "Work/personal/collab-finder/src-tauri/target/debug/collab-finder",
+    ]
+    for bin in candidates:
+        if bin.is_file() and os.access(bin, os.X_OK):
+            subprocess.Popen([str(bin)], start_new_session=True)
+            return 0
+    note = home / "life-os" / "UI" / "_private.Mission.md"
+    if not note.is_file():
+        note = home / "life-os" / "UI" / "Mission.md"
+    os.execvp("xdg-open", ["xdg-open", str(note)])
+    return 1
 
 
 if __name__ == "__main__":
