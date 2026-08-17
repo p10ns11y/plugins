@@ -6,15 +6,11 @@ use std::collections::HashSet;
 pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
     let crit: HashSet<&str> = report.critical.iter().map(String::as_str).collect();
     let mut out = String::from("flowchart TB\n");
-    out.push_str("  x[\"x now\"]\n");
-    out.push_str(&format!("  G[\"G: {}\"]\n", escape(&map.g)));
+    out.push_str("  x[\"Where you are\"]\n");
+    out.push_str(&format!("  G[\"Arrive: {}\"]\n", escape(&map.g)));
 
     for s in &map.stages {
-        let label = if s.what.is_empty() {
-            format!("{} · {}", s.id, display_class(&s.class))
-        } else {
-            format!("{} {} · {}", s.id, s.what, display_class(&s.class))
-        };
+        let label = node_label(s);
         out.push_str(&format!("  {}[\"{}\"]\n", mermaid_id(&s.id), escape(&label)));
     }
 
@@ -23,7 +19,7 @@ pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
         if s.depends_on.is_empty() {
             let dash = class_kind(&s.class) == ClassKind::Park;
             let arrow = if dash {
-                "-.->|\"cosθ=0\"|"
+                "-.->|\"skip this week\"|"
             } else {
                 "-->"
             };
@@ -32,7 +28,11 @@ pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
         }
         for dep in &s.depends_on {
             let on_u = crit.contains(dep.as_str()) && crit.contains(s.id.as_str());
-            let arrow = if on_u { "-->|\"û_G\"|" } else { "-->" };
+            let arrow = if on_u {
+                "-->|\"toward start\"|"
+            } else {
+                "-->"
+            };
             out.push_str(&format!(
                 "  {} {} {}\n",
                 mermaid_id(dep),
@@ -80,14 +80,20 @@ fn assign_class(out: &mut String, map: &MapFile, kind: ClassKind, cls: &str) {
     }
 }
 
-fn display_class(raw: &str) -> &str {
-    match class_kind(raw) {
-        ClassKind::Do => "Do",
-        ClassKind::Wait => "Wait",
-        ClassKind::Park => "Park",
-        ClassKind::Done => "Done",
-        ClassKind::Risk => "Risk",
-        ClassKind::Other => raw,
+fn node_label(s: &crate::dag::StageIn) -> String {
+    let kind = match class_kind(&s.class) {
+        ClassKind::Do => "do now",
+        ClassKind::Wait => "waiting on them",
+        ClassKind::Park => "parked",
+        ClassKind::Done => "already done",
+        ClassKind::Risk => "later / stretch",
+        ClassKind::Other => s.class.trim(),
+    };
+    let what = s.what.trim();
+    if what.is_empty() {
+        format!("{} ({})", s.id, kind)
+    } else {
+        format!("{what} ({kind})")
     }
 }
 
@@ -134,8 +140,8 @@ mod tests {
         let r = report(&map).expect("report");
         let m = flowchart(&map, &r);
         assert!(m.contains("flowchart TB"));
-        assert!(m.contains("G: started role"));
-        assert!(m.contains("û_G"));
+        assert!(m.contains("Arrive: started role"));
+        assert!(m.contains("toward start"));
         assert!(m.contains("class pack do"));
         assert!(m.contains("apply pack"));
     }

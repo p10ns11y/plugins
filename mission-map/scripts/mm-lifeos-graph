@@ -87,7 +87,7 @@ path_te_was="$(field "$report" path_te_was)"
 mermaid="$(printf '%s\n' "$report" | awk 'f{print} /^--- mermaid$/{f=1}')"
 
 kind="on-path"
-note="Heading along û_G."
+note="This week's act is on the path to a start date."
 if [ "$heading" = "park" ] || [ "$cos" = "0" ]; then
   kind="deviation"
   note="cosθ=0 — this tick is orthogonal to G (Park / shiny)."
@@ -132,15 +132,25 @@ def contact(s):
     c = s.get("contact") if isinstance(s.get("contact"), dict) else {}
     return c or {}
 
-# Public table: no emails.
-lines = ["| id | class | what | follow-up | when |", "|----|-------|------|-----------|------|"]
+# Public table: sentences, no emails, no S0/S3 handles.
+kind_word = {
+    "do": "do now",
+    "wait": "waiting on them",
+    "park": "parked",
+    "done": "already done",
+    "risk": "later / stretch",
+}
+lines = [
+    "| What | Status | Next follow-up | When |",
+    "|------|--------|----------------|------|",
+]
 for s in stages:
     c = contact(s)
+    kl = (s.get("class") or "").strip().lower()
     lines.append(
-        "| {id} | {cl} | {what} | {fu} | {when} |".format(
-            id=esc(s.get("id")),
-            cl=esc(s.get("class")),
-            what=esc(s.get("what") or "—"),
+        "| {what} | {cl} | {fu} | {when} |".format(
+            what=esc(s.get("what") or s.get("id") or "—"),
+            cl=esc(kind_word.get(kl, s.get("class") or "—")),
             fu=esc(c.get("followup_stage") or "—"),
             when=esc(c.get("followup_when") or "—"),
         )
@@ -222,9 +232,14 @@ open(os.path.join(out_dir, "waybar.json"), "w").write(json.dumps(waybar, ensure_
 
 print("key_table=" + shlex.quote("\n".join(lines)))
 print("policy=" + shlex.quote((m.get("policy") or "").strip()))
+def lab(i):
+    st = by_id.get(i) or {}
+    return (st.get("what") or i or "").strip()
+
 print("act_title=" + shlex.quote(act_title))
 print("act_body=" + shlex.quote(act_local))
 print("act_pub=" + shlex.quote(act_pub))
+print("next_human=" + shlex.quote(lab(nid) if nid else act_title))
 PY
 )"
 
@@ -244,35 +259,28 @@ review_date: $day
 
 Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m/b overwrite.
 
-**Do this now:** $act_title
+**Do this now:** ${next_human:-$act_title}
 
 $act_pub
 
-Emails and posting URLs: local \`~/.grok/mission-maps/contacts.md\` (not this page).
+Contact mail and posting URLs stay on this machine (\`~/.grok/mission-maps/contacts.md\`), not on this page.
 
 **Updated:** $when  
-**Verdict:** **$kind**
+**On the path?** **$kind**
 
-| Field | Value |
-|-------|--------|
-| **G** | $g |
-| **heading** | $heading |
-| **cosθ** | ${cos:-—} |
-| **next_do** | ${next_do:-—} |
-| **critical** | $critical |
-| **residual** | $residual |
-| **path_te** (wk) | $path_te |
-| **path_te_was** | ${path_te_was:-—} |
-| **delta_te** | ${delta_te:-—} |
-| **completed** | ${completed:-—} |
-| **parked** | ${parked:-—} |
+| | |
+|--|--|
+| **Arrive when** | $g |
+| **Do this now** | ${next_human:-$act_title} |
+| **Weeks still expected** | $path_te |
+| **Change since last snapshot** | ${delta_te:-none} |
 
 $note
-$(if [ -n "$policy" ]; then printf '\n## Push rule\n\n%s\n' "$policy"; fi)
+$(if [ -n "$policy" ]; then printf '\n## How to push\n\n%s\n' "$policy"; fi)
 
-## Key
+## Stages
 
-Ids are handles. Follow-up stage is what to do next. Emails are local-only.
+Plain language. No S0/S1 codes. Emails are local-only.
 
 $key_table
 

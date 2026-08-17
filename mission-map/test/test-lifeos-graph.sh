@@ -18,7 +18,7 @@ kind=$(
 test "$kind" = "on-path"
 grep -q 'heading' "$TMP/life/UI/Mission.md"
 grep -q 'flowchart TB' "$TMP/life/UI/Mission.md"
-grep -q '| id | class | what |' "$TMP/life/UI/Mission.md"
+grep -q '| What | Status |' "$TMP/life/UI/Mission.md"
 grep -q 'Do this' "$TMP/life/UI/Mission.md"
 test -f "$TMP/maps/cash-path-last-run.json"
 
