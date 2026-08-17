@@ -125,7 +125,7 @@ def patch_map(opps: list[dict]) -> None:
                 c["url"] = nxt["url"]
                 c["cf_opp"] = nxt["id"]
                 c["chip"] = "Apply"
-                c["followup_stage"] = f"submit {nxt['company'] or 'next'} pack"
+                c["followup_stage"] = "submit this week's pack"
                 if nxt["emails"]:
                     c["email"] = nxt["emails"][0]
     NOW.write_text(json.dumps(m, indent=2) + "\n")
