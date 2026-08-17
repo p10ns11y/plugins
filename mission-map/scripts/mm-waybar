@@ -66,6 +66,7 @@ def launch_collab_finder() -> int:
     )
     home = Path.home()
     candidates = [
+        home / ".local/bin/kanithanj.ai",
         home / "Work/personal/collab-finder/src-tauri/target/release/collab-finder",
         home / "Work/personal/collab-finder/src-tauri/target/debug/collab-finder",
     ]
