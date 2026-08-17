@@ -96,8 +96,13 @@ elif [ "$heading" = "wait" ]; then
   note="No self-vector. Signpost only; do not invent work."
 elif [ -n "$delta_te" ]; then
   awk -v d="$delta_te" 'BEGIN { exit !(d > 0.05) }' && {
-    kind="deviation"
-    note="Remaining T grew (delta_te=$delta_te). Check a new stage or a longer Wait."
+    if [ "$heading" = "on-path" ] && [ -n "$next_do" ]; then
+      kind="replan"
+      note="Remaining T grew (delta_te=$delta_te) after a DAG/band replan — still on û_G. Not a Park."
+    else
+      kind="deviation"
+      note="Remaining T grew (delta_te=$delta_te). Check a new stage or a longer Wait."
+    fi
   }
 fi
 
@@ -122,6 +127,12 @@ for s in m.get("stages", []):
     what = (s.get("what") or "—").replace("|", "/")
     lines.append(f"| {s.get('id','')} | {s.get('class','')} | {what} |")
 print("\n".join(lines))
+PY
+)"
+policy="$(python3 - "$NOW_JSON" <<'PY'
+import json, sys
+m = json.load(open(sys.argv[1]))
+print((m.get("policy") or "").strip())
 PY
 )"
 
@@ -159,6 +170,7 @@ Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m
 | **parked** | ${parked:-—} |
 
 $note
+$(if [ -n "$policy" ]; then printf '\n## Push rule\n\n%s\n' "$policy"; fi)
 
 ## Key
 
