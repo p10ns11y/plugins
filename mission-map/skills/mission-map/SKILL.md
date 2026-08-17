@@ -48,7 +48,7 @@ Optional numbers:
 ```bash
 make -C {plugin}/c test
 {plugin}/bin/mm-kern pert 2 4 8
-cd {plugin}/rust && cargo run -- ../examples/sample-map.json
+cd {plugin}/rust && cargo run -- ../examples/sample-map.json --mermaid
 ```
 
 `{plugin}` is the install path of this plugin (marketplace or `~/Work/personal/plugins/mission-map`).

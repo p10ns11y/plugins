@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+# Nightly heading refresh: rewrite life-os UI/Mission.md from the live JSON map.
+# Does not invent stages or rewrite a/m/b.
+set -euo pipefail
+
+MAPS="${MISSION_MAPS:-$HOME/.grok/mission-maps}"
+NOW_JSON="${MISSION_MAP_NOW:-$MAPS/cash-path-now.json}"
+LAST_JSON="${MISSION_MAP_LAST:-$MAPS/cash-path-last-run.json}"
+LIFEOS="${LIFEOS:-${LIFE_OS:-$HOME/life-os}}"
+OUT="${MISSION_MAP_OUT:-$LIFEOS/UI/Mission.md}"
+LOG="${MISSION_MAP_LOG:-$MAPS/nightly.log}"
+
+_self="${BASH_SOURCE[0]:-$0}"
+if command -v readlink >/dev/null 2>&1; then
+  _self="$(readlink -f -- "$_self")"
+fi
+ROOT="$(CDPATH= cd -- "$(dirname "$_self")/.." && pwd)"
+
+find_graph() {
+  if [ -n "${MISSION_MAP_GRAPH:-}" ] && [ -x "$MISSION_MAP_GRAPH" ]; then
+    printf '%s\n' "$MISSION_MAP_GRAPH"
+    return
+  fi
+  if [ -x "$ROOT/bin/mission-map-graph" ]; then
+    printf '%s\n' "$ROOT/bin/mission-map-graph"
+    return
+  fi
+  if [ -x "$ROOT/rust/target/release/mission-map-graph" ]; then
+    printf '%s\n' "$ROOT/rust/target/release/mission-map-graph"
+    return
+  fi
+  if [ -x "$ROOT/rust/target/debug/mission-map-graph" ]; then
+    printf '%s\n' "$ROOT/rust/target/debug/mission-map-graph"
+    return
+  fi
+  if command -v mission-map-graph >/dev/null 2>&1; then
+    command -v mission-map-graph
+    return
+  fi
+  echo "mm-lifeos-graph: mission-map-graph not found" >&2
+  exit 1
+}
+
+field() {
+  printf '%s\n' "$1" | awk -F= -v k="$2" '$1==k {sub(/^[^=]*=/,""); print; exit}'
+}
+
+notify() {
+  local urgency="$1" title="$2" body="$3"
+  if [ -z "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]; then
+    return 0
+  fi
+  if ! command -v notify-send >/dev/null 2>&1; then
+    return 0
+  fi
+  notify-send --urgency="$urgency" --expire-time=12000 --app-name="Mission map" \
+    --icon=appointment-soon "$title" "$body" || true
+}
+
+if [ ! -f "$NOW_JSON" ]; then
+  echo "mm-lifeos-graph: missing $NOW_JSON" >&2
+  exit 1
+fi
+
+GRAPH="$(find_graph)"
+mkdir -p "$(dirname "$OUT")" "$MAPS"
+
+args=("$NOW_JSON" --mermaid)
+if [ -f "$LAST_JSON" ]; then
+  args+=(--compare "$LAST_JSON")
+fi
+
+report="$("$GRAPH" "${args[@]}")"
+
+g="$(field "$report" g)"
+critical="$(field "$report" critical)"
+path_te="$(field "$report" path_te)"
+next_do="$(field "$report" next_do)"
+heading="$(field "$report" heading)"
+cos="$(field "$report" cos)"
+residual="$(field "$report" residual)"
+parked="$(field "$report" parked)"
+delta_te="$(field "$report" delta_te)"
+completed="$(field "$report" completed)"
+path_te_was="$(field "$report" path_te_was)"
+
+mermaid="$(printf '%s\n' "$report" | awk 'f{print} /^--- mermaid$/{f=1}')"
+
+kind="on-path"
+note="Heading along û_G."
+if [ "$heading" = "park" ] || [ "$cos" = "0" ]; then
+  kind="deviation"
+  note="cosθ=0 — this tick is orthogonal to G (Park / shiny)."
+elif [ "$heading" = "wait" ]; then
+  kind="wait"
+  note="No self-vector. Signpost only; do not invent work."
+elif [ -n "$delta_te" ]; then
+  awk -v d="$delta_te" 'BEGIN { exit !(d > 0.05) }' && {
+    kind="deviation"
+    note="Remaining T grew (delta_te=$delta_te). Check a new stage or a longer Wait."
+  }
+fi
+
+if [ "$kind" = "on-path" ] && [ -n "$completed" ]; then
+  note="Progress: completed $completed. Remaining T moved ${delta_te:-0}."
+elif [ "$kind" = "on-path" ] && [ -n "$delta_te" ]; then
+  awk -v d="$delta_te" 'BEGIN { exit !(d < -0.05) }' && {
+    note="Remaining T shortened (delta_te=$delta_te)."
+  }
+fi
+
+when="$(date +%Y-%m-%dT%H:%M:%S%z)"
+day="$(date +%Y-%m-%d)"
+
+{
+  cat <<EOF
+---
+type: note
+status: "In Progress"
+importance: 4
+urgency: 3
+area: "[[Career]]"
+tags: [mission-map, heading, nightly]
+review_date: $day
+---
+
+# Mission heading
+
+Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m/b overwrite.
+
+**Updated:** $when  
+**Verdict:** **$kind**
+
+| Field | Value |
+|-------|--------|
+| **G** | $g |
+| **heading** | $heading |
+| **cosθ** | ${cos:-—} |
+| **next_do** | ${next_do:-—} |
+| **critical** | $critical |
+| **residual** | $residual |
+| **path_te** (wk) | $path_te |
+| **path_te_was** | ${path_te_was:-—} |
+| **delta_te** | ${delta_te:-—} |
+| **completed** | ${completed:-—} |
+| **parked** | ${parked:-—} |
+
+$note
+
+## Graph
+
+\`\`\`mermaid
+$mermaid
+\`\`\`
+
+Live JSON: \`~/.grok/mission-maps/cash-path-now.json\`. Brief: \`~/.grok/mission-maps/cash-path-now.md\`.
+
+LLM may propose a stage. Human confirms. Do not treat this page as a destiny date.
+EOF
+} >"$OUT"
+
+cp -f "$NOW_JSON" "$LAST_JSON"
+printf '%s kind=%s heading=%s cos=%s next_do=%s delta_te=%s completed=%s\n' \
+  "$when" "$kind" "$heading" "${cos:-}" "${next_do:-}" "${delta_te:-}" "${completed:-}" >>"$LOG"
+
+case "$kind" in
+  deviation)
+    notify critical "Mission deviation" "cosθ=${cos:-—} heading=$heading. $note"
+    ;;
+  wait)
+    notify low "Mission wait" "${next_do:-no Do}. $note"
+    ;;
+  *)
+    notify normal "Mission on-path" "cosθ=${cos:-1} next=${next_do:-—}"
+    ;;
+esac
+
+printf '%s\n' "$kind"
