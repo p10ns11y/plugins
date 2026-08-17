@@ -43,7 +43,7 @@ kind=$(
   "$ROOT/scripts/mm-lifeos-graph"
 )
 # next_do may be empty (Wait) after pack is Done
-grep -q 'completed' "$TMP/life/UI/Mission.md"
-grep -q 'delta_te' "$TMP/life/UI/Mission.md"
+grep -q 'Change since last snapshot' "$TMP/life/UI/Mission.md"
+test -f "$TMP/life/UI/_private.Mission.md"
 
 echo "test-lifeos-graph ok"

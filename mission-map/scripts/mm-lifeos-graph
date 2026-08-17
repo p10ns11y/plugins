@@ -230,6 +230,111 @@ waybar = {
 }
 open(os.path.join(out_dir, "waybar.json"), "w").write(json.dumps(waybar, ensure_ascii=False) + "\n")
 
+# Local detailed Mission (gitignored UI/_private.Mission.md). Full context to act.
+lifeos = os.environ.get("LIFEOS") or os.path.expanduser("~/life-os")
+priv_path = os.path.join(lifeos, "UI", "_private.Mission.md")
+priv_rows = [
+    "| What | Status | Follow-up | When | Mail | URL | Pack / CF |",
+    "|------|--------|-----------|------|------|-----|-----------|",
+]
+for s in stages:
+    c = contact(s)
+    priv_rows.append(
+        "| {what} | {cl} | {fu} | {when} | {em} | {url} | {pack} |".format(
+            what=esc(s.get("what") or s.get("id") or "—"),
+            cl=esc(s.get("class") or "—"),
+            fu=esc(c.get("followup_stage") or "—"),
+            when=esc(c.get("followup_when") or "—"),
+            em=esc(c.get("email") or "—"),
+            url=esc(c.get("url") or "—"),
+            pack=esc(str(c.get("pack") or c.get("cf_opp") or "—")),
+        )
+    )
+
+pipe = os.path.join(out_dir, "collab-finder-pipeline.md")
+pipe_body = ""
+if os.path.isfile(pipe):
+    pipe_body = open(pipe, encoding="utf-8").read()
+
+priv_mermaid = ["flowchart TB", '  you["You now"]']
+# Four submitted from pipeline table if present (applied/archived with a url).
+submitted = []
+if pipe_body:
+    for line in pipe_body.splitlines():
+        if not line.startswith("|") or "status" in line or "----" in line:
+            continue
+        cells = [x.strip() for x in line.strip("|").split("|")]
+        if len(cells) < 6:
+            continue
+        st = cells[1].lower()
+        if st not in ("applied", "archived"):
+            continue
+        if cells[0] in ("55", "54", "18", "19"):
+            continue  # dup / broken Deel urls
+        submitted.append(cells)
+for i, cells in enumerate(submitted[:8], 1):
+    nid = f"A{i}"
+    co = cells[2] if cells[2] not in ("—", "-") else ""
+    ti = cells[3] if cells[3] not in ("—", "-") else ""
+    url = cells[5] if len(cells) > 5 else ""
+    if not co and "qred.com" in url:
+        co, ti = "Qred", "Fullstack TypeScript"
+    if not co and "greenhouse.io/xai" in url:
+        co, ti = "SpaceXAI", "Exceptional SWE (closed)"
+    if not co:
+        co = url.split("/")[2] if "://" in url else f"opp {cells[0]}"
+    label = "{co} — {ti} ({st})".format(co=co, ti=(ti or "role")[:40], st=cells[1])
+    priv_mermaid.append(f'  {nid}["{label.replace(chr(34), chr(39))}"]')
+    priv_mermaid.append(f"  you --> {nid}")
+priv_mermaid.append('  nxt["Next: submit this week\'s pack"]')
+priv_mermaid.append('  intro["Live intro — same-day reply / nudge if silent"]')
+priv_mermaid.append('  cal["Interview calendars"]')
+priv_mermaid.append('  start["Employment start date"]')
+priv_mermaid.append("  you --> nxt")
+priv_mermaid.append("  you --> intro")
+if submitted:
+    last = f"A{min(len(submitted), 8)}"
+    priv_mermaid.append(f"  {last} --> cal")
+priv_mermaid.append("  nxt --> cal")
+priv_mermaid.append("  intro --> cal")
+priv_mermaid.append("  cal --> start")
+
+os.makedirs(os.path.join(lifeos, "UI"), exist_ok=True)
+open(priv_path, "w", encoding="utf-8").write(
+    "\n".join(
+        [
+            "---",
+            'type: note',
+            'status: "In Progress"',
+            'area: "[[Career]]"',
+            "tags: [mission-map, private]",
+            "---",
+            "",
+            "# Mission heading (private, this machine only)",
+            "",
+            "Not git. Public summary: [[UI/Mission]].",
+            "",
+            f"**Do this now:** {act_local}",
+            "",
+            "## Stages (full contact)",
+            "",
+            *priv_rows,
+            "",
+            "## Graph (named threads)",
+            "",
+            "```mermaid",
+            *priv_mermaid,
+            "```",
+            "",
+            "## Collab-finder pipeline",
+            "",
+            pipe_body or "_Run `mm-sync-collab-finder` to fill this table._",
+            "",
+        ]
+    )
+    + "\n"
+)
+
 print("key_table=" + shlex.quote("\n".join(lines)))
 print("policy=" + shlex.quote((m.get("policy") or "").strip()))
 def lab(i):
@@ -263,7 +368,8 @@ Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m
 
 $act_pub
 
-Contact mail and posting URLs stay on this machine (\`~/.grok/mission-maps/contacts.md\`), not on this page.
+Detailed named graph (this machine only, not on git): [[UI/_private.Mission]].
+Contact mail and posting URLs: \`~/.grok/mission-maps/contacts.md\`.
 
 **Updated:** $when  
 **On the path?** **$kind**
