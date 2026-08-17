@@ -48,6 +48,7 @@ mod tests {
                     b: 2.0,
                     depends_on: vec![],
                     class: "Do".into(),
+                    what: String::new(),
                 },
                 StageIn {
                     id: "interview".into(),
@@ -56,6 +57,7 @@ mod tests {
                     b: 8.0,
                     depends_on: vec!["pack".into()],
                     class: "Wait".into(),
+                    what: String::new(),
                 },
             ],
         }

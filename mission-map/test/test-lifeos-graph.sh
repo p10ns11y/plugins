@@ -17,6 +17,7 @@ kind=$(
 test "$kind" = "on-path"
 grep -q 'heading' "$TMP/life/UI/Mission.md"
 grep -q 'flowchart TB' "$TMP/life/UI/Mission.md"
+grep -q '| id | class | what |' "$TMP/life/UI/Mission.md"
 test -f "$TMP/maps/cash-path-last-run.json"
 
 # Mark pack Done and re-run → progress, remaining T drops.

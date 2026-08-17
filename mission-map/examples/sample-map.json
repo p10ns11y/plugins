@@ -7,7 +7,8 @@
       "m": 1,
       "b": 2,
       "depends_on": [],
-      "class": "Do"
+      "class": "Do",
+      "what": "apply pack"
     },
     {
       "id": "interview",
@@ -15,7 +16,8 @@
       "m": 4,
       "b": 8,
       "depends_on": ["pack"],
-      "class": "Wait"
+      "class": "Wait",
+      "what": "interview calendars"
     },
     {
       "id": "start",
@@ -23,7 +25,8 @@
       "m": 3,
       "b": 8,
       "depends_on": ["interview"],
-      "class": "Wait"
+      "class": "Wait",
+      "what": "start date"
     },
     {
       "id": "side-project",
@@ -31,7 +34,8 @@
       "m": 4,
       "b": 8,
       "depends_on": [],
-      "class": "Park"
+      "class": "Park",
+      "what": "side project"
     }
   ]
 }

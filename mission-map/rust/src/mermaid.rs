@@ -10,7 +10,11 @@ pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
     out.push_str(&format!("  G[\"G: {}\"]\n", escape(&map.g)));
 
     for s in &map.stages {
-        let label = format!("{} · {}", s.id, display_class(&s.class));
+        let label = if s.what.is_empty() {
+            format!("{} · {}", s.id, display_class(&s.class))
+        } else {
+            format!("{} {} · {}", s.id, s.what, display_class(&s.class))
+        };
         out.push_str(&format!("  {}[\"{}\"]\n", mermaid_id(&s.id), escape(&label)));
     }
 
@@ -114,6 +118,7 @@ mod tests {
                     b: 2.0,
                     depends_on: vec![],
                     class: "Do".into(),
+                    what: "apply pack".into(),
                 },
                 StageIn {
                     id: "interview".into(),
@@ -122,6 +127,7 @@ mod tests {
                     b: 8.0,
                     depends_on: vec!["pack".into()],
                     class: "Wait".into(),
+                    what: "calendars".into(),
                 },
             ],
         };
@@ -131,5 +137,6 @@ mod tests {
         assert!(m.contains("G: started role"));
         assert!(m.contains("û_G"));
         assert!(m.contains("class pack do"));
+        assert!(m.contains("apply pack"));
     }
 }

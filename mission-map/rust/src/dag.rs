@@ -16,6 +16,9 @@ pub struct StageIn {
     pub depends_on: Vec<String>,
     #[serde(default)]
     pub class: String,
+    /// Public-safe short label. Empty = id only. Never put amounts or case IDs here.
+    #[serde(default)]
+    pub what: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -254,6 +257,7 @@ mod tests {
                     b: 2.0,
                     depends_on: vec![],
                     class: "Do".into(),
+                    what: String::new(),
                 },
                 StageIn {
                     id: "interview".into(),
@@ -262,6 +266,7 @@ mod tests {
                     b: 8.0,
                     depends_on: vec!["pack".into()],
                     class: "Wait".into(),
+                    what: String::new(),
                 },
                 StageIn {
                     id: "park".into(),
@@ -270,6 +275,7 @@ mod tests {
                     b: 1.0,
                     depends_on: vec![],
                     class: "Park".into(),
+                    what: String::new(),
                 },
             ],
         }

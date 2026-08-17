@@ -3,7 +3,7 @@
 ```text
 G            : checkable arrival
 x            : named facts (no PII dumps)
-stages[]     : id, what, how, when_a, when_m, when_b, deadline?, owner,
+stages[]     : id, what (public-safe label), how, when_a, when_m, when_b, deadline?, owner,
                class ∈ {Do, Risk, Wait, Park, Done}, depends_on[]
 critical     : ids on the longest expected chain (Done contribute te=0)
 next_do      : first Do on remaining critical, else first Do, else empty

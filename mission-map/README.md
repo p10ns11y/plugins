@@ -157,7 +157,7 @@ Copy `examples/sample-map.json` to a **personal** path (not this repo):
 {
   "g": "started a decent full-time role",
   "stages": [
-    { "id": "pack", "a": 0.5, "m": 1, "b": 2, "depends_on": [], "class": "Do" },
+    { "id": "pack", "a": 0.5, "m": 1, "b": 2, "depends_on": [], "class": "Do", "what": "apply pack" },
     { "id": "interview", "a": 2, "m": 4, "b": 8, "depends_on": ["pack"], "class": "Wait" },
     { "id": "start", "a": 1, "m": 3, "b": 8, "depends_on": ["interview"], "class": "Wait" },
     { "id": "side-project", "a": 2, "m": 4, "b": 8, "depends_on": [], "class": "Park" }

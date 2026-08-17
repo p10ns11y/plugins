@@ -111,6 +111,19 @@ fi
 
 when="$(date +%Y-%m-%dT%H:%M:%S%z)"
 day="$(date +%Y-%m-%d)"
+key_table="$(python3 - "$NOW_JSON" <<'PY'
+import json, sys
+m = json.load(open(sys.argv[1]))
+lines = [
+    "| id | class | what |",
+    "|----|-------|------|",
+]
+for s in m.get("stages", []):
+    what = (s.get("what") or "—").replace("|", "/")
+    lines.append(f"| {s.get('id','')} | {s.get('class','')} | {what} |")
+print("\n".join(lines))
+PY
+)"
 
 {
   cat <<EOF
@@ -146,6 +159,12 @@ Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m
 | **parked** | ${parked:-—} |
 
 $note
+
+## Key
+
+Ids are handles. \`what\` is the public-safe label (no amounts, tickets, or case IDs).
+
+$key_table
 
 ## Graph
 
