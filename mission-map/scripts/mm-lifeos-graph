@@ -1,0 +1,447 @@
+#!/usr/bin/env bash
+# Nightly heading refresh: rewrite life-os UI/Mission.md from the live JSON map.
+# Does not invent stages or rewrite a/m/b.
+set -euo pipefail
+
+MAPS="${MISSION_MAPS:-$HOME/.grok/mission-maps}"
+NOW_JSON="${MISSION_MAP_NOW:-$MAPS/cash-path-now.json}"
+LAST_JSON="${MISSION_MAP_LAST:-$MAPS/cash-path-last-run.json}"
+LIFEOS="${LIFEOS:-${LIFE_OS:-$HOME/life-os}}"
+OUT="${MISSION_MAP_OUT:-$LIFEOS/UI/Mission.md}"
+LOG="${MISSION_MAP_LOG:-$MAPS/nightly.log}"
+
+_self="${BASH_SOURCE[0]:-$0}"
+if command -v readlink >/dev/null 2>&1; then
+  _self="$(readlink -f -- "$_self")"
+fi
+ROOT="$(CDPATH= cd -- "$(dirname "$_self")/.." && pwd)"
+
+find_graph() {
+  if [ -n "${MISSION_MAP_GRAPH:-}" ] && [ -x "$MISSION_MAP_GRAPH" ]; then
+    printf '%s\n' "$MISSION_MAP_GRAPH"
+    return
+  fi
+  if [ -x "$ROOT/bin/mission-map-graph" ]; then
+    printf '%s\n' "$ROOT/bin/mission-map-graph"
+    return
+  fi
+  if [ -x "$ROOT/rust/target/release/mission-map-graph" ]; then
+    printf '%s\n' "$ROOT/rust/target/release/mission-map-graph"
+    return
+  fi
+  if [ -x "$ROOT/rust/target/debug/mission-map-graph" ]; then
+    printf '%s\n' "$ROOT/rust/target/debug/mission-map-graph"
+    return
+  fi
+  if command -v mission-map-graph >/dev/null 2>&1; then
+    command -v mission-map-graph
+    return
+  fi
+  echo "mm-lifeos-graph: mission-map-graph not found" >&2
+  exit 1
+}
+
+field() {
+  printf '%s\n' "$1" | awk -F= -v k="$2" '$1==k {sub(/^[^=]*=/,""); print; exit}'
+}
+
+notify() {
+  local urgency="$1" title="$2" body="$3"
+  if [ -z "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]; then
+    return 0
+  fi
+  if ! command -v notify-send >/dev/null 2>&1; then
+    return 0
+  fi
+  notify-send --urgency="$urgency" --expire-time=12000 --app-name="Mission map" \
+    --icon=appointment-soon "$title" "$body" || true
+}
+
+if [ ! -f "$NOW_JSON" ]; then
+  echo "mm-lifeos-graph: missing $NOW_JSON" >&2
+  exit 1
+fi
+
+GRAPH="$(find_graph)"
+mkdir -p "$(dirname "$OUT")" "$MAPS"
+
+args=("$NOW_JSON" --mermaid)
+if [ -f "$LAST_JSON" ]; then
+  args+=(--compare "$LAST_JSON")
+fi
+
+report="$("$GRAPH" "${args[@]}")"
+
+g="$(field "$report" g)"
+critical="$(field "$report" critical)"
+path_te="$(field "$report" path_te)"
+next_do="$(field "$report" next_do)"
+heading="$(field "$report" heading)"
+cos="$(field "$report" cos)"
+residual="$(field "$report" residual)"
+parked="$(field "$report" parked)"
+delta_te="$(field "$report" delta_te)"
+completed="$(field "$report" completed)"
+path_te_was="$(field "$report" path_te_was)"
+
+mermaid="$(printf '%s\n' "$report" | awk 'f{print} /^--- mermaid$/{f=1}')"
+
+kind="on-path"
+note="This week's act is on the path to a start date.
+$(if [ -n "${tick_why:-}" ]; then printf '\n%s\n' "$tick_why"; fi)"
+if [ "$heading" = "park" ] || [ "$cos" = "0" ]; then
+  kind="deviation"
+  note="cosθ=0 — this tick is orthogonal to G (Park / shiny)."
+elif [ "$heading" = "wait" ]; then
+  kind="wait"
+  note="No self-vector. Signpost only; do not invent work."
+elif [ -n "$delta_te" ]; then
+  awk -v d="$delta_te" 'BEGIN { exit !(d > 0.05) }' && {
+    if [ "$heading" = "on-path" ] && [ -n "$next_do" ]; then
+      kind="replan"
+      note="Remaining T grew (delta_te=$delta_te) after a DAG/band replan — still on û_G. Not a Park."
+    else
+      kind="deviation"
+      note="Remaining T grew (delta_te=$delta_te). Check a new stage or a longer Wait."
+    fi
+  }
+fi
+
+if [ "$kind" = "on-path" ] && [ -n "$completed" ]; then
+  note="Progress: completed $completed. Remaining T moved ${delta_te:-0}."
+elif [ "$kind" = "on-path" ] && [ -n "$delta_te" ]; then
+  awk -v d="$delta_te" 'BEGIN { exit !(d < -0.05) }' && {
+    note="Remaining T shortened (delta_te=$delta_te)."
+  }
+fi
+
+when="$(date +%Y-%m-%dT%H:%M:%S%z)"
+day="$(date +%Y-%m-%d)"
+eval "$(python3 - "$NOW_JSON" "${next_do:-}" <<'PY'
+import json, os, shlex, sys
+
+m = json.load(open(sys.argv[1]))
+nid = (sys.argv[2] if len(sys.argv) > 2 else "") or ""
+stages = m.get("stages") or []
+by_id = {s.get("id"): s for s in stages if s.get("id")}
+nxt = by_id.get(nid) or next((s for s in stages if (s.get("class") or "").lower() == "do"), None)
+
+def esc(s):
+    return (s or "").replace("|", "/")
+
+def contact(s):
+    c = s.get("contact") if isinstance(s.get("contact"), dict) else {}
+    return c or {}
+
+# Public table: sentences, no emails, no S0/S3 handles.
+kind_word = {
+    "do": "do now",
+    "wait": "waiting on them",
+    "park": "parked",
+    "done": "already done",
+    "risk": "later / stretch",
+}
+lines = [
+    "| What | Status | Next follow-up | When |",
+    "|------|--------|----------------|------|",
+]
+for s in stages:
+    c = contact(s)
+    kl = (s.get("class") or "").strip().lower()
+    lines.append(
+        "| {what} | {cl} | {fu} | {when} |".format(
+            what=esc(s.get("what") or s.get("id") or "—"),
+            cl=esc(kind_word.get(kl, s.get("class") or "—")),
+            fu=esc(c.get("followup_stage") or "—"),
+            when=esc(c.get("followup_when") or "—"),
+        )
+    )
+
+act_title = "Do this now"
+act_pub = "No Do on the map."
+act_local = act_pub
+if nxt:
+    c = contact(nxt)
+    what = (nxt.get("what") or nxt.get("id") or "next step").strip()
+    act_title = what
+    pub = [what + "."]
+    if c.get("followup_stage"):
+        pub.append(c["followup_stage"] + (f" ({c['followup_when']})" if c.get("followup_when") else "") + ".")
+    loc = list(pub)
+    if c.get("last_touch"):
+        loc.append("Last: " + c["last_touch"] + ".")
+    if c.get("url"):
+        loc.append(c["url"])
+    if c.get("email"):
+        loc.append("Mail: " + c["email"])
+    waits = []
+    for s in stages:
+        if (s.get("class") or "").lower() != "wait":
+            continue
+        cc = contact(s)
+        if cc.get("followup_when") or cc.get("followup_stage"):
+            waits.append(s)
+    if waits:
+        w = waits[0]
+        wc = contact(w)
+        extra = "Also: {what} — {fu}{when}.".format(
+            what=(w.get("what") or w.get("id")),
+            fu=wc.get("followup_stage") or "follow up",
+            when=(" " + wc["followup_when"]) if wc.get("followup_when") else "",
+        )
+        pub.append(extra)
+        loc.append(extra)
+        if wc.get("email"):
+            loc.append("Mail: " + wc["email"])
+        if wc.get("url"):
+            loc.append(wc["url"])
+    act_pub = " ".join(pub)
+    act_local = " ".join(loc)
+
+# Local contacts file (emails OK — this path is not the public vault).
+local_lines = ["# Local contacts (not for git / not for UI/Mission.md)", ""]
+for s in stages:
+    c = contact(s)
+    if not c:
+        continue
+    local_lines.append("## {id} — {what}".format(id=s.get("id"), what=s.get("what") or ""))
+    for k in ("followup_stage", "followup_when", "last_touch", "email", "url"):
+        if c.get(k):
+            local_lines.append("- {k}: {v}".format(k=k, v=c[k]))
+    local_lines.append("")
+
+out_dir = os.environ.get("MISSION_MAPS") or os.path.expanduser("~/.grok/mission-maps")
+os.makedirs(out_dir, exist_ok=True)
+open(os.path.join(out_dir, "contacts.md"), "w").write("\n".join(local_lines) + "\n")
+
+chip = "Map"
+chip_class = "empty"
+if nxt:
+    cc = contact(nxt)
+    chip = (cc.get("chip") or nxt.get("chip") or "Apply").strip()
+    chip_class = "do"
+elif any((s.get("class") or "").lower() == "wait" for s in stages):
+    chip = "Wait"
+    chip_class = "wait"
+waybar = {
+    "text": chip,
+    "tooltip": act_local.replace("\n", "\n"),
+    "class": chip_class,
+    "alt": chip_class,
+}
+open(os.path.join(out_dir, "waybar.json"), "w").write(json.dumps(waybar, ensure_ascii=False) + "\n")
+
+# Local detailed Mission (gitignored UI/_private.Mission.md). Full context to act.
+lifeos = os.environ.get("LIFEOS") or os.path.expanduser("~/life-os")
+priv_path = os.path.join(lifeos, "UI", "_private.Mission.md")
+priv_rows = [
+    "| What | Status | Follow-up | When | Mail | URL | Pack / CF |",
+    "|------|--------|-----------|------|------|-----|-----------|",
+]
+for s in stages:
+    c = contact(s)
+    priv_rows.append(
+        "| {what} | {cl} | {fu} | {when} | {em} | {url} | {pack} |".format(
+            what=esc(s.get("what") or s.get("id") or "—"),
+            cl=esc(s.get("class") or "—"),
+            fu=esc(c.get("followup_stage") or "—"),
+            when=esc(c.get("followup_when") or "—"),
+            em=esc(c.get("email") or "—"),
+            url=esc(c.get("url") or "—"),
+            pack=esc(str(c.get("pack") or c.get("cf_opp") or "—")),
+        )
+    )
+
+pipe = os.path.join(out_dir, "collab-finder-pipeline.md")
+pipe_body = ""
+if os.path.isfile(pipe):
+    pipe_body = open(pipe, encoding="utf-8").read()
+
+priv_mermaid = ["flowchart TB", '  you["You now"]']
+# Four submitted from pipeline table if present (applied/archived with a url).
+submitted = []
+if pipe_body:
+    for line in pipe_body.splitlines():
+        if not line.startswith("|") or "status" in line or "----" in line:
+            continue
+        cells = [x.strip() for x in line.strip("|").split("|")]
+        if len(cells) < 6:
+            continue
+        st = cells[1].lower()
+        if st not in ("applied", "archived"):
+            continue
+        if cells[0] in ("55", "54", "18", "19"):
+            continue  # dup / broken Deel urls
+        submitted.append(cells)
+for i, cells in enumerate(submitted[:8], 1):
+    anode = f"A{i}"
+    co = cells[2] if cells[2] not in ("—", "-") else ""
+    ti = cells[3] if cells[3] not in ("—", "-") else ""
+    url = cells[5] if len(cells) > 5 else ""
+    if not co and "qred.com" in url:
+        co, ti = "Qred", "Fullstack TypeScript"
+    if not co and "greenhouse.io/xai" in url:
+        co, ti = "SpaceXAI", "Exceptional SWE only — other roles still open"
+    if not co:
+        co = url.split("/")[2] if "://" in url else f"opp {cells[0]}"
+    label = "{co} — {ti} ({st})".format(co=co, ti=(ti or "role")[:40], st=cells[1])
+    priv_mermaid.append(f'  {anode}["{label.replace(chr(34), chr(39))}"]')
+    priv_mermaid.append(f"  you --> {anode}")
+priv_mermaid.append('  nxt["Next: submit this week\'s pack"]')
+priv_mermaid.append('  intro["Live intro — same-day reply / nudge if silent"]')
+priv_mermaid.append('  cal["Interview calendars"]')
+priv_mermaid.append('  start["Employment start date"]')
+priv_mermaid.append("  you --> nxt")
+priv_mermaid.append("  you --> intro")
+if submitted:
+    last = f"A{min(len(submitted), 8)}"
+    priv_mermaid.append(f"  {last} --> cal")
+priv_mermaid.append("  nxt --> cal")
+priv_mermaid.append("  intro --> cal")
+priv_mermaid.append("  cal --> start")
+
+os.makedirs(os.path.join(lifeos, "UI"), exist_ok=True)
+open(priv_path, "w", encoding="utf-8").write(
+    "\n".join(
+        [
+            "---",
+            'type: note',
+            'status: "In Progress"',
+            'area: "[[Career]]"',
+            "tags: [mission-map, private]",
+            "---",
+            "",
+            "# Mission heading (private, this machine only)",
+            "",
+            "Not git. Public summary: [[UI/Mission]].",
+            "",
+            f"**Do this now:** {act_local}",
+            "",
+            "## Stages (full contact)",
+            "",
+            *priv_rows,
+            "",
+            "## Graph (named threads)",
+            "",
+            "```mermaid",
+            *priv_mermaid,
+            "```",
+            "",
+            "## Collab-finder pipeline",
+            "",
+            pipe_body or "_Run `mm-sync-collab-finder` to fill this table._",
+            "",
+        ]
+    )
+    + "\n"
+)
+
+print("key_table=" + shlex.quote("\n".join(lines)))
+print("policy=" + shlex.quote((m.get("policy") or "").strip()))
+def lab(i):
+    st = by_id.get(i) or {}
+    return (st.get("what") or i or "").strip()
+
+print("act_title=" + shlex.quote(act_title))
+print("act_body=" + shlex.quote(act_local))
+print("act_pub=" + shlex.quote(act_pub))
+print("next_human=" + shlex.quote(lab(nid) if nid else act_title))
+print("time_note=" + shlex.quote((m.get("time_note") or "").strip()))
+_tick = m.get("tick") if isinstance(m.get("tick"), dict) else {}
+print("tick_date=" + shlex.quote(str(_tick.get("date") or "")))
+print("tick_cos=" + shlex.quote(str(_tick.get("cos") if _tick.get("cos") is not None else "")))
+print("tick_did=" + shlex.quote(str(_tick.get("did") or "")))
+print("tick_why=" + shlex.quote(str(_tick.get("why") or "")))
+print("tick_named=" + shlex.quote(str(_tick.get("named_do") or "")))
+
+def pert(s):
+    if (s.get("class") or "").lower() == "done":
+        return 0.0
+    return (float(s["a"]) + 4.0 * float(s["m"]) + float(s["b"])) / 6.0
+
+live_ids = ["S0", "S4", "S4b", "S5"]
+live_te = sum(pert(by_id[i]) for i in live_ids if i in by_id)
+print("live_te=" + shlex.quote(f"{live_te:.2f}"))
+PY
+)"
+
+{
+  cat <<EOF
+---
+type: note
+status: "In Progress"
+importance: 4
+urgency: 3
+area: "[[Career]]"
+tags: [mission-map, heading, nightly]
+review_date: $day
+---
+
+# Mission heading
+
+Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m/b overwrite.
+
+**Do this now:** ${next_human:-$act_title}
+
+$act_pub
+
+Detailed named graph (this machine only, not on git): [[UI/_private.Mission]].
+Contact mail and posting URLs: \`~/.grok/mission-maps/contacts.md\`.
+
+**Updated:** $when  
+**On the path?** **$kind**
+
+| | |
+|--|--|
+| **Arrive when** | $g |
+| **Do this now** | ${next_human:-$act_title} |
+| **Live thread (intro already happened)** | ${live_te:-$path_te} weeks typical |
+| **If that thread dies** | you usually know within ~1 week of silence — not 12 weeks |
+| **Longest remaining chain** | $path_te weeks (kernel; not a destiny date) |
+| **Change since last snapshot** | ${delta_te:-none} |
+$(if [ -n "${tick_cos:-}" ]; then printf '| **This tick cosθ** | %s |\n' "$tick_cos"; fi)
+$(if [ -n "${tick_did:-}" ]; then printf '| **This tick did** | %s |\n' "$tick_did"; fi)
+$(if [ -n "${tick_named:-}" ]; then printf '| **Named Do (still)** | %s |\n' "$tick_named"; fi)
+
+$note
+$(if [ -n "$policy" ]; then printf '\n## How to push\n\n%s\n' "$policy"; fi)
+$(if [ -n "${time_note:-}" ]; then printf '\n## How long (Sweden rounds)\n\n%s\n' "$time_note"; fi)
+
+## Stages
+
+Plain language. No S0/S1 codes. Emails are local-only.
+
+$key_table
+
+## Graph
+
+\`\`\`mermaid
+$mermaid
+\`\`\`
+
+Live JSON: \`~/.grok/mission-maps/cash-path-now.json\`. Brief: \`~/.grok/mission-maps/cash-path-now.md\`.
+
+LLM may propose a stage. Human confirms. Do not treat this page as a destiny date.
+EOF
+} >"$OUT"
+
+cp -f "$NOW_JSON" "$LAST_JSON"
+printf '%s kind=%s heading=%s cos=%s next_do=%s delta_te=%s completed=%s\n' \
+  "$when" "$kind" "$heading" "${cos:-}" "${next_do:-}" "${delta_te:-}" "${completed:-}" >>"$LOG"
+
+should_notify=0
+if [ "${MISSION_MAP_NOTIFY:-}" = "1" ]; then
+  should_notify=1
+elif [ "${MISSION_MAP_NOTIFY:-}" != "0" ] && [ "$LIFEOS" = "${HOME}/life-os" ]; then
+  should_notify=1
+fi
+if [ "$should_notify" = 1 ] && [ -n "${act_title:-}" ] && [ "${act_title}" != "Do this now" ]; then
+  case "$kind" in
+    deviation) notify critical "Stop: $act_title" "${act_body:-}" ;;
+    wait) notify low "Waiting: $act_title" "${act_body:-}" ;;
+    *) notify normal "Do this: $act_title" "${act_body:-}" ;;
+  esac
+fi
+pkill -RTMIN+12 waybar 2>/dev/null || true
+
+printf '%s\n' "$kind"

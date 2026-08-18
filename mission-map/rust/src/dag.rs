@@ -16,12 +16,36 @@ pub struct StageIn {
     pub depends_on: Vec<String>,
     #[serde(default)]
     pub class: String,
+    /// Public-safe short label. Empty = id only. Never put amounts or case IDs here.
+    #[serde(default)]
+    pub what: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct MapFile {
     pub g: String,
     pub stages: Vec<StageIn>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ClassKind {
+    Do,
+    Wait,
+    Park,
+    Done,
+    Risk,
+    Other,
+}
+
+pub fn class_kind(raw: &str) -> ClassKind {
+    match raw.trim().to_ascii_lowercase().as_str() {
+        "do" => ClassKind::Do,
+        "wait" => ClassKind::Wait,
+        "park" => ClassKind::Park,
+        "done" => ClassKind::Done,
+        "risk" => ClassKind::Risk,
+        _ => ClassKind::Other,
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -62,7 +86,7 @@ pub fn report(map: &MapFile) -> Result<CriticalReport, MapError> {
         .iter()
         .map(|&i| map.stages[i].id.clone())
         .collect();
-    let next_do = critical.iter().cloned().next();
+    let next_do = pick_next_do(map, &critical);
 
     Ok(CriticalReport {
         g: map.g.clone(),
@@ -73,12 +97,29 @@ pub fn report(map: &MapFile) -> Result<CriticalReport, MapError> {
     })
 }
 
+fn pick_next_do(map: &MapFile, critical: &[String]) -> Option<String> {
+    for id in critical {
+        if let Some(s) = map.stages.iter().find(|s| s.id == *id) {
+            if class_kind(&s.class) == ClassKind::Do {
+                return Some(s.id.clone());
+            }
+        }
+    }
+    map.stages
+        .iter()
+        .find(|s| class_kind(&s.class) == ClassKind::Do)
+        .map(|s| s.id.clone())
+}
+
 pub fn path_stages(map: &MapFile, ids: &[String]) -> Result<Vec<MmStage>, MapError> {
     let index = index_ids(&map.stages)?;
     let mut out = Vec::with_capacity(ids.len());
     for id in ids {
         let i = *index.get(id).ok_or_else(|| MapError::UnknownDep(id.clone()))?;
         let s = &map.stages[i];
+        if class_kind(&s.class) == ClassKind::Done {
+            continue;
+        }
         out.push(MmStage {
             a: s.a,
             m: s.m,
@@ -142,6 +183,10 @@ fn topo_order(stages: &[StageIn], preds: &[Vec<usize>]) -> Result<Vec<usize>, Ma
 fn stage_tes(stages: &[StageIn]) -> Result<Vec<f64>, MapError> {
     let mut tes = Vec::with_capacity(stages.len());
     for s in stages {
+        if class_kind(&s.class) == ClassKind::Done {
+            tes.push(0.0);
+            continue;
+        }
         let te = ffi::pert_expected(MmStage {
             a: s.a,
             m: s.m,
@@ -212,6 +257,7 @@ mod tests {
                     b: 2.0,
                     depends_on: vec![],
                     class: "Do".into(),
+                    what: String::new(),
                 },
                 StageIn {
                     id: "interview".into(),
@@ -220,6 +266,7 @@ mod tests {
                     b: 8.0,
                     depends_on: vec!["pack".into()],
                     class: "Wait".into(),
+                    what: String::new(),
                 },
                 StageIn {
                     id: "park".into(),
@@ -228,6 +275,7 @@ mod tests {
                     b: 1.0,
                     depends_on: vec![],
                     class: "Park".into(),
+                    what: String::new(),
                 },
             ],
         }
@@ -240,6 +288,24 @@ mod tests {
         assert_eq!(r.next_do.as_deref(), Some("pack"));
         assert!(r.path_te > 4.0);
         assert!(r.path_te < 7.0);
+    }
+
+    #[test]
+    fn next_do_skips_done_and_wait() {
+        let mut map = sample();
+        map.stages[0].class = "Done".into();
+        let r = report(&map).expect("report");
+        assert_eq!(r.next_do.as_deref(), None);
+        assert!(r.path_te < 5.0);
+    }
+
+    #[test]
+    fn next_do_picks_parallel_do_when_critical_is_wait() {
+        let mut map = sample();
+        map.stages[0].class = "Done".into();
+        map.stages[2].class = "Do".into();
+        let r = report(&map).expect("report");
+        assert_eq!(r.next_do.as_deref(), Some("park"));
     }
 
     #[test]

@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Waybar chip: next mission act. Reads ~/.grok/mission-maps/waybar.json."""
+from __future__ import annotations
+
+import json
+import os
+import sys
+from pathlib import Path
+
+MAPS = Path(os.environ.get("MISSION_MAPS", Path.home() / ".grok" / "mission-maps"))
+CHIP = MAPS / "waybar.json"
+
+# Product window (installed release). Debug Tauri keeps class/title "collab-finder"
+# and loads http://localhost:5173 — Apply must never spawn or focus that webview.
+PRODUCT_NEEDLES = ("kanithanj.ai",)
+DEV_WINDOW_TITLE = "collab-finder"
+
+
+def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "self-test":
+        return run_self_test()
+    if len(sys.argv) > 1 and sys.argv[1] == "notify":
+        payload = load()
+        tip = payload.get("tooltip") or payload.get("text") or "No mission map"
+        title = "Do this: " + (payload.get("text") or "next")
+        os.execvp(
+            "notify-send",
+            [
+                "notify-send",
+                "--urgency=normal",
+                "--expire-time=20000",
+                "--app-name=Mission map",
+                "--icon=appointment-soon",
+                title,
+                tip,
+            ],
+        )
+    if len(sys.argv) > 1 and sys.argv[1] == "open":
+        MAPS.mkdir(parents=True, exist_ok=True)
+        (MAPS / "open-route").write_text("heading\n", encoding="utf-8")
+        return launch_collab_finder()
+    sys.stdout.write(json.dumps(load(), ensure_ascii=False) + "\n")
+    return 0
+
+
+def load() -> dict:
+    try:
+        return json.loads(CHIP.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {
+            "text": "Map?",
+            "tooltip": "Run mm-lifeos-graph",
+            "class": "empty",
+        }
+
+
+def hypr_clients() -> list[dict]:
+    import subprocess
+
+    try:
+        out = subprocess.run(
+            ["hyprctl", "clients", "-j"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        data = json.loads(out.stdout or "[]")
+        return data if isinstance(data, list) else []
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
+def is_product_window(client: dict) -> bool:
+    """Installed kanithanj.ai only — not the debug Vite webview."""
+    title = str(client.get("title") or "")
+    if title == DEV_WINDOW_TITLE:
+        return False
+    blob = " ".join(
+        str(client.get(field) or "")
+        for field in ("class", "initialClass", "title")
+    )
+    return any(needle in blob for needle in PRODUCT_NEEDLES)
+
+
+def find_product_address(clients: list[dict]) -> str | None:
+    for client in clients:
+        if not is_product_window(client):
+            continue
+        addr = client.get("address")
+        if addr:
+            return str(addr)
+    return None
+
+
+def launch_collab_finder() -> int:
+    """Focus running product or start the installed binary. Never spawn debug."""
+    import subprocess
+
+    addr = find_product_address(hypr_clients())
+    if addr:
+        subprocess.run(
+            ["hyprctl", "dispatch", "focuswindow", f"address:{addr}"],
+            check=False,
+            capture_output=True,
+        )
+        return 0
+
+    home = Path.home()
+    candidates = [
+        home / ".local/bin/kanithanj.ai",
+        home / "Work/personal/collab-finder/src-tauri/target/release/collab-finder",
+    ]
+    for binary_path in candidates:
+        if binary_path.is_file() and os.access(binary_path, os.X_OK):
+            subprocess.Popen([str(binary_path)], start_new_session=True)
+            return 0
+    note = home / "life-os" / "UI" / "_private.Mission.md"
+    if not note.is_file():
+        note = home / "life-os" / "UI" / "Mission.md"
+    os.execvp("xdg-open", ["xdg-open", str(note)])
+    return 1
+
+
+def run_self_test() -> int:
+    debug_only = [
+        {
+            "address": "0xdebug",
+            "class": "collab-finder",
+            "initialClass": "collab-finder",
+            "title": "collab-finder",
+        }
+    ]
+    product = [
+        {
+            "address": "0xprod",
+            "class": "collab-finder",
+            "initialClass": "collab-finder",
+            "title": "kanithanj.ai",
+        }
+    ]
+    mixed = debug_only + product
+    assert find_product_address(debug_only) is None, "must skip debug Vite window"
+    assert find_product_address(product) == "0xprod"
+    assert find_product_address(mixed) == "0xprod"
+    sys.stdout.write("mm-waybar self-test ok\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

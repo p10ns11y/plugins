@@ -40,7 +40,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + C/shell auth tether | `/eva` · `/eva-tether-init` · `/workflow eva-emptiness` |
 | **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface | `/note` `/focus` `/journal` |
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
-| **mission-map** | Mission briefing: steps, calculated risk, replan; C PERT/MC + Rust critical path | `/mission-map` |
+| **mission-map** | Mission briefing: critical path, heading \(\hat{u}_G\) / \(\cos\theta\), replan; C PERT/MC + Rust graph | `/mission-map` |
 
 ---
 
