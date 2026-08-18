@@ -10,9 +10,9 @@ from pathlib import Path
 MAPS = Path(os.environ.get("MISSION_MAPS", Path.home() / ".grok" / "mission-maps"))
 CHIP = MAPS / "waybar.json"
 
-# Product window (installed release). Debug Tauri keeps class/title "collab-finder"
-# and loads http://localhost:5173 — Apply must never spawn or focus that webview.
-PRODUCT_NEEDLES = ("kanithanj.ai",)
+# Product window only. Substring "kanithanj.ai" in a terminal/browser title
+# (e.g. this Grok session) must not steal Apply.
+PRODUCT_CLASSES = ("kanithanj.ai", "com.p10ns11y.collab-finder")
 DEV_WINDOW_TITLE = "collab-finder"
 
 
@@ -71,15 +71,15 @@ def hypr_clients() -> list[dict]:
 
 
 def is_product_window(client: dict) -> bool:
-    """Installed kanithanj.ai only — not the debug Vite webview."""
+    """Installed app only — not Vite debug, not a terminal whose title mentions it."""
     title = str(client.get("title") or "")
     if title == DEV_WINDOW_TITLE:
         return False
-    blob = " ".join(
-        str(client.get(field) or "")
-        for field in ("class", "initialClass", "title")
-    )
-    return any(needle in blob for needle in PRODUCT_NEEDLES)
+    for field in ("class", "initialClass"):
+        klass = str(client.get(field) or "")
+        if klass in PRODUCT_CLASSES:
+            return True
+    return title == "kanithanj.ai"
 
 
 def find_product_address(clients: list[dict]) -> str | None:
@@ -92,8 +92,26 @@ def find_product_address(clients: list[dict]) -> str | None:
     return None
 
 
+def resolve_kanithanj() -> str | None:
+    """PATH first (~/.local/bin prepended). Waybar's env often omits it."""
+    import shutil
+
+    local = Path.home() / ".local" / "bin"
+    path = os.environ.get("PATH", "")
+    parts = path.split(os.pathsep) if path else []
+    if str(local) not in parts:
+        os.environ["PATH"] = str(local) + os.pathsep + path
+    found = shutil.which("kanithanj.ai")
+    if found:
+        return found
+    fallback = local / "kanithanj.ai"
+    if fallback.is_file() and os.access(fallback, os.X_OK):
+        return str(fallback)
+    return None
+
+
 def launch_collab_finder() -> int:
-    """Focus running product or start the installed binary. Never spawn debug."""
+    """Focus running product, else `kanithanj.ai` on PATH. Never open notes."""
     import subprocess
 
     addr = find_product_address(hypr_clients())
@@ -105,20 +123,30 @@ def launch_collab_finder() -> int:
         )
         return 0
 
-    home = Path.home()
-    candidates = [
-        home / ".local/bin/kanithanj.ai",
-        home / "Work/personal/collab-finder/src-tauri/target/release/collab-finder",
-    ]
-    for binary_path in candidates:
-        if binary_path.is_file() and os.access(binary_path, os.X_OK):
-            subprocess.Popen([str(binary_path)], start_new_session=True)
-            return 0
-    note = home / "life-os" / "UI" / "_private.Mission.md"
-    if not note.is_file():
-        note = home / "life-os" / "UI" / "Mission.md"
-    os.execvp("xdg-open", ["xdg-open", str(note)])
-    return 1
+    exe = resolve_kanithanj()
+    if not exe:
+        subprocess.run(
+            [
+                "notify-send",
+                "--urgency=critical",
+                "--app-name=Mission map",
+                "kanithanj.ai not on PATH",
+                "Install with: pnpm install:local",
+            ],
+            check=False,
+        )
+        return 1
+
+    # Hyprland must exec the window; a bare Popen from Waybar often never maps.
+    ran = subprocess.run(
+        ["hyprctl", "dispatch", "exec", exe],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if ran.returncode != 0:
+        subprocess.Popen([exe], start_new_session=True)
+    return 0
 
 
 def run_self_test() -> int:
@@ -138,10 +166,21 @@ def run_self_test() -> int:
             "title": "kanithanj.ai",
         }
     ]
+    grok_term = [
+        {
+            "address": "0xgrok",
+            "class": "com.mitchellh.ghostty",
+            "initialClass": "com.mitchellh.ghostty",
+            "title": "Fortress ranker v1 in kanithanj.ai - grok",
+        }
+    ]
     mixed = debug_only + product
     assert find_product_address(debug_only) is None, "must skip debug Vite window"
+    assert find_product_address(grok_term) is None, "must not focus a terminal that mentions the app"
     assert find_product_address(product) == "0xprod"
     assert find_product_address(mixed) == "0xprod"
+    resolved = resolve_kanithanj()
+    assert resolved and resolved.endswith("kanithanj.ai"), resolved
     sys.stdout.write("mm-waybar self-test ok\n")
     return 0
 
