@@ -66,12 +66,14 @@ Cursor: copy `cursor/commands/*.md` into the project or user commands dir.
 
 ```bash
 ./test/test-thin.sh
+./test/test-on-kern.sh
 ```
 
 ## Layout
 
 ```text
 plugin.json
+bin/on-kern         # judgment kernels (score, rank, waters, eval, hubris)
 commands/           # Grok slash
 cursor/commands/    # Cursor slash (same contract, no Grok $ARGUMENTS)
 agents/             # one Navigator persona — not three priors

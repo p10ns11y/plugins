@@ -24,4 +24,7 @@ typedef struct {
  * MM_ERR_FULL when draws exceed MM_MAX_DRAWS or n exceeds MM_MAX_STAGES. */
 mm_status_t mm_mc_path(mm_mc_summary_t *out, const mm_mc_cfg_t *cfg);
 
+/* One triangular-PERT draw in [a,b] peaked at m. unit must be in (0,1). */
+double mm_mc_sample_stage(mm_stage_t stage, double unit);
+
 #endif /* MM_MC_H */

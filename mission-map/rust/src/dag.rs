@@ -19,9 +19,15 @@ pub struct StageIn {
     /// Public-safe short label. Empty = id only. Never put amounts or case IDs here.
     #[serde(default)]
     pub what: String,
+    /// Risk hazard λ (events per week). Risk class only.
+    #[serde(default)]
+    pub lambda: Option<f64>,
+    /// Weeks added to T if Risk fires. Risk class only.
+    #[serde(default)]
+    pub blast: Option<f64>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct MapFile {
     pub g: String,
     pub stages: Vec<StageIn>,
@@ -129,7 +135,7 @@ pub fn path_stages(map: &MapFile, ids: &[String]) -> Result<Vec<MmStage>, MapErr
     Ok(out)
 }
 
-fn index_ids(stages: &[StageIn]) -> Result<HashMap<String, usize>, MapError> {
+pub(crate) fn index_ids(stages: &[StageIn]) -> Result<HashMap<String, usize>, MapError> {
     let mut index = HashMap::new();
     for (i, s) in stages.iter().enumerate() {
         index.insert(s.id.clone(), i);
@@ -137,7 +143,7 @@ fn index_ids(stages: &[StageIn]) -> Result<HashMap<String, usize>, MapError> {
     Ok(index)
 }
 
-fn pred_lists(
+pub(crate) fn pred_lists(
     stages: &[StageIn],
     index: &HashMap<String, usize>,
 ) -> Result<Vec<Vec<usize>>, MapError> {
@@ -153,7 +159,7 @@ fn pred_lists(
     Ok(preds)
 }
 
-fn topo_order(stages: &[StageIn], preds: &[Vec<usize>]) -> Result<Vec<usize>, MapError> {
+pub(crate) fn topo_order(stages: &[StageIn], preds: &[Vec<usize>]) -> Result<Vec<usize>, MapError> {
     let n = stages.len();
     let mut indeg = vec![0usize; n];
     let mut succ: Vec<Vec<usize>> = vec![Vec::new(); n];
@@ -258,6 +264,8 @@ mod tests {
                     depends_on: vec![],
                     class: "Do".into(),
                     what: String::new(),
+                    lambda: None,
+                    blast: None,
                 },
                 StageIn {
                     id: "interview".into(),
@@ -267,6 +275,8 @@ mod tests {
                     depends_on: vec!["pack".into()],
                     class: "Wait".into(),
                     what: String::new(),
+                    lambda: None,
+                    blast: None,
                 },
                 StageIn {
                     id: "park".into(),
@@ -276,6 +286,8 @@ mod tests {
                     depends_on: vec![],
                     class: "Park".into(),
                     what: String::new(),
+                    lambda: None,
+                    blast: None,
                 },
             ],
         }

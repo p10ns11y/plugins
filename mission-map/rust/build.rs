@@ -3,6 +3,8 @@ fn main() {
         .file("../c/mm_pert.c")
         .file("../c/mm_mc.c")
         .file("../c/mm_grad.c")
+        .file("../c/mm_hazard.c")
+        .file("../c/mm_bayes_pert.c")
         .include("../c")
         .flag_if_supported("-std=c11")
         .flag_if_supported("-Wall")
@@ -12,4 +14,6 @@ fn main() {
     println!("cargo:rerun-if-changed=../c/mm_pert.c");
     println!("cargo:rerun-if-changed=../c/mm_mc.c");
     println!("cargo:rerun-if-changed=../c/mm_grad.c");
+    println!("cargo:rerun-if-changed=../c/mm_hazard.c");
+    println!("cargo:rerun-if-changed=../c/mm_bayes_pert.c");
 }

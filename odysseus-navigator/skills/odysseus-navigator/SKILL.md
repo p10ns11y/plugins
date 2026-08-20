@@ -168,3 +168,19 @@ Spirit\{Ithaca}  ⇏  skip Antidote   // cunning never replaces opacity, budgets
 - [ ] No CG/EVA bodies pasted
 
 **Done_when artifact:** Navigator block present in the turn (and on Card iff CG already open).
+
+---
+
+## Optional numbers (judgment kernels)
+
+Expand [references/judgment-math.md](references/judgment-math.md) when you need scored harm or waters gates.
+
+```bash
+on-kern score  --cyclops 0.8 --drift 0.3    # harm_* + drift + empire_score
+on-kern rank   --cyclops 0.8 --circe 0.2    # mistakes by harm (core uses top one)
+on-kern waters --calm --file-count 1 --greppable
+on-kern eval   --correctness 0.9 --effectiveness 0.7 --efficiency 0.2
+on-kern hubris --metis 1 --metis-allowed 0
+```
+
+Path math (`path_te`, `∇T`, `cosθ`) stays in **mission-map** — suggest `/mission-map`, do not recompute here.

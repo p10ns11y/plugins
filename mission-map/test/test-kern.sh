@@ -21,6 +21,18 @@ case "$mc" in
   *) echo "unexpected mc: $mc" >&2; exit 1 ;;
 esac
 
+hazard=$("$BIN" hazard 0.1 4 3)
+case "$hazard" in
+  p_fire=0.329680*) ;;
+  *) echo "unexpected hazard: $hazard" >&2; exit 1 ;;
+esac
+
+bayes=$("$BIN" bayes 2 4 8 3)
+case "$bayes" in
+  a=*) ;;
+  *) echo "unexpected bayes: $bayes" >&2; exit 1 ;;
+esac
+
 if "$BIN" pert 8 4 2; then
   echo "expected invalid stage to fail" >&2
   exit 1
