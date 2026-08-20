@@ -284,10 +284,12 @@ Do not build a new overlay; Walker is the picker.
 ## CLI
 
 ```text
-mission-map-graph <map.json> [--mermaid] [--compare <then.json>]
+mission-map-graph <map.json> [--mermaid] [--compare <then.json>] [--risk-tau <weeks>]
 mm-kern pert <a> <m> <b>
 mm-kern mc   <a> <m> <b> [<a> <m> <b> ...]
 mm-kern grad <a> <m> <b>
+mm-kern hazard <lambda> <tau> [<blast>]
+mm-kern bayes <a> <m> <b> <t_actual>
 mm-lifeos-graph
 ```
 
@@ -318,6 +320,8 @@ host/systemd/                    20:00 user timer units
 
 Later kernel (not this tree): finite-diff \(\nabla T\) on a free state vector.
 Still not a forecast.
+
+**Belief layer (this tree):** DAG MC, Bayesian PERT (`mm-kern bayes`), Risk hazard (`mm-kern hazard`), HSMM regime filter (`--compare`). Bands only — no calendar destiny.
 
 ---
 

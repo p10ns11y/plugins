@@ -49,6 +49,8 @@ mod tests {
                     depends_on: vec![],
                     class: "Do".into(),
                     what: String::new(),
+                    lambda: None,
+                    blast: None,
                 },
                 StageIn {
                     id: "interview".into(),
@@ -58,6 +60,8 @@ mod tests {
                     depends_on: vec!["pack".into()],
                     class: "Wait".into(),
                     what: String::new(),
+                    lambda: None,
+                    blast: None,
                 },
             ],
         }

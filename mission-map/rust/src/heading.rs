@@ -89,6 +89,8 @@ mod tests {
                     depends_on: vec![],
                     class: "Do".into(),
                     what: String::new(),
+                    lambda: None,
+                    blast: None,
                 },
                 StageIn {
                     id: "side".into(),
@@ -98,6 +100,8 @@ mod tests {
                     depends_on: vec![],
                     class: "Park".into(),
                     what: String::new(),
+                    lambda: None,
+                    blast: None,
                 },
             ],
         };

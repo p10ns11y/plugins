@@ -48,8 +48,13 @@ Optional numbers:
 ```bash
 make -C {plugin}/c test
 {plugin}/bin/mm-kern pert 2 4 8
+{plugin}/bin/mm-kern hazard 0.1 4 3
+{plugin}/bin/mm-kern bayes 2 4 8 3
 cd {plugin}/rust && cargo run -- ../examples/sample-map.json --mermaid
+cd {plugin}/rust && cargo run -- now.json --compare then.json
 ```
+
+DAG MC (`dag_mc_p50`/`p90`), regime beliefs (`regime_*`), and Risk ranks (`risk id=`) print from the Rust CLI. See [references/kernels.md](references/kernels.md).
 
 `{plugin}` is the install path of this plugin (marketplace or `~/Work/personal/plugins/mission-map`).
 

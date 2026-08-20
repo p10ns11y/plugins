@@ -11,9 +11,9 @@ TARGET   := $(PREFIX_BIN)/mm-kern
 
 all: $(TARGET)
 
-$(TARGET): mm_pert.c mm_mc.c mm_grad.c main.c mm_pert.h mm_mc.h mm_grad.h mm_status.h
+$(TARGET): mm_pert.c mm_mc.c mm_grad.c mm_hazard.c mm_bayes_pert.c main.c mm_pert.h mm_mc.h mm_grad.h mm_hazard.h mm_bayes_pert.h mm_status.h
 	@mkdir -p $(PREFIX_BIN)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ mm_pert.c mm_mc.c mm_grad.c main.c $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ mm_pert.c mm_mc.c mm_grad.c mm_hazard.c mm_bayes_pert.c main.c $(LDFLAGS)
 
 clean:
 	rm -f $(TARGET)

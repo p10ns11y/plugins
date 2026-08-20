@@ -13,7 +13,6 @@ static mm_status_t mm_mc_validate_cfg(const mm_mc_summary_t *out,
                                       const mm_mc_cfg_t *cfg);
 
 /* Writes one triangular draw in [a,b] peaked at m. */
-static double mm_mc_sample_stage(mm_stage_t stage, double unit);
 
 /* Fills totals[0..draws) with path sums. Caller sized the buffer. */
 static void mm_mc_fill_totals(double *totals, const mm_mc_cfg_t *cfg);
@@ -84,7 +83,7 @@ static void mm_mc_fill_totals(double *totals, const mm_mc_cfg_t *cfg)
     }
 }
 
-static double mm_mc_sample_stage(mm_stage_t stage, double unit)
+double mm_mc_sample_stage(mm_stage_t stage, double unit)
 {
     double span = stage.b - stage.a;
     double left = stage.m - stage.a;

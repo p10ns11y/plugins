@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# on-kern — judgment-plane math for odysseus-navigator (no path MC, no priors).
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+usage: on-kern score  [--cyclops N] [--sirens N] [--helios N] [--circe N]
+                      [--winds N] [--scylla N] [--prophecy N]
+                      [--drift N] [--file-count N] [--new-deps N]
+       on-kern rank   (same flags as score — prints mistakes sorted by harm)
+       on-kern waters [--calm] [--novel-pressure] [--crisis] [--r-and-d] [--stakeholder]
+                      [--file-count N] [--unknowns N] [--greppable]
+       on-kern eval   --correctness N --effectiveness N --efficiency N
+       on-kern hubris --metis 0|1 --metis-allowed 0|1 [--auth-unknown 0|1] [--act 0|1]
+
+All scores are 0..1 unless noted. Judgment only — not a calendar forecast.
+EOF
+  exit 2
+}
+
+fval() { awk -v a="$1" 'BEGIN { if (a < 0) print 0; else if (a > 1) print 1; else print a }'; }
+
+# harm weights per mistake (severity × typical exposure)
+declare -A HARM=(
+  [cyclops]=0.95
+  [sirens]=0.70
+  [helios]=0.90
+  [circe]=0.55
+  [winds]=0.75
+  [scylla]=0.80
+  [prophecy]=0.65
+)
+
+read_score_flags() {
+  cyclops=0; sirens=0; helios=0; circe=0; winds=0; scylla=0; prophecy=0
+  drift=0; file_count=0; new_deps=0
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --cyclops) cyclops=$(fval "$2"); shift 2 ;;
+      --sirens) sirens=$(fval "$2"); shift 2 ;;
+      --helios) helios=$(fval "$2"); shift 2 ;;
+      --circe) circe=$(fval "$2"); shift 2 ;;
+      --winds) winds=$(fval "$2"); shift 2 ;;
+      --scylla) scylla=$(fval "$2"); shift 2 ;;
+      --prophecy) prophecy=$(fval "$2"); shift 2 ;;
+      --drift) drift=$(fval "$2"); shift 2 ;;
+      --file-count) file_count="$2"; shift 2 ;;
+      --new-deps) new_deps="$2"; shift 2 ;;
+      *) usage ;;
+    esac
+  done
+}
+
+cmd_score() {
+  read_score_flags "$@"
+  empire=$(awk -v d="$new_deps" -v drift="$drift" 'BEGIN {
+    if (drift < 0.01) print 1; else print d * drift }')
+  printf "drift=%.4f empire_score=%.4f\n" "$drift" "$(fval "$empire")"
+  for m in cyclops sirens helios circe winds scylla prophecy; do
+    v="${!m}"
+    h="${HARM[$m]}"
+  harm=$(awk -v v="$v" -v h="$h" 'BEGIN { print v * h }')
+    printf "harm_%s=%.4f\n" "$m" "$harm"
+  done
+}
+
+cmd_rank() {
+  read_score_flags "$@"
+  cmd_score "$@" | awk -F= '/^harm_/ {
+    print $2, substr($1, 6)
+  }' | sort -rn | awk '{
+    if ($2 != "" && $1 > 0.05) print "mistake=" $2 " harm=" $1
+  }'
+  if awk -v c="$cyclops" -v s="$sirens" -v h="$helios" -v ci="$circe" \
+         -v w="$winds" -v sc="$scylla" -v p="$prophecy" \
+         'BEGIN { exit ! (c+s+h+ci+w+sc+p < 0.05) }'; then
+    echo "mistakes=none"
+  fi
+}
+
+cmd_waters() {
+  calm=0; novel=0; crisis=0; rnd=0; stakeholder=0
+  file_count=99; unknowns=0; greppable=0
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --calm) calm=1; shift ;;
+      --novel-pressure) novel=1; shift ;;
+      --crisis) crisis=1; shift ;;
+      --r-and-d) rnd=1; shift ;;
+      --stakeholder) stakeholder=1; shift ;;
+      --file-count) file_count="$2"; shift 2 ;;
+      --unknowns) unknowns="$2"; shift 2 ;;
+      --greppable) greppable=1; shift ;;
+      *) usage ;;
+    esac
+  done
+  if [[ "$calm" -eq 1 ]] || { [[ "$file_count" -le 2 ]] && [[ "$greppable" -eq 1 ]]; }; then
+    waters=calm; metis_allowed=0
+  elif [[ "$crisis" -eq 1 ]]; then
+    waters=crisis; metis_allowed=0
+  elif [[ "$rnd" -eq 1 ]]; then
+    waters=R&D; metis_allowed=0
+  elif [[ "$stakeholder" -eq 1 ]]; then
+    waters=stakeholder; metis_allowed=0
+  elif [[ "$unknowns" -ge 2 ]] || [[ "$novel" -eq 1 ]]; then
+    waters=novel-pressure; metis_allowed=1
+  else
+    waters=calm; metis_allowed=0
+  fi
+  printf "waters=%s metis_allowed=%d spirit=Ithaca\n" "$waters" "$metis_allowed"
+}
+
+cmd_eval() {
+  correctness=0; effectiveness=0; efficiency=0
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --correctness) correctness=$(fval "$2"); shift 2 ;;
+      --effectiveness) effectiveness=$(fval "$2"); shift 2 ;;
+      --efficiency) efficiency=$(fval "$2"); shift 2 ;;
+      *) usage ;;
+    esac
+  done
+  printf "correctness=%.4f effectiveness=%.4f efficiency=%.4f\n" \
+    "$correctness" "$effectiveness" "$efficiency"
+  if awk -v e="$efficiency" -v c="$correctness" 'BEGIN { exit !(e < 0.3 && c > 0.5) }'; then
+    echo "antidote=YAGNI"
+    echo "mistake_hint=Circe"
+  fi
+  if awk -v c="$correctness" 'BEGIN { exit !(c < 0.4) }'; then
+    echo "antidote=Observability"
+    echo "mistake_hint=Prophecy"
+  fi
+}
+
+cmd_hubris() {
+  metis=0; metis_allowed=0; auth_unknown=0; act=0
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --metis) metis="$2"; shift 2 ;;
+      --metis-allowed) metis_allowed="$2"; shift 2 ;;
+      --auth-unknown) auth_unknown="$2"; shift 2 ;;
+      --act) act="$2"; shift 2 ;;
+      *) usage ;;
+    esac
+  done
+  hubris=0
+  if [[ "$metis" -eq 1 && "$metis_allowed" -eq 0 ]]; then hubris=1; fi
+  if [[ "$act" -eq 1 && "$auth_unknown" -eq 1 ]]; then hubris=1; fi
+  printf "hubris=%d\n" "$hubris"
+  if [[ "$hubris" -eq 1 ]]; then
+    echo "eva_hook=Ask"
+    echo "refuse=Act-from-hubris"
+  fi
+}
+
+[[ $# -ge 1 ]] || usage
+case "$1" in
+  score) shift; cmd_score "$@" ;;
+  rank) shift; cmd_rank "$@" ;;
+  waters) shift; cmd_waters "$@" ;;
+  eval) shift; cmd_eval "$@" ;;
+  hubris) shift; cmd_hubris "$@" ;;
+  -h|--help) usage ;;
+  *) usage ;;
+esac
