@@ -5,6 +5,7 @@ G            : checkable arrival
 x            : named facts (no PII dumps)
 stages[]     : id, what (public-safe label), how, when_a, when_m, when_b, deadline?, owner,
                class ∈ {Do, Risk, Wait, Park, Done}, depends_on[],
+               lambda?, blast?   // Risk only: hazard λ (events/week), blast (weeks added)
                contact? { url, email, followup_stage, followup_when, last_touch }
                // email stays in ~/.grok/mission-maps/ only — never UI/Mission.md
 critical     : ids on the longest expected chain (Done contribute te=0)

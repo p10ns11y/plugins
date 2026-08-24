@@ -41,6 +41,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface | `/note` `/focus` `/journal` |
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
 | **mission-map** | Mission briefing: critical path, heading \(\hat{u}_G\) / \(\cos\theta\), replan; C PERT/MC + Rust graph | `/mission-map` |
+| **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 
 ---
 
@@ -73,6 +74,19 @@ grok plugin install ./arch-machine --trust
 ```
 
 See [arch-machine/README.md](arch-machine/README.md) and `arch-machine/docs/BOUNDARY.md`.
+
+---
+
+## odysseus-navigator
+
+Judgment plane over control-graph + eva-emptiness. Diagnose hubris patterns (Cyclops leak, Sirens rewrite, Helios prod, Circe overbuild, Winds unbounded, Scylla big-bang, ignored prophecy), prescribe antidotes, gate spirits.
+
+```bash
+grok plugin install ./odysseus-navigator --trust
+# slash: /odysseus-core (one bottleneck) · /odysseus (full Navigator table)
+```
+
+See [odysseus-navigator/README.md](odysseus-navigator/README.md).
 
 ---
 

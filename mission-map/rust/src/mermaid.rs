@@ -125,6 +125,8 @@ mod tests {
                     depends_on: vec![],
                     class: "Do".into(),
                     what: "apply pack".into(),
+                    lambda: None,
+                    blast: None,
                 },
                 StageIn {
                     id: "interview".into(),
@@ -134,6 +136,8 @@ mod tests {
                     depends_on: vec!["pack".into()],
                     class: "Wait".into(),
                     what: "calendars".into(),
+                    lambda: None,
+                    blast: None,
                 },
             ],
         };

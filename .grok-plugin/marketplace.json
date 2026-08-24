@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator",
   "owner": {
     "name": "p10ns11y"
   },
@@ -53,6 +53,23 @@
         "monte-carlo",
         "calculated-risk",
         "replan"
+      ]
+    },
+    {
+      "name": "odysseus-navigator",
+      "description": "Faster intelli core-nailer: diagnose Odysseus mistakes, emit Navigator, hook control-graph / EVA. No tether, Rhai, or prior forks.",
+      "category": "development",
+      "source": { "type": "local", "path": "./odysseus-navigator" },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "odysseus",
+        "ithaca",
+        "navigator",
+        "judgment",
+        "hubris",
+        "core",
+        "control-graph",
+        "eva"
       ]
     }
   ]
