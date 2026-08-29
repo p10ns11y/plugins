@@ -18,6 +18,7 @@ need agents/pulse-memory.md
 need skills/pulse-memory/SKILL.md
 need skills/pulse-memory/references/admissions.md
 need skills/pulse-memory/references/store.md
+need skills/pulse-memory/references/usecases.md
 need .grok/workflows/pulse-memory.rhai
 need test/fixtures/thinking.md
 need test/fixtures/harness.md
@@ -37,6 +38,11 @@ echo "$sk" | grep -qi 'do not.*average\|Never average' && ok "skill no-average" 
 rh="$(cat "$ROOT/.grok/workflows/pulse-memory.rhai")"
 echo "$rh" | grep -q 'name: "pulse-memory"' && ok "rhai meta.name" || bad "rhai meta.name"
 echo "$rh" | grep -q 'as_of' && ok "rhai requires as_of" || bad "rhai missing as_of"
+echo "$rh" | grep -q 'mode' && ok "rhai mode" || bad "rhai missing mode"
+uc="$(cat "$ROOT/skills/pulse-memory/references/usecases.md")"
+echo "$uc" | grep -q 'thinking_path' && ok "usecases thinking_path" || bad "usecases missing thinking_path"
+echo "$uc" | grep -q 'harness_path' && ok "usecases harness_path" || bad "usecases missing harness_path"
+echo "$uc" | grep -q 'as_of' && ok "usecases as_of" || bad "usecases missing as_of"
 
 echo "---"
 if [[ "$fail" -ne 0 ]]; then

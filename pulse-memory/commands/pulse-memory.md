@@ -15,6 +15,6 @@ Load skill **pulse-memory** (bundled in this plugin’s `skills/`). Former name:
 2. Admissions: keep only traces that would change the **next action**.
 3. Conflicts: list, do not average. Prefer later `time`, then `tool-verified` > `user-stated` > `inferred` > `unknown`. Else **not in the evidence**.
 4. Emit pulses (≤ ~120 tokens each), not a transcript dump.
-5. If the user wants a file cycle: suggest `/workflow pulse-memory` with `thinking_path`, `harness_path`, `as_of`, `next_action`.
+5. File cycle: `/workflow pulse-memory`. **Always** `as_of` (ISO-8601). `mode`: `both` (default) \| `thinking` \| `harness`. Paths: thinking = dump/session; harness = Dashboard/`next_action`. Copy-paste: skill `references/usecases.md`.
 
 Do not invent completeness. Do not save inferred fills as `locked`.

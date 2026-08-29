@@ -12,7 +12,7 @@ description: >
 
 # pulse-memory
 
-> **Load rule:** This file is the **filter plane**. Expand [references/admissions.md](references/admissions.md) only if a tag, conflict rule, or pulse shape is still ambiguous. Store layout: [references/store.md](references/store.md). Do not paste the essays.
+> **Load rule:** This file is the **filter plane**. Expand [references/usecases.md](references/usecases.md) for modes / `thinking_path` / `harness_path` / `as_of`. Expand [references/admissions.md](references/admissions.md) only if a tag or conflict rule is still ambiguous. Store: [references/store.md](references/store.md). Do not paste the essays.
 
 ```text
 Archive  : residue (logs, tickets, embeddings, full transcripts)
@@ -40,9 +40,11 @@ Sources (do not copy bodies): [Pulse instead of dump](https://captain.kingsparro
 - Two notes, memories, or tool results **contradict**
 - User asks to tag, pulse, admit, or clean a dump
 - Writing session/career/memory files that will be retrieved later
-- `/pulse-memory` · `/workflow pulse-memory`
+- `/pulse-memory` (turn) · `/workflow pulse-memory` (`mode`: `both` \| `thinking` \| `harness`)
 
 Skip: one-file typo with no claims about the past. Former name: `archive-not-memory` (alias skill redirects here).
+
+**Workflow args (file modes):** `as_of` always (ISO-8601). `thinking_path` if mode is `both`/`thinking`. `harness_path` if `both`/`harness`. `next_action` recommended. Examples: [references/usecases.md](references/usecases.md).
 
 ---
 

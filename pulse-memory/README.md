@@ -10,9 +10,14 @@ Essays (canonical prose):
 Former skill name: `archive-not-memory` (redirect stub).
 
 ```text
-  /pulse-memory              tag + admit + resolve in this turn
-  /workflow pulse-memory     scan thinking + harness files → pulse.md
+  /pulse-memory                 turn mode — tag + admit in this chat
+  /workflow pulse-memory        file cycle — needs as_of + paths
 ```
+
+**Modes:** turn (skill) · `both` · `thinking` · `harness` · periodic (scheduler fills `as_of`).  
+**thinking_path** = operator dump. **harness_path** = Dashboard / `next_action` / Card. **as_of** = ISO-8601; the workflow has no clock.
+
+Worked copies: [skills/pulse-memory/references/usecases.md](skills/pulse-memory/references/usecases.md).
 
 ## Install
 
@@ -57,7 +62,17 @@ Plugins do not auto-register Rhai. Copy/symlink the workflow.
 ./test/test-thin.sh
 ```
 
-Workflow smoke (from a Grok session): `/workflow pulse-memory` with `thinking_path`, `harness_path`, `as_of`.
+Workflow smoke: `/workflow pulse-memory` with fixture paths + `as_of`. Example args:
+
+```json
+{
+  "mode": "both",
+  "thinking_path": "pulse-memory/test/fixtures/thinking.md",
+  "harness_path": "pulse-memory/test/fixtures/harness.md",
+  "as_of": "2026-08-29T15:00:00Z",
+  "next_action": "send 4 cash-first Sweden IC applications"
+}
+```
 
 ## Store
 

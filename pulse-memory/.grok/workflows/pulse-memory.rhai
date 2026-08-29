@@ -90,54 +90,69 @@ let harness_path = ();
 let pulse_out = ();
 let as_of = ();
 let next_action = ();
+let mode = "both";
 if args != () {
     thinking_path = args.thinking_path;
     harness_path = args.harness_path;
     pulse_out = args.pulse_out;
     as_of = args.as_of;
     next_action = args.next_action;
+    if args.mode != () { mode = args.mode; }
 }
-if thinking_path == () || trimmed(thinking_path) == "" {
-    pause("verification", "Pass args.thinking_path — file or dir of thinking / scratch.");
-}
-if harness_path == () || trimmed(harness_path) == "" {
-    pause("verification", "Pass args.harness_path — file of intermediate harness state.");
+mode = trimmed(mode);
+if mode != "both" && mode != "thinking" && mode != "harness" {
+    pause("verification", "args.mode must be both | thinking | harness (default both). Turn mode is /pulse-memory, not this workflow.");
 }
 if as_of == () || trimmed(as_of) == "" {
-    pause("verification", "Pass args.as_of — ISO-8601 time (workflow has no wall clock).");
+    pause("verification", "Pass args.as_of — ISO-8601 (workflow has no wall clock). Example: 2026-08-29T15:00:00Z");
+}
+let want_think = (mode == "both" || mode == "thinking");
+let want_harness = (mode == "both" || mode == "harness");
+if want_think && (thinking_path == () || trimmed(thinking_path) == "") {
+    pause("verification", "mode=" + mode + " needs args.thinking_path — dump/scratch/session note.");
+}
+if want_harness && (harness_path == () || trimmed(harness_path) == "") {
+    pause("verification", "mode=" + mode + " needs args.harness_path — Dashboard/Career/harness state.");
 }
 if next_action == () { next_action = "unknown next action"; }
 
-let think_q = json_encode(thinking_path);
-let harness_q = json_encode(harness_path);
 let as_of_q = json_encode(as_of);
 
 phase("Scan");
 let scan_jobs = [];
-let p_think = "";
-p_think += "Read the thinking / scratch file at " + think_q + " with read_file (or list_dir then read). ";
-p_think += "Do not answer from memory. Extract at most 12 claims that might affect a later action. ";
-p_think += "Tag each: source (this path), time (from the file or " + as_of_q + " if unknown), ";
-p_think += "status one of user-stated|tool-verified|inferred|unknown, kind one of data|context|fact|memory, ";
-p_think += "lock open|locked if stated. Empty claims[] is valid only after you actually read the file. ";
-p_think += "Never invent completeness. If the file is missing, return claims[] and say so in one claim text.";
-scan_jobs.push(#{
-    prompt: p_think,
-    label: "scan:thinking",
-    capability_mode: "read-only",
-    output_schema: scan_schema,
-});
-let p_harness = "";
-p_harness += "Read the harness intermediate-state file at " + harness_q + " with read_file. ";
-p_harness += "Do not answer from memory. Extract at most 12 claims (tool results, paused gates, current phase). ";
-p_harness += "Tag each: source, time (file mtime text or " + as_of_q + "), status, kind, lock. ";
-p_harness += "Empty claims[] is valid only after you read the file or confirmed it missing.";
-scan_jobs.push(#{
-    prompt: p_harness,
-    label: "scan:harness",
-    capability_mode: "read-only",
-    output_schema: scan_schema,
-});
+if want_think {
+    let think_q = json_encode(thinking_path);
+    let p_think = "";
+    p_think += "Read the thinking / scratch file at " + think_q + " with read_file (or list_dir then read). ";
+    p_think += "Do not answer from memory. Extract at most 12 claims that might affect a later action. ";
+    p_think += "Tag each: source (this path), time (from the file or " + as_of_q + " if unknown), ";
+    p_think += "status one of user-stated|tool-verified|inferred|unknown, kind one of data|context|fact|memory, ";
+    p_think += "lock open|locked if stated. Empty claims[] is valid only after you actually read the file. ";
+    p_think += "Never invent completeness. If the file is missing, return claims[] and say so in one claim text.";
+    scan_jobs.push(#{
+        prompt: p_think,
+        label: "scan:thinking",
+        capability_mode: "read-only",
+        output_schema: scan_schema,
+    });
+}
+if want_harness {
+    let harness_q = json_encode(harness_path);
+    let p_harness = "";
+    p_harness += "Read the harness intermediate-state file at " + harness_q + " with read_file. ";
+    p_harness += "Do not answer from memory. Extract at most 12 claims (tool results, paused gates, current phase). ";
+    p_harness += "Tag each: source, time (file mtime text or " + as_of_q + "), status, kind, lock. ";
+    p_harness += "Empty claims[] is valid only after you read the file or confirmed it missing.";
+    scan_jobs.push(#{
+        prompt: p_harness,
+        label: "scan:harness",
+        capability_mode: "read-only",
+        output_schema: scan_schema,
+    });
+}
+if scan_jobs.len() == 0 {
+    pause("verification", "No scan jobs — pass mode both|thinking|harness and the matching path.");
+}
 let scans = parallel(scan_jobs);
 
 let claims = [];
