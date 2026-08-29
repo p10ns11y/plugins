@@ -84,3 +84,9 @@ Upsert: `ON CONFLICT(nat_key) DO UPDATE SET seen_count = seen_count + 1, last_se
 - Always-on hooks that pulse every tool call (Winds).
 - A second graph/OS (Circe).
 - Embeddings as the only retrieve (freshness dies).
+
+## Neo4j — too early
+
+Need today: **time**, **status rank**, **supersession**, **FTS**, ~tens of traces. SQLite already has that (`time`, `status`, `superseded_by`, `conflicts`, FTS5).
+
+Neo4j pays off when you query **multi-hop graphs** (person–company–role–skill–thread) at volume. We do not have that query load. A graph server is ops (process, auth, backups) for a sitting that fits in one `LIMIT 8` pulse. Revisit if you need “who worked where / which constraint revoked which” as a graph walk **and** SQLite joins hurt. Until then: **SQLite only**.
