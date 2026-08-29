@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory",
   "owner": {
     "name": "p10ns11y"
   },
@@ -70,6 +70,22 @@
         "core",
         "control-graph",
         "eva"
+      ]
+    },
+    {
+      "name": "pulse-memory",
+      "description": "Pulse instead of dump: admit sparse tagged memory; resolve contradictions without averaging. SQLite archive + pulse workflow.",
+      "category": "development",
+      "source": { "type": "local", "path": "./pulse-memory" },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "pulse",
+        "memory",
+        "admissions",
+        "archive",
+        "hint-tags",
+        "contradiction",
+        "sqlite"
       ]
     }
   ]

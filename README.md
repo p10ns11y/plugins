@@ -42,6 +42,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
 | **mission-map** | Mission briefing: critical path, heading \(\hat{u}_G\) / \(\cos\theta\), replan; C PERT/MC + Rust graph | `/mission-map` |
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
+| **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 
 ---
 

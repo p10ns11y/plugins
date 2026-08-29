@@ -1,0 +1,18 @@
+{
+  "name": "pulse-memory",
+  "version": "0.1.0",
+  "description": "Pulse instead of dump: admit sparse, tagged memory (source, time, status, kind); resolve contradictions without averaging. SQLite archive + pulse workflow.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "keywords": [
+    "pulse",
+    "memory",
+    "admissions",
+    "archive",
+    "hint-tags",
+    "contradiction",
+    "sqlite"
+  ]
+}
