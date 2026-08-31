@@ -29,7 +29,7 @@ A1  Stability ≔ graph reachable ∧ must-show unclipped — not paint match
 A2  Document overflow-x is a fail; long-page overflow-y is not
 A3  Clip ≔ overflow hidden/clip, ellipsis, or ancestor clip with no scrollport. overflow:auto is reachable
 A4  Ellipse/line-clamp on must-show fails; on preview is allowed
-A5  Named viewports only (default phone/tablet/desktop) — no unbounded matrix
+A5  Named viewports only (phone-short 375×667, phone, tablet, desktop) — no unbounded matrix
 A6  Reuse the project's verify feature map paths; never a second SURFACES[]
 A7  Strategy does not name a browser. Adapters pick DOM, Playwright, cloud browsers, or native SDKs
 A8  Interactive controls declare from / success / fail / interrupted in HTML so the machine is static

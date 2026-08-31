@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 export const VIEWPORTS = Object.freeze([
+  Object.freeze({ id: "phone-short", w: 375, h: 667 }),
   Object.freeze({ id: "phone", w: 375, h: 812 }),
   Object.freeze({ id: "tablet", w: 768, h: 1024 }),
   Object.freeze({ id: "desktop", w: 1280, h: 720 }),

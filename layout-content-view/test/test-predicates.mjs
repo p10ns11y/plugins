@@ -19,11 +19,12 @@ import {
 const landmarks = [{ role: "main" }, { role: "heading" }, { role: "navigation" }];
 
 test("named viewports are finite", () => {
-  assert.equal(VIEWPORTS.length, 3);
+  assert.equal(VIEWPORTS.length, 4);
   assert.deepEqual(
     VIEWPORTS.map((v) => v.id),
-    ["phone", "tablet", "desktop"]
+    ["phone-short", "phone", "tablet", "desktop"]
   );
+  assert.equal(VIEWPORTS[0].h, 667);
 });
 
 test("document overflow-x beats inner clip", () => {
@@ -126,6 +127,18 @@ test("scrollport overflow is not a must-show fail", () => {
     landmarks,
   });
   assert.equal(kind, "ok");
+});
+
+test("scrollport that cannot reveal the start is still clip", () => {
+  const kind = classify({
+    role: "must-show",
+    document: { scrollW: 375, clientW: 375, scrollH: 667, clientH: 667 },
+    inner: { scrollW: 200, clientW: 200, scrollH: 40, clientH: 40 },
+    computed: { overflowY: "auto", overflow: "auto" },
+    ancestorClip: true,
+    landmarks,
+  });
+  assert.equal(kind, "inner-clip-must-show");
 });
 
 test("ancestor clip without a scrollport fails", () => {

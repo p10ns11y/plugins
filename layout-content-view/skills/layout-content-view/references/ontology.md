@@ -17,7 +17,7 @@ Tree  = { nodes: Node[] }
 | Layer | Is | Kind / payload | Verify |
 |-------|----|----------------|--------|
 | **route** | Feature-map path | `/profile` | one path, no second `SURFACES[]` |
-| **viewport** | Named size | phone 375×812, tablet, desktop | A5 named set only |
+| **viewport** | Named size | phone-short 375×667, phone 375×812, tablet, desktop | A5 named set only. Short height is a different viewport than tall phone. |
 | **orientation** | portrait \| landscape plus **ui-state** | `slide:arrive` | walk named `data-lcv-states` |
 | **layout** | Formatting context | `block` `flex` `grid` `deck` | children wrap or grow |
 | **container** | Containing block | `flow` `scrollport` `clip-cage` `out-of-flow` | clip-cage fails must-show; scrollport is reachable |
@@ -30,7 +30,9 @@ Tree  = { nodes: Node[] }
 - Later deck slides use `h2`. Crawlable uses `h1–h3`.
 - Prefer `data-lcv-states` on the machine that owns those states. Header `menu:closed` is not the deck catalog.
 - `page.evaluate` serializes only `collectInPage`. Helpers stay inside that function.
-- `overflow:auto` is a scrollport. `overflow:hidden` with no scrollport between is a clip-cage.
+- `overflow:auto` is a scrollport only if the must-show box can scroll into view. `justify-content: center` plus `height: 100%` plus overflow auto clips the **start** and `scrollTop` stays 0. That is still a clip-cage.
+- Probe the top of a must-show box (and chrome `header` bottom), not only the center. Fixed header overlap is occlusion.
+- `overflow:hidden` with no scrollport between is a clip-cage.
 - Interact edges in HTML are the machine.
 
 Executable SoT: `indexTree` / `verifyTree` in `scripts/lcv.mjs`.

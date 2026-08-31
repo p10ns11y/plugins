@@ -26,20 +26,35 @@ export function collectInPage(stressMustShow) {
   const occluded = (el) => {
     const r = el.getBoundingClientRect();
     if (r.width < 1 || r.height < 1) return false;
-    const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
-    return Boolean(top && top !== el && !el.contains(top) && !top.contains(el));
+    const header = document.querySelector("header");
+    const chromeBottom = header ? header.getBoundingClientRect().bottom : 0;
+    if (r.top < chromeBottom - 1) return true;
+    const probes = [
+      [r.x + r.width / 2, r.y + Math.min(4, r.height / 4)],
+      [r.x + r.width / 2, r.y + r.height / 2],
+    ];
+    return probes.some(([x, y]) => {
+      const hit = document.elementFromPoint(x, y);
+      return Boolean(hit && hit !== el && !el.contains(hit) && !hit.contains(el));
+    });
   };
   const ancestorClip = (el) => {
     const r = el.getBoundingClientRect();
     let node = el.parentElement;
-    let sawScroll = false;
     while (node && node !== document.documentElement) {
       const s = getComputedStyle(node);
       const pr = node.getBoundingClientRect();
-      if (scrolls(s.overflowX) || scrolls(s.overflowY)) sawScroll = true;
-      if (!sawScroll) {
-        if (clips(s.overflowX) && (r.left < pr.left - 1 || r.right > pr.right + 1)) return true;
-        if (clips(s.overflowY) && (r.top < pr.top - 1 || r.bottom > pr.bottom + 1)) return true;
+      if (scrolls(s.overflowY)) {
+        if (r.top < pr.top - 1 && node.scrollTop <= 1) return true;
+        if (r.bottom > pr.bottom + 1 && node.scrollHeight <= node.clientHeight + 1) {
+          return true;
+        }
+      } else if (clips(s.overflowY) && (r.top < pr.top - 1 || r.bottom > pr.bottom + 1)) {
+        return true;
+      }
+      if (clips(s.overflowX) && (r.left < pr.left - 1 || r.right > pr.right + 1)) {
+        const canScrollX = scrolls(s.overflowX) && node.scrollWidth > node.clientWidth + 1;
+        if (!canScrollX) return true;
       }
       node = node.parentElement;
     }

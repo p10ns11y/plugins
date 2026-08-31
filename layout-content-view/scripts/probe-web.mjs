@@ -13,6 +13,12 @@ const brave = process.env.BRAVE_BETA_PATH || "/usr/bin/brave-browser-beta";
 const onlyPath = process.env.VERIFY_FEATURE;
 const stress = process.env.LCV_STRESS === "1";
 const outFile = process.env.LCV_OUT;
+const viewports = process.env.LCV_VIEWPORT
+  ? VIEWPORTS.filter((item) => item.id === process.env.LCV_VIEWPORT)
+  : VIEWPORTS;
+if (viewports.length === 0) {
+  throw new Error(`Unknown LCV_VIEWPORT=${process.env.LCV_VIEWPORT}`);
+}
 
 if (!featuresDir) {
   throw new Error("Set FEATURES_DIR to the verify skill features/ directory");
@@ -128,7 +134,7 @@ const machines = [];
 
 try {
   for (const { path } of paths) {
-    for (const vp of VIEWPORTS) {
+    for (const vp of viewports) {
       const context = await browser.newContext({
         viewport: { width: vp.w, height: vp.h },
         reducedMotion: "reduce",
@@ -208,7 +214,7 @@ const summary = {
   origin,
   plugin: here,
   paths: paths.map((p) => p.path),
-  viewports: VIEWPORTS.map((v) => v.id),
+  viewports: viewports.map((v) => v.id),
   stress,
   machines,
   totals: {
