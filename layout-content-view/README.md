@@ -14,7 +14,14 @@ Pilot: **devprofile** (compose with `verify-devprofile` feature map; do not add 
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git
+grok plugin marketplace update
 grok plugin install layout-content-view --trust
+```
+
+Name install reads the marketplace catalog on the source default branch. Until that catalog lists this plugin, install the git ref and subdir:
+
+```bash
+grok plugin install p10ns11y/plugins@feat/layout-content-view#layout-content-view --trust
 ```
 
 ## Verify

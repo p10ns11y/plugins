@@ -113,8 +113,15 @@ Landmark/sitemap graph + named viewports + must-show clip/overflow. Survives red
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git
+grok plugin marketplace update
 grok plugin install layout-content-view --trust
 # slash: /layout-content-view
+```
+
+Until the catalog on the default branch lists this plugin:
+
+```bash
+grok plugin install p10ns11y/plugins@feat/layout-content-view#layout-content-view --trust
 ```
 
 See [layout-content-view/README.md](layout-content-view/README.md).
