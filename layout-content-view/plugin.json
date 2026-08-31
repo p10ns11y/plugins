@@ -1,0 +1,21 @@
+{
+  "name": "layout-content-view",
+  "version": "0.1.0",
+  "description": "Layout-content-view stability: landmark graph, viewport geometry, must-show clip/overflow, z-index and scroll quirks. Not pixel snapshots. Web first.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "layout",
+    "overflow",
+    "clip",
+    "ellipsis",
+    "sitemap",
+    "viewport",
+    "z-index",
+    "a11y",
+    "playwright"
+  ]
+}
