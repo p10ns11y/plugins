@@ -14,6 +14,7 @@ Pixel baselines miss inner clip while the view box stays fixed. Document `scroll
 
 ```text
   /layout-content-view     graph + geometry + content-stress → findings JSON
+  /lcv-implement           propose then write data-lcv marks (companion)
 ```
 
 Pilot: **devprofile** (compose with `verify-devprofile` feature map; do not add a second route catalog).

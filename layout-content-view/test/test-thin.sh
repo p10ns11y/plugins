@@ -17,6 +17,11 @@ need README.md
 need commands/layout-content-view.md
 need cursor/commands/layout-content-view.md
 need agents/layout-content-view.md
+need commands/lcv-implement.md
+need cursor/commands/lcv-implement.md
+need agents/lcv-implement.md
+need skills/lcv-implement/SKILL.md
+need scripts/propose-marks.mjs
 need scripts/lcv.mjs
 need scripts/adapters/web-dom.mjs
 need scripts/adapters/text-layout.mjs

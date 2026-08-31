@@ -40,7 +40,7 @@ A9  Verify the seven-layer tree (ontology.md). Adapters fill nodes. Strategy doe
 
 Overflow, clip, z-index, scroll traps, “looks messy at this width”, agent-crawlable IA, or a redesign that should **not** invalidate the stability contract.
 
-Skip: pixel-exact migration (pstack **visual-parity** + existing snapshots). Phrase-level copy tests. Native adapters are not shipped yet. The strategy still applies.
+Skip: pixel-exact migration (pstack **visual-parity** + existing snapshots). Phrase-level copy tests. Native adapters are not shipped yet. The strategy still applies. Implementer marks: skill **lcv-implement** (`/lcv-implement`). This skill does not write `data-lcv`.
 
 ## Steps
 
