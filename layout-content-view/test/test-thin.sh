@@ -17,13 +17,22 @@ need README.md
 need commands/layout-content-view.md
 need cursor/commands/layout-content-view.md
 need agents/layout-content-view.md
+need commands/lcv-implement.md
+need cursor/commands/lcv-implement.md
+need agents/lcv-implement.md
+need skills/lcv-implement/SKILL.md
+need scripts/propose-marks.mjs
 need scripts/lcv.mjs
+need scripts/adapters/web-dom.mjs
+need scripts/adapters/text-layout.mjs
 need scripts/probe-web.mjs
 need skills/layout-content-view/SKILL.md
 need skills/layout-content-view/references/predicates.md
 need skills/layout-content-view/references/sitemap-graph.md
 need skills/layout-content-view/references/harness.md
 need skills/layout-content-view/references/pilot-devprofile.md
+need skills/layout-content-view/references/interact.md
+need skills/layout-content-view/references/ontology.md
 need test/test-predicates.mjs
 need test/fixtures/ellipsis.html
 

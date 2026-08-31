@@ -3,7 +3,8 @@ import { createRequire } from "node:module";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { VIEWPORTS, report } from "./lcv.mjs";
+import { collectInPage } from "./adapters/web-dom.mjs";
+import { layoutModeFromSize, staticMachine, VIEWPORTS, report } from "./lcv.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const origin = process.env.ORIGIN || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -12,6 +13,12 @@ const brave = process.env.BRAVE_BETA_PATH || "/usr/bin/brave-browser-beta";
 const onlyPath = process.env.VERIFY_FEATURE;
 const stress = process.env.LCV_STRESS === "1";
 const outFile = process.env.LCV_OUT;
+const viewports = process.env.LCV_VIEWPORT
+  ? VIEWPORTS.filter((item) => item.id === process.env.LCV_VIEWPORT)
+  : VIEWPORTS;
+if (viewports.length === 0) {
+  throw new Error(`Unknown LCV_VIEWPORT=${process.env.LCV_VIEWPORT}`);
+}
 
 if (!featuresDir) {
   throw new Error("Set FEATURES_DIR to the verify skill features/ directory");
@@ -51,89 +58,93 @@ function loadChromium() {
   }
 }
 
-function collectInPage(stressMustShow) {
-  const boxOf = (el) => {
-    if (!el) return null;
-    return {
-      scrollW: el.scrollWidth,
-      scrollH: el.scrollHeight,
-      clientW: el.clientWidth,
-      clientH: el.clientHeight,
-      w: el.getBoundingClientRect().width,
-      h: el.getBoundingClientRect().height,
-    };
-  };
-  const computedOf = (el) => {
-    const s = getComputedStyle(el);
-    return {
-      overflow: s.overflow,
-      overflowX: s.overflowX,
-      overflowY: s.overflowY,
-      textOverflow: s.textOverflow,
-      lineClamp: s.webkitLineClamp || s.lineClamp,
-      webkitLineClamp: s.webkitLineClamp,
-    };
-  };
-  const occluded = (el) => {
-    const r = el.getBoundingClientRect();
-    if (r.width < 1 || r.height < 1) return false;
-    const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
-    return Boolean(top && top !== el && !el.contains(top) && !top.contains(el));
-  };
-  const landmarks = [];
-  if (document.querySelector("main")) landmarks.push({ role: "main" });
-  if (document.querySelector("h1")) landmarks.push({ role: "heading" });
-  if (document.querySelector("nav")) landmarks.push({ role: "navigation" });
-  if (document.querySelector('a[href="#main"], a[href="#content"]')) {
-    landmarks.push({ role: "skip" });
+function visitsFromShot(path, shot) {
+  const walk = process.env.LCV_WALK_STATES !== "0";
+  const slides = (shot.states || [])
+    .filter((state) => String(state).startsWith("slide:"))
+    .map((state) => String(state).slice("slide:".length));
+  if (walk && path === "/profile" && slides.length > 0) {
+    return slides.slice(0, 48).map((cue) => ({
+      uiState: `slide:${cue}`,
+      path: `/profile?slide=${encodeURIComponent(cue)}`,
+    }));
   }
+  return [{ uiState: shot.uiState || "", path }];
+}
 
-  const seen = new Set();
-  const nodes = [];
-  const pushNode = (id, sel, el, role) => {
-    if (!el || seen.has(el)) return;
-    seen.add(el);
-    if (stressMustShow && role === "must-show") {
-      el.textContent = `${"W".repeat(400)} ${el.textContent || ""}`;
-    }
-    nodes.push({
-      id,
-      sel,
-      role,
-      inner: boxOf(el),
-      computed: computedOf(el),
-      occluded: role === "must-show" ? occluded(el) : false,
+function samplesFromShot(shot, path, vp, uiState) {
+  const layoutMode = shot.layoutMode || layoutModeFromSize(vp.w, vp.h);
+  const view = { w: shot.view.w, h: shot.view.h };
+  const doc = shot.document;
+  const tag = `${path}@${vp.id}@${layoutMode.orientation}@${uiState || "idle"}`;
+  const samples = [
+    {
+      id: `${tag}:document`,
+      path,
+      viewport: vp,
+      layoutMode,
+      uiState,
+      role: "must-show",
+      document: doc,
+      inner: {
+        scrollW: doc.scrollW,
+        clientW: doc.clientW,
+        scrollH: doc.clientH,
+        clientH: doc.clientH,
+      },
+      viewBefore: view,
+      viewAfter: view,
+      computed: {},
+      landmarks: shot.landmarks,
+    },
+  ];
+  if (shot.fit?.kind === "beat") {
+    samples.push({
+      id: `${tag}:fit`,
+      path,
+      viewport: vp,
+      layoutMode,
+      uiState,
+      role: "must-show",
+      fit: "beat",
+      remaining: shot.fit.remaining,
+      contentMin: shot.fit.contentMin,
+      fontPx: shot.fit.fontPx,
+      document: doc,
+      inner: {
+        scrollW: shot.fit.contentMin.w,
+        clientW: shot.fit.remaining.w,
+        scrollH: shot.fit.contentMin.h,
+        clientH: shot.fit.remaining.h,
+      },
+      viewBefore: view,
+      viewAfter: view,
+      computed: {},
+      landmarks: shot.landmarks,
     });
-  };
-
-  const dialog = document.querySelector("dialog[open], [role='dialog']:not([aria-hidden='true'])");
-  const dialogTitle = dialog?.querySelector("h1, h2, [id$='title']");
-  if (dialogTitle) {
-    pushNode("dialog-title", "dialog heading", dialogTitle, "must-show");
-  } else {
-    pushNode("h1", "h1", document.querySelector("h1"), "must-show");
   }
-  pushNode(
-    "pager-label",
-    ".profile-deck__pager-label",
-    document.querySelector(".profile-deck__pager-label"),
-    "must-show"
-  );
-  for (const el of document.querySelectorAll("[data-lcv]")) {
-    const role = el.getAttribute("data-lcv") || "must-show";
-    pushNode(el.id || `data-lcv-${nodes.length}`, "[data-lcv]", el, role);
+  for (const node of shot.nodes) {
+    if (!node.inner) continue;
+    samples.push({
+      id: `${tag}:${node.id}`,
+      path,
+      viewport: vp,
+      layoutMode,
+      uiState,
+      role: node.role,
+      document: shot.document,
+      inner: node.inner,
+      viewBefore: view,
+      viewAfter: view,
+      computed: node.computed,
+      landmarks: shot.landmarks,
+      occluded: node.occluded,
+      ancestorClip: node.ancestorClip,
+      linked: node.linked,
+      sel: node.sel,
+    });
   }
-  for (const el of document.querySelectorAll('[class*="line-clamp"]')) {
-    pushNode(el.id || `line-clamp-${nodes.length}`, '[class*="line-clamp"]', el, "preview");
-  }
-
-  const root = document.documentElement;
-  return {
-    landmarks,
-    document: boxOf(root),
-    view: { w: window.innerWidth, h: window.innerHeight },
-    nodes,
-  };
+  return samples;
 }
 
 const paths = loadPaths(featuresDir);
@@ -144,80 +155,71 @@ const browser = await chromium.launch({
 });
 const findings = [];
 const errors = [];
+const machines = [];
 
 try {
   for (const { path } of paths) {
-    for (const vp of VIEWPORTS) {
+    for (const vp of viewports) {
       const context = await browser.newContext({
         viewport: { width: vp.w, height: vp.h },
         reducedMotion: "reduce",
       });
       const page = await context.newPage();
-      const url = new URL(path, origin).toString();
       try {
-        await page.goto(url, { waitUntil: "load", timeout: 30_000 });
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        const shot = await page.evaluate(collectInPage, false);
-        const view = { w: shot.view.w, h: shot.view.h };
-        const doc = shot.document;
-        const samples = [
-          {
-            id: `${path}@${vp.id}:document`,
-            path,
-            viewport: vp,
-            role: "must-show",
-            document: doc,
-            inner: {
-              scrollW: doc.scrollW,
-              clientW: doc.clientW,
-              scrollH: doc.clientH,
-              clientH: doc.clientH,
-            },
-            viewBefore: view,
-            viewAfter: view,
-            computed: {},
-            landmarks: shot.landmarks,
-          },
-        ];
-        for (const node of shot.nodes) {
-          if (!node.inner) continue;
-          samples.push({
-            id: `${path}@${vp.id}:${node.id}`,
-            path,
-            viewport: vp,
-            role: node.role,
-            document: shot.document,
-            inner: node.inner,
-            viewBefore: view,
-            viewAfter: view,
-            computed: node.computed,
-            landmarks: shot.landmarks,
-            occluded: node.occluded,
-            sel: node.sel,
-          });
-        }
-        if (stress) {
-          const stressed = await page.evaluate(collectInPage, true);
-          const after = { w: stressed.view.w, h: stressed.view.h };
-          for (const node of stressed.nodes) {
-            if (node.role !== "must-show" || !node.inner) continue;
-            samples.push({
-              id: `${path}@${vp.id}:${node.id}:stress`,
-              path,
-              viewport: vp,
-              role: "must-show",
-              document: stressed.document,
-              inner: node.inner,
-              viewBefore: view,
-              viewAfter: after,
-              computed: node.computed,
-              landmarks: stressed.landmarks,
-              occluded: node.occluded,
-              sel: node.sel,
+        await page.goto(new URL(path, origin).toString(), {
+          waitUntil: "load",
+          timeout: 30_000,
+        });
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        const first = await page.evaluate(collectInPage, false);
+        machines.push({
+          path,
+          viewport: vp.id,
+          layoutMode: first.layoutMode,
+          uiState: first.uiState,
+          machine: staticMachine(first.interact || []),
+        });
+        const visits = visitsFromShot(path, first);
+        for (const visit of visits) {
+          if (visit.path !== path) {
+            await page.goto(new URL(visit.path, origin).toString(), {
+              waitUntil: "load",
+              timeout: 30_000,
             });
+            await new Promise((resolve) => setTimeout(resolve, 150));
           }
+          const shot =
+            visit.path === path && visit.uiState === (first.uiState || "")
+              ? first
+              : await page.evaluate(collectInPage, false);
+          const samples = samplesFromShot(shot, path, vp, visit.uiState || shot.uiState || "");
+          if (stress) {
+            const stressed = await page.evaluate(collectInPage, true);
+            const after = { w: stressed.view.w, h: stressed.view.h };
+            const layoutMode = stressed.layoutMode || layoutModeFromSize(vp.w, vp.h);
+            for (const node of stressed.nodes) {
+              if (node.role !== "must-show" || !node.inner) continue;
+              samples.push({
+                id: `${path}@${vp.id}@${layoutMode.orientation}@${visit.uiState}:${node.id}:stress`,
+                path,
+                viewport: vp,
+                layoutMode,
+                uiState: visit.uiState,
+                role: "must-show",
+                document: stressed.document,
+                inner: node.inner,
+                viewBefore: { w: shot.view.w, h: shot.view.h },
+                viewAfter: after,
+                computed: node.computed,
+                landmarks: stressed.landmarks,
+                occluded: node.occluded,
+                ancestorClip: node.ancestorClip,
+                sel: node.sel,
+              });
+            }
+          }
+          findings.push(...report(samples));
         }
-        findings.push(...report(samples));
       } catch (err) {
         errors.push({ path, viewport: vp.id, error: String(err) });
       } finally {
@@ -237,8 +239,9 @@ const summary = {
   origin,
   plugin: here,
   paths: paths.map((p) => p.path),
-  viewports: VIEWPORTS.map((v) => v.id),
+  viewports: viewports.map((v) => v.id),
   stress,
+  machines,
   totals: {
     samples: findings.length,
     fail: findings.filter((f) => f.fail).length,

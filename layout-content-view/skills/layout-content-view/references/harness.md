@@ -10,6 +10,25 @@ node scripts/lcv.mjs --selftest
 
 These prove the **algorithm**, not a live site.
 
+## Text (Pretext technique)
+
+[Pretext](https://pretextjs.dev/) (`@chenglou/pretext`) measures multiline text without DOM reflow: Canvas `measureText` once, wrap by summing widths. LCV copies that split in `scripts/adapters/text-layout.mjs` (arithmetic) and `web-dom.mjs` (Canvas in the page). Prefer importing `@chenglou/pretext` in an app that already has it; the plugin stays zero-dep.
+
+`fit-impossible` `contentMin.h` comes from that wrap at the beat width, not from `scrollHeight` on every node.
+
+## Tree
+
+`indexTree` / `verifyTree` in `scripts/lcv.mjs` are the strategy. Spine: Routes → Viewports → Orientation → Layouts → Containers → Elements → Interactives. See [ontology.md](ontology.md).
+
+## Adapters
+
+`scripts/lcv.mjs` is the strategy. It never launches a browser.
+
+| Surface | Adapter | Host (inner, pick one) |
+|---------|---------|------------------------|
+| Web | `scripts/adapters/web-dom.mjs` (DOM APIs) | Playwright + Brave, CDP, cloud browser. `page.evaluate` only serializes `collectInPage`, so helpers stay inside that function. |
+| Native | not shipped | SDK layout bounds / simulator |
+
 ## Live web (app repo)
 
 From the app checkout, after `grok plugin install layout-content-view --trust` (or `p10ns11y/plugins#layout-content-view`). Resolve the plugin dir from `grok plugin details layout-content-view`. Do not pass a filesystem path to `grok plugin install`.

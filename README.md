@@ -44,7 +44,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
-| **layout-content-view** | Web layout×content×view stability: graph + geometry, must-show unclipped. Not PNG parity. | `/layout-content-view` |
+| **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
 ---
 
@@ -109,7 +109,7 @@ See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](psta
 
 ## layout-content-view
 
-Landmark/sitemap graph + named viewports + must-show clip/overflow. Survives redesigns because it measures boxes and roles, not pixels. Pilot: devprofile feature map (no second route catalog).
+Routes → Viewports → Orientation → Layouts → Containers → Elements → Interactives. Measures boxes and roles, not pixels. Pilot: devprofile.
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git

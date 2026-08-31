@@ -1,24 +1,33 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { layoutFromSegments } from "../scripts/adapters/text-layout.mjs";
 import {
   VIEWPORTS,
   classify,
   crawlable,
   ellipseMustShow,
   innerClipStableView,
+  adaptiveTypeViable,
+  indexTree,
+  isFitImpossible,
+  layoutModeFromSize,
   overflow,
+  parseInteractAttrs,
   recipe,
   report,
+  staticMachine,
+  verifyTree,
 } from "../scripts/lcv.mjs";
 
 const landmarks = [{ role: "main" }, { role: "heading" }, { role: "navigation" }];
 
 test("named viewports are finite", () => {
-  assert.equal(VIEWPORTS.length, 3);
+  assert.equal(VIEWPORTS.length, 4);
   assert.deepEqual(
     VIEWPORTS.map((v) => v.id),
-    ["phone", "tablet", "desktop"]
+    ["phone-short", "phone", "tablet", "desktop"]
   );
+  assert.equal(VIEWPORTS[0].h, 667);
 });
 
 test("document overflow-x beats inner clip", () => {
@@ -88,23 +97,63 @@ test("overflow helper", () => {
   assert.equal(overflow({ scrollW: 12, clientW: 10, scrollH: 10, clientH: 10 }).x, true);
 });
 
-test("innerClipStableView requires unchanged view", () => {
+test("innerClipStableView requires unchanged view and a clip policy", () => {
+  const clipped = {
+    role: "must-show",
+    inner: { scrollW: 500, clientW: 100, scrollH: 20, clientH: 20 },
+    computed: { overflow: "hidden" },
+  };
   assert.equal(
     innerClipStableView({
+      ...clipped,
       viewBefore: { w: 768, h: 800 },
       viewAfter: { w: 768, h: 800 },
-      inner: { scrollW: 500, clientW: 100, scrollH: 20, clientH: 20 },
     }),
     true
   );
   assert.equal(
     innerClipStableView({
+      ...clipped,
       viewBefore: { w: 768, h: 800 },
       viewAfter: { w: 768, h: 1200 },
-      inner: { scrollW: 500, clientW: 100, scrollH: 20, clientH: 20 },
     }),
     false
   );
+});
+
+test("scrollport overflow is not a must-show fail", () => {
+  const kind = classify({
+    role: "must-show",
+    document: { scrollW: 768, clientW: 768, scrollH: 800, clientH: 800 },
+    inner: { scrollW: 200, clientW: 200, scrollH: 1200, clientH: 400 },
+    computed: { overflow: "auto", overflowY: "auto", textOverflow: "clip" },
+    landmarks,
+  });
+  assert.equal(kind, "ok");
+});
+
+test("scrollport that cannot reveal the start is still clip", () => {
+  const kind = classify({
+    role: "must-show",
+    document: { scrollW: 375, clientW: 375, scrollH: 667, clientH: 667 },
+    inner: { scrollW: 200, clientW: 200, scrollH: 40, clientH: 40 },
+    computed: { overflowY: "auto", overflow: "auto" },
+    ancestorClip: true,
+    landmarks,
+  });
+  assert.equal(kind, "inner-clip-must-show");
+});
+
+test("ancestor clip without a scrollport fails", () => {
+  const kind = classify({
+    role: "must-show",
+    document: { scrollW: 375, clientW: 375, scrollH: 812, clientH: 812 },
+    inner: { scrollW: 200, clientW: 200, scrollH: 40, clientH: 40 },
+    computed: { overflow: "visible" },
+    ancestorClip: true,
+    landmarks,
+  });
+  assert.equal(kind, "inner-clip-must-show");
 });
 
 test("ellipseMustShow ignores preview", () => {
@@ -112,6 +161,141 @@ test("ellipseMustShow ignores preview", () => {
     ellipseMustShow({
       mustShow: false,
       computed: { lineClamp: 3, textOverflow: "ellipsis", overflow: "hidden" },
+    }),
+    false
+  );
+});
+
+test("layout-mode uses orientation from size", () => {
+  assert.equal(layoutModeFromSize(375, 812).orientation, "portrait");
+  assert.equal(layoutModeFromSize(1280, 720).orientation, "landscape");
+});
+
+test("static machine reads success fail interrupted", () => {
+  const edge = parseInteractAttrs({
+    "data-lcv-event": "next",
+    "data-lcv-from": "slide:arrive",
+    "data-lcv-to-success": "slide:inch-at-a-time",
+    "data-lcv-to-fail": "slide:arrive",
+    "data-lcv-to-interrupted": "slide:arrive",
+  });
+  const machine = staticMachine([edge]);
+  assert.deepEqual(machine.states, ["slide:arrive", "slide:inch-at-a-time"]);
+});
+
+test("unlinked interact fails", () => {
+  assert.equal(classify({ role: "interact", linked: false }), "interact-unlinked");
+  assert.equal(classify({ role: "interact", linked: true }), "ok");
+});
+
+test("seven-layer tree verifies parent ids and interact effects", () => {
+  const tree = indexTree({
+    route: { id: "route", path: "/profile" },
+    viewport: { id: "phone", w: 375, h: 812 },
+    orientation: { id: "portrait", orientation: "portrait", uiState: "slide:arrive" },
+    layouts: [{ id: "deck", kind: "deck" }],
+    containers: [{ id: "pane", parent: "deck", kind: "scrollport" }],
+    elements: [
+      {
+        id: "title",
+        parent: "pane",
+        role: "must-show",
+        document: { scrollW: 375, clientW: 375, scrollH: 812, clientH: 812 },
+        inner: { scrollW: 200, clientW: 200, scrollH: 40, clientH: 40 },
+        computed: { overflow: "visible" },
+        landmarks,
+      },
+    ],
+    interactives: [
+      {
+        id: "next",
+        parent: "portrait",
+        event: "next",
+        from: "slide:arrive",
+        success: "slide:inch-at-a-time",
+        fail: "slide:arrive",
+        interrupted: "slide:arrive",
+        linked: true,
+      },
+    ],
+  });
+  const out = verifyTree(tree);
+  assert.equal(tree.nodes.map((n) => n.layer).join(">"), "route>viewport>orientation>layout>container>element>interactive");
+  assert.equal(
+    out.filter((row) => row.fail).length,
+    0
+  );
+});
+
+test("orphan node fails tree verify", () => {
+  const out = verifyTree({
+    nodes: [{ id: "ghost", layer: "element", parent: "missing" }],
+  });
+  assert.equal(out[0].kind, "tree-orphan");
+});
+
+test("fit-impossible when min-content exceeds the remaining beat", () => {
+  const sample = {
+    role: "must-show",
+    fit: "beat",
+    remaining: { w: 375, h: 400 },
+    contentMin: { w: 375, h: 900 },
+    document: { scrollW: 375, clientW: 375, scrollH: 667, clientH: 667 },
+    inner: { scrollW: 375, clientW: 375, scrollH: 900, clientH: 400 },
+    landmarks,
+  };
+  assert.equal(isFitImpossible(sample), true);
+  assert.equal(classify(sample), "fit-impossible");
+  const row = report([sample])[0];
+  assert.equal(row.suggest.length, 3);
+  assert.match(row.suggest[2], /split-view/);
+  const tight = report([
+    {
+      ...sample,
+      remaining: { w: 375, h: 400 },
+      contentMin: { w: 375, h: 450 },
+      fontPx: 16,
+    },
+  ])[0];
+  assert.match(tight.suggest[0], /adaptive-type/);
+});
+
+test("font-engine wrap is arithmetic on cached widths", () => {
+  const two = layoutFromSegments([{ w: 80 }, { w: 10 }, { w: 80 }], 100, 20);
+  assert.equal(two.lineCount, 2);
+  assert.equal(two.height, 40);
+  const one = layoutFromSegments([{ w: 40 }, { w: 10 }, { w: 40 }], 100, 20);
+  assert.equal(one.lineCount, 1);
+  assert.equal(one.height, 20);
+});
+
+test("adaptive-type is offered only above the type floor", () => {
+  const tight = {
+    remaining: { h: 400 },
+    contentMin: { h: 450 },
+    fontPx: 16,
+  };
+  assert.equal(adaptiveTypeViable(tight), true);
+  const crushed = {
+    remaining: { h: 400 },
+    contentMin: { h: 900 },
+    fontPx: 16,
+  };
+  assert.equal(adaptiveTypeViable(crushed), false);
+  const tooSmall = {
+    remaining: { h: 400 },
+    contentMin: { h: 450 },
+    fontPx: 14,
+  };
+  assert.equal(adaptiveTypeViable(tooSmall), false);
+});
+
+test("beat that fits is not fit-impossible", () => {
+  assert.equal(
+    isFitImpossible({
+      fit: "beat",
+      remaining: { w: 375, h: 800 },
+      contentMin: { w: 360, h: 400 },
     }),
     false
   );

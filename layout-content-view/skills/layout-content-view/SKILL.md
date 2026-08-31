@@ -10,39 +10,44 @@ description: >-
 
 # layout-content-view
 
-> **Load rule:** This file owns **when + steps**. Predicates: [references/predicates.md](references/predicates.md) (executable SoT: `scripts/lcv.mjs`). Graph schema: [references/sitemap-graph.md](references/sitemap-graph.md). Drive recipe: [references/harness.md](references/harness.md). Pilot: [references/pilot-devprofile.md](references/pilot-devprofile.md). Do not paste pstack visual-parity. Do not add a second route catalog when a verify feature map exists.
+> **Load rule:** This file owns **when + steps**. Ontology: [references/ontology.md](references/ontology.md). Predicates: [references/predicates.md](references/predicates.md) (executable SoT: `scripts/lcv.mjs`). Index graph: [references/sitemap-graph.md](references/sitemap-graph.md). Interact: [references/interact.md](references/interact.md). Drive: [references/harness.md](references/harness.md). Pilot: [references/pilot-devprofile.md](references/pilot-devprofile.md). Do not paste pstack visual-parity. Do not add a second route catalog when a verify feature map exists.
 
 ```text
 // Signature
-LCV        : this skill
-View       : named viewport × one path
-Graph      : landmarks + index edges (not XML sitemap.xml)
-Role       ∈ { must-show, preview, live }
-Fail       : must-show clipped | document overflow-x | missing landmarks | occlusion | scroll-trap
+LCV        : this skill — strategy only
+Tree       : Routes → Viewports → Orientation → Layouts → Containers → Elements → Interactives
+View       : named viewport × orientation × ui-state × one route
+Graph      : landmarks + flow + interact edges (not XML sitemap.xml)
+Role       ∈ { must-show, preview, live, interact }
+Fail       : must-show clipped | document overflow-x | missing landmarks | occlusion | scroll-trap | interact-unlinked
 OK-info    : preview inner overflow
+Adapter    : fills samples. Text min-content: Canvas measureText + wrap arithmetic (Pretext technique). Chrome/slot: one box read. Host: Playwright/Brave/CDP.
 Not LCV    : PNG pixel-diff (compose with verify-* if the repo has it)
 
 // Axioms
 A1  Stability ≔ graph reachable ∧ must-show unclipped — not paint match
 A2  Document overflow-x is a fail; long-page overflow-y is not
-A3  Inner overflow + unchanged view box = clip policy, not a missing layout solver
+A3  Clip ≔ overflow hidden/clip, ellipsis, or ancestor clip with no scrollport. overflow:auto is reachable
 A4  Ellipse/line-clamp on must-show fails; on preview is allowed
-A5  Named viewports only (default phone/tablet/desktop) — no unbounded matrix
+A5  Named viewports only (phone-short 375×667, phone, tablet, desktop) — no unbounded matrix
 A6  Reuse the project's verify feature map paths; never a second SURFACES[]
+A7  Strategy does not name a browser. Adapters pick DOM, Playwright, cloud browsers, or native SDKs
+A8  Interactive controls declare from / success / fail / interrupted in HTML so the machine is static
+A9  Verify the seven-layer tree (ontology.md). Adapters fill nodes. Strategy does not dump the live DOM
 ```
 
 ## When to use
 
 Overflow, clip, z-index, scroll traps, “looks messy at this width”, agent-crawlable IA, or a redesign that should **not** invalidate the stability contract.
 
-Skip: pixel-exact migration (pstack **visual-parity** + existing snapshots). Phrase-level copy tests. Native/mobile shells (v1 is web).
+Skip: pixel-exact migration (pstack **visual-parity** + existing snapshots). Phrase-level copy tests. Native adapters are not shipped yet. The strategy still applies. Implementer marks: skill **lcv-implement** (`/lcv-implement`). This skill does not write `data-lcv`.
 
 ## Steps
 
-1. **Graph.** Load verify `features/*.md` `path:` if present; else list app routes. Walk landmarks (`main`, one `h1`, `navigation` or skip link). Optional product marks: `data-lcv="must-show|preview|live"` (compose with `data-visual-live` for paint that must be masked, not clipped).
-2. **Viewports.** Default set in `scripts/lcv.mjs` `VIEWPORTS`. Do not invent extra widths unless the human named them.
-3. **Measure.** Per path × viewport, collect boxes (`client*` / `scroll*`) for document, view root, and each marked region. Run `classify` / `report` from `scripts/lcv.mjs` (or the same predicates in Playwright `page.evaluate`).
-4. **Stress (must-show only).** Inject a long string into one must-show node. If the **view rect stays put** and the inner `scrollWidth` grows → `inner-clip-must-show`. If the page grows/wraps and the text remains readable → pass.
+1. **Graph.** Load verify `features/*.md` `path:` if present; else list app routes. Walk landmarks (`main`, one `h1`, `navigation` or skip link). Marks: `data-lcv`, `data-lcv-event` / `data-lcv-to-*` ([references/interact.md](references/interact.md)).
+2. **Layout-mode.** Named viewports plus orientation from size. Walk named `data-lcv-states` (profile `slide:*`) at those viewports. Not every CSS breakpoint.
+3. **Measure.** Adapter fills the tree. Text: prepare glyph widths with the font engine (`Canvas.measureText`), then `layout(width, lineHeight)` as arithmetic — same split as [Pretext](https://pretextjs.dev/) (`prepare` / `layout`). Do not `getBoundingClientRect` per word. Slot remaining still uses one box read. Run `indexTree` / `verifyTree` / `classify` / `report`.
+4. **Stress (must-show only).** Inject a long string into one must-show node. Fail if the view stays put **and** the text is clipped (hidden/clip, ellipsis, ancestor clip with no scrollport). Wrap, grow, or `overflow:auto` passes.
 5. **One-shot fix.** Apply **one** recipe from the finding `kind` (predicates.md). Re-measure that path × viewport. Do not auto-delete every `line-clamp` in the repo.
 6. **Compose.** UX/pixel skills stay owners of visitor drive and PNG baselines. This skill never claims visual parity.
 

@@ -1,7 +1,7 @@
 {
   "name": "layout-content-view",
   "version": "0.1.0",
-  "description": "Layout-content-view stability: landmark graph, viewport geometry, must-show clip/overflow, z-index and scroll quirks. Not pixel snapshots. Web first.",
+  "description": "Layout-content-view stability plus lcv-implement companion for data-lcv marks. Not pixel snapshots. Web first.",
   "author": {
     "name": "p10ns11y"
   },

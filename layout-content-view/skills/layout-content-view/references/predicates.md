@@ -7,7 +7,9 @@ Executable SoT: `scripts/lcv.mjs`. This file is the agent table.
 ```text
 Box = { scrollW, scrollH, clientW, clientH }
 overflow(b)  ≔ scrollW > clientW+1  ∨  scrollH > clientH+1
+clips(s)     ≔ overflow axis is hidden or clip (not auto/scroll)
 viewDelta    ≔ |w1-w0|, |h1-h0| on the view root rect
+clipped      ≔ ellipse/line-clamp ∨ ancestorClip ∨ (overflow ∧ clips)
 ```
 
 ## Classify (first match)
@@ -16,11 +18,13 @@ viewDelta    ≔ |w1-w0|, |h1-h0| on the view root rect
 |------|------|
 | `landmark-missing` | no `main`, or no heading, or neither navigation nor skip |
 | `document-overflow-x` | document `scrollW > clientW+1` |
-| `inner-clip-must-show` | role=must-show and (inner overflow or ellipse) **and** view rect unchanged under stress, **or** inner overflow without a view pair |
+| `inner-clip-must-show` | role=must-show and clipped (hidden/clip, ellipsis, or ancestor clip with no scrollport). `overflow:auto` is reachable and not this kind |
 | `ellipse-must-show` | role=must-show and (`-webkit-line-clamp`>0 or `text-overflow:ellipsis` with overflow hidden) |
 | `inner-overflow-preview` | role=preview and inner overflow — **not a fail** |
 | `z-index-occlusion` | sample.occluded |
 | `scroll-trap` | sample.scrollTrap |
+| `interact-unlinked` | role=interact and no `data-lcv-event` and no `href` |
+| `fit-impossible` | `data-lcv-fit=beat` and min-content > remaining slot. `suggest` may start with `adaptive-type` only if remaining/min-content ≥ 0.875 and scaled size ≥ 14px. Else rework-content, redesign-constraints, split-view |
 | `ok` | else |
 
 Long document `overflow-y` is not a fail (A2).
