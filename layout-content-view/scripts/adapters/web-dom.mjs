@@ -142,16 +142,62 @@ export function collectInPage(stressMustShow) {
     }
   }
 
+  const layoutFromSegments = (segments, maxWidth, lineHeight) => {
+    const width = Math.max(0, Number(maxWidth) || 0);
+    const lh = Number(lineHeight) || 0;
+    if (!segments.length) return { lineCount: 0, height: 0 };
+    let lineW = 0;
+    let lineCount = 1;
+    for (const seg of segments) {
+      const w = Number(seg.w) || 0;
+      if (lineW > 0 && lineW + w > width) {
+        lineCount += 1;
+        lineW = w;
+      } else {
+        lineW += w;
+      }
+    }
+    return { lineCount, height: lineCount * lh };
+  };
+  const textHeightIn = (root, maxWidth) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    let height = 0;
+    const blocks = root.querySelectorAll("h1, h2, h3, p, li, blockquote, [data-lcv='must-show']");
+    for (const el of blocks) {
+      const raw = (el.innerText || "").replace(/\s+/g, " ").trim();
+      if (!raw) continue;
+      const style = getComputedStyle(el);
+      ctx.font = style.font;
+      const parsedLh = Number.parseFloat(style.lineHeight);
+      const lineHeight =
+        Number.isFinite(parsedLh) && style.lineHeight !== "normal"
+          ? parsedLh
+          : Number.parseFloat(style.fontSize) * 1.25;
+      const segments = raw.split(/(\s+)/).map((part) => ({ w: ctx.measureText(part).width }));
+      height += layoutFromSegments(segments, maxWidth, lineHeight).height;
+    }
+    const pad = getComputedStyle(root);
+    height += (Number.parseFloat(pad.paddingTop) || 0) + (Number.parseFloat(pad.paddingBottom) || 0);
+    return height;
+  };
   const beat = document.querySelector("[data-lcv-fit='beat']");
   const slot = beat?.closest("[data-lcv-slot='beat']") || beat?.parentElement;
-  const fit =
-    beat && slot
-      ? {
-          kind: "beat",
-          remaining: { w: slot.clientWidth, h: slot.clientHeight },
-          contentMin: { w: beat.scrollWidth, h: beat.scrollHeight },
-        }
-      : null;
+  let fit = null;
+  if (beat && slot) {
+    const remaining = { w: slot.clientWidth, h: slot.clientHeight };
+    const fromFont = textHeightIn(beat, remaining.w);
+    fit = {
+      kind: "beat",
+      engine: fromFont == null ? "box" : "font-engine",
+      remaining,
+      contentMin: {
+        w: remaining.w,
+        h: fromFont == null ? beat.scrollHeight : fromFont,
+      },
+    };
+  }
 
   const root = document.documentElement;
   const view = { w: window.innerWidth, h: window.innerHeight };

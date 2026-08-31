@@ -8,6 +8,8 @@ Routes → Viewports → Orientation → Layouts → Containers → Elements →
 
 A view is stable when that tree stays reachable and **must-show** text is geometrically unclipped — not when pixels match a PNG.
 
+Text min-content uses the Pretext split: Canvas `measureText` once, wrap by arithmetic ([pretextjs.dev](https://pretextjs.dev/), [chenglou/pretext](https://github.com/chenglou/pretext)). Slot chrome still uses one box read.
+
 Pixel baselines miss inner clip while the view box stays fixed. Document `scrollWidth` checks miss the same class. This plugin names that class and a one-shot recipe.
 
 ```text

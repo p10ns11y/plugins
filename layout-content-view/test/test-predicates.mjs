@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { layoutFromSegments } from "../scripts/adapters/text-layout.mjs";
 import {
   VIEWPORTS,
   classify,
@@ -247,6 +248,15 @@ test("fit-impossible when min-content exceeds the remaining beat", () => {
   const row = report([sample])[0];
   assert.equal(row.suggest.length, 3);
   assert.match(row.suggest[2], /split-view/);
+});
+
+test("font-engine wrap is arithmetic on cached widths", () => {
+  const two = layoutFromSegments([{ w: 80 }, { w: 10 }, { w: 80 }], 100, 20);
+  assert.equal(two.lineCount, 2);
+  assert.equal(two.height, 40);
+  const one = layoutFromSegments([{ w: 40 }, { w: 10 }, { w: 40 }], 100, 20);
+  assert.equal(one.lineCount, 1);
+  assert.equal(one.height, 20);
 });
 
 test("beat that fits is not fit-impossible", () => {

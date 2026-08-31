@@ -21,7 +21,7 @@ Graph      : landmarks + flow + interact edges (not XML sitemap.xml)
 Role       ∈ { must-show, preview, live, interact }
 Fail       : must-show clipped | document overflow-x | missing landmarks | occlusion | scroll-trap | interact-unlinked
 OK-info    : preview inner overflow
-Adapter    : fills samples (web: DOM APIs hosted by Playwright/Brave/CDP; mobile later)
+Adapter    : fills samples. Text min-content: Canvas measureText + wrap arithmetic (Pretext technique). Chrome/slot: one box read. Host: Playwright/Brave/CDP.
 Not LCV    : PNG pixel-diff (compose with verify-* if the repo has it)
 
 // Axioms
@@ -46,7 +46,7 @@ Skip: pixel-exact migration (pstack **visual-parity** + existing snapshots). Phr
 
 1. **Graph.** Load verify `features/*.md` `path:` if present; else list app routes. Walk landmarks (`main`, one `h1`, `navigation` or skip link). Marks: `data-lcv`, `data-lcv-event` / `data-lcv-to-*` ([references/interact.md](references/interact.md)).
 2. **Layout-mode.** Named viewports plus orientation from size. Walk named `data-lcv-states` (profile `slide:*`) at those viewports. Not every CSS breakpoint.
-3. **Measure.** Adapter fills the tree plus boxes. Web uses DOM (`scrollWidth`, `getComputedStyle`, `elementFromPoint`). Playwright or another host only launches the page. Run `indexTree` / `verifyTree` / `classify` / `report` from `scripts/lcv.mjs`.
+3. **Measure.** Adapter fills the tree. Text: prepare glyph widths with the font engine (`Canvas.measureText`), then `layout(width, lineHeight)` as arithmetic — same split as [Pretext](https://pretextjs.dev/) (`prepare` / `layout`). Do not `getBoundingClientRect` per word. Slot remaining still uses one box read. Run `indexTree` / `verifyTree` / `classify` / `report`.
 4. **Stress (must-show only).** Inject a long string into one must-show node. Fail if the view stays put **and** the text is clipped (hidden/clip, ellipsis, ancestor clip with no scrollport). Wrap, grow, or `overflow:auto` passes.
 5. **One-shot fix.** Apply **one** recipe from the finding `kind` (predicates.md). Re-measure that path × viewport. Do not auto-delete every `line-clamp` in the repo.
 6. **Compose.** UX/pixel skills stay owners of visitor drive and PNG baselines. This skill never claims visual parity.

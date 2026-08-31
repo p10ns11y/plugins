@@ -10,6 +10,12 @@ node scripts/lcv.mjs --selftest
 
 These prove the **algorithm**, not a live site.
 
+## Text (Pretext technique)
+
+[Pretext](https://pretextjs.dev/) (`@chenglou/pretext`) measures multiline text without DOM reflow: Canvas `measureText` once, wrap by summing widths. LCV copies that split in `scripts/adapters/text-layout.mjs` (arithmetic) and `web-dom.mjs` (Canvas in the page). Prefer importing `@chenglou/pretext` in an app that already has it; the plugin stays zero-dep.
+
+`fit-impossible` `contentMin.h` comes from that wrap at the beat width, not from `scrollHeight` on every node.
+
 ## Tree
 
 `indexTree` / `verifyTree` in `scripts/lcv.mjs` are the strategy. Spine: Routes → Viewports → Orientation → Layouts → Containers → Elements → Interactives. See [ontology.md](ontology.md).

@@ -34,5 +34,6 @@ Tree  = { nodes: Node[] }
 - Probe the top of a must-show box (and chrome `header` bottom), not only the center. Fixed header overlap is occlusion.
 - `overflow:hidden` with no scrollport between is a clip-cage.
 - Interact edges in HTML are the machine.
+- Text min-content: Canvas `measureText` (browser font engine) then arithmetic wrap. Same split as Pretext (`prepare` / `layout`). https://pretextjs.dev/ · https://github.com/chenglou/pretext
 
 Executable SoT: `indexTree` / `verifyTree` in `scripts/lcv.mjs`.

@@ -19,6 +19,7 @@ need cursor/commands/layout-content-view.md
 need agents/layout-content-view.md
 need scripts/lcv.mjs
 need scripts/adapters/web-dom.mjs
+need scripts/adapters/text-layout.mjs
 need scripts/probe-web.mjs
 need skills/layout-content-view/SKILL.md
 need skills/layout-content-view/references/predicates.md
