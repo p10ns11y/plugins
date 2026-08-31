@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>LCV fixture — inner clip vs wrap</title>
+<style>
+  .view { width: 320px; height: 80px; border: 1px solid #333; }
+  .clip {
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wrap { width: 200px; overflow: visible; overflow-wrap: anywhere; }
+</style>
+<main>
+  <h1>Fixture</h1>
+  <nav aria-label="Primary"><a href="#clip">clip</a></nav>
+  <p id="clip" class="clip" data-lcv="must-show">WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW</p>
+  <p id="wrap" class="wrap" data-lcv="must-show">WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW</p>
+  <p id="peek" class="clip" data-lcv="preview">optional card blurb that may truncate</p>
+</main>

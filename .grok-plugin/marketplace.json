@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map, layout-content-view",
   "owner": {
     "name": "p10ns11y"
   },
@@ -102,6 +102,23 @@
         "control-graph",
         "unslop",
         "rigor"
+      ]
+    },
+    {
+      "name": "layout-content-view",
+      "description": "Layout-content-view stability: landmark graph, viewport geometry, must-show clip/overflow. Not pixel snapshots.",
+      "category": "development",
+      "source": { "type": "local", "path": "./layout-content-view" },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "layout",
+        "overflow",
+        "clip",
+        "ellipsis",
+        "sitemap",
+        "viewport",
+        "z-index",
+        "coherence"
       ]
     }
   ]
