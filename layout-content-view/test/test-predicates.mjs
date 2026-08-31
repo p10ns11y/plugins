@@ -7,6 +7,7 @@ import {
   crawlable,
   ellipseMustShow,
   innerClipStableView,
+  adaptiveTypeViable,
   indexTree,
   isFitImpossible,
   layoutModeFromSize,
@@ -248,6 +249,15 @@ test("fit-impossible when min-content exceeds the remaining beat", () => {
   const row = report([sample])[0];
   assert.equal(row.suggest.length, 3);
   assert.match(row.suggest[2], /split-view/);
+  const tight = report([
+    {
+      ...sample,
+      remaining: { w: 375, h: 400 },
+      contentMin: { w: 375, h: 450 },
+      fontPx: 16,
+    },
+  ])[0];
+  assert.match(tight.suggest[0], /adaptive-type/);
 });
 
 test("font-engine wrap is arithmetic on cached widths", () => {
@@ -257,6 +267,27 @@ test("font-engine wrap is arithmetic on cached widths", () => {
   const one = layoutFromSegments([{ w: 40 }, { w: 10 }, { w: 40 }], 100, 20);
   assert.equal(one.lineCount, 1);
   assert.equal(one.height, 20);
+});
+
+test("adaptive-type is offered only above the type floor", () => {
+  const tight = {
+    remaining: { h: 400 },
+    contentMin: { h: 450 },
+    fontPx: 16,
+  };
+  assert.equal(adaptiveTypeViable(tight), true);
+  const crushed = {
+    remaining: { h: 400 },
+    contentMin: { h: 900 },
+    fontPx: 16,
+  };
+  assert.equal(adaptiveTypeViable(crushed), false);
+  const tooSmall = {
+    remaining: { h: 400 },
+    contentMin: { h: 450 },
+    fontPx: 14,
+  };
+  assert.equal(adaptiveTypeViable(tooSmall), false);
 });
 
 test("beat that fits is not fit-impossible", () => {

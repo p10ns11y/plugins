@@ -284,16 +284,41 @@ export const RECIPES = Object.freeze({
   "interact-unlinked":
     "Interactive control has no data-lcv-event (and no href). Add from/success/fail/interrupted so the state machine is static.",
   "fit-impossible":
-    "Must-show min-content is larger than the remaining box after chrome. Overflow cannot be CSS-patched. Rework the copy, redesign spacing/chrome, or split into another slide, dialog, or route.",
+    "Must-show min-content is larger than the remaining box after chrome. Try bounded adaptive type (not below 14px / 0.875 of current). Else rework copy, redesign chrome, or split the view.",
   ok: "No layout-content-view fail on this sample.",
 });
 
+export const TYPE_FLOOR = Object.freeze({ minScale: 0.875, minPx: 14 });
+
+export const FIT_BASE_SUGGEST = Object.freeze([
+  "rework-content: shorten or move copy that is not must-show",
+  "redesign-constraints: change type, spacing, or chrome so the remaining box grows",
+  "split-view: new slide, dialog, or route for the overflow beat",
+]);
+
+export function adaptiveTypeViable(sample) {
+  const rem = Number(sample.remaining?.h);
+  const min = Number(sample.contentMin?.h);
+  if (!Number.isFinite(rem) || !Number.isFinite(min) || min <= 0) return false;
+  const scale = rem / min;
+  if (scale < TYPE_FLOOR.minScale) return false;
+  const fontPx = Number(sample.fontPx);
+  if (Number.isFinite(fontPx) && fontPx * scale < TYPE_FLOOR.minPx) return false;
+  return true;
+}
+
+export function fitSuggest(sample) {
+  const out = [...FIT_BASE_SUGGEST];
+  if (adaptiveTypeViable(sample)) {
+    out.unshift(
+      `adaptive-type: scale font and line-height by remaining/min-content, not below ${TYPE_FLOOR.minPx}px or ${TYPE_FLOOR.minScale} of current size`
+    );
+  }
+  return out;
+}
+
 export const SUGGEST = Object.freeze({
-  "fit-impossible": Object.freeze([
-    "rework-content: shorten or move copy that is not must-show",
-    "redesign-constraints: change type, spacing, or chrome so the remaining box grows",
-    "split-view: new slide, dialog, or route for the overflow beat",
-  ]),
+  "fit-impossible": FIT_BASE_SUGGEST,
 });
 
 export function recipe(kind) {
@@ -312,7 +337,7 @@ export function report(samples) {
       kind,
       fail: kind !== "ok" && kind !== "inner-overflow-preview",
       recipe: recipe(kind),
-      suggest: SUGGEST[kind] ?? [],
+      suggest: kind === "fit-impossible" ? fitSuggest(sample) : (SUGGEST[kind] ?? []),
     };
   });
 }

@@ -20,7 +20,7 @@ Tree  = { nodes: Node[] }
 | **viewport** | Named size | phone-short 375×667, phone 375×812, tablet, desktop | A5 named set only. Short height is a different viewport than tall phone. |
 | **orientation** | portrait \| landscape plus **ui-state** | `slide:arrive` | walk named `data-lcv-states` |
 | **layout** | Formatting context | `block` `flex` `grid` `deck` | children wrap or grow |
-| **container** | Containing block | `flow` `scrollport` `clip-cage` `out-of-flow` `beat` | clip-cage fails must-show; scrollport is reachable; `beat` (`data-lcv-fit=beat`) must fit remaining chrome. If min-content > remaining → `fit-impossible` and suggest rework / redesign / split-view |
+| **container** | Containing block | `flow` `scrollport` `clip-cage` `out-of-flow` `beat` | clip-cage fails must-show; scrollport is reachable; `beat` min-content > remaining → `fit-impossible`. Adaptive type only above 14px and 0.875 of current size. Else rework / redesign / split-view |
 | **element** | Visible content | `must-show` `preview` `live` | clip / ellipse predicates |
 | **interactive** | Control plus **effects** | event, from, success, fail, interrupted | static machine. Click is optional |
 

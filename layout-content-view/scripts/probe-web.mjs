@@ -109,6 +109,7 @@ function samplesFromShot(shot, path, vp, uiState) {
       fit: "beat",
       remaining: shot.fit.remaining,
       contentMin: shot.fit.contentMin,
+      fontPx: shot.fit.fontPx,
       document: doc,
       inner: {
         scrollW: shot.fit.contentMin.w,

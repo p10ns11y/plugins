@@ -188,6 +188,11 @@ export function collectInPage(stressMustShow) {
   if (beat && slot) {
     const remaining = { w: slot.clientWidth, h: slot.clientHeight };
     const fromFont = textHeightIn(beat, remaining.w);
+    let fontPx = Number.parseFloat(getComputedStyle(beat).fontSize);
+    for (const el of beat.querySelectorAll("[data-lcv='must-show']")) {
+      const px = Number.parseFloat(getComputedStyle(el).fontSize);
+      if (Number.isFinite(px) && px < fontPx) fontPx = px;
+    }
     fit = {
       kind: "beat",
       engine: fromFont == null ? "box" : "font-engine",
@@ -196,6 +201,7 @@ export function collectInPage(stressMustShow) {
         w: remaining.w,
         h: fromFont == null ? beat.scrollHeight : fromFont,
       },
+      fontPx: Number.isFinite(fontPx) ? fontPx : undefined,
     };
   }
 

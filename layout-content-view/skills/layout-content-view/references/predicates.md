@@ -24,7 +24,7 @@ clipped      ≔ ellipse/line-clamp ∨ ancestorClip ∨ (overflow ∧ clips)
 | `z-index-occlusion` | sample.occluded |
 | `scroll-trap` | sample.scrollTrap |
 | `interact-unlinked` | role=interact and no `data-lcv-event` and no `href` |
-| `fit-impossible` | `data-lcv-fit=beat` and min-content > remaining slot. CSS cannot create space. `suggest`: rework-content, redesign-constraints, split-view |
+| `fit-impossible` | `data-lcv-fit=beat` and min-content > remaining slot. `suggest` may start with `adaptive-type` only if remaining/min-content ≥ 0.875 and scaled size ≥ 14px. Else rework-content, redesign-constraints, split-view |
 | `ok` | else |
 
 Long document `overflow-y` is not a fail (A2).
