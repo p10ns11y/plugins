@@ -106,7 +106,7 @@ function collectInPage(stressMustShow) {
     });
   };
 
-  const dialog = document.querySelector("dialog, [role='dialog']");
+  const dialog = document.querySelector("dialog[open], [role='dialog']:not([aria-hidden='true'])");
   const dialogTitle = dialog?.querySelector("h1, h2, [id$='title']");
   if (dialogTitle) {
     pushNode("dialog-title", "dialog heading", dialogTitle, "must-show");
