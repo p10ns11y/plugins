@@ -1,0 +1,19 @@
+{
+  "name": "pstack-map",
+  "version": "0.1.0",
+  "description": "Playbook map from Cursor pstack (Lauren Tan / poteto, MIT) onto control-graph / EVA / house skills. Does not copy pstack bodies. House HITL wins on irreversible work.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "pstack",
+    "poteto",
+    "lauren-tan",
+    "map",
+    "control-graph",
+    "unslop",
+    "rigor"
+  ]
+}

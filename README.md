@@ -43,6 +43,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **mission-map** | Mission briefing: critical path, heading \(\hat{u}_G\) / \(\cos\theta\), replan; C PERT/MC + Rust graph | `/mission-map` |
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
+| **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
 
 ---
 
@@ -88,6 +89,20 @@ grok plugin install ./odysseus-navigator --trust
 ```
 
 See [odysseus-navigator/README.md](odysseus-navigator/README.md).
+
+---
+
+## pstack-map
+
+Playbook map from Cursor [pstack](https://github.com/cursor/plugins/tree/main/pstack) (Lauren Tan, MIT). Does **not** copy pstack. House HITL on irreversible work.
+
+```bash
+grok plugin install ./pstack-map --trust
+# slash: /pstack-map
+# also install pstack itself for /poteto-mode, unslop, how, why
+```
+
+See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](pstack-map/NOTICE.md).
 
 ---
 

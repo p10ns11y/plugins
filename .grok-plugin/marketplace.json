@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map",
   "owner": {
     "name": "p10ns11y"
   },
@@ -86,6 +86,22 @@
         "hint-tags",
         "contradiction",
         "sqlite"
+      ]
+    },
+    {
+      "name": "pstack-map",
+      "description": "Playbook map from Cursor pstack (Lauren Tan / poteto, MIT) onto house skills. Does not copy pstack bodies.",
+      "category": "development",
+      "source": { "type": "local", "path": "./pstack-map" },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "pstack",
+        "poteto",
+        "lauren-tan",
+        "map",
+        "control-graph",
+        "unslop",
+        "rigor"
       ]
     }
   ]
