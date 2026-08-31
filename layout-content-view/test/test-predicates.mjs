@@ -7,6 +7,7 @@ import {
   ellipseMustShow,
   innerClipStableView,
   indexTree,
+  isFitImpossible,
   layoutModeFromSize,
   overflow,
   parseInteractAttrs,
@@ -229,4 +230,32 @@ test("orphan node fails tree verify", () => {
     nodes: [{ id: "ghost", layer: "element", parent: "missing" }],
   });
   assert.equal(out[0].kind, "tree-orphan");
+});
+
+test("fit-impossible when min-content exceeds the remaining beat", () => {
+  const sample = {
+    role: "must-show",
+    fit: "beat",
+    remaining: { w: 375, h: 400 },
+    contentMin: { w: 375, h: 900 },
+    document: { scrollW: 375, clientW: 375, scrollH: 667, clientH: 667 },
+    inner: { scrollW: 375, clientW: 375, scrollH: 900, clientH: 400 },
+    landmarks,
+  };
+  assert.equal(isFitImpossible(sample), true);
+  assert.equal(classify(sample), "fit-impossible");
+  const row = report([sample])[0];
+  assert.equal(row.suggest.length, 3);
+  assert.match(row.suggest[2], /split-view/);
+});
+
+test("beat that fits is not fit-impossible", () => {
+  assert.equal(
+    isFitImpossible({
+      fit: "beat",
+      remaining: { w: 375, h: 800 },
+      contentMin: { w: 360, h: 400 },
+    }),
+    false
+  );
 });

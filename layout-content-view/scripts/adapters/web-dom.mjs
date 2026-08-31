@@ -142,6 +142,17 @@ export function collectInPage(stressMustShow) {
     }
   }
 
+  const beat = document.querySelector("[data-lcv-fit='beat']");
+  const slot = beat?.closest("[data-lcv-slot='beat']") || beat?.parentElement;
+  const fit =
+    beat && slot
+      ? {
+          kind: "beat",
+          remaining: { w: slot.clientWidth, h: slot.clientHeight },
+          contentMin: { w: beat.scrollWidth, h: beat.scrollHeight },
+        }
+      : null;
+
   const root = document.documentElement;
   const view = { w: window.innerWidth, h: window.innerHeight };
   return {
@@ -156,6 +167,7 @@ export function collectInPage(stressMustShow) {
     uiState,
     states: listed.length ? listed : uiState ? [uiState] : [],
     interact,
+    fit,
     nodes,
   };
 }

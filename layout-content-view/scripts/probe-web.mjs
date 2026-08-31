@@ -98,6 +98,30 @@ function samplesFromShot(shot, path, vp, uiState) {
       landmarks: shot.landmarks,
     },
   ];
+  if (shot.fit?.kind === "beat") {
+    samples.push({
+      id: `${tag}:fit`,
+      path,
+      viewport: vp,
+      layoutMode,
+      uiState,
+      role: "must-show",
+      fit: "beat",
+      remaining: shot.fit.remaining,
+      contentMin: shot.fit.contentMin,
+      document: doc,
+      inner: {
+        scrollW: shot.fit.contentMin.w,
+        clientW: shot.fit.remaining.w,
+        scrollH: shot.fit.contentMin.h,
+        clientH: shot.fit.remaining.h,
+      },
+      viewBefore: view,
+      viewAfter: view,
+      computed: {},
+      landmarks: shot.landmarks,
+    });
+  }
   for (const node of shot.nodes) {
     if (!node.inner) continue;
     samples.push({

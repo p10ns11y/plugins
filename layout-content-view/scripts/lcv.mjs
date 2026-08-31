@@ -186,6 +186,17 @@ export function clipsContent(computed = {}) {
   };
 }
 
+export function isFitImpossible(sample) {
+  if (sample.fit !== "beat") return false;
+  const remH = Number(sample.remaining?.h);
+  const minH = Number(sample.contentMin?.h);
+  const remW = Number(sample.remaining?.w);
+  const minW = Number(sample.contentMin?.w);
+  const tall = Number.isFinite(remH) && Number.isFinite(minH) && minH > remH + EPS;
+  const wide = Number.isFinite(remW) && Number.isFinite(minW) && minW > remW + EPS;
+  return tall || wide;
+}
+
 export function isClippedMustShow(sample) {
   const mustShow = (sample.role ?? "must-show") === "must-show";
   if (!mustShow) return false;
@@ -240,6 +251,7 @@ export function classify(sample) {
 
   if (!crawlable(sample.landmarks ?? [])) return "landmark-missing";
   if (docOx.x) return "document-overflow-x";
+  if (mustShow && isFitImpossible(sample)) return "fit-impossible";
   if (mustShow && clipped && stableInnerClip) return "inner-clip-must-show";
   if (mustShow && ellipseMustShow({ mustShow, computed: sample.computed ?? {} })) {
     return "ellipse-must-show";
@@ -271,7 +283,17 @@ export const RECIPES = Object.freeze({
     "overflow:hidden on an ancestor that is not a labeled preview/dialog. Restore overflow:auto on the scrolling region; keep body lock only while a modal is open.",
   "interact-unlinked":
     "Interactive control has no data-lcv-event (and no href). Add from/success/fail/interrupted so the state machine is static.",
+  "fit-impossible":
+    "Must-show min-content is larger than the remaining box after chrome. Overflow cannot be CSS-patched. Rework the copy, redesign spacing/chrome, or split into another slide, dialog, or route.",
   ok: "No layout-content-view fail on this sample.",
+});
+
+export const SUGGEST = Object.freeze({
+  "fit-impossible": Object.freeze([
+    "rework-content: shorten or move copy that is not must-show",
+    "redesign-constraints: change type, spacing, or chrome so the remaining box grows",
+    "split-view: new slide, dialog, or route for the overflow beat",
+  ]),
 });
 
 export function recipe(kind) {
@@ -290,6 +312,7 @@ export function report(samples) {
       kind,
       fail: kind !== "ok" && kind !== "inner-overflow-preview",
       recipe: recipe(kind),
+      suggest: SUGGEST[kind] ?? [],
     };
   });
 }
