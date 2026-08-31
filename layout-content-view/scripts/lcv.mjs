@@ -164,6 +164,81 @@ export function staticMachine(edges) {
   return { states: [...states].sort(), edges };
 }
 
+export const WALK_STATE_CAP = 48;
+
+function uniqueStates(values) {
+  const out = [];
+  const seen = new Set();
+  for (const raw of values || []) {
+    const state = String(raw).trim();
+    if (!state || seen.has(state)) continue;
+    seen.add(state);
+    out.push(state);
+  }
+  return out;
+}
+
+export function isWalkableNamedState(state) {
+  const value = String(state);
+  if (!value) return false;
+  if (value.startsWith("/") || value.startsWith("#") || value.startsWith("?")) return false;
+  if (value.startsWith("http://") || value.startsWith("https://")) return false;
+  return true;
+}
+
+/**
+ * Plan route visits from a shot. Any feature-map path.
+ * `slide:*` → `?slide=` on that path. Other catalog states → click a linked,
+ * enabled control whose to-success matches. Hrefs and undriveable states (loading)
+ * are skipped. Cap 48.
+ */
+export function planVisits(path, shot = {}, { walk = true } = {}) {
+  const loaded = { uiState: shot.uiState || "", path };
+  if (!walk) return [loaded];
+
+  const visits = [];
+  const seen = new Set();
+  const add = (visit) => {
+    const drive = visit.drive ? `${visit.drive.event}>${visit.drive.success}` : "";
+    const key = `${visit.path}|${visit.uiState}|${drive}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    visits.push(visit);
+  };
+
+  add(loaded);
+
+  const interact = Array.isArray(shot.interact) ? shot.interact : [];
+  for (const state of uniqueStates(shot.states)) {
+    if (visits.length >= WALK_STATE_CAP) break;
+    if (state === loaded.uiState) continue;
+    if (!isWalkableNamedState(state)) continue;
+
+    if (state.startsWith("slide:")) {
+      const cue = state.slice("slide:".length);
+      const join = path.includes("?") ? "&" : "?";
+      add({
+        uiState: state,
+        path: `${path}${join}slide=${encodeURIComponent(cue)}`,
+      });
+      continue;
+    }
+
+    const edge = interact.find(
+      (item) => item && item.linked && !item.disabled && item.success === state
+    );
+    if (edge) {
+      add({
+        uiState: state,
+        path,
+        drive: { event: edge.event || "", success: state },
+      });
+    }
+  }
+
+  return visits;
+}
+
 const EPS = 1;
 
 export function overflow(box) {

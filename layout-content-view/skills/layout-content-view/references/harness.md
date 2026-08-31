@@ -40,7 +40,7 @@ ORIGIN=http://localhost:3000 \
 node "$LCV_ROOT/scripts/probe-web.mjs"
 ```
 
-`LCV_STRESS=1` injects long text into must-show nodes. `VERIFY_FEATURE=/profile` limits paths. `LCV_OUT=lcv.json` writes the report. Playwright comes from the app `cwd` (`@playwright/test`). Brave Beta is required.
+`LCV_STRESS=1` injects long text into must-show nodes. `VERIFY_FEATURE=/qa` (or any feature-map path) limits routes. `LCV_WALK_STATES=0` stays on the load view. Named `data-lcv-states` are visited on every mapped path: `slide:*` via `?slide=`, other states via one visible control with matching `data-lcv-to-success` (Ask → `success` on `/qa`). `LCV_OUT=lcv.json` writes the report. Playwright comes from the app `cwd` (`@playwright/test`). Brave Beta is required.
 
 Document `scrollWidth` vs `clientWidth` on `<html>` is necessary and **not sufficient** (inner clip with stable view).
 
