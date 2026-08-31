@@ -10,6 +10,19 @@ node scripts/lcv.mjs --selftest
 
 These prove the **algorithm**, not a live site.
 
+## Tree
+
+`indexTree` / `verifyTree` in `scripts/lcv.mjs` are the strategy. Spine: Routes → Viewports → Orientation → Layouts → Containers → Elements → Interactives. See [ontology.md](ontology.md).
+
+## Adapters
+
+`scripts/lcv.mjs` is the strategy. It never launches a browser.
+
+| Surface | Adapter | Host (inner, pick one) |
+|---------|---------|------------------------|
+| Web | `scripts/adapters/web-dom.mjs` (DOM APIs) | Playwright + Brave, CDP, cloud browser. `page.evaluate` only serializes `collectInPage`, so helpers stay inside that function. |
+| Native | not shipped | SDK layout bounds / simulator |
+
 ## Live web (app repo)
 
 From the app checkout, after `grok plugin install layout-content-view --trust` (or `p10ns11y/plugins#layout-content-view`). Resolve the plugin dir from `grok plugin details layout-content-view`. Do not pass a filesystem path to `grok plugin install`.

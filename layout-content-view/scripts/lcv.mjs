@@ -5,7 +5,163 @@ export const VIEWPORTS = Object.freeze([
   Object.freeze({ id: "desktop", w: 1280, h: 720 }),
 ]);
 
-export const ROLES = Object.freeze(["must-show", "preview", "live"]);
+export const ROLES = Object.freeze(["must-show", "preview", "live", "interact"]);
+
+export const LAYERS = Object.freeze([
+  "route",
+  "viewport",
+  "orientation",
+  "layout",
+  "container",
+  "element",
+  "interactive",
+]);
+
+export function indexTree({
+  route,
+  viewport,
+  orientation,
+  layouts = [],
+  containers = [],
+  elements = [],
+  interactives = [],
+}) {
+  const nodes = [];
+  const routeId = route.id ?? "route";
+  nodes.push({ id: routeId, layer: "route", parent: null, path: route.path });
+  const viewportId = viewport.id ?? "viewport";
+  nodes.push({
+    id: viewportId,
+    layer: "viewport",
+    parent: viewport.parent ?? routeId,
+    w: viewport.w,
+    h: viewport.h,
+  });
+  const orientationId = orientation.id ?? "orientation";
+  nodes.push({
+    id: orientationId,
+    layer: "orientation",
+    parent: orientation.parent ?? viewportId,
+    orientation: orientation.orientation,
+    uiState: orientation.uiState ?? "",
+  });
+  for (const layout of layouts) {
+    nodes.push({
+      id: layout.id,
+      layer: "layout",
+      parent: layout.parent ?? orientationId,
+      kind: layout.kind ?? "block",
+    });
+  }
+  for (const container of containers) {
+    nodes.push({
+      id: container.id,
+      layer: "container",
+      parent: container.parent ?? orientationId,
+      kind: container.kind ?? "flow",
+    });
+  }
+  for (const element of elements) {
+    nodes.push({
+      id: element.id,
+      layer: "element",
+      parent: element.parent ?? orientationId,
+      kind: element.kind ?? element.role ?? "must-show",
+      sample: element,
+    });
+  }
+  for (const interactive of interactives) {
+    nodes.push({
+      id: interactive.id ?? `${interactive.event}:${interactive.from}`,
+      layer: "interactive",
+      parent: interactive.parent ?? orientationId,
+      kind: interactive.event ?? "event",
+      event: interactive.event,
+      from: interactive.from,
+      success: interactive.success,
+      fail: interactive.fail,
+      interrupted: interactive.interrupted,
+      linked: interactive.linked,
+    });
+  }
+  return { nodes };
+}
+
+export function verifyTree(tree) {
+  const byId = new Map((tree.nodes ?? []).map((node) => [node.id, node]));
+  const findings = [];
+  for (const node of tree.nodes ?? []) {
+    if (!LAYERS.includes(node.layer)) {
+      findings.push({
+        id: node.id,
+        kind: "tree-layer",
+        fail: true,
+        recipe: recipe("tree-layer"),
+      });
+      continue;
+    }
+    if (node.layer !== "route" && !byId.has(node.parent)) {
+      findings.push({
+        id: node.id,
+        kind: "tree-orphan",
+        fail: true,
+        recipe: recipe("tree-orphan"),
+      });
+    }
+    if (node.layer === "element" && node.sample) {
+      const kind = classify(node.sample);
+      findings.push({
+        id: node.id,
+        kind,
+        fail: kind !== "ok" && kind !== "inner-overflow-preview",
+        recipe: recipe(kind),
+      });
+    }
+    if (node.layer === "interactive") {
+      const linked = node.linked ?? Boolean(node.event && (node.success || node.from));
+      const kind = linked ? "ok" : "interact-unlinked";
+      findings.push({
+        id: node.id,
+        kind,
+        fail: kind !== "ok",
+        recipe: recipe(kind),
+      });
+    }
+  }
+  return findings;
+}
+
+export function layoutModeFromSize(w, h) {
+  return {
+    w,
+    h,
+    orientation: h >= w ? "portrait" : "landscape",
+  };
+}
+
+export function parseInteractAttrs(attrs = {}) {
+  const event = attrs["data-lcv-event"];
+  if (!event) return null;
+  return {
+    event,
+    from: attrs["data-lcv-from"] || "",
+    success: attrs["data-lcv-to-success"] || "",
+    fail: attrs["data-lcv-to-fail"] || "",
+    interrupted: attrs["data-lcv-to-interrupted"] || "",
+    machine: attrs["data-lcv-machine"] || "",
+  };
+}
+
+export function staticMachine(edges) {
+  const states = new Set();
+  for (const edge of edges) {
+    if (edge.from) states.add(edge.from);
+    if (edge.success) states.add(edge.success);
+    if (edge.fail) states.add(edge.fail);
+    if (edge.interrupted) states.add(edge.interrupted);
+  }
+  return { states: [...states].sort(), edges };
+}
 
 const EPS = 1;
 
@@ -16,6 +172,29 @@ export function overflow(box) {
   };
 }
 
+function axisOverflow(value) {
+  return value ?? "";
+}
+
+export function clipsContent(computed = {}) {
+  const ox = axisOverflow(computed.overflowX || computed.overflow);
+  const oy = axisOverflow(computed.overflowY || computed.overflow);
+  return {
+    x: ox === "hidden" || ox === "clip",
+    y: oy === "hidden" || oy === "clip",
+  };
+}
+
+export function isClippedMustShow(sample) {
+  const mustShow = (sample.role ?? "must-show") === "must-show";
+  if (!mustShow) return false;
+  if (ellipseMustShow({ mustShow, computed: sample.computed ?? {} })) return true;
+  if (sample.ancestorClip) return true;
+  const innerOx = overflow(sample.inner);
+  const clips = clipsContent(sample.computed ?? {});
+  return (innerOx.x && clips.x) || (innerOx.y && clips.y);
+}
+
 export function viewDelta(before, after) {
   return {
     w: Math.abs(after.w - before.w),
@@ -23,11 +202,10 @@ export function viewDelta(before, after) {
   };
 }
 
-/** View rect unchanged while an inner box overflows = clip policy, not a missing view-box solver. */
-export function innerClipStableView({ viewBefore, viewAfter, inner }) {
-  const d = viewDelta(viewBefore, viewAfter);
-  const innerOx = overflow(inner);
-  return d.w < EPS && d.h < EPS && (innerOx.x || innerOx.y);
+/** View rect unchanged while must-show text is clipped. Scrollports are reachable, not a fail. */
+export function innerClipStableView(sample) {
+  const d = viewDelta(sample.viewBefore, sample.viewAfter);
+  return d.w < EPS && d.h < EPS && isClippedMustShow(sample);
 }
 
 export function ellipseMustShow({ mustShow, computed }) {
@@ -49,20 +227,15 @@ export function crawlable(landmarks) {
 
 export function classify(sample) {
   const role = sample.role ?? "must-show";
+  if (role === "interact") {
+    return sample.linked ? "ok" : "interact-unlinked";
+  }
   const docOx = overflow(sample.document);
   const innerOx = overflow(sample.inner);
   const mustShow = role === "must-show";
-  const clipped =
-    mustShow &&
-    (ellipseMustShow({ mustShow, computed: sample.computed ?? {} }) || innerOx.x || innerOx.y);
+  const clipped = isClippedMustShow(sample);
   const stableInnerClip =
-    sample.viewBefore &&
-    sample.viewAfter &&
-    innerClipStableView({
-      viewBefore: sample.viewBefore,
-      viewAfter: sample.viewAfter,
-      inner: sample.inner,
-    });
+    sample.viewBefore && sample.viewAfter && innerClipStableView(sample);
 
   if (!crawlable(sample.landmarks ?? [])) return "landmark-missing";
   if (docOx.x) return "document-overflow-x";
@@ -70,7 +243,7 @@ export function classify(sample) {
   if (mustShow && ellipseMustShow({ mustShow, computed: sample.computed ?? {} })) {
     return "ellipse-must-show";
   }
-  if (mustShow && (innerOx.x || innerOx.y)) return "inner-clip-must-show";
+  if (mustShow && clipped) return "inner-clip-must-show";
   if (role === "preview" && (innerOx.x || innerOx.y)) return "inner-overflow-preview";
   if (sample.occluded) return "z-index-occlusion";
   if (sample.scrollTrap) return "scroll-trap";
@@ -81,17 +254,22 @@ export const RECIPES = Object.freeze({
   "document-overflow-x":
     "Find the descendant whose scrollWidth exceeds the viewport. Prefer wrap (overflow-wrap) over 100vw + padding. Do not set overflow:hidden on html/body to hide it.",
   "inner-clip-must-show":
-    "Must-show data was clipped while the view box stayed put. Remove line-clamp/ellipsis; overflow:visible; allow the box to grow or wrap. min-width:0 is for flex shrink, not for hiding required copy.",
+    "Must-show data was clipped (overflow hidden/clip, ellipsis, or an ancestor clip with no scrollport). Wrap or grow the box, or give the region overflow:auto so the text is reachable. Do not hide required copy.",
   "ellipse-must-show":
     "Mark the node data-lcv=preview if truncation is product-intent. Else drop -webkit-line-clamp and text-overflow:ellipsis.",
   "inner-overflow-preview":
     "Allowed. Keep data-lcv=preview. Do not treat as a fail.",
   "landmark-missing":
-    "Ensure one h1, a main, and either navigation or a skip link so agents can index the view.",
+    "Ensure a main, a heading (h1–h3), and either navigation or a skip link so agents can index the view.",
+  "tree-orphan": "Every non-route node needs a parent id in the same tree.",
+  "tree-layer":
+    "Layer must be route, viewport, orientation, layout, container, element, or interactive.",
   "z-index-occlusion":
     "Dump stacking contexts (position/transform/opacity/filter create them). Lower overlays or raise the occluded must-show node; never raise z-index without a named context.",
   "scroll-trap":
     "overflow:hidden on an ancestor that is not a labeled preview/dialog. Restore overflow:auto on the scrolling region; keep body lock only while a modal is open.",
+  "interact-unlinked":
+    "Interactive control has no data-lcv-event (and no href). Add from/success/fail/interrupted so the state machine is static.",
   ok: "No layout-content-view fail on this sample.",
 });
 
@@ -106,6 +284,8 @@ export function report(samples) {
       id: sample.id ?? sample.sel ?? "anon",
       path: sample.path ?? "",
       viewport: sample.viewport ?? null,
+      layoutMode: sample.layoutMode ?? null,
+      uiState: sample.uiState ?? "",
       kind,
       fail: kind !== "ok" && kind !== "inner-overflow-preview",
       recipe: recipe(kind),

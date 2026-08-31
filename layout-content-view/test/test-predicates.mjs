@@ -6,9 +6,14 @@ import {
   crawlable,
   ellipseMustShow,
   innerClipStableView,
+  indexTree,
+  layoutModeFromSize,
   overflow,
+  parseInteractAttrs,
   recipe,
   report,
+  staticMachine,
+  verifyTree,
 } from "../scripts/lcv.mjs";
 
 const landmarks = [{ role: "main" }, { role: "heading" }, { role: "navigation" }];
@@ -88,23 +93,51 @@ test("overflow helper", () => {
   assert.equal(overflow({ scrollW: 12, clientW: 10, scrollH: 10, clientH: 10 }).x, true);
 });
 
-test("innerClipStableView requires unchanged view", () => {
+test("innerClipStableView requires unchanged view and a clip policy", () => {
+  const clipped = {
+    role: "must-show",
+    inner: { scrollW: 500, clientW: 100, scrollH: 20, clientH: 20 },
+    computed: { overflow: "hidden" },
+  };
   assert.equal(
     innerClipStableView({
+      ...clipped,
       viewBefore: { w: 768, h: 800 },
       viewAfter: { w: 768, h: 800 },
-      inner: { scrollW: 500, clientW: 100, scrollH: 20, clientH: 20 },
     }),
     true
   );
   assert.equal(
     innerClipStableView({
+      ...clipped,
       viewBefore: { w: 768, h: 800 },
       viewAfter: { w: 768, h: 1200 },
-      inner: { scrollW: 500, clientW: 100, scrollH: 20, clientH: 20 },
     }),
     false
   );
+});
+
+test("scrollport overflow is not a must-show fail", () => {
+  const kind = classify({
+    role: "must-show",
+    document: { scrollW: 768, clientW: 768, scrollH: 800, clientH: 800 },
+    inner: { scrollW: 200, clientW: 200, scrollH: 1200, clientH: 400 },
+    computed: { overflow: "auto", overflowY: "auto", textOverflow: "clip" },
+    landmarks,
+  });
+  assert.equal(kind, "ok");
+});
+
+test("ancestor clip without a scrollport fails", () => {
+  const kind = classify({
+    role: "must-show",
+    document: { scrollW: 375, clientW: 375, scrollH: 812, clientH: 812 },
+    inner: { scrollW: 200, clientW: 200, scrollH: 40, clientH: 40 },
+    computed: { overflow: "visible" },
+    ancestorClip: true,
+    landmarks,
+  });
+  assert.equal(kind, "inner-clip-must-show");
 });
 
 test("ellipseMustShow ignores preview", () => {
@@ -115,4 +148,72 @@ test("ellipseMustShow ignores preview", () => {
     }),
     false
   );
+});
+
+test("layout-mode uses orientation from size", () => {
+  assert.equal(layoutModeFromSize(375, 812).orientation, "portrait");
+  assert.equal(layoutModeFromSize(1280, 720).orientation, "landscape");
+});
+
+test("static machine reads success fail interrupted", () => {
+  const edge = parseInteractAttrs({
+    "data-lcv-event": "next",
+    "data-lcv-from": "slide:arrive",
+    "data-lcv-to-success": "slide:inch-at-a-time",
+    "data-lcv-to-fail": "slide:arrive",
+    "data-lcv-to-interrupted": "slide:arrive",
+  });
+  const machine = staticMachine([edge]);
+  assert.deepEqual(machine.states, ["slide:arrive", "slide:inch-at-a-time"]);
+});
+
+test("unlinked interact fails", () => {
+  assert.equal(classify({ role: "interact", linked: false }), "interact-unlinked");
+  assert.equal(classify({ role: "interact", linked: true }), "ok");
+});
+
+test("seven-layer tree verifies parent ids and interact effects", () => {
+  const tree = indexTree({
+    route: { id: "route", path: "/profile" },
+    viewport: { id: "phone", w: 375, h: 812 },
+    orientation: { id: "portrait", orientation: "portrait", uiState: "slide:arrive" },
+    layouts: [{ id: "deck", kind: "deck" }],
+    containers: [{ id: "pane", parent: "deck", kind: "scrollport" }],
+    elements: [
+      {
+        id: "title",
+        parent: "pane",
+        role: "must-show",
+        document: { scrollW: 375, clientW: 375, scrollH: 812, clientH: 812 },
+        inner: { scrollW: 200, clientW: 200, scrollH: 40, clientH: 40 },
+        computed: { overflow: "visible" },
+        landmarks,
+      },
+    ],
+    interactives: [
+      {
+        id: "next",
+        parent: "portrait",
+        event: "next",
+        from: "slide:arrive",
+        success: "slide:inch-at-a-time",
+        fail: "slide:arrive",
+        interrupted: "slide:arrive",
+        linked: true,
+      },
+    ],
+  });
+  const out = verifyTree(tree);
+  assert.equal(tree.nodes.map((n) => n.layer).join(">"), "route>viewport>orientation>layout>container>element>interactive");
+  assert.equal(
+    out.filter((row) => row.fail).length,
+    0
+  );
+});
+
+test("orphan node fails tree verify", () => {
+  const out = verifyTree({
+    nodes: [{ id: "ghost", layer: "element", parent: "missing" }],
+  });
+  assert.equal(out[0].kind, "tree-orphan");
 });

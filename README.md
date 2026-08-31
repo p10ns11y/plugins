@@ -109,7 +109,7 @@ See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](psta
 
 ## layout-content-view
 
-Landmark/sitemap graph + named viewports + must-show clip/overflow. Survives redesigns because it measures boxes and roles, not pixels. Pilot: devprofile feature map (no second route catalog).
+Routes → Viewports → Orientation → Layouts → Containers → Elements → Interactives. Measures boxes and roles, not pixels. Pilot: devprofile.
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git

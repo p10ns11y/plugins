@@ -16,7 +16,7 @@ Existing UX already checks **document** horizontal overflow (`assertNoHorizontal
 | Hero / invite copy | must-show | Hiring data, not a chip |
 | `#projects` descriptions with `line-clamp-*` | preview | Card blurbs |
 | `/qa` `line-clamp-3` question peek | preview | Desk chrome; the answer pane is must-show |
-| `.profile-deck__pager-label` | must-show until marked | Causal probe: view box stable, label `scrollW` ≫ `clientW` |
+| `.profile-deck__pager-label` | must-show (`data-lcv`) | Wrap. No ellipsis. |
 | `data-visual-live` | live | Paint mask, not ellipse |
 
 ## Viewports

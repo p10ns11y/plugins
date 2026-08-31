@@ -1,6 +1,12 @@
 # layout-content-view
 
-Web-first **layout × content × view** stability for agents. A view is stable when landmark/index graph stays reachable and **must-show** text is geometrically unclipped — not when pixels match a PNG.
+Web-first **layout × content × view** stability for agents. Verify a compact tree:
+
+```text
+Routes → Viewports → Orientation → Layouts → Containers → Elements → Interactives
+```
+
+A view is stable when that tree stays reachable and **must-show** text is geometrically unclipped — not when pixels match a PNG.
 
 Pixel baselines miss inner clip while the view box stays fixed. Document `scrollWidth` checks miss the same class. This plugin names that class and a one-shot recipe.
 

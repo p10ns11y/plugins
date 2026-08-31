@@ -1,6 +1,6 @@
 # Sitemap / view graph
 
-Not `sitemap.xml`. That file (if any) is for crawlers; this graph is for **layout regions**.
+The **route** slice of [ontology.md](ontology.md). Not `sitemap.xml`. That file (if any) is for crawlers.
 
 ```text
 Rel    ∈ { contains, indexes, flows }
