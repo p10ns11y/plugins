@@ -198,3 +198,7 @@ Reload Grok (or Plugins tab → `r`).
 
 `bin/pf-*` scripts are **agent-internal** (what Grok runs for those slash commands).
 You do not call them from the shell for normal use.
+
+## Eval
+
+Latest SkillEvaluator notes: [docs/eval/2026-09-08/](docs/eval/2026-09-08/).

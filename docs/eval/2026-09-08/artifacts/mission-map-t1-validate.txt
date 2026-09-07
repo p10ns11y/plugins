@@ -1,0 +1,209 @@
+                       SkillEvaluator Validation Results                        
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Validator                      ┃   Status   ┃ Details                        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Schema & Repository Governance │    FAIL    │ 1 errors, 2 warnings           │
+│ Semantic Version Validation    │    PASS    │ 1 checks passed                │
+│ Security Scan                  │ INCOMPLETE │ skillspector did not complete  │
+│                                │            │ (1 warnings)                   │
+│ PII Scan                       │    PASS    │ 2 checks passed                │
+│ License Compliance             │    PASS    │ OK                             │
+│ Code Risk Analysis             │    PASS    │ OK                             │
+│ Secrets Detection              │ INCOMPLETE │ gitleaks did not complete (1   │
+│                                │            │ warnings)                      │
+│ Code Integrity & Hygiene       │    PASS    │ No standard Python test-file   │
+│                                │            │ candidates found; target tests │
+│                                │            │ were not executed and coverage │
+│                                │            │ was not measured. Consider     │
+│                                │            │ adding tests.                  │
+│ Unicode Smuggling Detection    │    PASS    │ 1 checks passed                │
+│ QUALITY                        │    PASS    │ 1 checks passed                │
+│ SCRIPT_LINT                    │    PASS    │ 1 checks passed                │
+└────────────────────────────────┴────────────┴────────────────────────────────┘
+
+╭─────────────────╮
+│ Failure Details │
+╰─────────────────╯
+
+[Schema & Repository Governance]
+Validate SKILL.md frontmatter and repository structure
+[FAIL] Validation failed
+
+Summary:
+  • Checks performed: 8
+  • Errors: 1 (1 high)
+  • Warnings: 2
+
+Issues:
+  1. [SCHEMA-MEDIUM] Missing recommended section: '## Instructions'
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   body_recommended_section
+     Fix:     Consider adding a '## Instructions' or '## Usage' section. Per 
+agentskills.io the body format is unrestricted, so this is a convention nudge — 
+it also gives the quality scorer a stable anchor for instruction-quality 
+heuristics.
+
+  2. [SCHEMA-MEDIUM] Missing recommended section: '## Examples'
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   body_recommended_section
+     Fix:     Consider adding a '## Examples' section. If examples are already 
+inline under instructions, this can be skipped.
+
+  3. [SCHEMA-HIGH] Author not specified in metadata
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   author_missing
+     Fix:     Add 'metadata.author' field with format 'Name <email@example.com>'
+
+
+[Security Scan]
+Detect security vulnerabilities and PII/secrets
+[INCOMPLETE] skillspector did not complete
+
+Summary:
+  • Errors: 0
+  • Warnings: 1
+
+Warnings:
+  [WARN] skillspector not installed - skipping security scan. Install with: uv 
+tool install git+https://github.com/NVIDIA/SkillSpector.git
+
+[Secrets Detection]
+Detect hardcoded secrets, API keys, and credentials using Gitleaks
+[INCOMPLETE] gitleaks did not complete
+
+Summary:
+  • Errors: 0
+  • Warnings: 1
+
+Warnings:
+  [WARN] gitleaks not installed - secrets scanning skipped. Install with: brew 
+install gitleaks (macOS) or go install github.com/gitleaks/gitleaks/v8@latest
+╭───────────────────────╮
+│ Non-blocking Findings │
+╰───────────────────────╯
+
+[QUALITY]
+Skill quality scoring across Correctness (35%), Discoverability (25%), 
+Reliability (25%), and Efficiency (15%)
+
+  Overall: 86.0/100 (Grade: B)
+  Skill Type: guide-only
+
+                            Quality Scores by Skill                             
+┏━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Skill      ┃ Grade ┃ Score ┃ Correctne… ┃ Discover… ┃ Reliabili… ┃ Efficien… ┃
+┡━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ mission-m… │   B   │  86.0 │         85 │        90 │         75 │       100 │
+└────────────┴───────┴───────┴────────────┴───────────┴────────────┴───────────┘
+
+[PASS] Validation passed
+
+Summary:
+  • Checks performed: 1
+
+Details:
+  [OK] quality_score: Score: 86.0/100 (Grade: B) (overall_score=86.0, grade=B, 
+skill_type=guide-only)
+Issues:
+  1. [QUALITY-MEDIUM] SKILL_SPEC recommended field missing: 'version'
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_correctness
+     Fix:     Add 'version' to frontmatter — Semantic version (e.g., "1.0.0")
+
+  2. [QUALITY-MEDIUM] SKILL_SPEC recommended field missing: 'metadata.author'
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_correctness
+     Fix:     Add 'author' under metadata: — Author name or team (under 
+metadata:)
+
+  3. [QUALITY-MEDIUM] SKILL_SPEC recommended field missing: 'metadata.tags'
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_correctness
+     Fix:     Add 'tags' under metadata: — Categorization tags (under metadata:,
+list of 1-5 items)
+
+  4. [QUALITY-LOW] Description very long (341 chars, recommend 50-150)
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_discoverability
+     Fix:     Keep descriptions concise for progressive disclosure
+
+  5. [QUALITY-LOW] No '## Purpose' section
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_discoverability
+     Fix:     Add purpose section to clarify use cases
+
+  6. [QUALITY-LOW] No mention of error handling or validation
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_reliability
+     Fix:     Document expected errors and how to handle them
+
+  7. [QUALITY-LOW] No prerequisites/requirements documented
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_reliability
+     Fix:     Document dependencies, API keys, or setup needed
+
+  8. [QUALITY-LOW] No limitations documented
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_reliability
+     Fix:     Add '## Limitations' section with known issues/constraints
+
+  9. [QUALITY-LOW] No troubleshooting section documented
+     File:    
+/home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/missio
+n-map/SKILL.md
+     Check:   quality_reliability
+     Fix:     Add '## Troubleshooting' with Error/Cause/Solution patterns
+
+
+[INCOMPLETE] Validation evidence is incomplete
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│  skillevaluator validate                                skill: mission-map   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+╭─ Tier 1 · Static & Security ─────────────────────────────────────────────────╮
+│    checks      ✗ schema · ✓ version · ✗ security · ✓ pii · ✓ license · ✗     │
+│  code-integrity · ✓ unicode · ✓ quality · ✓ lint                             │
+│    summary     8/11 passed  ·  3 failed  ·  4 warnings                       │
+│  ✗ failed      Schema & Repository Governance — Author not specified in      │
+│  metadata                                                                    │
+│  ✗ failed      Security Scan                                                 │
+│  ✗ failed      Secrets Detection                                             │
+│    advisories  9  quality 9                                                  │
+│    quality     B  86.0 / 100                                                 │
+╰────────────────────────────────────────────────────────────── ✗ fail · 0.0s ─╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│   ✗ FAIL   Schema & Repository Governance (+2 more) failed in Tier 1  ·      │
+│  exit 1                                                                      │
+│                                                                              │
+│  fix     Add 'metadata.author' field with format 'Name <email@example.com>'  │
+│          skillevaluator validate                                             │
+│  /home/sustainableabundance/dev/agentic-reactor/plugins/mission-map/skills/  │
+│  mission-map --no-dedup -r cli -o                                            │
+│  /home/sustainableabundance/Work/archive/home-2026-09-07/skill-eval-2026-09  │
+│  -08/reports                                                                 │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Error: validation failed
