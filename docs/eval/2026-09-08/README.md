@@ -2,19 +2,19 @@
 
 Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../mission-map/skills/mission-map/).
 
-## Results
+## Results (after SKILL.md Tier1 fixes)
 
-| Target | Grade | Score /100 | Correctness | Discoverability | Reliability | Efficiency | Type |
-|--------|-------|------------|-------------|-----------------|-------------|------------|------|
-| mission-map (plugin skill) | **B** | **86.0** | 85 | 90 | 75 | 100 | guide-only |
+| Target | Grade | Score /100 | Notes |
+|--------|-------|------------|-------|
+| mission-map (plugin skill) | **A** | **100.0** | `quality-check` PASS. Schema 11/11 PASS. Gitleaks PASS. PII PASS. |
 
-`quality-check` **PASS**. Full `validate` BENCHMARK (without Tier3) marked **INCOMPLETE** — missing SkillSpector/Gitleaks evidence; Tier2/Tier3 not completed in this wave.
+Full `validate --tiers 1` is still **INCOMPLETE**: SkillSpector JSON (`risk_assessment.recommendation` vs severity) does not match what SkillEvaluator 0.2.1 expects. Direct `skillspector scan` ran; LLM analyzers failed (model not found). That is a tool-contract gap, not a missing SKILL.md field.
 
 Artifacts: [artifacts/](artifacts/).
 
 ## How (tools → tasks)
 
-Same mzapan stack as skills repo:
+Same eval-host stack as skills repo:
 
 ```text
 Orca orchestration Run + Grok/cursor workers
@@ -24,15 +24,16 @@ Orca orchestration Run + Grok/cursor workers
 
 See skills write-up for the full tools→tasks table and Orca Run id.
 
-## Suggestions to improve (mission-map)
+## Tier1 SKILL.md fixes landed
 
-1. Add SKILL_SPEC frontmatter: `version`, `metadata.author`, `metadata.tags`.
-2. Add recommended body sections: `## Instructions`, `## Examples`, `## Purpose`, `## Limitations`, `## Troubleshooting`.
-3. Shorten frontmatter `description` (currently very long for progressive disclosure).
-4. Document error handling / validation expectations (Reliability 75).
-5. Install Semgrep + Gitleaks + SkillSpector before claiming a publication-complete BENCHMARK.
-6. After Docker/Harbor + valid LLM provider: run Tier3 Skill Lift with/without the skill on Grok Build and/or cursor-agent under Orca.
+1. Frontmatter: `version: 0.1.0`, `metadata.author` as `Name <email@host>` (GitHub noreply), `metadata.tags`.
+2. Description shortened to 122 characters.
+3. Body sections: Purpose, Prerequisites, Instructions, Examples, Limitations, Troubleshooting.
+4. Validation: empty \(G\) or empty DAG stops and Asks. Troubleshooting table for `mm-kern`, JSON, overwrite.
+5. Gitleaks on PATH: secrets scan PASS.
+
+Still open: SkillSpector vs SkillEvaluator JSON contract; Tier2/Tier3 live eval.
 
 ## Owner
 
-Steward · mzapan-local · paired with skills eval 2026-09-08.
+Steward · eval-host · paired with skills eval 2026-09-08.
