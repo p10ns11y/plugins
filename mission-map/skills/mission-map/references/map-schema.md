@@ -22,7 +22,7 @@ JSON for the Rust CLI is the subset in `examples/sample-map.json` (`g`, `stages[
 ```bash
 mission-map-graph map.json --mermaid
 mission-map-graph now.json --compare then.json --mermaid
-mm-lifeos-graph   # 20:00 timer → ~/life-os/UI/Mission.md
+mm-lifeos-graph   # 20:00 timer → local Mission.md
 ```
 
 PERT: \(t_e = (a + 4m + b) / 6\). Done stages are kept for topology and dropped from remaining \(T\).
