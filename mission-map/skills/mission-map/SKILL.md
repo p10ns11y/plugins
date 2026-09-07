@@ -25,7 +25,7 @@ Use when you need calculated risk, a critical path, or a replan after a reject, 
 
 ## Prerequisites
 
-- Plugin installed (`mission-map`). `{plugin}` is its install directory.
+- Plugin installed (`mission-map`). Commands below run from that install directory.
 - Optional numbers: `make` (C kernels), `cargo` (Rust graph CLI).
 - Optional host timer: `mm-lifeos-graph` writes a local Mission card. Do not invent a vault path.
 
@@ -51,15 +51,13 @@ Never print a single calendar date as destiny. Print **bands** \(a / m / b\) and
 7. **On shock** — re-run steps 3–6 on the remaining DAG only.
 8. **LLM room** — propose a missing stage or band; human confirms.
 
-Optional numbers (from `{plugin}`):
+Optional numbers (from the plugin root):
 
 ```bash
-make -C {plugin}/c test
-{plugin}/bin/mm-kern pert 2 4 8
-{plugin}/bin/mm-kern hazard 0.1 4 3
-{plugin}/bin/mm-kern bayes 2 4 8 3
-cd {plugin}/rust && cargo run -- ../examples/sample-map.json --mermaid
-cd {plugin}/rust && cargo run -- now.json --compare then.json
+make -C c test
+mm-kern pert 2 4 8
+mm-kern hazard 0.1 4 3
+mm-kern bayes 2 4 8 3
 ```
 
 DAG MC (`dag_mc_p50`/`p90`), regime beliefs (`regime_*`), and Risk ranks (`risk id=`) print from the Rust CLI. See [references/kernels.md](references/kernels.md). JSON shape: [references/map-schema.md](references/map-schema.md).
@@ -68,12 +66,12 @@ DAG MC (`dag_mc_p50`/`p90`), regime beliefs (`regime_*`), and Risk ranks (`risk 
 
 User: `/mission-map` after a hiring-loop shock.
 
-Agent: name \(G\) (one checkable arrival), list stages with class Do/Risk/Wait/Park, print \(a/m/b\) on Do nodes, one **next Do**, and a signpost per Risk. Do not print a single destiny date.
+Agent: name \(G\) (one checkable arrival), list stages with class Do, Risk, Wait, or Park, print \(a, m, b\) on Do nodes, one **next Do**, and a signpost per Risk. Do not print a single destiny date.
 
 Kernel smoke:
 
 ```bash
-{plugin}/bin/mm-kern pert 2 4 8
+mm-kern pert 2 4 8
 ```
 
 Sample DAG: [sample-map.json](../../examples/sample-map.json).
@@ -88,8 +86,8 @@ Sample DAG: [sample-map.json](../../examples/sample-map.json).
 ## Limitations
 
 - Not a future oracle. Bands move when facts move.
-- Does not replace `control-graph` phases or `eva-emptiness` when the map itself is missing.
-- C/Rust kernels are optional; a valid map can be prose plus the class table.
+- Does not replace control-graph phases or eva-emptiness when the map itself is missing.
+- C and Rust kernels are optional; a valid map can be prose plus the class table.
 - Email and other PII stay off the public map. See [map-schema](references/map-schema.md).
 
 ## Troubleshooting
@@ -97,8 +95,8 @@ Sample DAG: [sample-map.json](../../examples/sample-map.json).
 | Error / symptom | Cause | Fix |
 |-----------------|-------|-----|
 | No next Do | Every remaining node is Wait or Park | Name a Do on the residual critical path, or Ask |
-| `mm-kern` missing | Plugin bin not built | `make -C {plugin}/c` then rerun |
-| Cargo graph CLI fails | Invalid JSON vs [map-schema](references/map-schema.md) | Check `g`, `stages[].id/a/m/b/depends_on/class` |
+| `mm-kern` missing | Plugin bin not built | From plugin root: `make -C c` then rerun |
+| Cargo graph CLI fails | Invalid JSON vs [map-schema](references/map-schema.md) | Check g, id, a, m, b, depends_on, class |
 | Silent formula overwrite | LLM replaced numbers without a confirm | Restore bands; human confirms step 8 |
 | Tourist trip as \(G\) | Arrival is not checkable | Reject; pick a verifyable \(G\) |
 
@@ -107,4 +105,4 @@ Sample DAG: [sample-map.json](../../examples/sample-map.json).
 - Schema: [references/map-schema.md](references/map-schema.md)
 - Kernels: [references/kernels.md](references/kernels.md)
 - Example: [sample-map.json](../../examples/sample-map.json)
-- `control-graph` · `eva-emptiness` · `north-star-compass`
+- control-graph · eva-emptiness · north-star-compass

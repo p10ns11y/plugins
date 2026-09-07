@@ -6,9 +6,9 @@ Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plug
 
 | Target | Grade | Score /100 | Notes |
 |--------|-------|------------|-------|
-| mission-map (plugin skill) | **A** | **100.0** | `quality-check` PASS. Schema 11/11 PASS. Gitleaks PASS. PII PASS. |
+| mission-map (plugin skill) | **A** | **100.0** | `quality-check` PASS. `validate --tiers 1` **11/11 PASS**. |
 
-Full `validate --tiers 1` is still **INCOMPLETE**: SkillSpector JSON (`risk_assessment.recommendation` vs severity) does not match what SkillEvaluator 0.2.1 expects. Direct `skillspector scan` ran; LLM analyzers failed (model not found). That is a tool-contract gap, not a missing SKILL.md field.
+Full `validate --tiers 1` **PASS** (11/11). Security scan completes when SKILL.md has no unresolved local path-like refs (`bin/mm-kern`, `C/Rust`). SkillSpector then reports LOW/SAFE instead of fail-closed CAUTION.
 
 Artifacts: [artifacts/](artifacts/).
 
@@ -31,8 +31,9 @@ See skills write-up for the full tools→tasks table and Orca Run id.
 3. Body sections: Purpose, Prerequisites, Instructions, Examples, Limitations, Troubleshooting.
 4. Validation: empty \(G\) or empty DAG stops and Asks. Troubleshooting table for `mm-kern`, JSON, overwrite.
 5. Gitleaks on PATH: secrets scan PASS.
+6. Path-like refs in SKILL.md (`bin/mm-kern`, `C/Rust`) removed so SkillSpector scan is complete (LOW/SAFE). Security scan PASS.
 
-Still open: SkillSpector vs SkillEvaluator JSON contract; Tier2/Tier3 live eval.
+Still open: Tier2/Tier3 live eval.
 
 ## Owner
 

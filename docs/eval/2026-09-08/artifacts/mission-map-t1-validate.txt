@@ -1,59 +1,38 @@
                        SkillEvaluator Validation Results                        
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Validator                      ┃   Status   ┃ Details                        ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ Schema & Repository Governance │    PASS    │ 11 checks passed               │
-│ Semantic Version Validation    │    PASS    │ 1 checks passed                │
-│ Security Scan                  │ INCOMPLETE │ skillspector did not complete  │
-│                                │            │ (1 errors)                     │
-│ PII Scan                       │    PASS    │ 2 checks passed                │
-│ License Compliance             │    PASS    │ OK                             │
-│ Code Risk Analysis             │    PASS    │ OK                             │
-│ Secrets Detection              │    PASS    │ OK                             │
-│ Code Integrity & Hygiene       │    PASS    │ No standard Python test-file   │
-│                                │            │ candidates found; target tests │
-│                                │            │ were not executed and coverage │
-│                                │            │ was not measured. Consider     │
-│                                │            │ adding tests.                  │
-│ Unicode Smuggling Detection    │    PASS    │ 1 checks passed                │
-│ QUALITY                        │    PASS    │ 1 checks passed                │
-│ SCRIPT_LINT                    │    PASS    │ 1 checks passed                │
-└────────────────────────────────┴────────────┴────────────────────────────────┘
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Validator                      ┃ Status ┃ Details                            ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Schema & Repository Governance │  PASS  │ 11 checks passed                   │
+│ Semantic Version Validation    │  PASS  │ 1 checks passed                    │
+│ Security Scan                  │  PASS  │ 1 checks passed                    │
+│ PII Scan                       │  PASS  │ 2 checks passed                    │
+│ License Compliance             │  PASS  │ OK                                 │
+│ Code Risk Analysis             │  PASS  │ OK                                 │
+│ Secrets Detection              │  PASS  │ OK                                 │
+│ Code Integrity & Hygiene       │  PASS  │ No standard Python test-file       │
+│                                │        │ candidates found; target tests     │
+│                                │        │ were not executed and coverage was │
+│                                │        │ not measured. Consider adding      │
+│                                │        │ tests.                             │
+│ Unicode Smuggling Detection    │  PASS  │ 1 checks passed                    │
+│ QUALITY                        │  PASS  │ 1 checks passed                    │
+│ SCRIPT_LINT                    │  PASS  │ 1 checks passed                    │
+└────────────────────────────────┴────────┴────────────────────────────────────┘
 
-╭─────────────────╮
-│ Failure Details │
-╰─────────────────╯
 
-[Security Scan]
-Detect security vulnerabilities and PII/secrets
-[INCOMPLETE] skillspector did not complete
-
-Summary:
-  • Errors: 1
-
-Errors:
-  • skillspector JSON field 'risk_assessment.recommendation' does not match the 
-risk severity; security scan did not complete
-
-[INCOMPLETE] Validation evidence is incomplete
+[PASS] All validations passed
 
 ╭──────────────────────────────────────────────────────────────────────────────╮
 │  skillevaluator validate                                skill: mission-map   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 ╭─ Tier 1 · Static & Security ─────────────────────────────────────────────────╮
-│    checks      ✓ schema · ✓ version · ✗ security · ✓ pii · ✓ license · ✓     │
+│    checks      ✓ schema · ✓ version · ✓ security · ✓ pii · ✓ license · ✓     │
 │  code-integrity · ✓ unicode · ✓ quality · ✓ lint                             │
-│    summary     10/11 passed  ·  1 failed                                     │
-│  ✗ failed      Security Scan — skillspector JSON field                       │
-│  'risk_assessment.recommendation' does not match the risk severity;          │
-│  security scan did not complete                                              │
+│    summary     11/11 passed                                                  │
 │    quality     A  100.0 / 100                                                │
-╰────────────────────────────────────────────────────────────── ✗ fail · 2.7s ─╯
+╰────────────────────────────────────────────────────────────── ✓ pass · 3.0s ─╯
 ╭──────────────────────────────────────────────────────────────────────────────╮
-│   ✗ FAIL   Security Scan failed in Tier 1  ·  exit 1                         │
-│          skillevaluator validate mission-map/skills/mission-map --tiers 1    │
-│  --report cli                                                                │
+│   ✓ PASS   all 1 tier passed  ·  exit 0                                      │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
-Error: validation failed
