@@ -201,4 +201,4 @@ You do not call them from the shell for normal use.
 
 ## Eval
 
-Latest SkillEvaluator notes: [docs/eval/2026-09-08/](docs/eval/2026-09-08/).
+This repo uses [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator). Latest notes are in [docs/eval/2026-09-08/](docs/eval/2026-09-08/).

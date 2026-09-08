@@ -1,6 +1,6 @@
 # SkillEvaluator pass — mission-map — 2026-09-08
 
-Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../mission-map/skills/mission-map/).
+Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../mission-map/skills/mission-map/). The runner is [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator).
 
 ## Results
 
@@ -14,7 +14,7 @@ Tier 2 Context Deduplication is PASS. Three files, 14 chunks, no duplicate guida
 
 Tier 3 local OpenCode plus NVIDIA Build started. The first scored pass was 0/4. NVIDIA returned HTTP 429 and judge timeouts while four trials plus the judge shared one model. A serialized rerun (`--n-concurrent 1`, `--timeout-multiplier 2`) was still running when this note was written. See [artifacts/2026-09-08-t3/](artifacts/2026-09-08-t3/).
 
-Rerun T2 or T3 with [`docs/eval/run-t2-t3.sh`](../run-t2-t3.sh). SkillEvaluator 0.2.1 chat and embed defaults are EOL. The script pins live NVIDIA models.
+Rerun T2 or T3 with [`docs/eval/run-t2-t3.sh`](../run-t2-t3.sh). [SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/) 0.2.1 chat and embed defaults are EOL. The script pins live NVIDIA models.
 
 Artifacts: [artifacts/](artifacts/).
 
@@ -24,7 +24,7 @@ Same eval-host stack as skills repo:
 
 ```text
 Orca orchestration Run + Grok/cursor workers
-  → NVIDIA SkillEvaluator 0.2.1 quality-check / validate
+  → NVIDIA SkillEvaluator 0.2.1 (https://docs.nvidia.com/skills/skillevaluator/) quality-check / validate
   → this doc + improvement list
 ```
 

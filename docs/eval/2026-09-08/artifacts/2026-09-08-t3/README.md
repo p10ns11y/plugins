@@ -2,6 +2,8 @@
 
 Local Harbor plus OpenCode 1.1.35 plus NVIDIA Build. Docker was not used. This user is not in the `docker` group, so `/var/run/docker.sock` is not writable.
 
+The runner is [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator).
+
 ## What ran
 
 `skillevaluator doctor --env-mode local --agents opencode` passed. See [mission-map-t3-doctor.txt](mission-map-t3-doctor.txt).
@@ -32,4 +34,4 @@ Failures:
 
 Copy the skill onto tmpfs before evaluate. Harbor `copytree_secure` holds a directory fd, then `scandir(fd)`. New names are invisible on btrfs.
 
-`cursor-cli`, `grok`, and `prime-agent` are not on SkillEvaluator 0.2.1 `nv_build` plus local allowlists. Stay on OpenCode until that changes.
+`cursor-cli`, `grok`, and `prime-agent` are not on [SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/) 0.2.1 `nv_build` plus local allowlists. Stay on OpenCode until that changes.
