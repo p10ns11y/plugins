@@ -1,0 +1,204 @@
+╭───────────────────────── Local mode · Experimental ──────────────────────────╮
+│ Intended for trusted skills and workspaces. Local execution uses host OS     │
+│ safeguards; use Docker when you need stronger isolation for untrusted code.  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+WARNING  Skipping unreadable SKILL.md repo link: ../../examples/sample-map.json 
+WARNING  Skipping unreadable SKILL.md repo link: ../../examples/sample-map.json 
+WARNING  Skipping unreadable SKILL.md repo link: ../../examples/sample-map.json 
+WARNING  Skipping unreadable SKILL.md repo link: ../../examples/sample-map.json 
+Time: 2521.9s
+╭──────────────────────────── Results by Evaluator ────────────────────────────╮
+│                                                                              │
+│  Evaluator      With Skill                 No Skill                    Lift  │
+│ ──────────────────────────────────────────────────────────────────────────── │
+│  Security         NO SCORE                 NO SCORE                NO SCORE  │
+│  Skill            NO SCORE                 NO SCORE                NO SCORE  │
+│  Execution                                                                   │
+│  Efficiency       NO SCORE                 NO SCORE                NO SCORE  │
+│  Accuracy         NO SCORE                 NO SCORE                NO SCORE  │
+│  Goal             NO SCORE                 NO SCORE                NO SCORE  │
+│  Accuracy                                                                    │
+│  Behavior         NO SCORE                 NO SCORE                NO SCORE  │
+│  Check                                                                       │
+│                                                                              │
+╰─ mission-map-t3.5yilgJ / cursor-cli 2 trial(s) Model: cursor/composer-2.5 (C─╯
+╭──────────────────────────── Results by Dimension ────────────────────────────╮
+│                                                                              │
+│Dimension                  With Skill             No Skill                Lift│
+│──────────────────────────────────────────────────────────────────────────────│
+│Security                     NO SCORE             NO SCORE            NO SCORE│
+│Correctness                  NO SCORE             NO SCORE            NO SCORE│
+│Discoverability              NO SCORE             NO SCORE            NO SCORE│
+│Effectiveness                NO SCORE             NO SCORE            NO SCORE│
+│Efficiency                   NO SCORE             NO SCORE            NO SCORE│
+│   Each row shows with-skill, no-skill, and dimension lift. Dimensions are    │
+│           report-only rollups; custom metrics do not change them.            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Tier 3 Evaluation: FAILED
+╭────────────────────────────────── Findings ──────────────────────────────────╮
+│                                                                              │
+│ Failures                                                                     │
+│   - Unscoreable reward in mission-map-explicit-replan__5dTeL7t: Required     │
+│ judge evaluation failed: behavior_check: LLM judge error: Public provider    │
+│ call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation    │
+│ timed out                                                                    │
+│   - Unscoreable reward in mission-map-implicit-deadline__ZtkEbiU: Required   │
+│ judge evaluation failed: behavior_check: LLM judge error: Public provider    │
+│ call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation    │
+│ timed out                                                                    │
+│   - Missing scored attempts for cases: mission-map-explicit-replan,          │
+│ mission-map-implicit-deadline                                                │
+│   - Scored attempt coverage is 2/4                                           │
+│   - Unscoreable reward in mission-map-explicit-replan__ERW9sVK: Required     │
+│ judge evaluation failed: accuracy: LLM judge error: Public provider call     │
+│ failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed   │
+│ out; goal_accuracy: LLM judge error: Public provider call failed for         │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out          │
+│   - Unscoreable reward in mission-map-implicit-deadline__KimeCSR: Required   │
+│ judge evaluation failed: accuracy: LLM judge error: Public provider call     │
+│ failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed   │
+│ out; behavior_check: LLM judge error: Public provider call failed for        │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out          │
+│   - cursor-cli with-skill (failed): Unscoreable reward in                    │
+│ mission-map-explicit-replan__5dTeL7t: Required judge evaluation failed:      │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ Unscoreable reward in mission-map-implicit-deadline__ZtkEbiU: Required judge │
+│ evaluation failed: behavior_check: LLM judge error: Public provider call     │
+│ failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed   │
+│ out; Missing scored attempts for cases: mission-map-explicit-replan,         │
+│ mission-map-implicit-deadline; Scored attempt coverage is 2/4                │
+│   - cursor-cli without-skill (failed): Unscoreable reward in                 │
+│ mission-map-explicit-replan__ERW9sVK: Required judge evaluation failed:      │
+│ accuracy: LLM judge error: Public provider call failed for                   │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ goal_accuracy: LLM judge error: Public provider call failed for              │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ Unscoreable reward in mission-map-implicit-deadline__KimeCSR: Required judge │
+│ evaluation failed: accuracy: LLM judge error: Public provider call failed    │
+│ for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;     │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out; Missing │
+│ scored attempts for cases: mission-map-explicit-replan,                      │
+│ mission-map-implicit-deadline; Scored attempt coverage is 2/4                │
+│   - cursor-cli with-skill mission-map-explicit-replan__5dTeL7t: Required     │
+│ judge evaluation failed: behavior_check: LLM judge error: Public provider    │
+│ call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation    │
+│ timed out                                                                    │
+│   - cursor-cli with-skill mission-map-implicit-deadline__ZtkEbiU: Required   │
+│ judge evaluation failed: behavior_check: LLM judge error: Public provider    │
+│ call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation    │
+│ timed out                                                                    │
+│   - cursor-cli without-skill mission-map-explicit-replan__ERW9sVK: Required  │
+│ judge evaluation failed: accuracy: LLM judge error: Public provider call     │
+│ failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed   │
+│ out; goal_accuracy: LLM judge error: Public provider call failed for         │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out          │
+│   - cursor-cli without-skill mission-map-implicit-deadline__KimeCSR:         │
+│ Required judge evaluation failed: accuracy: LLM judge error: Public provider │
+│ call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation    │
+│ timed out; behavior_check: LLM judge error: Public provider call failed for  │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out          │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────── Feedback & Suggestions ───────────────────────────╮
+│                                                                              │
+│ Feedback                                                                     │
+│   ✗ Evaluation incomplete: Unscoreable reward in                             │
+│ mission-map-explicit-replan__5dTeL7t: Required judge evaluation failed:      │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ Unscoreable reward in mission-map-implicit-deadline__ZtkEbiU: Required judge │
+│ evaluation failed: behavior_check: LLM judge error: Public provider call     │
+│ failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed   │
+│ out; Missing scored attempts for cases: mission-map-explicit-replan,         │
+│ mission-map-implicit-deadline; Scored attempt coverage is 2/4; With skill    │
+│ trial mission-map-explicit-replan__5dTeL7t: Required judge evaluation        │
+│ failed: behavior_check: LLM judge error: Public provider call failed for     │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out; With    │
+│ skill trial mission-map-implicit-deadline__ZtkEbiU: Required judge           │
+│ evaluation failed: behavior_check: LLM judge error: Public provider call     │
+│ failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed   │
+│ out; Unscoreable reward in mission-map-explicit-replan__ERW9sVK: Required    │
+│ judge evaluation failed: accuracy: LLM judge error: Public provider call     │
+│ failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed   │
+│ out; goal_accuracy: LLM judge error: Public provider call failed for         │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ Unscoreable reward in mission-map-implicit-deadline__KimeCSR: Required judge │
+│ evaluation failed: accuracy: LLM judge error: Public provider call failed    │
+│ for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;     │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out; Without │
+│ skill trial mission-map-explicit-replan__ERW9sVK: Required judge evaluation  │
+│ failed: accuracy: LLM judge error: Public provider call failed for           │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ goal_accuracy: LLM judge error: Public provider call failed for              │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out; Without │
+│ skill trial mission-map-implicit-deadline__KimeCSR: Required judge           │
+│ evaluation failed: accuracy: LLM judge error: Public provider call failed    │
+│ for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;     │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out          │
+│                                                                              │
+│ Suggestions                                                                  │
+│   1. Unscoreable reward in mission-map-explicit-replan__5dTeL7t: Required    │
+│ judge evaluation failed: behavior_check: LLM judge error: Public provider    │
+│ call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation    │
+│ timed out; Unscoreable reward in mission-map-implicit-deadline__ZtkEbiU:     │
+│ Required judge evaluation failed: behavior_check: LLM judge error: Public    │
+│ provider call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read     │
+│ operation timed out; Missing scored attempts for cases:                      │
+│ mission-map-explicit-replan, mission-map-implicit-deadline; Scored attempt   │
+│ coverage is 2/4; With skill trial mission-map-explicit-replan__5dTeL7t:      │
+│ Required judge evaluation failed: behavior_check: LLM judge error: Public    │
+│ provider call failed for nvidia/nemotron-3.5-lightning-30b-a3b: The read     │
+│ operation timed out; With skill trial                                        │
+│ mission-map-implicit-deadline__ZtkEbiU: Required judge evaluation failed:    │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ Unscoreable reward in mission-map-explicit-replan__ERW9sVK: Required judge   │
+│ evaluation failed: accuracy: LLM judge error: Public provider call failed    │
+│ for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;     │
+│ goal_accuracy: LLM judge error: Public provider call failed for              │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ Unscoreable reward in mission-map-implicit-deadline__KimeCSR: Required judge │
+│ evaluation failed: accuracy: LLM judge error: Public provider call failed    │
+│ for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;     │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out; Without │
+│ skill trial mission-map-explicit-replan__ERW9sVK: Required judge evaluation  │
+│ failed: accuracy: LLM judge error: Public provider call failed for           │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ goal_accuracy: LLM judge error: Public provider call failed for              │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;         │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out; Without │
+│ skill trial mission-map-implicit-deadline__KimeCSR: Required judge           │
+│ evaluation failed: accuracy: LLM judge error: Public provider call failed    │
+│ for nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out;     │
+│ behavior_check: LLM judge error: Public provider call failed for             │
+│ nvidia/nemotron-3.5-lightning-30b-a3b: The read operation timed out          │
+│                                                                              │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────── Artifacts ──────────────────────────────────╮
+│ 📊 HTML report report.html ·                                                 │
+│                /tmp/skill-eval-t23/results/mission-map-t3.5yilgJ/20260908_13 │
+│                2915_1685915_c99f819b7836/report.html                         │
+│ 📁 Output      /tmp/skill-eval-t23/results/mission-map-t3.5yilgJ/20260908_13 │
+│                2915_1685915_c99f819b7836                                     │
+╰──────────────────────────────────────────────────────────────────────────────╯

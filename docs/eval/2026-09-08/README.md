@@ -1,16 +1,65 @@
 # SkillEvaluator pass — mission-map — 2026-09-08
 
-Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../mission-map/skills/mission-map/).
+Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../mission-map/skills/mission-map/). The runner is [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator).
 
-## Results (after SKILL.md Tier1 fixes)
+## Results
 
 | Target | Grade | Score /100 | Notes |
 |--------|-------|------------|-------|
-| mission-map (plugin skill) | **A** | **100.0** | `quality-check` PASS. `validate --tiers 1` **11/11 PASS**. |
+| mission-map (plugin skill) | **A** | **100.0** | `quality-check` PASS. `validate --tiers 1,2` **12/12 PASS**. |
 
-Full `validate --tiers 1` **PASS** (11/11). Security scan completes when SKILL.md has no unresolved local path-like refs (`bin/mm-kern`, `C/Rust`). SkillSpector then reports LOW/SAFE instead of fail-closed CAUTION.
+Tier 1 is 11/11 PASS. Security scan completes when SKILL.md has no unresolved local path-like refs (`bin/mm-kern`, `C/Rust`). SkillSpector then reports LOW/SAFE instead of fail-closed CAUTION.
+
+Tier 2 Context Deduplication is PASS. Three files, 14 chunks, no duplicate guidance. Runtime was 47s on NVIDIA `nemotron-3-embed-1b`. See [artifacts/2026-09-08-t2/](artifacts/2026-09-08-t2/).
+
+Tier 3 local OpenCode plus NVIDIA Build ran twice. Both scored 0/4. A third pass used Harbor `cursor-cli` (`cursor-agent` / `composer-2.5`) with NVIDIA only as the judge. That pass scored 2/4 attempts and still left every published dimension `NO SCORE`. The NVIDIA judge timed out on the two long cases. See [artifacts/2026-09-08-t3/](artifacts/2026-09-08-t3/) and [artifacts/2026-09-08-t3-cursor/](artifacts/2026-09-08-t3-cursor/).
+
+Rerun T2 or T3 with [`docs/eval/run-t2-t3.sh`](../run-t2-t3.sh). [SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/) 0.2.1 chat and embed defaults are EOL. The script pins live NVIDIA models.
 
 Artifacts: [artifacts/](artifacts/).
+
+## How to verify
+
+Two paths. Inspect the committed artifacts with no key. Rerun the live checks if you have an NVIDIA Build key.
+
+### Inspect the artifacts
+
+1. Open [`artifacts/2026-09-08-t2/mission-map-t2-validate.txt`](artifacts/2026-09-08-t2/mission-map-t2-validate.txt).
+2. Confirm the table lists 12 PASS rows and `all 2 tiers passed`.
+3. Open [`mission-map/skills/mission-map/evals/evals.json`](../../mission-map/skills/mission-map/evals/evals.json).
+4. Confirm four case ids. `mission-map-explicit-replan`, `mission-map-implicit-deadline`, `mission-map-contextual-empty-g`, and `mission-map-neg-lint`.
+
+### Rerun Tier 1 and Tier 2
+
+You need `NVIDIA_API_KEY` and `skillevaluator` 0.2.1 on `PATH`. If `skillevaluator` is missing, install it from the [SkillEvaluator quickstart](https://docs.nvidia.com/skills/skillevaluator/quickstart).
+
+```bash
+export NVIDIA_API_KEY
+unset OPENAI_API_KEY OPENAI_API_BASE OPENAI_BASE_URL
+TIERS=2 ./docs/eval/run-t2-t3.sh
+```
+
+The script pins `nvidia/nemotron-3.5-lightning-30b-a3b` and `nvidia/nemotron-3-embed-1b`. Do not rely on the 0.2.1 defaults. Those models are EOL and return HTTP 410.
+
+Success. The script prints `wrote …` and the new `mission-map-t2-validate.txt` shows 12/12 PASS, quality A 100, and Context Deduplication clean.
+
+### Rerun Tier 3
+
+The recorded pass used `--env-mode local`, not Docker. Docker Engine is on this laptop (client 29.7.2). The account that ran the eval is not in the `docker` group, so `docker info` fails with permission denied on `/var/run/docker.sock`. If `docker info` works on your login, you can try Harbor `--env-mode docker` instead of this script's local path.
+
+You need the Tier 2 setup, plus `cursor-agent` (Harbor name `cursor-cli`) and `bwrap`. `/tmp` must be writable. Harbor `copytree_secure` holds a directory fd, then `scandir(fd)`. New names stay invisible on btrfs. The script copies the skill onto tmpfs for that reason.
+
+Sign in with `cursor-agent` on the host first. The local patch copies `~/.config/cursor/auth.json` into the sandbox. Do not put a login token into `CURSOR_API_KEY`. That env var expects an API key and rejects the login token.
+
+```bash
+TIERS=3 ./docs/eval/run-t2-t3.sh
+```
+
+The script writes `se_local_patch.py` into the SkillEvaluator venv. Harbor then drops empty `BASH_ENV=""` resets, allowlists `cursor-cli`, and runs `composer-2.5` for the agent while NVIDIA remains the judge.
+
+Success. `mission-map-t3-doctor.txt` shows Harbor `cursor-cli` pass. The evaluate log has scored with-skill and no-skill rows for all four cases. `NO SCORE` on every dimension means the run did not finish scoring.
+
+If NVIDIA returns HTTP 429 or judge timeouts, wait and rerun. Keep `--n-concurrent 1`. OpenCode plus NVIDIA scored 0/4. `cursor-cli` plus NVIDIA judge scored 2/4.
 
 ## How (tools → tasks)
 
@@ -18,7 +67,7 @@ Same eval-host stack as skills repo:
 
 ```text
 Orca orchestration Run + Grok/cursor workers
-  → NVIDIA SkillEvaluator 0.2.1 quality-check / validate
+  → NVIDIA SkillEvaluator 0.2.1 (https://docs.nvidia.com/skills/skillevaluator/) quality-check / validate
   → this doc + improvement list
 ```
 
@@ -33,7 +82,7 @@ See skills write-up for the full tools→tasks table and Orca Run id.
 5. Gitleaks on PATH: secrets scan PASS.
 6. Path-like refs in SKILL.md (`bin/mm-kern`, `C/Rust`) removed so SkillSpector scan is complete (LOW/SAFE). Security scan PASS.
 
-Still open: Tier2/Tier3 live eval.
+Still open: a publication-complete Tier 3 Skill Lift with scored with-skill versus no-skill rows.
 
 ## Owner
 
