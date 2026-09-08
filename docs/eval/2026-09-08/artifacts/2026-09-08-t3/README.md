@@ -23,7 +23,13 @@ Failures:
 
 ## Serialized rerun
 
-`docs/eval/run-t2-t3.sh` now passes `--n-concurrent 1` and `--timeout-multiplier 2`. That run was still in progress when this file was written. With-skill finished 4 of 4 (2 errored). No-skill had finished 3 of 4.
+`docs/eval/run-t2-t3.sh` passed `--n-concurrent 1` and `--timeout-multiplier 2`. The job `mission-map-t3.NPZhey` ran 4458s and exited 1. Score coverage stayed 0/4. Every published dimension is `NO SCORE`.
+
+With-skill. 2 Harbor errors. `mission-map-contextual-empty-g` hit the 600s cap. `mission-map-explicit-replan` exited 140. The judge timed out on the other two cases.
+
+No-skill. 3 Harbor errors. Two 600s timeouts and one exit 140. The remaining judge calls timed out.
+
+OpenCode started on both passes. The remaining fail is NVIDIA Build latency and rate limits on the same model used for the agent and the judge.
 
 ## Local-mode patches
 

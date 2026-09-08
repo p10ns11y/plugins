@@ -12,7 +12,7 @@ Tier 1 is 11/11 PASS. Security scan completes when SKILL.md has no unresolved lo
 
 Tier 2 Context Deduplication is PASS. Three files, 14 chunks, no duplicate guidance. Runtime was 47s on NVIDIA `nemotron-3-embed-1b`. See [artifacts/2026-09-08-t2/](artifacts/2026-09-08-t2/).
 
-Tier 3 local OpenCode plus NVIDIA Build started. The first scored pass was 0/4. NVIDIA returned HTTP 429 and judge timeouts while four trials plus the judge shared one model. A serialized rerun (`--n-concurrent 1`, `--timeout-multiplier 2`) was still running when this note was written. See [artifacts/2026-09-08-t3/](artifacts/2026-09-08-t3/).
+Tier 3 local OpenCode plus NVIDIA Build ran twice. Both scored 0/4. The first pass hit HTTP 429 and 300s timeouts at concurrency 4. The serialized rerun (`--n-concurrent 1`, `--timeout-multiplier 2`) ran 4458s and still left every dimension `NO SCORE`. The NVIDIA judge timed out. Some OpenCode trials exited 140 or hit the 600s cap. See [artifacts/2026-09-08-t3/](artifacts/2026-09-08-t3/).
 
 Rerun T2 or T3 with [`docs/eval/run-t2-t3.sh`](../run-t2-t3.sh). [SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/) 0.2.1 chat and embed defaults are EOL. The script pins live NVIDIA models.
 
