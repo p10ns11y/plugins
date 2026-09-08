@@ -2,7 +2,7 @@
 
 Local Harbor plus OpenCode 1.1.35 plus NVIDIA Build. Docker was not used. This user is not in the `docker` group, so `/var/run/docker.sock` is not writable.
 
-The runner is [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator).
+The runner is [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator). To rerun this pass, follow [How to verify](../../README.md#how-to-verify).
 
 ## What ran
 
