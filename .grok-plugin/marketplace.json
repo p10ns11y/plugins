@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map, layout-content-view",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map, layout-content-view, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
@@ -9,21 +9,39 @@
       "name": "premflow",
       "description": "Capture notes, wins, tasks; review; coach; external pomo; agent-safe journal.",
       "category": "productivity",
-      "source": { "type": "local", "path": "./premflow" },
-      "keywords": ["premflow", "notes", "coach", "pomo"]
+      "source": {
+        "type": "local",
+        "path": "./premflow"
+      },
+      "keywords": [
+        "premflow",
+        "notes",
+        "coach",
+        "pomo"
+      ]
     },
     {
       "name": "arch-machine",
       "description": "Agent-as-TUI for arch-machine: thin-first sentinel, audit, consent-gated expand.",
       "category": "development",
-      "source": { "type": "local", "path": "./arch-machine" },
-      "keywords": ["arch-machine", "sentinel", "audit"]
+      "source": {
+        "type": "local",
+        "path": "./arch-machine"
+      },
+      "keywords": [
+        "arch-machine",
+        "sentinel",
+        "audit"
+      ]
     },
     {
       "name": "eva-emptiness",
-      "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents + C/shell auth tether (consent compile).",
+      "description": "Reasoning under epistemic emptiness: Prior \u2192 Probe \u2192 Simulate \u2192 Score \u2192 ActOrAsk. Prior-diverse agents + C/shell auth tether (consent compile).",
       "category": "development",
-      "source": { "type": "local", "path": "./eva-emptiness" },
+      "source": {
+        "type": "local",
+        "path": "./eva-emptiness"
+      },
       "homepage": "https://github.com/p10ns11y/plugins",
       "keywords": [
         "eva",
@@ -44,7 +62,10 @@
       "name": "mission-map",
       "description": "Mission-Impossible-style ops map: steps, calculated risks, replan on shocks. C PERT/MC + Rust critical path.",
       "category": "development",
-      "source": { "type": "local", "path": "./mission-map" },
+      "source": {
+        "type": "local",
+        "path": "./mission-map"
+      },
       "homepage": "https://github.com/p10ns11y/plugins",
       "keywords": [
         "mission-map",
@@ -59,7 +80,10 @@
       "name": "odysseus-navigator",
       "description": "Faster intelli core-nailer: diagnose Odysseus mistakes, emit Navigator, hook control-graph / EVA. No tether, Rhai, or prior forks.",
       "category": "development",
-      "source": { "type": "local", "path": "./odysseus-navigator" },
+      "source": {
+        "type": "local",
+        "path": "./odysseus-navigator"
+      },
       "homepage": "https://github.com/p10ns11y/plugins",
       "keywords": [
         "odysseus",
@@ -76,7 +100,10 @@
       "name": "pulse-memory",
       "description": "Pulse instead of dump: admit sparse tagged memory; resolve contradictions without averaging. SQLite archive + pulse workflow.",
       "category": "development",
-      "source": { "type": "local", "path": "./pulse-memory" },
+      "source": {
+        "type": "local",
+        "path": "./pulse-memory"
+      },
       "homepage": "https://github.com/p10ns11y/plugins",
       "keywords": [
         "pulse",
@@ -92,7 +119,10 @@
       "name": "pstack-map",
       "description": "Playbook map from Cursor pstack (Lauren Tan / poteto, MIT) onto house skills. Does not copy pstack bodies.",
       "category": "development",
-      "source": { "type": "local", "path": "./pstack-map" },
+      "source": {
+        "type": "local",
+        "path": "./pstack-map"
+      },
       "homepage": "https://github.com/p10ns11y/plugins",
       "keywords": [
         "pstack",
@@ -108,7 +138,10 @@
       "name": "layout-content-view",
       "description": "Layout-content-view stability: landmark graph, viewport geometry, must-show clip/overflow. Not pixel snapshots.",
       "category": "development",
-      "source": { "type": "local", "path": "./layout-content-view" },
+      "source": {
+        "type": "local",
+        "path": "./layout-content-view"
+      },
       "homepage": "https://github.com/p10ns11y/plugins",
       "keywords": [
         "layout",
@@ -119,6 +152,25 @@
         "viewport",
         "z-index",
         "coherence"
+      ]
+    },
+    {
+      "name": "uncertainty-laws",
+      "description": "Four napkin probability laws for decisions under uncertainty (EV, base rates, ruin, Kelly). Honest fog-breaking for finance/wealth/life. Links to mission-map.",
+      "category": "productivity",
+      "source": {
+        "type": "local",
+        "path": "./uncertainty-laws"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "uncertainty",
+        "probability",
+        "expected-value",
+        "kelly",
+        "finance",
+        "wealth",
+        "mission-map"
       ]
     }
   ]

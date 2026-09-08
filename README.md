@@ -41,6 +41,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface | `/note` `/focus` `/journal` |
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
 | **mission-map** | Mission briefing: critical path, heading \(\hat{u}_G\) / \(\cos\theta\), replan; C PERT/MC + Rust graph | `/mission-map` |
+| **uncertainty-laws** | Napkin EV / base rate / ruin / Kelly for foggy finance & life decisions; chains after mission-map | `/uncertainty-laws` |
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
@@ -79,6 +80,20 @@ grok plugin install ./arch-machine --trust
 See [arch-machine/README.md](arch-machine/README.md) and `arch-machine/docs/BOUNDARY.md`.
 
 ---
+
+
+---
+
+## uncertainty-laws
+
+Four napkin probability laws for decisions under uncertainty (EV, base rates, ruin, Kelly). Honest exits include Wait and nothing-now. Chains after **mission-map**.
+
+```bash
+grok plugin install uncertainty-laws --trust
+# slash: /uncertainty-laws
+```
+
+See [uncertainty-laws/README.md](uncertainty-laws/README.md).
 
 ## odysseus-navigator
 

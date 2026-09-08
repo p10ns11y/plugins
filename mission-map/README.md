@@ -60,6 +60,11 @@ On shock: do not add a new project. Re-run the remaining DAG only.
 
 ---
 
+## Related: uncertainty-laws
+
+For **bet-size / fog** on the next Do or Risk (EV, base rates, ruin, Kelly), use sibling plugin [`uncertainty-laws`](../uncertainty-laws/). mission-map owns the path; uncertainty-laws owns the napkin. Do not fuse them.
+
+
 ## Install
 
 ### 1. Plugin (always)
