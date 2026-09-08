@@ -48,7 +48,7 @@ ORIGIN=http://localhost:3000 \
 node "$LCV_ROOT/scripts/probe-web.mjs"
 ```
 
-`LCV_ROOT` is the installed plugin directory from `grok plugin details layout-content-view`. See [skills/layout-content-view/references/harness.md](skills/layout-content-view/references/harness.md).
+`LCV_ROOT` is the installed plugin directory from `grok plugin details layout-content-view`. See [skills/layout-content-view/references/harness.md](skills/layout-content-view/references/harness.md). Named `data-lcv-states` are walked on every mapped path (`slide:*` as query, Ask/`to-success` as a click). `LCV_WALK_STATES=0` stays on the load view.
 
 ## Layout
 

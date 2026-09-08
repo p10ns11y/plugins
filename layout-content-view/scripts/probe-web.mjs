@@ -4,7 +4,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collectInPage } from "./adapters/web-dom.mjs";
-import { layoutModeFromSize, staticMachine, VIEWPORTS, report } from "./lcv.mjs";
+import { layoutModeFromSize, planVisits, staticMachine, VIEWPORTS, report } from "./lcv.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const origin = process.env.ORIGIN || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -59,17 +59,27 @@ function loadChromium() {
 }
 
 function visitsFromShot(path, shot) {
-  const walk = process.env.LCV_WALK_STATES !== "0";
-  const slides = (shot.states || [])
-    .filter((state) => String(state).startsWith("slide:"))
-    .map((state) => String(state).slice("slide:".length));
-  if (walk && path === "/profile" && slides.length > 0) {
-    return slides.slice(0, 48).map((cue) => ({
-      uiState: `slide:${cue}`,
-      path: `/profile?slide=${encodeURIComponent(cue)}`,
-    }));
-  }
-  return [{ uiState: shot.uiState || "", path }];
+  return planVisits(path, shot, { walk: process.env.LCV_WALK_STATES !== "0" });
+}
+
+function cssAttr(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
+async function driveVisit(page, visit) {
+  const event = visit.drive?.event || "";
+  const success = visit.drive?.success || visit.uiState;
+  const eventSel = event ? `[data-lcv-event="${cssAttr(event)}"]` : "[data-lcv-event]";
+  const loc = page.locator(`${eventSel}[data-lcv-to-success="${cssAttr(success)}"]`);
+  await loc.filter({ visible: true }).first().click({ timeout: 10_000 });
+  await page.waitForFunction(
+    (want) =>
+      [...document.querySelectorAll("[data-lcv-ui-state]")].some(
+        (el) => el.getAttribute("data-lcv-ui-state") === want
+      ),
+    visit.uiState,
+    { timeout: 25_000 }
+  );
 }
 
 function samplesFromShot(shot, path, vp, uiState) {
@@ -181,44 +191,55 @@ try {
         });
         const visits = visitsFromShot(path, first);
         for (const visit of visits) {
-          if (visit.path !== path) {
-            await page.goto(new URL(visit.path, origin).toString(), {
-              waitUntil: "load",
-              timeout: 30_000,
-            });
-            await new Promise((resolve) => setTimeout(resolve, 150));
-          }
-          const shot =
-            visit.path === path && visit.uiState === (first.uiState || "")
-              ? first
-              : await page.evaluate(collectInPage, false);
-          const samples = samplesFromShot(shot, path, vp, visit.uiState || shot.uiState || "");
-          if (stress) {
-            const stressed = await page.evaluate(collectInPage, true);
-            const after = { w: stressed.view.w, h: stressed.view.h };
-            const layoutMode = stressed.layoutMode || layoutModeFromSize(vp.w, vp.h);
-            for (const node of stressed.nodes) {
-              if (node.role !== "must-show" || !node.inner) continue;
-              samples.push({
-                id: `${path}@${vp.id}@${layoutMode.orientation}@${visit.uiState}:${node.id}:stress`,
-                path,
-                viewport: vp,
-                layoutMode,
-                uiState: visit.uiState,
-                role: "must-show",
-                document: stressed.document,
-                inner: node.inner,
-                viewBefore: { w: shot.view.w, h: shot.view.h },
-                viewAfter: after,
-                computed: node.computed,
-                landmarks: stressed.landmarks,
-                occluded: node.occluded,
-                ancestorClip: node.ancestorClip,
-                sel: node.sel,
+          try {
+            const reuseFirst =
+              !visit.drive &&
+              visit.path === path &&
+              visit.uiState === (first.uiState || "");
+            if (!reuseFirst) {
+              await page.goto(new URL(visit.path, origin).toString(), {
+                waitUntil: "load",
+                timeout: 30_000,
               });
+              await new Promise((resolve) => setTimeout(resolve, 150));
+              if (visit.drive) await driveVisit(page, visit);
             }
+            const shot = reuseFirst ? first : await page.evaluate(collectInPage, false);
+            const samples = samplesFromShot(shot, path, vp, visit.uiState || shot.uiState || "");
+            if (stress) {
+              const stressed = await page.evaluate(collectInPage, true);
+              const after = { w: stressed.view.w, h: stressed.view.h };
+              const layoutMode = stressed.layoutMode || layoutModeFromSize(vp.w, vp.h);
+              for (const node of stressed.nodes) {
+                if (node.role !== "must-show" || !node.inner) continue;
+                samples.push({
+                  id: `${path}@${vp.id}@${layoutMode.orientation}@${visit.uiState}:${node.id}:stress`,
+                  path,
+                  viewport: vp,
+                  layoutMode,
+                  uiState: visit.uiState,
+                  role: "must-show",
+                  document: stressed.document,
+                  inner: node.inner,
+                  viewBefore: { w: shot.view.w, h: shot.view.h },
+                  viewAfter: after,
+                  computed: node.computed,
+                  landmarks: stressed.landmarks,
+                  occluded: node.occluded,
+                  ancestorClip: node.ancestorClip,
+                  sel: node.sel,
+                });
+              }
+            }
+            findings.push(...report(samples));
+          } catch (err) {
+            errors.push({
+              path,
+              viewport: vp.id,
+              uiState: visit.uiState,
+              error: String(err),
+            });
           }
-          findings.push(...report(samples));
         }
       } catch (err) {
         errors.push({ path, viewport: vp.id, error: String(err) });

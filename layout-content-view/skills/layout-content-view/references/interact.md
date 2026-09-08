@@ -15,4 +15,4 @@ data-lcv-to-interrupted  view if the visitor abandons
 
 CSS mirrors the same facts as custom properties on `[data-lcv-event]`. `html[data-lcv-debug]` paints `event → success` after the control.
 
-`scripts/lcv.mjs` `parseInteractAttrs` + `staticMachine` evaluate the graph without a browser. The web adapter only collects the attributes. `LCV_WALK_STATES=0` skips visiting every `slide:*` URL.
+`scripts/lcv.mjs` `parseInteractAttrs` + `staticMachine` + `planVisits` evaluate the graph without a browser. The web adapter only collects the attributes. `LCV_WALK_STATES=0` skips visiting named catalog states (URL `slide:*` and event-driven `to-success`).

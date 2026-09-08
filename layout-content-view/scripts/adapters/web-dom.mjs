@@ -106,10 +106,13 @@ export function collectInPage(stressMustShow) {
     .flatMap((node) => (node.getAttribute("data-lcv-states") || "").split(/\s+/))
     .map((s) => s.trim())
     .filter(Boolean);
-  const uiState =
-    document.querySelector("[data-lcv-machine='profile-deck']")?.getAttribute("data-lcv-ui-state") ||
-    document.querySelector("[data-lcv-ui-state]")?.getAttribute("data-lcv-ui-state") ||
-    "";
+  const machineNodes = [...document.querySelectorAll("[data-lcv-machine]")].map((el) => ({
+    name: el.getAttribute("data-lcv-machine") || "",
+    uiState: el.getAttribute("data-lcv-ui-state") || "",
+    states: (el.getAttribute("data-lcv-states") || "").split(/\s+/).map((s) => s.trim()).filter(Boolean),
+  }));
+  const catalog = [...machineNodes].reverse().find((item) => item.states.length > 0);
+  const uiState = catalog?.uiState || machineNodes[0]?.uiState || "";
   const interact = [];
   const seenInteract = new Set();
   const readEdge = (el) => {
@@ -218,6 +221,7 @@ export function collectInPage(stressMustShow) {
     },
     uiState,
     states: listed.length ? listed : uiState ? [uiState] : [],
+    machines: machineNodes,
     interact,
     fit,
     nodes,

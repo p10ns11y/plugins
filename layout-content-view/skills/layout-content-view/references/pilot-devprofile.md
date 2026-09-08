@@ -15,9 +15,11 @@ Existing UX already checks **document** horizontal overflow (`assertNoHorizontal
 | `h1` | must-show | Page identity |
 | Hero / invite copy | must-show | Hiring data, not a chip |
 | `#projects` descriptions with `line-clamp-*` | preview | Card blurbs |
-| `/qa` `line-clamp-3` question peek | preview | Desk chrome; the answer pane is must-show |
+| `/qa` `line-clamp-3` question peek | preview | Desk chrome; the answer **scrollport** is must-show |
 | `.profile-deck__pager-label` | must-show (`data-lcv`) | Wrap. No ellipsis. |
 | `data-visual-live` | live | Paint mask, not ellipse |
+
+Probe walks `/qa` `idle` then `ask → success` from the static edges. `planVisits` is path-agnostic — do not special-case `/profile`.
 
 ## Viewports
 

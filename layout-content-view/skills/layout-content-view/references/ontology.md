@@ -28,7 +28,8 @@ Tree  = { nodes: Node[] }
 
 - Sample is route × viewport × orientation × ui-state.
 - Later deck slides use `h2`. Crawlable uses `h1–h3`.
-- Prefer `data-lcv-states` on the machine that owns those states. Header `menu:closed` is not the deck catalog.
+- Prefer `data-lcv-states` on the machine that owns those states. Header `menu:closed` is not the deck catalog. The probe reads the last catalog machine in the DOM (page desk/deck after `site-nav`).
+- Walk those catalog states on any route. `slide:*` is URL-addressable. `qa-desk` `success` is an interact edge — click Ask. Skip `loading` unless a control's `to-success` names it.
 - `page.evaluate` serializes only `collectInPage`. Helpers stay inside that function.
 - `overflow:auto` is a scrollport only if the must-show box can scroll into view. `justify-content: center` plus `height: 100%` plus overflow auto clips the **start** and `scrollTop` stays 0. That is still a clip-cage.
 - Probe the top of a must-show box (and chrome `header` bottom), not only the center. Fixed header overlap is occlusion.

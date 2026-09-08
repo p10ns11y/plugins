@@ -34,15 +34,9 @@ Tier 3 live-agent scores were not available. See the tier status table for what 
 
 | Tier | Purpose | Status | Evidence |
 |---|---|---|---|
-| Tier 1 | Static validation | **INCOMPLETE** | Missing trustworthy evidence from skillspector, gitleaks |
+| Tier 1 | Static validation | **INCOMPLETE** | Missing trustworthy evidence from skillspector |
 | Tier 2 | Semantic deduplication | **NOT RUN** | No result was recorded |
 | Tier 3 | Live agent evaluation | **NOT RUN** | No result was recorded |
-
-## Blocking Findings
-
-- **HIGH** SCHEMA/author\_missing: Author not specified in metadata (`SKILL.md`)
-- **MEDIUM** SCHEMA/body\_recommended\_section: Missing recommended section: '## Instructions' (`SKILL.md`)
-- **MEDIUM** SCHEMA/body\_recommended\_section: Missing recommended section: '## Examples' (`SKILL.md`)
 
 Test execution limitations:
 
@@ -53,12 +47,13 @@ Test execution limitations:
 <details>
 <summary>Show detailed findings and successful checks</summary>
 
-- **HIGH** SCHEMA/author\_missing: Author not specified in metadata (`SKILL.md`)
-- **MEDIUM** QUALITY/quality\_correctness: SKILL\_SPEC recommended field missing: 'version' (`SKILL.md`)
-- **MEDIUM** QUALITY/quality\_correctness: SKILL\_SPEC recommended field missing: 'metadata.author' (`SKILL.md`)
-- **MEDIUM** QUALITY/quality\_correctness: SKILL\_SPEC recommended field missing: 'metadata.tags' (`SKILL.md`)
-- **MEDIUM** SCHEMA/body\_recommended\_section: Missing recommended section: '## Instructions' (`SKILL.md`)
-- 7 additional finding(s) are available in the full evaluation artifacts.
+- Schema & Repository Governance: Found skill manifest: SKILL.md
+- Semantic Version Validation: No semantic version label present; resource will use commit-hash history
+- PII Scan: Scanning 3 files for PII
+- Code Integrity & Hygiene: Checking 3 markdown files for dead links
+- Unicode Smuggling Detection: No invisible Unicode characters detected in 3 file(s)
+- QUALITY: Score: 100.0/100 (Grade: A)
+- SCRIPT\_LINT: No scripts/ or tools/ directory found
 
 </details>
 

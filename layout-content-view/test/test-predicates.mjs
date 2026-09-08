@@ -16,6 +16,8 @@ import {
   recipe,
   report,
   staticMachine,
+  planVisits,
+  WALK_STATE_CAP,
   verifyTree,
 } from "../scripts/lcv.mjs";
 
@@ -299,4 +301,35 @@ test("beat that fits is not fit-impossible", () => {
     }),
     false
   );
+});
+
+test("planVisits drives named states on any path, not only /profile", () => {
+  const qa = planVisits("/qa", {
+    uiState: "idle",
+    states: ["idle", "loading", "error", "success"],
+    interact: [
+      { event: "ask", from: "idle", success: "success", fail: "error", linked: true, disabled: false },
+      { event: "ask", from: "idle", success: "success", fail: "idle", linked: true, disabled: true },
+    ],
+  });
+  assert.deepEqual(
+    qa.map((v) => ({ uiState: v.uiState, path: v.path, drive: v.drive || null })),
+    [
+      { uiState: "idle", path: "/qa", drive: null },
+      { uiState: "success", path: "/qa", drive: { event: "ask", success: "success" } },
+    ]
+  );
+
+  const deck = planVisits("/story", {
+    uiState: "slide:arrive",
+    states: ["slide:arrive", "slide:elsewhere", "/#contact"],
+  });
+  assert.deepEqual(
+    deck.map((v) => v.path),
+    ["/story", "/story?slide=elsewhere"]
+  );
+
+  const off = planVisits("/qa", { uiState: "idle", states: ["idle", "success"] }, { walk: false });
+  assert.equal(off.length, 1);
+  assert.equal(WALK_STATE_CAP, 48);
 });
