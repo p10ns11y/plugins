@@ -38,9 +38,15 @@ Law4 Kelly     how big without deleting the edge?
 You are **one path**, not the crowd average. Survival is the strategy.
 Being right is not being paid. Oversize while being right still ruins you.
 
-Inspiration for the four-law napkin framing: public essays such as Venix’s
-“Four Laws of Probability…” on X. The formulas are classical; this plugin is the
-**agent procedure**.
+## Attribution
+
+Four-law napkin framing inspired by **Venix** (@0xVenix):
+
+- Article: [The Four Laws of Probability That Quietly Decide Who Keeps the Money](https://x.com/0xVenix/status/2095614241969520904)
+- Status: https://x.com/0xVenix/status/2095614241969520904
+
+The underlying formulas (expected value, Bayes, ruin/growth, Kelly) are classical.
+This plugin is an **agent procedure**, not a copy of that article’s prose.
 
 ---
 

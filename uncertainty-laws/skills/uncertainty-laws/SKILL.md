@@ -113,7 +113,7 @@ Use when the binding constraint is someone else’s date, a missing BankID/HITL 
 | **mm_hook** | mission-map node or none |
 ```
 
-Credit inspiration: public napkin framing of EV / Bayes / ruin / Kelly (e.g. Venix “Four Laws…” article). Formulas are centuries old; this skill is the **procedure**, not a market tip sheet.
+**Attribution:** napkin framing inspired by Venix (@0xVenix), [The Four Laws of Probability That Quietly Decide Who Keeps the Money](https://x.com/0xVenix/status/2095614241969520904). Formulas are classical; this skill is the **procedure**, not a copy of that article.
 
 ---
 

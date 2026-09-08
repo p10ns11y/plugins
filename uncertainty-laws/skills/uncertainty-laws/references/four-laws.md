@@ -63,3 +63,9 @@ Practice: **half-Kelly** is common (less growth, much less volatility). Your edg
 4. How big should this be?
 
 If (3) fails, stop. Do not “Kelly” a ruin path.
+
+---
+
+**Attribution:** sequence framing inspired by Venix (@0xVenix),
+[Four Laws…](https://x.com/0xVenix/status/2095614241969520904).
+Formulas are classical.
