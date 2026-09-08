@@ -7,6 +7,12 @@
 .env
 .env.*
 
+# SkillEvaluator live-eval trees (regenerate with docs/eval/run-t2-t3.sh)
+docs/eval/**/results/
+.tmp/
+__pycache__/
+.audit/
+
 # built kernels
 mission-map/bin/
 mission-map/rust/target/

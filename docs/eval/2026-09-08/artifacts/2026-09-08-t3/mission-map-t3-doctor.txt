@@ -1,0 +1,15 @@
+                             SkillEvaluator Doctor                              
+ Check                         Status   Details                                 
+────────────────────────────────────────────────────────────────────────────────
+ CLI package                   pass     skillevaluator 0.2.1                    
+ Public LLM provider           pass     nv_build /                              
+                                        nvidia/nemotron-3.5-lightning-30b-a3b   
+ OpenCode runtime credential   pass     operator credential and model plan      
+                                        resolved                                
+ Harbor agents                 pass     opencode                                
+ local prerequisite            pass     ready                                   
+ opencode model                warn     model                                   
+                                        nvidia/nemotron-3.5-lightning-30b-a3b   
+                                        is available; catalog access does not   
+                                        verify runtime credentials for this     
+                                        endpoint                                

@@ -1,0 +1,55 @@
+{
+  "skill_name": "mission-map",
+  "evals": [
+    {
+      "id": "mission-map-explicit-replan",
+      "prompt": "I just lost a week to a shiny side project. Rebuild the ops map. Name one checkable arrival, mark the critical path, put a/m/b bands on Do nodes, and give me exactly one next Do. Do not print a single destiny date.",
+      "expected_output": "A short executable brief with a named G, a DAG or stage list with a critical path, PERT a/m/b bands on Do work, one next Do, and no single calendar date treated as fate.",
+      "assertions": [
+        "The agent names one checkable arrival G",
+        "The agent classifies stages as Do, Risk, Wait, or Park",
+        "The agent prints a/m/b bands or an explicit refusal to forecast a single date",
+        "The agent names exactly one next Do"
+      ],
+      "expected_skill": "mission-map",
+      "expected_script": null
+    },
+    {
+      "id": "mission-map-implicit-deadline",
+      "prompt": "A hard deadline moved up and I cannot tell what is actually on the critical path versus what I should park. I need calculated risk, not a vibe. Walk me through the remaining work.",
+      "expected_output": "The agent discovers the mission-map workflow without being named, then produces a critical path, risk signposts, and a parked-item list.",
+      "assertions": [
+        "The agent identifies mission-map or follows its map workflow without the user naming the skill",
+        "The agent marks a critical path",
+        "The agent gives at least one Risk a watch / fires_when / continue|switch|Ask signpost",
+        "The agent parks or refuses slack work instead of scheduling everything"
+      ],
+      "expected_skill": "mission-map",
+      "expected_script": null
+    },
+    {
+      "id": "mission-map-contextual-empty-g",
+      "prompt": "Help me plan the next stretch. I do not have a destination yet, just a pile of open threads and a feeling I should do more.",
+      "expected_output": "The agent stops and asks for a checkable G instead of inventing a map over an empty destination.",
+      "assertions": [
+        "The agent refuses to forecast a full map without a checkable arrival",
+        "The agent asks for G or a verify condition",
+        "The agent does not invent a single destiny date"
+      ],
+      "expected_skill": "mission-map",
+      "expected_script": null
+    },
+    {
+      "id": "mission-map-neg-lint",
+      "prompt": "How do I run the existing unit tests for a small Python package that already has pytest.ini?",
+      "expected_output": "A direct answer about pytest. The agent does not load or execute a mission-map workflow.",
+      "assertions": [
+        "The agent does not produce a PERT map or critical-path brief",
+        "The agent answers the testing question",
+        "The agent does not claim mission-map is required"
+      ],
+      "expected_skill": null,
+      "expected_script": null
+    }
+  ]
+}

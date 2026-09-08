@@ -2,13 +2,19 @@
 
 Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../mission-map/skills/mission-map/).
 
-## Results (after SKILL.md Tier1 fixes)
+## Results
 
 | Target | Grade | Score /100 | Notes |
 |--------|-------|------------|-------|
-| mission-map (plugin skill) | **A** | **100.0** | `quality-check` PASS. `validate --tiers 1` **11/11 PASS**. |
+| mission-map (plugin skill) | **A** | **100.0** | `quality-check` PASS. `validate --tiers 1,2` **12/12 PASS**. |
 
-Full `validate --tiers 1` **PASS** (11/11). Security scan completes when SKILL.md has no unresolved local path-like refs (`bin/mm-kern`, `C/Rust`). SkillSpector then reports LOW/SAFE instead of fail-closed CAUTION.
+Tier 1 is 11/11 PASS. Security scan completes when SKILL.md has no unresolved local path-like refs (`bin/mm-kern`, `C/Rust`). SkillSpector then reports LOW/SAFE instead of fail-closed CAUTION.
+
+Tier 2 Context Deduplication is PASS. Three files, 14 chunks, no duplicate guidance. Runtime was 47s on NVIDIA `nemotron-3-embed-1b`. See [artifacts/2026-09-08-t2/](artifacts/2026-09-08-t2/).
+
+Tier 3 local OpenCode plus NVIDIA Build started. The first scored pass was 0/4. NVIDIA returned HTTP 429 and judge timeouts while four trials plus the judge shared one model. A serialized rerun (`--n-concurrent 1`, `--timeout-multiplier 2`) was still running when this note was written. See [artifacts/2026-09-08-t3/](artifacts/2026-09-08-t3/).
+
+Rerun T2 or T3 with [`docs/eval/run-t2-t3.sh`](../run-t2-t3.sh). SkillEvaluator 0.2.1 chat and embed defaults are EOL. The script pins live NVIDIA models.
 
 Artifacts: [artifacts/](artifacts/).
 
@@ -33,7 +39,7 @@ See skills write-up for the full tools→tasks table and Orca Run id.
 5. Gitleaks on PATH: secrets scan PASS.
 6. Path-like refs in SKILL.md (`bin/mm-kern`, `C/Rust`) removed so SkillSpector scan is complete (LOW/SAFE). Security scan PASS.
 
-Still open: Tier2/Tier3 live eval.
+Still open: a publication-complete Tier 3 Skill Lift with scored with-skill versus no-skill rows.
 
 ## Owner
 
