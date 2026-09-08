@@ -1,0 +1,22 @@
+{
+  "name": "uncertainty-laws",
+  "version": "0.1.0",
+  "description": "Four napkin probability laws for decisions under uncertainty: expected value, base rates, variance/ruin, Kelly. Honest fog-breaking for finance, wealth, and life. Links to mission-map for path vs bet-size.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "uncertainty",
+    "probability",
+    "expected-value",
+    "base-rate",
+    "kelly",
+    "ruin",
+    "finance",
+    "wealth",
+    "decision",
+    "mission-map"
+  ]
+}

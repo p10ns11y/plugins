@@ -23,6 +23,9 @@ Produce a brief you can execute and **replan**: what / how / when under uncertai
 
 Use when you need calculated risk, a critical path, or a replan after a reject, deadline, illness, or shiny detour. Skip if the next act is already one file and a known verify command.
 
+
+**Related:** For napkin EV / base rate / ruin / Kelly on the next fork, load sibling skill `uncertainty-laws` (do not fuse with this map).
+
 ## Prerequisites
 
 - Plugin installed (`mission-map`). Commands below run from that install directory.
