@@ -56,17 +56,16 @@ run_t3() {
 	stage="$(mktemp -d "${TMPDIR%/}/mission-map-t3.XXXXXX")"
 	trap 'rm -rf "$stage"' EXIT
 	cp -a "$skill/." "$stage/"
-	# Harbor cursor-cli / grok / prime-agent are not on the local+nv_build
-	# allowlist. Stay on opencode. The last fail was --thinking, not the CLI.
-	se_eval doctor --env-mode local --agents opencode \
-		--verify-models \
+	# cursor-cli is Harbor's name for cursor-agent. OpenCode plus NVIDIA
+	# for both agent and judge 429'd. Split them: Cursor agent, NVIDIA judge.
+	# Do not pass --verify-models. cursor/composer-2.5 is not an NVIDIA id.
+	se_eval doctor --env-mode local --agents cursor-cli \
+		--agent-model cursor-cli=cursor/composer-2.5 \
 		| tee "$out/mission-map-t3-doctor.txt"
-	# One trial at a time. The first live run used concurrency 4 and the
-	# same NVIDIA model for agent plus judge. That 429'd the judge and
-	# left 0/4 scored. timeout-multiplier 2 gives OpenCode 600s.
 	se_eval tier3 evaluate "$stage" \
 		--env-mode local \
-		--agents opencode \
+		--agents cursor-cli \
+		--agent-model cursor-cli=cursor/composer-2.5 \
 		--n-concurrent 1 \
 		--timeout-multiplier 2 \
 		--results-dir "$results" \

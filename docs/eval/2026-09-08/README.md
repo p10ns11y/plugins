@@ -12,7 +12,7 @@ Tier 1 is 11/11 PASS. Security scan completes when SKILL.md has no unresolved lo
 
 Tier 2 Context Deduplication is PASS. Three files, 14 chunks, no duplicate guidance. Runtime was 47s on NVIDIA `nemotron-3-embed-1b`. See [artifacts/2026-09-08-t2/](artifacts/2026-09-08-t2/).
 
-Tier 3 local OpenCode plus NVIDIA Build ran twice. Both scored 0/4. The first pass hit HTTP 429 and 300s timeouts at concurrency 4. The serialized rerun (`--n-concurrent 1`, `--timeout-multiplier 2`) ran 4458s and still left every dimension `NO SCORE`. The NVIDIA judge timed out. Some OpenCode trials exited 140 or hit the 600s cap. See [artifacts/2026-09-08-t3/](artifacts/2026-09-08-t3/).
+Tier 3 local OpenCode plus NVIDIA Build ran twice. Both scored 0/4. A third pass used Harbor `cursor-cli` (`cursor-agent` / `composer-2.5`) with NVIDIA only as the judge. That pass scored 2/4 attempts and still left every published dimension `NO SCORE`. The NVIDIA judge timed out on the two long cases. See [artifacts/2026-09-08-t3/](artifacts/2026-09-08-t3/) and [artifacts/2026-09-08-t3-cursor/](artifacts/2026-09-08-t3-cursor/).
 
 Rerun T2 or T3 with [`docs/eval/run-t2-t3.sh`](../run-t2-t3.sh). [SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/) 0.2.1 chat and embed defaults are EOL. The script pins live NVIDIA models.
 
@@ -47,19 +47,19 @@ Success. The script prints `wrote …` and the new `mission-map-t2-validate.txt`
 
 The recorded pass used `--env-mode local`, not Docker. Docker Engine is on this laptop (client 29.7.2). The account that ran the eval is not in the `docker` group, so `docker info` fails with permission denied on `/var/run/docker.sock`. If `docker info` works on your login, you can try Harbor `--env-mode docker` instead of this script's local path.
 
-You need the Tier 2 setup, plus `opencode` 1.1.35 and `bwrap`. `/tmp` must be writable. Harbor `copytree_secure` holds a directory fd, then `scandir(fd)`. New names stay invisible on btrfs. The script copies the skill onto tmpfs for that reason.
+You need the Tier 2 setup, plus `cursor-agent` (Harbor name `cursor-cli`) and `bwrap`. `/tmp` must be writable. Harbor `copytree_secure` holds a directory fd, then `scandir(fd)`. New names stay invisible on btrfs. The script copies the skill onto tmpfs for that reason.
 
-Do not pass `--agent-model opencode=nvidia/…`. OpenCode adds an `nvidia/` prefix. An explicit `nvidia/foo` becomes `foo` and fails the publisher check.
+Sign in with `cursor-agent` on the host first. The local patch copies `~/.config/cursor/auth.json` into the sandbox. Do not put a login token into `CURSOR_API_KEY`. That env var expects an API key and rejects the login token.
 
 ```bash
 TIERS=3 ./docs/eval/run-t2-t3.sh
 ```
 
-The script writes `se_local_patch.py` into the SkillEvaluator venv. Harbor then drops empty `BASH_ENV=""` resets and strips `--thinking`, which OpenCode 1.1.35 rejects.
+The script writes `se_local_patch.py` into the SkillEvaluator venv. Harbor then drops empty `BASH_ENV=""` resets, allowlists `cursor-cli`, and runs `composer-2.5` for the agent while NVIDIA remains the judge.
 
-Success. `mission-map-t3-doctor.txt` shows Harbor `opencode` pass. The evaluate log has scored with-skill and no-skill rows. `NO SCORE` on every dimension means the run did not finish scoring.
+Success. `mission-map-t3-doctor.txt` shows Harbor `cursor-cli` pass. The evaluate log has scored with-skill and no-skill rows for all four cases. `NO SCORE` on every dimension means the run did not finish scoring.
 
-If NVIDIA returns HTTP 429, wait and rerun. Keep `--n-concurrent 1`. The first concurrency-4 pass scored 0/4.
+If NVIDIA returns HTTP 429 or judge timeouts, wait and rerun. Keep `--n-concurrent 1`. OpenCode plus NVIDIA scored 0/4. `cursor-cli` plus NVIDIA judge scored 2/4.
 
 ## How (tools → tasks)
 

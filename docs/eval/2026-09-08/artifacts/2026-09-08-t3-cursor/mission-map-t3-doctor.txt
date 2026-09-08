@@ -1,0 +1,10 @@
+                             SkillEvaluator Doctor                              
+ Check                      Status   Details                                    
+────────────────────────────────────────────────────────────────────────────────
+ CLI package                pass     skillevaluator 0.2.1                       
+ Public LLM provider        pass     nv_build /                                 
+                                     nvidia/nemotron-3.5-lightning-30b-a3b      
+ Agent runtime credential   pass     operator credential and model plan         
+                                     resolved                                   
+ Harbor agents              pass     cursor-cli                                 
+ local prerequisite         pass     ready                                      
