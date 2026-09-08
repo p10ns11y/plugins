@@ -45,6 +45,8 @@ Success. The script prints `wrote …` and the new `mission-map-t2-validate.txt`
 
 ### Rerun Tier 3
 
+The recorded pass used `--env-mode local`, not Docker. Docker Engine is on this laptop (client 29.7.2). The account that ran the eval is not in the `docker` group, so `docker info` fails with permission denied on `/var/run/docker.sock`. If `docker info` works on your login, you can try Harbor `--env-mode docker` instead of this script's local path.
+
 You need the Tier 2 setup, plus `opencode` 1.1.35 and `bwrap`. `/tmp` must be writable. Harbor `copytree_secure` holds a directory fd, then `scandir(fd)`. New names stay invisible on btrfs. The script copies the skill onto tmpfs for that reason.
 
 Do not pass `--agent-model opencode=nvidia/…`. OpenCode adds an `nvidia/` prefix. An explicit `nvidia/foo` becomes `foo` and fails the publisher check.
