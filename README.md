@@ -46,6 +46,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
 | **intelliarch** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelliarch` · `/workflow intelliarch` |
+| **split-machine** | Place a job on Earth, orbit, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
 ---
@@ -134,6 +135,19 @@ grok plugin install ./intelliarch --trust
 ```
 
 See [intelliarch/README.md](intelliarch/README.md) and [intelliarch/NOTICE.md](intelliarch/NOTICE.md).
+
+---
+
+## split-machine
+
+Places one job on the machine that can do it. Earth keeps the processor and the GPUs. Orbit keeps the entanglement link. A closed decision carries a confidence, and low confidence does not branch. Intelliarch loads it as a signal.
+
+```bash
+grok plugin install ./split-machine --trust
+# slash: /split-machine
+```
+
+See [split-machine/README.md](split-machine/README.md) and [split-machine/NOTICE.md](split-machine/NOTICE.md).
 
 ---
 

@@ -74,8 +74,8 @@ errors = []
 def bad(msg):
     errors.append(msg)
 
-if plugin.get("version") != "0.2.0" or man.get("version") != "0.2.0":
-    bad("version is not 0.2.0")
+if plugin.get("version") != "0.2.1" or man.get("version") != "0.2.1":
+    bad("version is not 0.2.1")
 if man.get("max_loads") != 4:
     bad("max_loads is not 4")
 emit = man.get("emit")
@@ -157,9 +157,13 @@ if "rules/clt-dual-load.mdc" in rhai.split("let load_urls", 1)[-1].split("];", 1
 if "prompt(" in rhai:
     bad("prompt( still present")
 
-print("remote: resolving", len(loads), "paths")
+print("resolving", len(loads), "paths")
+repo_root = root.parent
 for row in loads:
     owner_repo = urlparse(row["repo"]).path.strip("/")
+    local = repo_root / row["path"]
+    if owner_repo == "p10ns11y/plugins" and local.is_file():
+        continue
     api = f"repos/{owner_repo}/contents/{row['path']}?ref={row['ref']}"
     proc = subprocess.run(
         ["gh", "api", api, "-H", "Accept: application/vnd.github.object+json", "--jq", ".type"],

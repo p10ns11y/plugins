@@ -173,6 +173,23 @@
       ]
     },
     {
+      "name": "split-machine",
+      "description": "Place one job on Earth, orbit, a GPU, a BQP slice, a typed decision, or prose. Low confidence does not automate.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./split-machine"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "split-machine",
+        "placement",
+        "quantum",
+        "bqp",
+        "system-one"
+      ]
+    },
+    {
       "name": "uncertainty-laws",
       "description": "Four napkin probability laws for decisions under uncertainty (EV, base rates, ruin, Kelly). Honest fog-breaking for finance/wealth/life. Links to mission-map.",
       "category": "productivity",

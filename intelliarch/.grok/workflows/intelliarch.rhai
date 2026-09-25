@@ -80,6 +80,7 @@ let load_ids = [
     "pulse-memory",
     "mission-map",
     "uncertainty-laws",
+    "split-machine",
     "layout-content-view",
     "premflow",
     "arch-machine",
@@ -99,6 +100,7 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/pulse-memory/skills/pulse-memory/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/mission-map/skills/mission-map/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/uncertainty-laws/skills/uncertainty-laws/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/split-machine/skills/split-machine/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/layout-content-view/skills/layout-content-view/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/premflow/skills/premflow/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/arch-machine/skills/arch-machine/SKILL.md",
@@ -115,6 +117,7 @@ let classify_schema = #{
         "playbook": #{ "type": "string" },
         "hitl": #{ "type": "string" },
         "feeder": #{ "type": "boolean" },
+        "confidence": #{ "type": "string" },
     },
 };
 
@@ -173,7 +176,9 @@ classify_prompt += "agent-orchestrator (more than one writer); git-worktrees (pa
 classify_prompt += "adversarial-audit (review, and pstack interrogate Task seats are missing); pulse-memory (notes contradict); ";
 classify_prompt += "mission-map (critical path, shock, or replan); uncertainty-laws (bet, money, or a life fork); ";
 classify_prompt += "layout-content-view (overflow, clip, landmarks, viewport); premflow (note, win, task, journal, focus); ";
-classify_prompt += "arch-machine (host audit, thin path only); peram_senior_mlai_engineer (prose or public voice).\n";
+classify_prompt += "arch-machine (host audit, thin path only); peram_senior_mlai_engineer (prose or public voice); ";
+classify_prompt += "split-machine (quantum, QPU, orbit, Hamiltonian, NISQ, BQP, or which machine; also a closed decision software will branch on).\n";
+classify_prompt += "confidence is high, med, or low. low means the closed decision is not safe to branch on.\n";
 classify_prompt += "Do not emit clt-dual-load. Do not invent ids.\n";
 classify_prompt += "playbook is one of: investigation, bug-fix, perf-issue, hillclimb, runtime-forensics, trace-forensics, feature, refactoring, prototype, visual-parity, authoring-a-skill, eval, babysit, shipping, autonomous-run, orchestrate, autopilot-full, autopilot-stack, session-pickup, pause-safely, multi-phase-plan, worktree-cleanup, figure-it-out, skip.\n";
 classify_prompt += "hitl is none, or a short reason if the goal needs secrets, production, irreversible git, CV promote, unknown authorization, or a money, legal, or health act.\n";
@@ -221,6 +226,14 @@ if out != () {
 let hitl = "none";
 if out != () {
     hitl = text_or(out.hitl, "none");
+}
+let confidence = "med";
+if out != () {
+    confidence = text_or(out.confidence, "med");
+}
+if confidence == "low" && hitl == "none" {
+    hitl = "low confidence; do not automate the branch";
+    log("confidence low; act stays read-only");
 }
 let situation = goal;
 if out != () {
@@ -296,6 +309,7 @@ act_prompt += url_block;
 act_prompt += "\nIf hitl is not none: do not edit, push, spend, or call a tool that changes the machine. next is the human ask.\n";
 act_prompt += "If route is empty: write knowns, unknowns, one idk, disprove_with, and ActOrAsk. Unknown authorization stays Ask. No --always-approve and no --yolo. verify_cmd is empty.\n";
 act_prompt += "If route is light: follow that one playbook. pstack poteto-mode if it is installed, otherwise the house row in pstack-map/skills/pstack-map/references/map.md. Take the first bounded step. Reversible edits may proceed.\n";
+act_prompt += "If split-machine is in the URL list, emit its Split card before the engineering step. Do not run a quantum device or a dense training job from this workflow. The card's next step is the action.\n";
 act_prompt += "If route is card: name the phase, the budget, and one verify command, then do only the current phase.\n";
 act_prompt += "verify_cmd is the single test or build command you ran, or empty. It must be one command with no pipe, redirect, or chained shell.\n";
 act_prompt += "acted is one sentence on what you did, or why you stopped.\n";
@@ -420,6 +434,8 @@ report += " |\n| playbook | ";
 report += playbook;
 report += " |\n| hitl | ";
 report += hitl;
+report += " |\n| confidence | ";
+report += confidence;
 report += " |\n| next | ";
 report += next;
 report += " |\n| acted | ";
@@ -436,6 +452,7 @@ complete(#{
     loads: kept,
     playbook: playbook,
     hitl: hitl,
+    confidence: confidence,
     next: next,
     verify: verify_note,
 });
