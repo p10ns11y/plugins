@@ -19,3 +19,5 @@ Install pstack yourself. `pstack-map` in this repo names the house fallback when
 ## Skills library
 
 Procedure text stays in https://github.com/p10ns11y/skills (`master`). This plugin references those paths. It does not vendor `SKILL.md` bodies.
+
+`eva-emptiness` is the exception that is loaded from this repo: `eva-emptiness/skills/eva-emptiness/SKILL.md`. The skills-repo name is a symlink into a sibling checkout, which GitHub does not serve.

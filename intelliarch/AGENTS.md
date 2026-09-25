@@ -1,34 +1,32 @@
-# IntelliArch stack
+# IntelliArch
 
 Portable entry for hosts that read `AGENTS.md`.
 
-Machine-readable composition: [manifest.json](manifest.json). Install and limits: [README.md](README.md).
+The contract is [manifest.json](manifest.json). Install and limits: [README.md](README.md).
 
-Skill procedures: https://github.com/p10ns11y/skills (`master`). Do not copy them here.
+Fetch a skill body only after its id is in `loads`. Stop at four. Do not open every path.
 
-## Load
+## Decide
 
-Read `manifest.json`. Open each `repo` + `path`. Do not paste bodies into the turn.
-
-1. A dumped prompt goes through `control-feeder` first. It emits a Feed and one next owner.
-2. Non-trivial engineering loads `pstack-map`, then installed pstack (`poteto-mode`) when the playbook exists on this host. Otherwise use the house skill named in `pstack-map` `references/map.md`.
-3. Multi-step work opens a control-graph Card. Budgets and HITL live there.
-4. Emptiness (no map, unknowns dominate) loads `eva-emptiness` as the inner loop. The outer phases stay in control-graph.
-5. Plans and reviews load `odysseus-navigator` for one mistake and one next act.
-6. Style loads `peram_senior_mlai_engineer` from the skills repo by path.
-
-## Adjustment
-
-On Cursor, model seats stay in `~/.cursor/rules/pstack-models.mdc`. This stack does not write that file.
-
-On every other host, simulate control-graph roles with phase prompts. Reset context for review. `inherit-parent` means the host's current model.
+1. A paste or dump with no single ask goes through `control-feeder`, then classify the Feed.
+2. No map, unknowns dominate, or authorization is the unknown → route `empty` (`eva-emptiness` in this plugins repo).
+3. Multi-step, until-done, or the same step is being redone → route `card` (`control-graph`).
+4. Otherwise → route `light` (`pstack-map`, then installed pstack `poteto-mode` or the house row in `references/map.md`).
+5. Add a signal only when its `when` matches. `clt-dual-load` is a host rule. Do not paste it.
+6. Emit situation, route, loads, skips, playbook, hitl, and next. Then do that next step.
 
 ## Pause
 
-Pause before secrets, production, irreversible git, CV promote, unknown auth, and money, legal, or health acts.
+Pause before secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On that pause, emit the route and stop. Reversible edits proceed.
+
+## Models
+
+On Cursor, model seats stay in `~/.cursor/rules/pstack-models.mdc`. This stack does not write that file.
+
+On every other host, use control-graph roles `fast`, `explore`, `coding`, `deep`, and `review`. Review uses a fresh context.
 
 ## Credit
 
-Playbook names and principle files are Lauren Tan / pstack, MIT. House skills stay in `p10ns11y/skills` and sibling plugins in this repo.
+Playbook names are Lauren Tan / pstack, MIT. House skills stay in `p10ns11y/skills` and in sibling plugins. This file does not copy them.
 
-Request flow, the model rule, and `orch` / `watch-pr` are the IntelliArch engineering note (`pstack-engineering.md`). This file does not paste that essay.
+`orch` / `watch-pr` exist on Cursor pstack. This host uses the house row when those are absent. Model seats and Graphite limits are in [README.md](README.md).

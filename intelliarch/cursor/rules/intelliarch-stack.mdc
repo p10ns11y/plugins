@@ -1,20 +1,20 @@
 ---
-description: IntelliArch composition. Load pstack and house skills by path. Does not replace pstack-models.
+description: IntelliArch routes a turn onto at most four skills. It does not replace pstack-models.
 alwaysApply: true
 ---
 
-# IntelliArch stack
+# IntelliArch
 
-Read `intelliarch/manifest.json` (this plugin) and open the named files in [p10ns11y/skills](https://github.com/p10ns11y/skills) and this plugins repo. Do not paste skill bodies. Do not copy pstack.
+Read `intelliarch/manifest.json` only to classify. Fetch a skill body only after its id is in `loads`. Stop at four.
 
-- Dump or paste → `control-feeder`, then one owner.
-- Engineering work → `pstack-map`, then installed `/poteto-mode` when the playbook fits.
-- Multi-step → control-graph Card. HITL on secrets, prod, irreversible git, CV, unknown auth.
-- No map → `eva-emptiness` inner. Outer stays control-graph.
-- Plan or review → `odysseus-navigator` (one mistake, one next).
-- Style → `peram_senior_mlai_engineer` by path in the skills repo.
-- Model seats → existing `pstack-models.mdc`. Missing rule: skill defaults. Do not rewrite that file from this rule.
+A paste or dump with no single ask goes through `control-feeder`, then classify the Feed.
 
-Signal skills (load only when the manifest `when` matches): pulse-memory, mission-map, uncertainty-laws, layout-content-view, premflow, arch-machine, ai-optimization, git-worktrees, agent-orchestrator, adversarial-audit.
+1. No map, unknowns dominate, or authorization is the unknown → route `empty` (`eva-emptiness`). The body is `eva-emptiness/skills/eva-emptiness/SKILL.md` in this plugins repo.
+2. Multi-step, until-done, or the same step is being redone → route `card` (`control-graph`) with a budget and one verify command.
+3. Otherwise → route `light` (`pstack-map`, then one pstack playbook or the house row).
 
-Credit Lauren Tan / pstack MIT when a playbook runs.
+Add a signal skill only when its `when` matches. That set includes `odysseus-navigator` for a plan, architecture, or review. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+
+Pause before secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On that pause, emit the route and stop.
+
+Emit situation, route, loads, skips, playbook, hitl, and next. Then do that next step. Credit Lauren Tan / pstack MIT when a playbook runs. Do not rewrite `pstack-models.mdc`. Do not copy skill bodies into this repo.

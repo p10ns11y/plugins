@@ -1,26 +1,55 @@
 ---
-description: Compose pstack (Lauren Tan, MIT) with house skills. Read manifest.json. Do not paste or copy bodies.
+description: Route one goal onto at most four skills (pstack or the house row). Emit the route, then do that one next step.
 argument-hint: goal or dumped prompt
 ---
 
 # /intelliarch
 
-Read `manifest.json` in this plugin. Open each `repo` + `path`. Do not paste bodies. Do not copy pstack files.
+Read `manifest.json` in this plugin. It is the contract. Do not open every path in it.
 
-## Immediate actions
+`$ARGUMENTS` is the goal. If it is empty, use the current turn.
 
-1. If the user text is a dump, follow `control-feeder` and emit Feed.
-2. Follow `pstack-map`. If pstack is installed, load that playbook. If it is missing, use the house row in `references/map.md`.
-3. Multi-step: open a control-graph Card and set budgets before tools.
-4. Emptiness gate from `eva-emptiness` when unknowns dominate. Stay on ask. Do not pass `--always-approve` or `--yolo`.
-5. On a plan or review, emit a Navigator row from `odysseus-navigator`.
-6. Model seats: host default. Use control-graph roles `fast`, `explore`, `coding`, `deep`, `review`. Reset context for review.
-7. `hitl=required` for secrets, prod, irreversible git, CV, unknown auth, money, legal, or health.
+## Decide
+
+A paste or dump with no single ask goes through `control-feeder` first. Then the first match wins:
+
+1. No map, unknowns dominate, or authorization is the unknown → route `empty`. Load `eva-emptiness`.
+2. Multi-step, until-done, or the same step is being redone → route `card`. Load `control-graph`.
+3. Otherwise → route `light`. Load `pstack-map`, then one installed pstack playbook or the house row in `pstack-map/skills/pstack-map/references/map.md`.
+
+Add a signal load only when its `when` matches. Stop at four loads, including the primary. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+
+`hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the table and stop.
+
+## Emit, then act
+
+Write this table before any edit:
+
+```markdown
+## IntelliArch
+| Field | Value |
+|-------|--------|
+| **situation** | |
+| **route** | light \| card \| empty |
+| **loads** | |
+| **skips** | ids considered and dropped, with a reason |
+| **playbook** | name or skip |
+| **hitl** | none \| required (reason) |
+| **next** | one action |
+```
+
+Then do only `next`:
+
+- `light` — that playbook's first bounded step. Reversible edits may proceed. Run a real check if you changed files.
+- `card` — phase, budget, verify command, and only the current phase.
+- `empty` — knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask. Do not pass `--always-approve` or `--yolo`.
+
+Roles are `fast`, `explore`, `coding`, `deep`, `review` on the host model. Review uses a fresh context.
+
+Credit Lauren Tan / pstack MIT when a playbook runs. Do not copy pstack or skills-library files into this repo. Do not rewrite `pstack-models.mdc`.
 
 Goal:
 
 ```text
 $ARGUMENTS
 ```
-
-Credit: Lauren Tan / pstack MIT when a pstack playbook runs.

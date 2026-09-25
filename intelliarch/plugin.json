@@ -1,7 +1,7 @@
 {
   "name": "intelliarch",
-  "version": "0.1.0",
-  "description": "Compose installed pstack (Lauren Tan, MIT) with house skills. Loads those files by URL. Does not copy skill bodies or pstack.",
+  "version": "0.2.0",
+  "description": "Route one goal onto at most four skills. pstack (Lauren Tan, MIT) when it is installed, otherwise the house row. Does not copy skill bodies or pstack.",
   "author": {
     "name": "p10ns11y"
   },

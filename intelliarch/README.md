@@ -1,34 +1,39 @@
 # intelliarch
 
-pstack owns the playbook and, on Cursor, the per-role model file. This plugin loads skills that already exist for the gaps around that: a dump is rewritten before a playbook, multi-step work gets budgets and a pause on irreversible acts, a missing map gets an emptiness loop, and plans get a judgment pass.
+Routes one goal onto at most four skills that already exist. pstack supplies the playbook when it is installed ([Lauren Tan, MIT](https://github.com/cursor/plugins/tree/main/pstack)). Otherwise the house row in [pstack-map](../pstack-map/skills/pstack-map/references/map.md) does. This tree does not copy skill bodies and it does not vendor pstack.
 
-Composition: [manifest.json](manifest.json). Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills). This tree does not copy them. pstack stays upstream ([Lauren Tan, MIT](https://github.com/cursor/plugins/tree/main/pstack)). This plugin does not vendor it.
+The contract is [manifest.json](manifest.json). A host that opens every path in that file is not using it.
 
-Request flow, the `pstack-models.mdc` rule, and `orch` / `watch-pr` are the IntelliArch engineering note (`pstack-engineering.md`). This README does not paste that essay.
+## Decide
 
-## What runs
+A paste or dump with no single ask goes through `control-feeder`. Then the first match wins:
 
-| Situation | Load | Stays in pstack |
+| Match | Route | Load |
 |---|---|---|
-| Pasted dump | `control-feeder` | |
-| Engineering task | `pstack-map`, then `poteto-mode` if installed | playbook steps, principles, how / why / architect / arena / swarm / interrogate |
-| Multi-step or "until done" | `control-graph` Card | |
-| Unknowns dominate | `eva-emptiness` inner loop | |
-| Plan or architecture review | `odysseus-navigator` | |
-| Context is large | `ai-optimization` before the deep fill | |
-| Parallel writers | `git-worktrees` plus `agent-orchestrator` | |
-| Review where Task model seats are missing | `adversarial-audit` | `interrogate` when Cursor Task works |
-| Contradicting notes | `pulse-memory` | `recall` for chat rebuild |
-| Critical path or shock | `mission-map` | |
-| Bet, money, or ruin | `uncertainty-laws` (EV, then base rate, then ruin, then Kelly) | |
-| Clip, overflow, landmarks | `layout-content-view` | `visual-parity` for pixels |
-| Note, win, journal, focus | `premflow` | |
-| Host audit | `arch-machine` thin path | |
-| Voice of the work | `peram_senior_mlai_engineer` by path | poteto principles for the playbook |
+| No map, unknowns dominate, or authorization is the unknown | `empty` | `eva-emptiness` in this repo (`eva-emptiness/skills/eva-emptiness/SKILL.md`). The skills-repo entry is a sibling symlink and 404s on GitHub. |
+| Multi-step, until-done, or the same step is being redone | `card` | `control-graph` |
+| Otherwise | `light` | `pstack-map`, then one playbook or the house row |
 
-`rules/clt-dual-load.mdc` in the skills repo is the pre-filter for human and agent load.
+Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimization`, `agent-orchestrator`, `git-worktrees`, `adversarial-audit`, `pulse-memory`, `mission-map`, `uncertainty-laws`, `layout-content-view`, `premflow`, `arch-machine`, `peram_senior_mlai_engineer`. Stop at four loads. `clt-dual-load` is a host rule. Do not paste it and do not count it.
 
-House HITL wins on secrets, production, irreversible git, CV promote, unknown auth, and money, legal, or health. Reversible edits proceed.
+`hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the route and stop. Reversible edits proceed.
+
+## Emit, then act
+
+```markdown
+## IntelliArch
+| Field | Value |
+|-------|--------|
+| **situation** | |
+| **route** | light \| card \| empty |
+| **loads** | |
+| **skips** | |
+| **playbook** | |
+| **hitl** | none \| required (reason) |
+| **next** | one action |
+```
+
+`light` takes that playbook's first bounded step. `card` names a phase, a budget, and one verify command, then does only the current phase. `empty` writes knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask.
 
 ## Install
 
@@ -46,13 +51,12 @@ mkdir -p ~/.grok/plugins
 ln -sfn "$(pwd)/intelliarch" ~/.grok/plugins/intelliarch
 ```
 
-Also install **pstack** for `/poteto-mode`, and **pstack-map** from this repo. Clone [p10ns11y/skills](https://github.com/p10ns11y/skills) and symlink the skills named in `manifest.json` into the host skill path. Do not copy those files into this plugin.
+Also install **pstack** for `/poteto-mode`, and **pstack-map** from this repo. Clone [p10ns11y/skills](https://github.com/p10ns11y/skills) where the host already loads skills. Do not copy those files into this plugin.
 
-Rhai is not auto-registered:
+Workflows are not auto-registered. The script enforces the four-load cap. A slash command relies on the model to obey it.
 
 ```bash
 cp intelliarch/.grok/workflows/intelliarch.rhai ~/.grok/workflows/
-# or: <repo>/.grok/workflows/
 ```
 
 ## Use
@@ -60,11 +64,11 @@ cp intelliarch/.grok/workflows/intelliarch.rhai ~/.grok/workflows/
 | Surface | How |
 |---|---|
 | Grok | `/intelliarch <goal>` · `/workflow intelliarch {"goal":"…"}` |
-| Cursor | copy `cursor/rules/intelliarch-stack.mdc` into `.cursor/rules/`. Leave `pstack-models.mdc` as `/setup-pstack` wrote it. `/poteto-mode` still runs the playbook. |
+| Cursor | copy `cursor/rules/intelliarch-stack.mdc` into `.cursor/rules/`. Leave `pstack-models.mdc` as `/setup-pstack` wrote it. `/poteto-mode` still runs the one playbook. |
 | Bot | paste [bot/intelliarch.md](bot/intelliarch.md) as the system card. No webhook. |
 | Other hosts | [AGENTS.md](AGENTS.md) plus the skills checkout on that host's skill path. |
 
-On Grok, Bot, and other hosts, model seats are control-graph roles (`fast`, `explore`, `coding`, `deep`, `review`) on the host model. Review uses a fresh context. If pstack is missing, the house row in `pstack-map` `references/map.md` is the playbook.
+On Grok, Bot, and other hosts, model seats are `fast`, `explore`, `coding`, `deep`, and `review`. Review uses a fresh context.
 
 ## Layout
 
@@ -105,3 +109,5 @@ No `skills/` directory. Procedures live upstream.
 ```bash
 ./intelliarch/test/test-thin.sh
 ```
+
+The thin test checks the route contract and resolves every manifest path with `gh`.

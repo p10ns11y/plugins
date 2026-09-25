@@ -45,7 +45,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
-| **intelliarch** | Compose pstack with house skills by URL. No vendored bodies. | `/intelliarch` · `/workflow intelliarch` |
+| **intelliarch** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelliarch` · `/workflow intelliarch` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
 ---
@@ -125,7 +125,7 @@ See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](psta
 
 ## intelliarch
 
-Compose installed pstack with house skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills). This plugin does not copy them, and it does not vendor pstack. The engineering note (`pstack-engineering.md`) stays outside this README.
+Routes one goal onto at most four skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills), except `eva-emptiness`, which is loaded from this repo because the skills-repo entry is a sibling symlink. This plugin does not copy those bodies, and it does not vendor pstack.
 
 ```bash
 grok plugin install ./intelliarch --trust
