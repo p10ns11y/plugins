@@ -2,13 +2,17 @@
 
 Grok Build / agent **marketplace plugins** — installable skill + command + agent + hook bundles.
 
-**Owner:** product plugins in this repo (`mission-map`, `uncertainty-laws`, `pstack-map`, `layout-content-view`, `pulse-memory`, `odysseus-navigator`, `eva-emptiness`, `arch-machine`, `premflow`, `intelliarch`, `split-machine`).  
+**Owner:** product plugins in this repo (`mission-map`, `uncertainty-laws`, `pstack-map`, `layout-content-view`, `pulse-memory`, `odysseus-navigator`, `eva-emptiness`, `arch-machine`, `premflow`, `intelliarch`, `split-machine`, `trust-stack`).  
 **Catalog:** [README.md](README.md) · [.grok-plugin/marketplace.json](.grok-plugin/marketplace.json)
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git
 grok plugin install <name> --trust
 ```
+
+## Bend
+
+When `bend` is on PATH, critical checks are the laws in [trust-stack/bend/LAWS.bend](trust-stack/bend/LAWS.bend). Run `bend PROOF.bend` from that directory before treating a shape-layer invariant as held. If `bend` is absent, that command was not run. Do not install Bend unless the operator asks. Refuse the proof when `bunfig.toml`, `.env`, or `.p.ts` sits beside it: a released `bend` binary can load those and forge "All terms check."
 
 ## In scope
 

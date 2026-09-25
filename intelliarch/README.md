@@ -14,7 +14,7 @@ A paste or dump with no single ask goes through `control-feeder`. Then the first
 | Multi-step, until-done, or the same step is being redone | `card` | `control-graph` |
 | Otherwise | `light` | `pstack-map`, then one playbook or the house row |
 
-Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimization`, `agent-orchestrator`, `git-worktrees`, `adversarial-audit`, `pulse-memory`, `mission-map`, `uncertainty-laws`, `layout-content-view`, `premflow`, `arch-machine`, `peram_senior_mlai_engineer`, `split-machine`. Stop at four loads. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimization`, `agent-orchestrator`, `git-worktrees`, `adversarial-audit`, `pulse-memory`, `mission-map`, `uncertainty-laws`, `layout-content-view`, `premflow`, `arch-machine`, `peram_senior_mlai_engineer`, `split-machine`, `trust-stack`. Stop at four loads. `clt-dual-load` is a host rule. Do not paste it and do not count it.
 
 `hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the route and stop. Reversible edits proceed.
 

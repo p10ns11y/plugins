@@ -67,7 +67,7 @@ Slash: `/split-machine`.
 | `bqp-slice` | `gpu-factory` compiles, calibrates, and decodes. AI sits in that loop. |
 | `orbit-link` | `earth-qpu` owns the circuit. Classical control traffic stays on the ground. |
 | `system-two` | `system-one` may score the string. The string is not the branch. |
-| `gpu-factory` | `uncertainty-laws` if the choice is a bet. `mission-map` if the choice is a path. |
+| `gpu-factory` | `uncertainty-laws` if the choice is a bet. `mission-map` if the choice is a path. `trust-stack` if the question is whether the agent may ship. |
 
 ---
 

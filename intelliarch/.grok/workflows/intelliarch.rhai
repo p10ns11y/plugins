@@ -81,6 +81,7 @@ let load_ids = [
     "mission-map",
     "uncertainty-laws",
     "split-machine",
+    "trust-stack",
     "layout-content-view",
     "premflow",
     "arch-machine",
@@ -101,6 +102,7 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/mission-map/skills/mission-map/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/uncertainty-laws/skills/uncertainty-laws/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/split-machine/skills/split-machine/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/trust-stack/skills/trust-stack/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/layout-content-view/skills/layout-content-view/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/premflow/skills/premflow/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/arch-machine/skills/arch-machine/SKILL.md",
@@ -177,7 +179,8 @@ classify_prompt += "adversarial-audit (review, and pstack interrogate Task seats
 classify_prompt += "mission-map (critical path, shock, or replan); uncertainty-laws (bet, money, or a life fork); ";
 classify_prompt += "layout-content-view (overflow, clip, landmarks, viewport); premflow (note, win, task, journal, focus); ";
 classify_prompt += "arch-machine (host audit, thin path only); peram_senior_mlai_engineer (prose or public voice); ";
-classify_prompt += "split-machine (quantum, QPU, orbit, Hamiltonian, NISQ, BQP, or which machine; also a closed decision software will branch on).\n";
+classify_prompt += "split-machine (quantum, QPU, orbit, Hamiltonian, NISQ, BQP, or which machine; also a closed decision software will branch on); ";
+classify_prompt += "trust-stack (shipping, review load, a repeated bad pattern, agent trust, or fanning out writers).\n";
 classify_prompt += "confidence is high, med, or low. low means the closed decision is not safe to branch on.\n";
 classify_prompt += "Do not emit clt-dual-load. Do not invent ids.\n";
 classify_prompt += "playbook is one of: investigation, bug-fix, perf-issue, hillclimb, runtime-forensics, trace-forensics, feature, refactoring, prototype, visual-parity, authoring-a-skill, eval, babysit, shipping, autonomous-run, orchestrate, autopilot-full, autopilot-stack, session-pickup, pause-safely, multi-phase-plan, worktree-cleanup, figure-it-out, skip.\n";
@@ -310,6 +313,8 @@ act_prompt += "\nIf hitl is not none: do not edit, push, spend, or call a tool t
 act_prompt += "If route is empty: write knowns, unknowns, one idk, disprove_with, and ActOrAsk. Unknown authorization stays Ask. No --always-approve and no --yolo. verify_cmd is empty.\n";
 act_prompt += "If route is light: follow that one playbook. pstack poteto-mode if it is installed, otherwise the house row in pstack-map/skills/pstack-map/references/map.md. Take the first bounded step. Reversible edits may proceed.\n";
 act_prompt += "If split-machine is in the URL list, emit its Split card before the engineering step. Do not run a quantum device or a dense training job from this workflow. The card's next step is the action.\n";
+act_prompt += "If trust-stack is in the URL list, emit its Trust card. Verification is a command you run. Do not merge or push. A repeated bad pattern is deleted and moved to an earlier layer, not explained in a comment.\n";
+act_prompt += "If bend is on PATH, a shape-layer invariant is checked with bend PROOF.bend inside trust-stack/bend. If bend is absent, say the formal check was not run. Refuse the proof when bunfig.toml is beside it.\n";
 act_prompt += "If route is card: name the phase, the budget, and one verify command, then do only the current phase.\n";
 act_prompt += "verify_cmd is the single test or build command you ran, or empty. It must be one command with no pipe, redirect, or chained shell.\n";
 act_prompt += "acted is one sentence on what you did, or why you stopped.\n";
@@ -386,7 +391,7 @@ if hitl == "none" && route != "empty" && verify_cmd != "" {
     } else {
         phase("Verify");
         let verify_prompt = "";
-        verify_prompt += "Run this one command in the working tree and report whether it passed. Do not push, delete, or change the command.\n";
+        verify_prompt += "Run this one command in the working tree and report whether it passed. Do not push, merge, delete, or change the command.\n";
         verify_prompt += verify_cmd;
         let ver = agent(verify_prompt, #{
             label: "verify",

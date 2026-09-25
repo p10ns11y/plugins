@@ -47,6 +47,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
 | **intelliarch** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelliarch` · `/workflow intelliarch` |
 | **split-machine** | Place a job on Earth, orbit, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
+| **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
 ---
@@ -148,6 +149,19 @@ grok plugin install ./split-machine --trust
 ```
 
 See [split-machine/README.md](split-machine/README.md) and [split-machine/NOTICE.md](split-machine/NOTICE.md).
+
+---
+
+## trust-stack
+
+Places one invariant on the earliest layer that can hold it. The codebase is the agent's memory. A repeated miss is deleted and moved earlier. Landing stays a human act.
+
+```bash
+grok plugin install ./trust-stack --trust
+# slash: /trust-stack
+```
+
+See [trust-stack/README.md](trust-stack/README.md) and [trust-stack/NOTICE.md](trust-stack/NOTICE.md).
 
 ---
 
