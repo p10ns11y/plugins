@@ -1,0 +1,187 @@
+{
+  "name": "intelliarch",
+  "version": "0.1.0",
+  "description": "Composition of installed pstack and p10ns11y skills. Loads existing SKILL.md files. Does not vendor bodies.",
+  "credit": [
+    "Lauren Tan / pstack MIT — playbooks and principles stay upstream",
+    "p10ns11y — house skills and plugins"
+  ],
+  "roots": {
+    "pstack": "https://github.com/cursor/plugins/tree/main/pstack",
+    "skills_sot": "https://github.com/p10ns11y/skills",
+    "skills_ref": "master",
+    "plugins_harness": "https://github.com/p10ns11y/plugins",
+    "plugins_ref": "main"
+  },
+  "owns": {
+    "pstack": [
+      "playbook match",
+      "principle leaves",
+      "how",
+      "why",
+      "architect",
+      "arena",
+      "swarm",
+      "interrogate",
+      "reflect",
+      "figure-it-out",
+      "unslop",
+      "technical-writing",
+      "tdd",
+      "no-comments",
+      "Cursor Task model lines in pstack-models.mdc",
+      "orch bookkeeping",
+      "watch-pr on GitHub"
+    ],
+    "this_stack": [
+      "dump rewrite before a playbook",
+      "outer budgets and HITL",
+      "emptiness inner loop",
+      "judgment overlay",
+      "sparse memory",
+      "ops path and napkin probability",
+      "layout stability",
+      "in-session capture",
+      "thin host sentinel",
+      "style plane"
+    ]
+  },
+  "always": [
+    {
+      "id": "control-feeder",
+      "when": "turn starts from a paste or dump",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "control-feeder/SKILL.md"
+    },
+    {
+      "id": "pstack-map",
+      "when": "any non-trivial engineering turn",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "path": "pstack-map/skills/pstack-map/SKILL.md",
+      "then": "load installed pstack poteto-mode or the house fallback named in pstack-map/skills/pstack-map/references/map.md"
+    },
+    {
+      "id": "control-graph",
+      "when": "multi-step, thrash risk, or until-done",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "control-graph/SKILL.md"
+    },
+    {
+      "id": "clt-dual-load",
+      "when": "always-on pre-filter",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "rules/clt-dual-load.mdc"
+    },
+    {
+      "id": "peram_senior_mlai_engineer",
+      "when": "style plane on IntelliArch work",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "peram_senior_mlai_engineer/SKILL.md",
+      "note": "load by path; do not copy the body"
+    }
+  ],
+  "on_signal": [
+    {
+      "id": "eva-emptiness",
+      "when": "unknowns dominate or the map is missing",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "eva-emptiness/SKILL.md",
+      "harness": "https://github.com/p10ns11y/plugins/tree/main/eva-emptiness"
+    },
+    {
+      "id": "odysseus-navigator",
+      "when": "plan, architecture, hubris, overbuild, big-bang",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "odysseus-navigator/SKILL.md",
+      "harness": "https://github.com/p10ns11y/plugins/tree/main/odysseus-navigator"
+    },
+    {
+      "id": "ai-optimization",
+      "when": "context fill before deep or coding",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "ai-optimization/SKILL.md"
+    },
+    {
+      "id": "agent-orchestrator",
+      "when": "single-shot versus workers",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "agent-orchestrator/SKILL.md"
+    },
+    {
+      "id": "git-worktrees",
+      "when": "parallel writers or merge",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "git-worktrees/SKILL.md"
+    },
+    {
+      "id": "adversarial-audit",
+      "when": "review and interrogate Task seats are unavailable",
+      "repo": "https://github.com/p10ns11y/skills",
+      "path": "adversarial-audit/SKILL.md"
+    },
+    {
+      "id": "pulse-memory",
+      "when": "contradicting claims or a memory write",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "path": "pulse-memory/skills/pulse-memory/SKILL.md"
+    },
+    {
+      "id": "mission-map",
+      "when": "critical path, shock, replan",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "path": "mission-map/skills/mission-map/SKILL.md"
+    },
+    {
+      "id": "uncertainty-laws",
+      "when": "bet, money, or life fork under fog",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "path": "uncertainty-laws/skills/uncertainty-laws/SKILL.md"
+    },
+    {
+      "id": "layout-content-view",
+      "when": "overflow, clip, landmarks, viewport",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "path": "layout-content-view/skills/layout-content-view/SKILL.md"
+    },
+    {
+      "id": "premflow",
+      "when": "note, win, task, journal, focus",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "path": "premflow/skills/premflow/SKILL.md"
+    },
+    {
+      "id": "arch-machine",
+      "when": "host sentinel or audit",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "path": "arch-machine/skills/arch-machine/SKILL.md",
+      "note": "thin first; expand only with explicit consent"
+    }
+  ],
+  "hitl_required": [
+    "secrets",
+    "production",
+    "irreversible git",
+    "CV promote",
+    "unknown authorization",
+    "money, legal, or health acts"
+  ],
+  "host_roles": {
+    "cursor": "pstack-models.mdc lines. Do not overwrite that file from this stack.",
+    "grok_bot_other": {
+      "fast": "orient, triage, small edits, card updates",
+      "explore": "readonly survey",
+      "coding": "implement a fixed step",
+      "deep": "plan and tradeoffs",
+      "review": "fresh context, pass/fail and gaps only"
+    }
+  },
+  "skip": [
+    "vendor pstack bodies",
+    "vendor skills-library bodies",
+    "second playbook matcher",
+    "benny",
+    "automate-me",
+    "make-bot-ui",
+    "Graphite merge-when-ready"
+  ]
+}

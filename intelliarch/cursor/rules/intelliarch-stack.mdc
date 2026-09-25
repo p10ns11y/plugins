@@ -1,0 +1,20 @@
+---
+description: IntelliArch composition. Load pstack and house skills by path. Does not replace pstack-models.
+alwaysApply: true
+---
+
+# IntelliArch stack
+
+Read `intelliarch/manifest.json` (this plugin) and open the named files in [p10ns11y/skills](https://github.com/p10ns11y/skills) and this plugins repo. Do not paste skill bodies. Do not copy pstack.
+
+- Dump or paste → `control-feeder`, then one owner.
+- Engineering work → `pstack-map`, then installed `/poteto-mode` when the playbook fits.
+- Multi-step → control-graph Card. HITL on secrets, prod, irreversible git, CV, unknown auth.
+- No map → `eva-emptiness` inner. Outer stays control-graph.
+- Plan or review → `odysseus-navigator` (one mistake, one next).
+- Style → `peram_senior_mlai_engineer` by path in the skills repo.
+- Model seats → existing `pstack-models.mdc`. Missing rule: skill defaults. Do not rewrite that file from this rule.
+
+Signal skills (load only when the manifest `when` matches): pulse-memory, mission-map, uncertainty-laws, layout-content-view, premflow, arch-machine, ai-optimization, git-worktrees, agent-orchestrator, adversarial-audit.
+
+Credit Lauren Tan / pstack MIT when a playbook runs.

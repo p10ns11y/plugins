@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map, layout-content-view, uncertainty-laws",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map, layout-content-view, uncertainty-laws, intelliarch",
   "owner": {
     "name": "p10ns11y"
   },
@@ -152,6 +152,24 @@
         "viewport",
         "z-index",
         "coherence"
+      ]
+    },
+    {
+      "name": "intelliarch",
+      "description": "Compose installed pstack (Lauren Tan, MIT) with house skills by URL. Does not copy skill bodies or pstack.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./intelliarch"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "intelliarch",
+        "pstack",
+        "poteto",
+        "lauren-tan",
+        "control-graph",
+        "eva-emptiness"
       ]
     },
     {

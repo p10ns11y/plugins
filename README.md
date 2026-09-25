@@ -45,6 +45,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
+| **intelliarch** | Compose pstack with house skills by URL. No vendored bodies. | `/intelliarch` · `/workflow intelliarch` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
 ---
@@ -119,6 +120,20 @@ grok plugin install ./pstack-map --trust
 ```
 
 See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](pstack-map/NOTICE.md).
+
+---
+
+## intelliarch
+
+Compose installed pstack with house skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills). This plugin does not copy them, and it does not vendor pstack. The engineering note (`pstack-engineering.md`) stays outside this README.
+
+```bash
+grok plugin install ./intelliarch --trust
+# slash: /intelliarch
+# optional: cp intelliarch/.grok/workflows/intelliarch.rhai ~/.grok/workflows/
+```
+
+See [intelliarch/README.md](intelliarch/README.md) and [intelliarch/NOTICE.md](intelliarch/NOTICE.md).
 
 ---
 
