@@ -1,0 +1,261 @@
+{
+  "name": "intelli-route",
+  "version": "0.3.0",
+  "description": "Routes one goal onto at most four existing skills. pstack when it is installed, otherwise the house row. Does not vendor bodies.",
+  "credit": [
+    "Lauren Tan / pstack MIT — playbooks and principles stay upstream",
+    "p10ns11y — house skills and plugins"
+  ],
+  "roots": {
+    "pstack": "https://github.com/cursor/plugins/tree/main/pstack",
+    "skills_sot": "https://github.com/p10ns11y/skills",
+    "skills_ref": "master",
+    "plugins_harness": "https://github.com/p10ns11y/plugins",
+    "plugins_ref": "main"
+  },
+  "max_loads": 4,
+  "emit": ["situation", "route", "loads", "skips", "playbook", "hitl", "next"],
+  "routes": {
+    "light": "one playbook, then its first bounded step",
+    "card": "control-graph phase, budget, and verify command; execute only the current phase",
+    "empty": "eva-emptiness steps only; ActOrAsk stays Ask when authorization is unknown"
+  },
+  "primary": [
+    {
+      "id": "control-feeder",
+      "when": "the turn is a paste or dump and has no single ask",
+      "effect": "rewrite to a Feed, then classify that Feed"
+    },
+    {
+      "id": "eva-emptiness",
+      "when": "there is no map, unknowns dominate, or authorization is the unknown",
+      "route": "empty"
+    },
+    {
+      "id": "control-graph",
+      "when": "multi-step, until-done, or the same step is being redone",
+      "route": "card"
+    },
+    {
+      "id": "pstack-map",
+      "when": "otherwise, for non-trivial engineering",
+      "route": "light"
+    }
+  ],
+  "loads": [
+    {
+      "id": "control-feeder",
+      "tier": "primary",
+      "when": "the turn is a paste or dump and has no single ask",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "control-feeder/SKILL.md"
+    },
+    {
+      "id": "eva-emptiness",
+      "tier": "primary",
+      "when": "route empty",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "eva-emptiness/skills/eva-emptiness/SKILL.md",
+      "note": "The skills repo entry is a symlink to a sibling checkout. GitHub does not serve that target."
+    },
+    {
+      "id": "control-graph",
+      "tier": "primary",
+      "when": "route card",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "control-graph/SKILL.md"
+    },
+    {
+      "id": "pstack-map",
+      "tier": "primary",
+      "when": "route light",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "pstack-map/skills/pstack-map/SKILL.md",
+      "then": "pstack-map/skills/pstack-map/references/map.md"
+    },
+    {
+      "id": "odysseus-navigator",
+      "tier": "signal",
+      "when": "plan, architecture, or review",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "odysseus-navigator/SKILL.md"
+    },
+    {
+      "id": "ai-optimization",
+      "tier": "signal",
+      "when": "context is already large, before a deep or coding pass",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "ai-optimization/SKILL.md"
+    },
+    {
+      "id": "agent-orchestrator",
+      "tier": "signal",
+      "when": "more than one writer",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "agent-orchestrator/SKILL.md"
+    },
+    {
+      "id": "git-worktrees",
+      "tier": "signal",
+      "when": "parallel checkouts or a merge",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "git-worktrees/SKILL.md"
+    },
+    {
+      "id": "adversarial-audit",
+      "tier": "signal",
+      "when": "a review, and pstack interrogate Task seats are missing",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "adversarial-audit/SKILL.md"
+    },
+    {
+      "id": "pulse-memory",
+      "tier": "signal",
+      "when": "claims contradict or a memory write",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "pulse-memory/skills/pulse-memory/SKILL.md"
+    },
+    {
+      "id": "mission-map",
+      "tier": "signal",
+      "when": "critical path, shock, or replan",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "mission-map/skills/mission-map/SKILL.md"
+    },
+    {
+      "id": "uncertainty-laws",
+      "tier": "signal",
+      "when": "a bet, money, or a life fork under fog",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "uncertainty-laws/skills/uncertainty-laws/SKILL.md"
+    },
+    {
+      "id": "split-machine",
+      "tier": "signal",
+      "when": "quantum, QPU, GPU placement, Hamiltonian, orbit, NISQ, BQP, or a closed decision software will branch on",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "split-machine/skills/split-machine/SKILL.md"
+    },
+    {
+      "id": "trust-stack",
+      "tier": "signal",
+      "when": "shipping, review load, a repeated bad pattern, agent trust, or fanning out writers",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "trust-stack/skills/trust-stack/SKILL.md"
+    },
+    {
+      "id": "master-planner",
+      "tier": "signal",
+      "when": "a master plan, a skill pack, or an ontology for a large repo",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "master-planner/SKILL.md"
+    },
+    {
+      "id": "higher-order-decision-architect",
+      "tier": "signal",
+      "when": "a hard-to-revert choice: dependency, public API, security, data contract, or a pre-mortem",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "higher-order-decision-architect/SKILL.md"
+    },
+    {
+      "id": "stellar-spacemap",
+      "tier": "signal",
+      "when": "a roadmap, coming-next, blueprint cards, or a backlog after a PR",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "stellar-spacemap/SKILL.md"
+    },
+    {
+      "id": "architecture-synthesis",
+      "tier": "signal",
+      "when": "cross-file design, a domain model, or an abstraction that should compound",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "architecture-synthesis/SKILL.md"
+    },
+    {
+      "id": "layout-content-view",
+      "tier": "signal",
+      "when": "overflow, clip, landmarks, or viewport",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "layout-content-view/skills/layout-content-view/SKILL.md"
+    },
+    {
+      "id": "premflow",
+      "tier": "signal",
+      "when": "note, win, task, journal, or focus",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "premflow/skills/premflow/SKILL.md"
+    },
+    {
+      "id": "arch-machine",
+      "tier": "signal",
+      "when": "host sentinel or audit; thin path only, expand only with consent",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "arch-machine/skills/arch-machine/SKILL.md"
+    },
+    {
+      "id": "peram_senior_mlai_engineer",
+      "tier": "signal",
+      "when": "the deliverable is prose or public voice",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "peram_senior_mlai_engineer/SKILL.md"
+    },
+    {
+      "id": "clt-dual-load",
+      "tier": "rule",
+      "when": "host rule already; do not paste it and do not count it as a load",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "rules/clt-dual-load.mdc"
+    }
+  ],
+  "hitl_required": [
+    "secrets",
+    "production",
+    "irreversible git",
+    "CV promote",
+    "unknown authorization",
+    "money, legal, or health acts"
+  ],
+  "host_roles": {
+    "cursor": "pstack-models.mdc lines. Do not overwrite that file from this stack.",
+    "grok_bot_other": {
+      "fast": "orient, triage, small edits, card updates",
+      "explore": "readonly survey",
+      "coding": "implement the one next step",
+      "deep": "plan and tradeoffs",
+      "review": "fresh context, pass/fail and gaps only"
+    }
+  },
+  "skip": [
+    "vendor pstack bodies",
+    "vendor skills-library bodies",
+    "open every manifest path",
+    "second playbook matcher",
+    "benny",
+    "automate-me",
+    "make-bot-ui",
+    "Graphite merge-when-ready"
+  ]
+}

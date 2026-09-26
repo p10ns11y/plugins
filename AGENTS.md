@@ -2,13 +2,29 @@
 
 Grok Build / agent **marketplace plugins** — installable skill + command + agent + hook bundles.
 
-**Owner:** product plugins in this repo (`mission-map`, `uncertainty-laws`, `pstack-map`, `layout-content-view`, `pulse-memory`, `odysseus-navigator`, `eva-emptiness`, `arch-machine`, `premflow`).  
+**Owner:** product plugins in this repo (`mission-map`, `uncertainty-laws`, `pstack-map`, `layout-content-view`, `pulse-memory`, `odysseus-navigator`, `eva-emptiness`, `arch-machine`, `premflow`, `intelli-route`, `split-machine`, `trust-stack`).  
 **Catalog:** [README.md](README.md) · [.grok-plugin/marketplace.json](.grok-plugin/marketplace.json)
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git
 grok plugin install <name> --trust
 ```
+
+## Bend
+
+From `trust-stack/bend/`:
+
+When using Bend:
+- run `bend guide` to learn it
+- use `LAWS.bend` to keep important rules
+- run `bend PROOF.bend` before committing
+- parallelize the code whenever possible
+
+Bend 2 is a new language. Bend 1 and HVM do not carry over. `All terms check.` is the shape layer only. The test, the review, and a person on `guide` still count.
+
+Write a law for a finite claim over `Nat`, `U32`, or `Data` that you can prove by hand. Nothing is inferred. There are no tactics, no `if`, and no type classes. Recursion must shrink. A parallel split has to be balanced. Do not put a law on `F32`. Do not treat the JavaScript target as parallel, and do not `@unsafe` your way around a failed proof.
+
+The checker is young, mostly un-audited, and its Lean model does not match `bend.ts`. A proved law can still be wrong. Report the Bend bug. Keep the other layers.
 
 ## In scope
 
