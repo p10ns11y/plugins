@@ -1,4 +1,4 @@
-# intelliarch
+# intelli-route
 
 Routes one goal onto at most four skills that already exist. pstack supplies the playbook when it is installed ([Lauren Tan, MIT](https://github.com/cursor/plugins/tree/main/pstack)). Otherwise the house row in [pstack-map](../pstack-map/skills/pstack-map/references/map.md) does. This tree does not copy skill bodies and it does not vendor pstack.
 
@@ -21,7 +21,7 @@ Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimizatio
 ## Emit, then act
 
 ```markdown
-## IntelliArch
+## Intelli-route
 | Field | Value |
 |-------|--------|
 | **situation** | |
@@ -35,20 +35,26 @@ Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimizatio
 
 `light` takes that playbook's first bounded step. `card` names a phase, a budget, and one verify command, then does only the current phase. `empty` writes knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask.
 
+## System One shape
+
+The card is the kind of decision System One is for: one goal in, a closed `route`, at most four `loads`, and a `confidence` the script can branch on. Low confidence stays read-only.
+
+Classify is still an agent. The confidence is a word that agent picks. It is not a calibrated probability, and this plugin does not call [Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev). A later host may fill the same card from a System One model. Until then, the act step stays the slow work.
+
 ## Install
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git
-grok plugin install intelliarch --trust
+grok plugin install intelli-route --trust
 # or local:
-grok plugin install ./intelliarch --trust
+grok plugin install ./intelli-route --trust
 ```
 
 Dev symlink:
 
 ```bash
 mkdir -p ~/.grok/plugins
-ln -sfn "$(pwd)/intelliarch" ~/.grok/plugins/intelliarch
+ln -sfn "$(pwd)/intelli-route" ~/.grok/plugins/intelli-route
 ```
 
 Also install **pstack** for `/poteto-mode`, and **pstack-map** from this repo. Clone [p10ns11y/skills](https://github.com/p10ns11y/skills) where the host already loads skills. Do not copy those files into this plugin.
@@ -56,16 +62,16 @@ Also install **pstack** for `/poteto-mode`, and **pstack-map** from this repo. C
 Workflows are not auto-registered. The script enforces the four-load cap. A slash command relies on the model to obey it.
 
 ```bash
-cp intelliarch/.grok/workflows/intelliarch.rhai ~/.grok/workflows/
+cp intelli-route/.grok/workflows/intelli-route.rhai ~/.grok/workflows/
 ```
 
 ## Use
 
 | Surface | How |
 |---|---|
-| Grok | `/intelliarch <goal>` · `/workflow intelliarch {"goal":"…"}` |
-| Cursor | copy `cursor/rules/intelliarch-stack.mdc` into `.cursor/rules/`. Leave `pstack-models.mdc` as `/setup-pstack` wrote it. `/poteto-mode` still runs the one playbook. |
-| Bot | paste [bot/intelliarch.md](bot/intelliarch.md) as the system card. No webhook. |
+| Grok | `/intelli-route <goal>` · `/workflow intelli-route {"goal":"…"}` |
+| Cursor | copy `cursor/rules/intelli-route.mdc` into `.cursor/rules/`. Leave `pstack-models.mdc` as `/setup-pstack` wrote it. `/poteto-mode` still runs the one playbook. |
+| Bot | paste [bot/intelli-route.md](bot/intelli-route.md) as the system card. No webhook. |
 | Other hosts | [AGENTS.md](AGENTS.md) plus the skills checkout on that host's skill path. |
 
 On Grok, Bot, and other hosts, model seats are `fast`, `explore`, `coding`, `deep`, and `review`. Review uses a fresh context.
@@ -79,12 +85,12 @@ NOTICE.md
 README.md
 manifest.json
 AGENTS.md
-commands/intelliarch.md
-cursor/commands/intelliarch.md
-cursor/rules/intelliarch-stack.mdc
-.grok/workflows/intelliarch.rhai
-bot/intelliarch.md
-agents/intelliarch.md
+commands/intelli-route.md
+cursor/commands/intelli-route.md
+cursor/rules/intelli-route.mdc
+.grok/workflows/intelli-route.rhai
+bot/intelli-route.md
+agents/intelli-route.md
 test/test-thin.sh
 ```
 
@@ -107,7 +113,7 @@ No `skills/` directory. Procedures live upstream.
 ## Tests
 
 ```bash
-./intelliarch/test/test-thin.sh
+./intelli-route/test/test-thin.sh
 ```
 
 The thin test checks the route contract, resolves every manifest path, and runs the Bend proof of the trust laws when Bend is installed (`bend` or `~/.bend/bin/bend`).

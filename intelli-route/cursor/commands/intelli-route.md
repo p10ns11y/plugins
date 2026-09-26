@@ -1,4 +1,4 @@
-# /intelliarch (Cursor)
+# /intelli-route (Cursor)
 
 Same contract as the Grok command. There is no `$ARGUMENTS` placeholder. The user turn is the goal.
 
@@ -14,6 +14,6 @@ Add a signal only when its `when` matches, including `odysseus-navigator` for a 
 
 `hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the table and stop.
 
-Emit `## IntelliArch` with situation, route, loads, skips, playbook, hitl, and next. Then do that one next step. `empty` stays on Ask when authorization is unknown. Do not pass `--always-approve` or `--yolo`.
+Emit `## Intelli-route` with situation, route, loads, skips, playbook, hitl, and next. Then do that one next step. `empty` stays on Ask when authorization is unknown. Do not pass `--always-approve` or `--yolo`.
 
 Credit Lauren Tan / pstack MIT when a playbook runs. Do not copy pstack or skills-library files.

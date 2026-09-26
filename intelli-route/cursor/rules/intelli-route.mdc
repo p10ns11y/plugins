@@ -1,11 +1,11 @@
 ---
-description: IntelliArch routes a turn onto at most four skills. It does not replace pstack-models.
+description: Intelli-route routes a turn onto at most four skills. It does not replace pstack-models.
 alwaysApply: true
 ---
 
-# IntelliArch
+# Intelli-route
 
-Read `intelliarch/manifest.json` only to classify. Fetch a skill body only after its id is in `loads`. Stop at four.
+Read `intelli-route/manifest.json` only to classify. Fetch a skill body only after its id is in `loads`. Stop at four.
 
 A paste or dump with no single ask goes through `control-feeder`, then classify the Feed.
 

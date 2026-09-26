@@ -1,10 +1,10 @@
-// IntelliArch router. Plugins do not auto-register this file.
-//   cp intelliarch/.grok/workflows/intelliarch.rhai ~/.grok/workflows/
-// Launch: /workflow intelliarch {"goal":"…"}
+// Intelli-route router. Plugins do not auto-register this file.
+//   cp intelli-route/.grok/workflows/intelli-route.rhai ~/.grok/workflows/
+// Launch: /workflow intelli-route {"goal":"…"}
 // load_ids are the manifest primary and signal ids. test-thin.sh checks the set.
 
 let meta = #{
-    name: "intelliarch",
+    name: "intelli-route",
     description: "Route one goal onto at most four skills, then take one bounded step",
     phases: [
         #{ title: "Classify", detail: "one route, at most four loads" },
@@ -438,7 +438,7 @@ for note in skip_notes {
 }
 
 let report = "";
-report += "# IntelliArch\n\n";
+report += "# Intelli-route\n\n";
 report += "| Field | Value |\n|---|---|\n";
 report += "| situation | ";
 report += situation;
@@ -461,7 +461,7 @@ report += acted;
 report += " |\n| verify | ";
 report += verify_note;
 report += " |\n";
-let report_path = write_scratch_file("intelliarch-route.md", report);
+let report_path = write_scratch_file("intelli-route.md", report);
 
 complete(#{
     path: report_path,

@@ -58,7 +58,7 @@ Slash: `/split-machine`.
 3. Write the act in that row's verbs. For `earth-qpu` and `bqp-slice`, the act is an evolution and a measurement, not "computed".
 4. Set confidence `high`, `med`, or `low`. `low` stops the automation. The next step is the question a person must answer.
 5. Name what you refused, in one line.
-6. Hand the card to intelliarch when this skill was loaded as a signal. It does not replace the route. It constrains the next step.
+6. Hand the card to intelli-route when this skill was loaded as a signal. It does not replace the route. It constrains the next step.
 
 ### Neighbors
 

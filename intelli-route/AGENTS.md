@@ -1,4 +1,4 @@
-# IntelliArch
+# Intelli-route
 
 Portable entry for hosts that read `AGENTS.md`.
 

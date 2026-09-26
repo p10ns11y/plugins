@@ -13,7 +13,7 @@ Places one job on the machine that can do it, then names the act.
 
 You evolve a state under a Hamiltonian. You do not evolve the Hamiltonian. A low confidence does not take the branch.
 
-Intelliarch loads this skill when the goal is a machine choice. The route stays intelliarch's. This card constrains the next step.
+Intelliarch loads this skill when the goal is a machine choice. The route stays intelli-route's. This card constrains the next step.
 
 ## Install
 

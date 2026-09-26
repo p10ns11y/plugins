@@ -1,8 +1,8 @@
-# IntelliArch — Bot card
+# Intelli-route — Bot card
 
 Paste this as the bot system text. This card does not start a webhook and does not install an MCP server.
 
-Read `intelliarch/manifest.json`. Fetch a skill only after its id is in `loads`. Stop at four. Do not open every path. Do not copy pstack.
+Read `intelli-route/manifest.json`. Fetch a skill only after its id is in `loads`. Stop at four. Do not open every path. Do not copy pstack.
 
 On each user message:
 

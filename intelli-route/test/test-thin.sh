@@ -18,12 +18,12 @@ need NOTICE.md
 need README.md
 need manifest.json
 need AGENTS.md
-need commands/intelliarch.md
-need cursor/commands/intelliarch.md
-need cursor/rules/intelliarch-stack.mdc
-need .grok/workflows/intelliarch.rhai
-need bot/intelliarch.md
-need agents/intelliarch.md
+need commands/intelli-route.md
+need cursor/commands/intelli-route.md
+need cursor/rules/intelli-route.mdc
+need .grok/workflows/intelli-route.rhai
+need bot/intelli-route.md
+need agents/intelli-route.md
 
 if [[ -d "$ROOT/skills" ]]; then bad "skills/ present (bodies must stay upstream)"; else ok "no skills/ copy"; fi
 if [[ -d "$ROOT/skills/poteto-mode" || -d "$ROOT/poteto-mode" ]]; then bad "poteto-mode vendored"; else ok "no poteto-mode copy"; fi
@@ -32,7 +32,7 @@ if find "$ROOT" -type d -name 'principle-*' | grep -q .; then bad "principle-* v
 if find "$ROOT" -name 'SKILL.md' | grep -q .; then bad "SKILL.md vendored"; else ok "no SKILL.md"; fi
 
 pj="$(cat "$ROOT/plugin.json")"
-echo "$pj" | grep -q '"name": "intelliarch"' && ok "plugin.json name" || bad "plugin.json name"
+echo "$pj" | grep -q '"name": "intelli-route"' && ok "plugin.json name" || bad "plugin.json name"
 echo "$pj" | grep -q 'Lauren Tan' && ok "plugin.json credits pstack" || bad "plugin.json missing credit"
 echo "$pj" | grep -q 'at most four' && ok "plugin.json states the cap" || bad "plugin.json missing cap"
 
@@ -42,12 +42,12 @@ echo "$notice" | grep -q 'does not copy' && ok "NOTICE: does not copy" || bad "N
 echo "$notice" | grep -q 'github.com/p10ns11y/skills' && ok "NOTICE: skills repo" || bad "NOTICE missing skills repo"
 echo "$notice" | grep -q 'eva-emptiness/skills/eva-emptiness/SKILL.md' && ok "NOTICE: eva path" || bad "NOTICE missing eva path"
 
-rhai="$(cat "$ROOT/.grok/workflows/intelliarch.rhai")"
+rhai="$(cat "$ROOT/.grok/workflows/intelli-route.rhai")"
 echo "$rhai" | grep -q 'agent(' && ok "workflow calls agent" || bad "workflow missing agent("
 echo "$rhai" | grep -q 'complete(' && ok "workflow calls complete" || bad "workflow missing complete("
 if echo "$rhai" | grep -q 'prompt('; then bad "workflow calls prompt("; else ok "workflow has no prompt("; fi
 
-for surface in commands/intelliarch.md cursor/commands/intelliarch.md cursor/rules/intelliarch-stack.mdc agents/intelliarch.md bot/intelliarch.md AGENTS.md README.md; do
+for surface in commands/intelli-route.md cursor/commands/intelli-route.md cursor/rules/intelli-route.mdc agents/intelli-route.md bot/intelli-route.md AGENTS.md README.md; do
   text="$(cat "$ROOT/$surface")"
   echo "$text" | grep -q 'money, legal, or health' && ok "HITL $surface" || bad "HITL missing in $surface"
   if echo "$text" | grep -qi 'open each'; then bad "open-each in $surface"; else ok "no open-each in $surface"; fi
@@ -68,14 +68,14 @@ from urllib.parse import urlparse
 root = Path(sys.argv[1])
 man = json.loads((root / "manifest.json").read_text())
 plugin = json.loads((root / "plugin.json").read_text())
-rhai = (root / ".grok/workflows/intelliarch.rhai").read_text()
+rhai = (root / ".grok/workflows/intelli-route.rhai").read_text()
 errors = []
 
 def bad(msg):
     errors.append(msg)
 
-if plugin.get("version") != "0.2.3" or man.get("version") != "0.2.3":
-    bad("version is not 0.2.3")
+if plugin.get("version") != "0.3.0" or man.get("version") != "0.3.0":
+    bad("version is not 0.3.0")
 if man.get("max_loads") != 4:
     bad("max_loads is not 4")
 emit = man.get("emit")

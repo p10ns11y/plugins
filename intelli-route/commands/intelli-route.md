@@ -3,7 +3,7 @@ description: Route one goal onto at most four skills (pstack or the house row). 
 argument-hint: goal or dumped prompt
 ---
 
-# /intelliarch
+# /intelli-route
 
 Read `manifest.json` in this plugin. It is the contract. Do not open every path in it.
 
@@ -26,7 +26,7 @@ Add a signal load only when its `when` matches. Stop at four loads, including th
 Write this table before any edit:
 
 ```markdown
-## IntelliArch
+## Intelli-route
 | Field | Value |
 |-------|--------|
 | **situation** | |

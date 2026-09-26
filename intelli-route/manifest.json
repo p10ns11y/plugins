@@ -1,6 +1,6 @@
 {
-  "name": "intelliarch",
-  "version": "0.2.3",
+  "name": "intelli-route",
+  "version": "0.3.0",
   "description": "Routes one goal onto at most four existing skills. pstack when it is installed, otherwise the house row. Does not vendor bodies.",
   "credit": [
     "Lauren Tan / pstack MIT — playbooks and principles stay upstream",

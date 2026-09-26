@@ -59,7 +59,7 @@ Slash: `/trust-stack`.
 4. If the agent copied a bad pattern, the next edit removes that pattern from the tree. Then add the check or the skill. Do not add a comment that explains the bug away.
 5. State the verify command the agent can run. If Bend is installed and the layer is `shape`, the command is `trust-stack/test/bend-critical.sh`. Refuse it when `bunfig.toml` sits beside the proof. If Bend is absent, verify is `missing` and the proof was not run.
 6. One owner for this change. Name any collector agents separately. They do not edit it.
-7. Hand the card to intelliarch when this skill was loaded as a signal. It does not replace the route.
+7. Hand the card to intelli-route when this skill was loaded as a signal. It does not replace the route.
 
 ### Neighbors
 
