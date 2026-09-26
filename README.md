@@ -45,6 +45,9 @@ plugin install  ──trust───► agents, hooks, /commands
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
+| **intelli-route** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelli-route` · `/workflow intelli-route` |
+| **split-machine** | Place a job on Earth, orbit, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
+| **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
 ---
@@ -119,6 +122,46 @@ grok plugin install ./pstack-map --trust
 ```
 
 See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](pstack-map/NOTICE.md).
+
+---
+
+## intelli-route
+
+Routes one goal onto at most four skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills), except `eva-emptiness`, which is loaded from this repo because the skills-repo entry is a sibling symlink. This plugin does not copy those bodies, and it does not vendor pstack.
+
+```bash
+grok plugin install ./intelli-route --trust
+# slash: /intelli-route
+# optional: cp intelli-route/.grok/workflows/intelli-route.rhai ~/.grok/workflows/
+```
+
+See [intelli-route/README.md](intelli-route/README.md) and [intelli-route/NOTICE.md](intelli-route/NOTICE.md).
+
+---
+
+## split-machine
+
+Places one job on the machine that can do it. Earth keeps the processor and the GPUs. Orbit keeps the entanglement link. A closed decision carries a confidence, and low confidence does not branch. Intelliarch loads it as a signal.
+
+```bash
+grok plugin install ./split-machine --trust
+# slash: /split-machine
+```
+
+See [split-machine/README.md](split-machine/README.md) and [split-machine/NOTICE.md](split-machine/NOTICE.md).
+
+---
+
+## trust-stack
+
+Places one invariant on the earliest layer that can hold it. The codebase is the agent's memory. A repeated miss is deleted and moved earlier. Landing stays a human act.
+
+```bash
+grok plugin install ./trust-stack --trust
+# slash: /trust-stack
+```
+
+See [trust-stack/README.md](trust-stack/README.md) and [trust-stack/NOTICE.md](trust-stack/NOTICE.md).
 
 ---
 

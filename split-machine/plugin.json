@@ -1,0 +1,19 @@
+{
+  "name": "split-machine",
+  "version": "0.1.0",
+  "description": "Place a job on the machine that can do it: Earth QPU, orbit link, GPU factory, BQP slice, System One decision, or System Two prose. Name the act. Low confidence does not automate.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "split-machine",
+    "placement",
+    "quantum",
+    "bqp",
+    "gpu",
+    "system-one",
+    "intelli-route"
+  ]
+}

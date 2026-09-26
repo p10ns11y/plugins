@@ -1,0 +1,17 @@
+{
+  "name": "trust-stack",
+  "version": "0.1.0",
+  "description": "Put each invariant on the earliest layer that can hold it: shape, check, watch, skill, then a human guide. The codebase is the agent's memory. This plugin does not merge.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "trust-stack",
+    "verification",
+    "pstack",
+    "lauren-tan",
+    "intelli-route"
+  ]
+}
