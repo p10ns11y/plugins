@@ -13,7 +13,7 @@ A paste or dump with no single ask goes through `control-feeder`, then classify 
 2. Multi-step, until-done, or the same step is being redone → route `card` (`control-graph`) with a budget and one verify command.
 3. Otherwise → route `light` (`pstack-map`, then one pstack playbook or the house row).
 
-Add a signal skill only when its `when` matches. A machine choice (quantum, orbit, GPU, Hamiltonian, or a closed decision software will branch on) loads `split-machine` and stops if its confidence is low. Shipping, review load, a repeated bad pattern, or fan-out loads `trust-stack`. That skill does not merge. That set includes `odysseus-navigator` for a plan, architecture, or review. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+Add a signal skill only when its `when` matches. A machine choice (quantum, orbit, GPU, Hamiltonian, or a closed decision software will branch on) loads `split-machine` and stops if its confidence is low. Shipping, review load, a repeated bad pattern, or fan-out loads `trust-stack`. That skill does not merge. A master plan loads `master-planner`. A hard-to-revert choice loads `higher-order-decision-architect`. A roadmap or blueprint cards load `stellar-spacemap`. Cross-file design loads `architecture-synthesis`. Load one of that family, not all four. That set includes `odysseus-navigator` for a plan, architecture, or review. `clt-dual-load` is a host rule. Do not paste it and do not count it.
 
 Pause before secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On that pause, emit the route and stop.
 

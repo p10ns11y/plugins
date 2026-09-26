@@ -74,8 +74,8 @@ errors = []
 def bad(msg):
     errors.append(msg)
 
-if plugin.get("version") != "0.2.2" or man.get("version") != "0.2.2":
-    bad("version is not 0.2.2")
+if plugin.get("version") != "0.2.3" or man.get("version") != "0.2.3":
+    bad("version is not 0.2.3")
 if man.get("max_loads") != 4:
     bad("max_loads is not 4")
 emit = man.get("emit")

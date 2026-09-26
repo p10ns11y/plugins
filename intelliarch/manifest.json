@@ -1,6 +1,6 @@
 {
   "name": "intelliarch",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Routes one goal onto at most four existing skills. pstack when it is installed, otherwise the house row. Does not vendor bodies.",
   "credit": [
     "Lauren Tan / pstack MIT — playbooks and principles stay upstream",
@@ -156,6 +156,38 @@
       "repo": "https://github.com/p10ns11y/plugins",
       "ref": "main",
       "path": "trust-stack/skills/trust-stack/SKILL.md"
+    },
+    {
+      "id": "master-planner",
+      "tier": "signal",
+      "when": "a master plan, a skill pack, or an ontology for a large repo",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "master-planner/SKILL.md"
+    },
+    {
+      "id": "higher-order-decision-architect",
+      "tier": "signal",
+      "when": "a hard-to-revert choice: dependency, public API, security, data contract, or a pre-mortem",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "higher-order-decision-architect/SKILL.md"
+    },
+    {
+      "id": "stellar-spacemap",
+      "tier": "signal",
+      "when": "a roadmap, coming-next, blueprint cards, or a backlog after a PR",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "stellar-spacemap/SKILL.md"
+    },
+    {
+      "id": "architecture-synthesis",
+      "tier": "signal",
+      "when": "cross-file design, a domain model, or an abstraction that should compound",
+      "repo": "https://github.com/p10ns11y/skills",
+      "ref": "master",
+      "path": "architecture-synthesis/SKILL.md"
     },
     {
       "id": "layout-content-view",
