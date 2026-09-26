@@ -28,7 +28,7 @@ A3  Verification means the agent runs the real surface. A claim is not a pass.
 A4  One owner per change. Fan out only after one agent is trusted here.
 A5  A repeated miss becomes a skill or a check, not only a patch.
 A6  This plugin does not merge. Landing stays a human act.
-A7  When using Bend, from `bend/`: run `bend guide`; keep rules in `LAWS.bend`; run `bend PROOF.bend` before committing; parallelize independent calls of similar cost. `trust-stack/test/bend-critical.sh` must print "All terms check." If Bend is absent, that proof was not run.
+A7  When using Bend, from `bend/`: run `bend guide`; keep rules in `LAWS.bend`; run `bend PROOF.bend` before committing; parallelize independent calls of similar cost. `trust-stack/test/bend-critical.sh` must print "All terms check." If Bend is absent, that proof was not run. A passing proof is the shape layer only. Keep the test, the review, and a person on `guide`. Do not prove `F32`. Do not `@unsafe` past a failed proof.
 ```
 
 **Mission:** Name the layer that should have caught this, and the one next edit that moves the invariant there.
@@ -100,5 +100,6 @@ Slash: `/trust-stack`.
 ## Limitations
 
 - Not a merge bot, a review-bot install, or a Bend compiler.
+- A Bend proof is the shape layer. Bend 2 is new, the checker is young, and a green proof can still be wrong.
 - Does not score a pull-request count as success.
 - Does not claim the talk's production setup. The card is the procedure.

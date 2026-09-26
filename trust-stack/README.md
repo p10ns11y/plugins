@@ -30,6 +30,8 @@ When using Bend, from `bend/`:
 - run `bend PROOF.bend` before committing
 - parallelize the code whenever possible
 
+`All terms check.` is the shape layer. It does not replace the test, the review, or a person on `guide`. Bend 2 is new: nothing is inferred, `F32` cannot be proved, and the checker can still be wrong.
+
 ## Tests
 
 ```bash
