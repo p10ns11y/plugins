@@ -24,6 +24,14 @@ def verdict(layer: Layer) -> Verdict:
     case Guide{}:
       Ask{}
 
+def both(x: Layer, y: Layer) -> Verdict & Verdict:
+  a b = verdict(x) verdict(y)
+  (a, b)
+
+def four_holds() -> (Verdict & Verdict) & (Verdict & Verdict):
+  left right = both(Shape{}, Check{}) both(Watch{}, Skill{})
+  (left, right)
+
 def cap4(n: Nat) -> Nat:
   match n:
     case 0n:

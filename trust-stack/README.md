@@ -21,6 +21,15 @@ grok plugin install ./trust-stack --trust
 # slash: /trust-stack
 ```
 
+## Bend
+
+When using Bend, from `bend/`:
+
+- run `bend guide` to learn it
+- use `LAWS.bend` to keep important rules
+- run `bend PROOF.bend` before committing
+- parallelize the code whenever possible
+
 ## Tests
 
 ```bash

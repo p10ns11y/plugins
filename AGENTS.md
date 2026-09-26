@@ -12,7 +12,13 @@ grok plugin install <name> --trust
 
 ## Bend
 
-When Bend is installed (`bend` on `PATH`, or `~/.bend/bin/bend`), the trust laws in [trust-stack/bend/LAWS.bend](trust-stack/bend/LAWS.bend) are proved by `trust-stack/test/bend-critical.sh` before a shape-layer invariant counts as held. Intelliarch’s thin test runs that same proof. If Bend is absent, the proof was not run. Do not install Bend unless the operator asks. Refuse the proof when `bunfig.toml`, `.env`, or `.p.ts` sits beside it: a released `bend` binary can load those and forge "All terms check."
+From `trust-stack/bend/`:
+
+When using Bend:
+- run `bend guide` to learn it
+- use `LAWS.bend` to keep important rules
+- run `bend PROOF.bend` before committing
+- parallelize the code whenever possible
 
 ## In scope
 

@@ -16,6 +16,9 @@ def Laws.watch_holds():
 def Laws.skill_holds():
   {==}
 
+def Laws.four_hold():
+  {==}
+
 def Laws.cap_under_four():
   {==}
 

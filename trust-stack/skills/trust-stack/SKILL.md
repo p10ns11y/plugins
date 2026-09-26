@@ -28,7 +28,7 @@ A3  Verification means the agent runs the real surface. A claim is not a pass.
 A4  One owner per change. Fan out only after one agent is trusted here.
 A5  A repeated miss becomes a skill or a check, not only a patch.
 A6  This plugin does not merge. Landing stays a human act.
-A7  If Bend is installed (`bend` on PATH, or `~/.bend/bin/bend`), a shape-layer invariant is a law in `bend/LAWS.bend`. `trust-stack/test/bend-critical.sh` must print "All terms check." If Bend is absent, that proof was not run. Do not call the grep test a proof.
+A7  When using Bend, from `bend/`: run `bend guide`; keep rules in `LAWS.bend`; run `bend PROOF.bend` before committing; parallelize independent calls of similar cost. `trust-stack/test/bend-critical.sh` must print "All terms check." If Bend is absent, that proof was not run.
 ```
 
 **Mission:** Name the layer that should have caught this, and the one next edit that moves the invariant there.

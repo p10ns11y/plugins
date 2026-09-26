@@ -20,6 +20,9 @@ law watch_holds:
 law skill_holds:
   {Trust.verdict(Trust.Skill{}) == Trust.Hold{} : Trust.Verdict}
 
+law four_hold:
+  {Trust.four_holds() == ((Trust.Hold{}, Trust.Hold{}), (Trust.Hold{}, Trust.Hold{})) : (Trust.Verdict & Trust.Verdict) & (Trust.Verdict & Trust.Verdict)}
+
 law cap_under_four:
   {Trust.cap4(3n) == 3n : Nat}
 
