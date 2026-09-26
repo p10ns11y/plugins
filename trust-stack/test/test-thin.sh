@@ -18,7 +18,7 @@ need commands/trust-stack.md
 need agents/trust-stack.md
 need skills/trust-stack/SKILL.md
 need skills/trust-stack/references/layers.md
-need bend/gate.bend
+need bend/trust.bend
 need bend/LAWS.bend
 need bend/PROOF.bend
 need test/bend-critical.sh
@@ -48,13 +48,13 @@ echo "$notice" | grep -q '2102050467505430555' && ok "notices the talk" || bad "
 echo "$notice" | grep -q 'bend-lang.com' && ok "notices Bend" || bad "missing Bend"
 echo "$notice" | grep -q 'does not merge' && ok "notice refuses merge" || bad "notice missing merge refusal"
 echo "$notice" | grep -q 'Lauren Tan' && ok "credits Lauren Tan" || bad "missing credit"
-echo "$skill" | grep -q 'bend PROOF.bend' && ok "shape layer names the bend gate" || bad "missing bend gate"
-echo "$skill" | grep -q 'that check was not run' && ok "absent bend is not a pass" || bad "absent bend treated as a pass"
+echo "$skill" | grep -q 'bend-critical.sh' && ok "shape layer names the Bend proof" || bad "missing Bend proof"
+echo "$skill" | grep -q 'that proof was not run' && ok "absent bend is not a pass" || bad "absent bend treated as a pass"
 
 if bash "$ROOT/test/bend-critical.sh" | tee /dev/stderr | grep -q -e 'All terms check.' -e 'bend not installed'; then
-  ok "bend critical gate"
+  ok "Bend proof of the trust laws"
 else
-  bad "bend critical gate"
+  bad "Bend proof of the trust laws"
 fi
 
 echo "---"

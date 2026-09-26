@@ -110,4 +110,4 @@ No `skills/` directory. Procedures live upstream.
 ./intelliarch/test/test-thin.sh
 ```
 
-The thin test checks the route contract and resolves every manifest path with `gh`.
+The thin test checks the route contract, resolves every manifest path, and runs the Bend proof of the trust laws when Bend is installed (`bend` or `~/.bend/bin/bend`).

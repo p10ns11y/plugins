@@ -28,7 +28,7 @@ A3  Verification means the agent runs the real surface. A claim is not a pass.
 A4  One owner per change. Fan out only after one agent is trusted here.
 A5  A repeated miss becomes a skill or a check, not only a patch.
 A6  This plugin does not merge. Landing stays a human act.
-A7  If `bend` is on PATH, a shape-layer invariant is a law in `bend/LAWS.bend`. `bend PROOF.bend` must print "All terms check." If `bend` is absent, that check was not run. Do not call the grep test a proof.
+A7  If Bend is installed (`bend` on PATH, or `~/.bend/bin/bend`), a shape-layer invariant is a law in `bend/LAWS.bend`. `trust-stack/test/bend-critical.sh` must print "All terms check." If Bend is absent, that proof was not run. Do not call the grep test a proof.
 ```
 
 **Mission:** Name the layer that should have caught this, and the one next edit that moves the invariant there.
@@ -57,7 +57,7 @@ Slash: `/trust-stack`.
 2. Walk [references/layers.md](references/layers.md) from `shape` downward. Stop at the first layer that can hold it.
 3. If the answer is `guide`, set hitl. A person is still the checker.
 4. If the agent copied a bad pattern, the next edit removes that pattern from the tree. Then add the check or the skill. Do not add a comment that explains the bug away.
-5. State the verify command the agent can run. If `bend` is on PATH and the layer is `shape`, the command is `bend PROOF.bend` in `trust-stack/bend`. Refuse it when `bunfig.toml` sits beside the proof. If `bend` is absent, verify is `missing` and the formal check was not run.
+5. State the verify command the agent can run. If Bend is installed and the layer is `shape`, the command is `trust-stack/test/bend-critical.sh`. Refuse it when `bunfig.toml` sits beside the proof. If Bend is absent, verify is `missing` and the proof was not run.
 6. One owner for this change. Name any collector agents separately. They do not edit it.
 7. Hand the card to intelliarch when this skill was loaded as a signal. It does not replace the route.
 

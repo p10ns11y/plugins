@@ -12,7 +12,7 @@ grok plugin install <name> --trust
 
 ## Bend
 
-When `bend` is on PATH, critical checks are the laws in [trust-stack/bend/LAWS.bend](trust-stack/bend/LAWS.bend). Run `bend PROOF.bend` from that directory before treating a shape-layer invariant as held. If `bend` is absent, that command was not run. Do not install Bend unless the operator asks. Refuse the proof when `bunfig.toml`, `.env`, or `.p.ts` sits beside it: a released `bend` binary can load those and forge "All terms check."
+When Bend is installed (`bend` on `PATH`, or `~/.bend/bin/bend`), the trust laws in [trust-stack/bend/LAWS.bend](trust-stack/bend/LAWS.bend) are proved by `trust-stack/test/bend-critical.sh` before a shape-layer invariant counts as held. Intelliarch’s thin test runs that same proof. If Bend is absent, the proof was not run. Do not install Bend unless the operator asks. Refuse the proof when `bunfig.toml`, `.env`, or `.p.ts` sits beside it: a released `bend` binary can load those and forge "All terms check."
 
 ## In scope
 

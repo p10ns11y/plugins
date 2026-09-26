@@ -16,4 +16,4 @@ Playbook names stay in pstack (Lauren Tan, MIT). This plugin does not copy pstac
 
 Her agents merge their own pull requests. This plugin does not merge. Landing stays a human act until the repo’s own rules say otherwise.
 
-Critical checks that Bend can see are in `bend/LAWS.bend`. `bend PROOF.bend` is the gate when the `bend` binary is on PATH. Bend’s own site is https://bend-lang.com/. This tree does not install it.
+Critical checks that Bend can see are in `bend/LAWS.bend`. `bend PROOF.bend` is the proof, from `~/.bend/bin/bend` or `PATH`. Bend’s own site is https://bend-lang.com/. This tree does not install it.

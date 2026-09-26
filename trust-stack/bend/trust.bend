@@ -11,7 +11,7 @@ type Verdict is Data:
   Hold{}
   Ask{}
 
-def gate(layer: Layer) -> Verdict:
+def verdict(layer: Layer) -> Verdict:
   match layer:
     case Shape{}:
       Hold{}

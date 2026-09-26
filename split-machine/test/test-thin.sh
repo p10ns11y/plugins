@@ -34,7 +34,7 @@ for id in earth-qpu orbit-link gpu-factory bqp-slice system-one system-two; do
   echo "$skill" | grep -q "$id" && ok "substrate $id" || bad "missing substrate $id"
 done
 echo "$skill" | grep -q 'do not evolve the Hamiltonian' && ok "wording law" || bad "missing wording law"
-echo "$skill" | grep -q 'Low confidence does not branch' && ok "low confidence stops" || bad "confidence gate missing"
+echo "$skill" | grep -q 'Low confidence does not branch' && ok "low confidence stops" || bad "low confidence does not stop"
 
 notice="$(cat "$ROOT/NOTICE.md")"
 echo "$notice" | grep -q '2103445290602688619' && ok "notices the wording post" || bad "missing wording post"

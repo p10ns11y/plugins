@@ -189,6 +189,19 @@ PY
   fi
 fi
 
+proof="$ROOT/../trust-stack/test/bend-critical.sh"
+if [[ -f "$proof" ]]; then
+  proof_out="$(bash "$proof" || true)"
+  printf '%s\n' "$proof_out"
+  if printf '%s\n' "$proof_out" | grep -q 'All terms check.'; then
+    ok "Bend proved the trust laws"
+  elif printf '%s\n' "$proof_out" | grep -q 'bend not installed'; then
+    ok "Bend absent; trust laws not proved"
+  else
+    bad "Bend proof of the trust laws"
+  fi
+fi
+
 echo "---"
 if [[ "$fail" -ne 0 ]]; then
   echo "$fail failure(s)"

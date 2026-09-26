@@ -18,7 +18,7 @@
   "routes": {
     "light": "one playbook, then its first bounded step",
     "card": "control-graph phase, budget, and verify command; execute only the current phase",
-    "empty": "eva-emptiness gate only; ActOrAsk stays Ask when authorization is unknown"
+    "empty": "eva-emptiness steps only; ActOrAsk stays Ask when authorization is unknown"
   },
   "primary": [
     {
