@@ -12,7 +12,7 @@ Puts one invariant on the earliest layer that can hold it.
 
 The codebase is the agent's memory, so a workaround spreads. Delete it and move the invariant earlier. One owner runs the real check. This plugin does not merge.
 
-Intelliarch loads it when the goal is trust, review, a repeated miss, or fan-out. pstack remains the playbook when it is installed.
+intelli-route loads it when the goal is trust, review, a repeated miss, or fan-out. pstack remains the playbook when it is installed.
 
 ## Install
 

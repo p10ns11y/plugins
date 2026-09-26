@@ -141,7 +141,7 @@ See [intelli-route/README.md](intelli-route/README.md) and [intelli-route/NOTICE
 
 ## split-machine
 
-Places one job on the machine that can do it. Earth keeps the processor and the GPUs. Orbit keeps the entanglement link. A closed decision carries a confidence, and low confidence does not branch. Intelliarch loads it as a signal.
+Places one job on the machine that can do it. Earth keeps the processor and the GPUs. Orbit keeps the entanglement link. A closed decision carries a confidence, and low confidence does not branch. intelli-route loads it as a signal.
 
 ```bash
 grok plugin install ./split-machine --trust
