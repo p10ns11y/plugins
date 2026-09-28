@@ -40,13 +40,13 @@ plugin install  ──trust───► agents, hooks, /commands
 | **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + C/shell auth tether | `/eva` · `/eva-tether-init` · `/workflow eva-emptiness` |
 | **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface | `/note` `/focus` `/journal` |
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
-| **mission-map** | Mission briefing: critical path, heading \(\hat{u}_G\) / \(\cos\theta\), replan; C PERT/MC + Rust graph | `/mission-map` |
+| **mission-map** | Mission briefing: critical path, assigned alignment (`cos`), replan; C PERT/MC + Rust graph | `/mission-map` |
 | **uncertainty-laws** | Napkin EV / base rate / ruin / Kelly for foggy finance & life decisions; chains after mission-map | `/uncertainty-laws` |
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
 | **intelli-route** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelli-route` · `/workflow intelli-route` |
-| **split-machine** | Place a job on Earth, orbit, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
+| **split-machine** | Place a job on Earth, an entanglement link, a LEO radio handover, a conjunction screen, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
 | **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
@@ -141,7 +141,7 @@ See [intelli-route/README.md](intelli-route/README.md) and [intelli-route/NOTICE
 
 ## split-machine
 
-Places one job on the machine that can do it. Earth keeps the processor and the GPUs. Orbit keeps the entanglement link. A closed decision carries a confidence, and low confidence does not branch. intelli-route loads it as a signal.
+Places one job on the machine that can do it. Earth keeps the processor and the GPUs. Orbit keeps three jobs apart: the entanglement link, a classical LEO radio handover, and a conjunction screen. A closed decision carries a confidence, and low confidence does not branch. intelli-route loads it as a signal.
 
 ```bash
 grok plugin install ./split-machine --trust

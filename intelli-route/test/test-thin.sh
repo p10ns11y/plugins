@@ -43,6 +43,13 @@ echo "$notice" | grep -q 'github.com/p10ns11y/skills' && ok "NOTICE: skills repo
 echo "$notice" | grep -q 'eva-emptiness/skills/eva-emptiness/SKILL.md' && ok "NOTICE: eva path" || bad "NOTICE missing eva path"
 
 rhai="$(cat "$ROOT/.grok/workflows/intelli-route.rhai")"
+manifest="$(cat "$ROOT/manifest.json")"
+rule="$(cat "$ROOT/cursor/rules/intelli-route.mdc")"
+sm_when='quantum, QPU, GPU placement, Hamiltonian, entanglement, LEO handover, beam switching, obstruction, conjunction screen, Stargaze, space situational awareness, NISQ, BQP'
+echo "$rhai" | grep -Fq "$sm_when" && ok "workflow names split-machine signals" || bad "workflow split-machine signals drifted"
+echo "$manifest" | grep -Fq "$sm_when" && ok "manifest names split-machine signals" || bad "manifest split-machine signals drifted"
+echo "$rule" | grep -Fq "$sm_when" && ok "cursor rule names split-machine signals" || bad "cursor rule split-machine signals drifted"
+if echo "$rule" | grep -q 'quantum, orbit, GPU'; then bad "cursor rule still lumps orbit"; else ok "cursor rule dropped bare orbit"; fi
 echo "$rhai" | grep -q 'agent(' && ok "workflow calls agent" || bad "workflow missing agent("
 echo "$rhai" | grep -q 'complete(' && ok "workflow calls complete" || bad "workflow missing complete("
 if echo "$rhai" | grep -q 'prompt('; then bad "workflow calls prompt("; else ok "workflow has no prompt("; fi

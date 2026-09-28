@@ -41,7 +41,7 @@ Use when you need calculated risk, a critical path, or a replan after a reject, 
 | **Do** | On the critical path; you can start it | Schedule; assign hours |
 | **Risk** | Calculated: blast × how soon it can fire | Mitigate or watch; do not freeze |
 | **Wait** | Blocked on someone else or a date | Signpost only; do not invent work |
-| **Park** | Slack / distraction (∇T ≈ 0) | Refuse this tick |
+| **Park** | Slack / distraction (it does not move arrival) | Refuse this tick |
 
 Never print a single calendar date as destiny. Print **bands** \(a / m / b\) and the **next Do**.
 
@@ -49,7 +49,7 @@ Never print a single calendar date as destiny. Print **bands** \(a / m / b\) and
 2. **Name \(x\)** — current facts only (no PII dumps).
 3. **DAG** — stages with edges. Mark the **critical path**. Reject a map with no stages.
 4. **For each stage** fill: What · How · When (\(a,m,b\) or a hard deadline) · Owner · class.
-5. **Effort** — hours only on Do nodes with high \(\partial T/\partial u\).
+5. **Effort** — hours only on Do nodes on the remaining critical path.
 6. **Signposts** — `watch` → `fires_when` → `continue | switch | Ask`. Every Risk needs one.
 7. **On shock** — re-run steps 3–6 on the remaining DAG only.
 8. **LLM room** — propose a missing stage or band; human confirms.

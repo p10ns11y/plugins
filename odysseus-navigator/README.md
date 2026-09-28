@@ -8,7 +8,7 @@ Judgment only. Outer stays in **control-graph**. Blank-sheet Inner stays in **ev
   /odysseus-core   one bottleneck, one mistake, one next   ← default, fastest
   /odysseus        full Navigator table                     ← when several smells
   /eva             Prior→Probe→Simulate→Score→ActOrAsk      ← emptiness only
-  /mission-map     heading û_G / PERT                       ← path math only
+  /mission-map     critical path / PERT                   ← path math only
 ```
 
 ## Odysseus (this harness)

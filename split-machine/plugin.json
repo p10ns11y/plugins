@@ -1,7 +1,7 @@
 {
   "name": "split-machine",
-  "version": "0.1.0",
-  "description": "Place a job on the machine that can do it: Earth QPU, orbit link, GPU factory, BQP slice, System One decision, or System Two prose. Name the act. Low confidence does not automate.",
+  "version": "0.2.0",
+  "description": "Place a job on the machine that can do it: Earth QPU, entanglement link, LEO radio handover, conjunction screen, GPU factory, BQP slice, System One decision, or System Two prose. Name the act. Low confidence does not automate.",
   "author": {
     "name": "p10ns11y"
   },
@@ -12,6 +12,8 @@
     "placement",
     "quantum",
     "bqp",
+    "beam-switch",
+    "orbit-screen",
     "gpu",
     "system-one",
     "intelli-route"

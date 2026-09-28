@@ -174,7 +174,7 @@
     },
     {
       "name": "split-machine",
-      "description": "Place one job on Earth, orbit, a GPU, a BQP slice, a typed decision, or prose. Low confidence does not automate.",
+      "description": "Place one job on Earth, an entanglement link, a LEO radio handover, a conjunction screen, a GPU, a BQP slice, a typed decision, or prose. Low confidence does not automate.",
       "category": "development",
       "source": {
         "type": "local",
@@ -186,6 +186,8 @@
         "placement",
         "quantum",
         "bqp",
+        "beam-switch",
+        "orbit-screen",
         "system-one"
       ]
     },
