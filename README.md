@@ -40,7 +40,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **eva-emptiness** | Blank-sheet harness: Prior→Probe→Simulate→Score→ActOrAsk + prior agents + C/shell auth tether | `/eva` · `/eva-tether-init` · `/workflow eva-emptiness` |
 | **premflow** | Notes/wins/tasks/coach — agent-as-CLI surface | `/note` `/focus` `/journal` |
 | **arch-machine** | Thin-first sentinel + consent-gated expand — agent-as-TUI | `/arch-status` `/arch-expand` |
-| **mission-map** | Mission briefing: critical path, heading \(\hat{u}_G\) / \(\cos\theta\), replan; C PERT/MC + Rust graph | `/mission-map` |
+| **mission-map** | Mission briefing: critical path, assigned alignment (`cos`), replan; C PERT/MC + Rust graph | `/mission-map` |
 | **uncertainty-laws** | Napkin EV / base rate / ruin / Kelly for foggy finance & life decisions; chains after mission-map | `/uncertainty-laws` |
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |

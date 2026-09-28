@@ -142,7 +142,7 @@ The agent fills:
 2. \(x\) — current facts only.
 3. DAG — stages with **Do / Risk / Wait / Park**.
 4. \(a/m/b\) bands (or a hard deadline on a stage).
-5. One **next Do**. Hours only on high \(\partial T / \partial u\).
+5. One **next Do**. Hours only on Do nodes on the remaining critical path.
 6. Signposts: `watch` → `fires_when` → `continue | switch | Ask`.
 
 **Done when:** one \(G\), one critical path, one next Do, every Risk has a
@@ -220,7 +220,7 @@ mission-map-graph now.json --compare then.json --mermaid
 
 Nightly `mm-lifeos-graph` does this against `cash-path-last-run.json` and
 classifies the vault page as **on-path / wait / deviation**. Deviation fires a
-desktop notify when \(\cos\theta = 0\) or remaining \(T\) grew.
+desktop notify when the heading is park (`cos=0`) or remaining \(T\) grew.
 
 Do **not** treat `path_te` as a start date. It is a band, in the same unit you
 put in \(a/m/b\) (usually weeks).

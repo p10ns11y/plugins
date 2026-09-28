@@ -4,6 +4,17 @@ ROOT=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
 
+script="$ROOT/scripts/mm-lifeos-graph"
+grep -q 'This tick alignment' "$script"
+if grep -q 'cosθ' "$script" || grep -q 'û_G' "$script"; then
+  echo "vault writer still prints an angle"
+  exit 1
+fi
+if grep -q '\\partial T' "$ROOT/README.md" "$ROOT/skills/mission-map/SKILL.md"; then
+  echo "effort step still ranks a partial this tree does not compute"
+  exit 1
+fi
+
 mkdir -p "$TMP/maps" "$TMP/life/UI"
 cp "$ROOT/examples/sample-map.json" "$TMP/maps/cash-path-now.json"
 

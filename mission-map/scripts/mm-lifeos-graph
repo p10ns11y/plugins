@@ -91,7 +91,7 @@ note="This week's act is on the path to a start date.
 $(if [ -n "${tick_why:-}" ]; then printf '\n%s\n' "$tick_why"; fi)"
 if [ "$heading" = "park" ] || [ "$cos" = "0" ]; then
   kind="deviation"
-  note="cosθ=0 — this tick is orthogonal to G (Park / shiny)."
+  note="Park. This tick is off the remaining critical path."
 elif [ "$heading" = "wait" ]; then
   kind="wait"
   note="No self-vector. Signpost only; do not invent work."
@@ -99,7 +99,7 @@ elif [ -n "$delta_te" ]; then
   awk -v d="$delta_te" 'BEGIN { exit !(d > 0.05) }' && {
     if [ "$heading" = "on-path" ] && [ -n "$next_do" ]; then
       kind="replan"
-      note="Remaining T grew (delta_te=$delta_te) after a DAG/band replan — still on û_G. Not a Park."
+      note="Remaining T grew (delta_te=$delta_te) after a DAG or band replan. The next Do is still on the path. Not a Park."
     else
       kind="deviation"
       note="Remaining T grew (delta_te=$delta_te). Check a new stage or a longer Wait."
@@ -399,7 +399,7 @@ Contact mail and posting URLs: \`~/.grok/mission-maps/contacts.md\`.
 | **If that thread dies** | you usually know within ~1 week of silence — not 12 weeks |
 | **Longest remaining chain** | $path_te weeks (kernel; not a destiny date) |
 | **Change since last snapshot** | ${delta_te:-none} |
-$(if [ -n "${tick_cos:-}" ]; then printf '| **This tick cosθ** | %s |\n' "$tick_cos"; fi)
+$(if [ -n "${tick_cos:-}" ]; then printf '| **This tick alignment** | %s |\n' "$tick_cos"; fi)
 $(if [ -n "${tick_did:-}" ]; then printf '| **This tick did** | %s |\n' "$tick_did"; fi)
 $(if [ -n "${tick_named:-}" ]; then printf '| **Named Do (still)** | %s |\n' "$tick_named"; fi)
 

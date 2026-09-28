@@ -96,6 +96,17 @@ Slash: `/split-machine`.
 
 ---
 
+## Examples
+
+User: keep one user session up while LEO satellites hand the radio path over.
+Agent: substrate `beam-switch`. Act: switch the beam. Refused: calling the handover `orbit-link`.
+
+User: two LEO objects may pass too close.
+Agent: substrate `orbit-screen`. Act: screen the conjunction. Refused: a miss-distance from before a burn.
+
+User: hand an entangled pair to two ground stations.
+Agent: substrate `orbit-link`. Act: distribute entanglement. Refused: a radio handover or a free-fall clock.
+
 ## Done when
 
 - One substrate from the closed set

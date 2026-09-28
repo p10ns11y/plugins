@@ -15,7 +15,7 @@ Load skill **split-machine**. Open `references/placement.md` only to pick one ro
 2. Pick one substrate: `earth-qpu`, `orbit-link`, `beam-switch`, `orbit-screen`, `gpu-factory`, `bqp-slice`, `system-one`, or `system-two`.
 3. Name the act in that row's verbs. You evolve a state under a Hamiltonian. You do not evolve the Hamiltonian. A radio handover and a conjunction screen are not that evolution.
 4. Set confidence `high`, `med`, or `low`. On `low`, emit the table and stop.
-5. Refuse NISQ-as-inference, a QPU doing dense matmul, a fridge in orbit, a radio handover called entanglement, and a stale miss-distance.
+5. Refuse NISQ-as-inference, a QPU doing dense matmul, a fridge in orbit, a radio handover called entanglement, a free-fall clock or interferometer called a link, a star tracker called a telescope, and a stale miss-distance.
 
 ## Emit (required)
 
@@ -24,7 +24,7 @@ Load skill **split-machine**. Open `references/placement.md` only to pick one ro
 | Field | Value |
 |-------|--------|
 | **job** | |
-| **substrate** | |
+| **substrate** | earth-qpu · orbit-link · beam-switch · orbit-screen · gpu-factory · bqp-slice · system-one · system-two |
 | **act** | |
 | **confidence** | high · med · low |
 | **refused** | |

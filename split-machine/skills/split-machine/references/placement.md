@@ -23,6 +23,7 @@ Expand only to pick one substrate. The skill file owns the emit.
 | Call NISQ production inference | `gpu-factory` for the tokens; quantum stays a specialist coprocessor |
 | Fly the dilution refrigerator | `earth-qpu` for the processor, `orbit-link` for the entanglement |
 | Call a LEO radio handover an entangled pair | `beam-switch` |
+| Call a free-fall clock or interferometer a communication link | stop and ask. Not `orbit-link`, and not `beam-switch` |
 | Treat a star tracker as a deep-space telescope, or a quantum measurement | `orbit-screen`, and only inside LEO |
 | Hold a conjunction on an hours-old miss-distance after another vehicle may have burned | `orbit-screen`; use the thrusting owner's ephemeris |
 | Let a paragraph be the branch condition | `system-one` |
@@ -49,7 +50,7 @@ These two rows are classical. They are not `orbit-link`. Stargaze is not an enta
 
 `beam-switch` follows the public Starlink beam-switching note. A terminal keeps a live obstruction map and many satellites in view. The serving path changes many times a minute as the pass geometry moves, and the session stays up. A sudden blockage is a reactive switch, fast enough that the published bound is under a tenth of a second. One path is serving. The others are candidates, not a second answer.
 
-`orbit-screen` follows Stargaze, SpaceX's space situational awareness system. Star trackers already used for attitude also record transits of nearby objects. Those observations are aggregated into a position and a velocity. Conjunction screening then runs in minutes, against an industry habit of hours. The published validation scope is low Earth orbit under 2,000 km and a closing rate over 70 m/s. When a vehicle is thrusting, the owner's own ephemeris is the trajectory. The optical track updates only after the burn is seen. A miss-distance from before that burn is not the current risk.
+`orbit-screen` follows Stargaze, SpaceX's space situational awareness system. Star trackers already used for attitude also record transits of nearby objects. Those observations are aggregated into a position and a velocity. Conjunction screening then runs in minutes, against an industry habit of hours. When a vehicle is thrusting, the owner's own ephemeris is the trajectory. The optical track updates only after the burn is seen. A miss-distance from before that burn is not the current risk.
 
 ## System One card
 
