@@ -30,7 +30,7 @@ calm ⇒ spirit = {Ithaca} only
 
 | From | Use |
 |------|-----|
-| mission-map `∇T`, `cosθ` | wandering cost; suggest `/mission-map` |
+| mission-map path time and assigned alignment | wandering cost; suggest `/mission-map` |
 | EVA emptiness signals (≥2) | `eva_hook=Ask` |
 | control-graph phase | `cg_hook` label only |
 

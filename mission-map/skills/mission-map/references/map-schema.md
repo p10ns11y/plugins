@@ -11,7 +11,7 @@ stages[]     : id, what (public-safe label), how, when_a, when_m, when_b, deadli
 critical     : ids on the longest expected chain (Done contribute te=0)
 next_do      : first Do on remaining critical, else first Do, else empty
 heading      : on-path | wait | park
-cos          : 1 if next Do exists, 0 if only Park left, empty if Wait
+cos          : assigned alignment, not an angle. 1 if next Do exists, 0 if only Park left, empty if Wait
 residual     : remaining critical ids (not Done) toward G
 effort_cap   : hours/week you will actually keep
 signposts[]  : watch, fires_when, then ∈ {continue, switch, Ask}

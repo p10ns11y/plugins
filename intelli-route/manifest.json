@@ -144,7 +144,7 @@
     {
       "id": "split-machine",
       "tier": "signal",
-      "when": "quantum, QPU, GPU placement, Hamiltonian, orbit, NISQ, BQP, or a closed decision software will branch on",
+      "when": "quantum, QPU, GPU placement, Hamiltonian, entanglement, LEO handover, conjunction screen, NISQ, BQP, or a closed decision software will branch on",
       "repo": "https://github.com/p10ns11y/plugins",
       "ref": "main",
       "path": "split-machine/skills/split-machine/SKILL.md"

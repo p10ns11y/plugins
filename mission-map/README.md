@@ -4,8 +4,8 @@ A **Mission: Impossible briefing**, not a future oracle.
 
 You name a checkable arrival \(G\), the facts \(x\), and a DAG of stages. The plugin
 marks the **critical path**, one **next Do**, and (when you ask) the **heading**
-toward \(G\) — \(\hat{u}_G\) and \(\cos\theta\). It does **not** tell you what
-will happen.
+toward \(G\). The heading is the remaining critical path plus an assigned
+alignment. It does **not** tell you what will happen.
 
 | Use this when | Skip when |
 |---------------|-----------|
@@ -39,9 +39,9 @@ Personal live maps stay **off this repo** (`~/.grok/mission-maps/`).
 ```text
 G          checkable arrival          e.g. "started a decent SE/EU FT role"
 x          named facts now            no PII dumps
-û_G        remaining critical path    thick arrows on the mermaid
-∇T         d(te)/d(m) = 4/6           which week of mode moves arrival
-cosθ       1 on-path · 0 Park · empty Wait
+critical   remaining path to G        thick arrows on the mermaid
+∂te/∂m     4/6                        sensitivity of one PERT stage. Not a gradient.
+alignment  1 on-path · 0 park · unset on Wait    assigned label. Not a measured angle.
 horizon X  long filter (e.g. SpaceXAI)   not a second sink
 ```
 
@@ -50,7 +50,7 @@ horizon X  long filter (e.g. SpaceXAI)   not a second sink
 | **Do** | On the path; you can start it | Schedule hours |
 | **Risk** | Blast × how soon it can fire | Mitigate or watch |
 | **Wait** | Blocked on someone else or a date | Signpost only |
-| **Park** | Slack / distraction (\(\nabla T \approx 0\)) | Refuse |
+| **Park** | Slack / distraction (it does not move arrival) | Refuse |
 | **Done** | Finished; \(t_e = 0\) | Keep for topology |
 
 **Bands, not dates.** Print optimistic / typical / pessimistic \(a / m / b\).
@@ -157,7 +157,7 @@ freeze, vendor SLA unknown. Replan if the vendor slips.
 
 ### 2. Everyday — JSON map + heading picture
 
-**When:** The briefing is recurring and you want \(\hat{u}_G\) drawn.
+**When:** The briefing is recurring and you want the remaining critical path drawn.
 
 Copy `examples/sample-map.json` to a **personal** path (not this repo):
 
@@ -193,11 +193,11 @@ flowchart TB
   ...
 ```
 
-| heading | \(\cos\theta\) | Meaning |
-|---------|----------------|---------|
-| `on-path` | `1` | Next Do sits on remaining \(\hat{u}_G\) |
-| `wait` | empty | No self-vector; do not invent work |
-| `park` | `0` | Orthogonal — refuse this tick |
+| heading | alignment | Meaning |
+|---------|-----------|---------|
+| `on-path` | `1` | Assigned because a next Do exists |
+| `wait` | unset | No self-move; do not invent work |
+| `park` | `0` | Assigned because nothing left is a Do. Refuse this tick |
 
 Mark a finished stage `"class": "Done"`. It stays for edges; \(t_e\) becomes 0;
 `next_do` skips it.
@@ -260,8 +260,9 @@ mm-kern grad 2 4 8          # d(te)/d(m) = 4/6
 mm-kern mc 2 4 8 1 3 5      # path mean / p50 / p90
 ```
 
-\(\nabla T\) ranks **which lever moves arrival**. It is not a bearing toward
-the north star. Horizon \(X\) (a long filter) is **not** a second \(G\).
+\(\partial t_e / \partial m = 4/6\) ranks **which stage's mode moves arrival**.
+A gradient over a free state vector is not in this tree. Horizon \(X\) (a long
+filter) is **not** a second \(G\).
 
 ### 5. Critical — irreversible, cash, or auth-hard
 
@@ -275,7 +276,7 @@ the north star. Horizon \(X\) (a long filter) is **not** a second \(G\).
 | Live JSON off git | `~/.grok/mission-maps/` | Commit employer names, tickets, amounts |
 | Compile C / mutate params | Same consent as `/eva-tether-init --yes` | Build kernels on a shared box “to see” |
 | Shock | Replan remaining DAG | Add a new project to feel busy |
-| Vault nightly | Display + \(\cos\theta\) | Let the timer edit \(a/m/b\) |
+| Vault nightly | Display + alignment | Let the timer edit \(a/m/b\) |
 
 If the map itself is missing (rumors only, futures disagree), stop and use
 **eva-emptiness** (`/eva`) — emptiness owns the blank sheet. This plugin owns

@@ -41,7 +41,7 @@ Use when you need calculated risk, a critical path, or a replan after a reject, 
 | **Do** | On the critical path; you can start it | Schedule; assign hours |
 | **Risk** | Calculated: blast × how soon it can fire | Mitigate or watch; do not freeze |
 | **Wait** | Blocked on someone else or a date | Signpost only; do not invent work |
-| **Park** | Slack / distraction (∇T ≈ 0) | Refuse this tick |
+| **Park** | Slack / distraction (it does not move arrival) | Refuse this tick |
 
 Never print a single calendar date as destiny. Print **bands** \(a / m / b\) and the **next Do**.
 

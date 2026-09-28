@@ -30,7 +30,7 @@ echo "$pj" | grep -q '"name": "split-machine"' && ok "name" || bad "name"
 echo "$pj" | grep -q 'System One' && ok "plugin names System One" || bad "plugin missing System One"
 
 skill="$(cat "$ROOT/skills/split-machine/SKILL.md")"
-for id in earth-qpu orbit-link gpu-factory bqp-slice system-one system-two; do
+for id in earth-qpu orbit-link beam-switch orbit-screen gpu-factory bqp-slice system-one system-two; do
   echo "$skill" | grep -q "$id" && ok "substrate $id" || bad "missing substrate $id"
 done
 echo "$skill" | grep -q 'do not evolve the Hamiltonian' && ok "wording law" || bad "missing wording law"
@@ -42,10 +42,14 @@ echo "$notice" | grep -q '2103435845294313521' && ok "notices the orbit post" ||
 echo "$notice" | grep -q '2103432723310223623' && ok "notices the NISQ post" || bad "missing NISQ post"
 echo "$notice" | grep -q 'typesafe.ai/blog/introducing-system-one-models-and-jev' && ok "notices System One" || bad "missing System One credit"
 echo "$notice" | grep -q 'does not call that API' && ok "no vendor call" || bad "vendor disclaimer missing"
+echo "$notice" | grep -q 'starlink.com/updates/stargaze' && ok "notices Stargaze" || bad "missing Stargaze credit"
+echo "$notice" | grep -q 'starlink.com/updates/starlink-beam-switching' && ok "notices beam switching" || bad "missing beam-switching credit"
 
 place="$(cat "$ROOT/skills/split-machine/references/placement.md")"
 echo "$place" | grep -q 'NISQ' && ok "placement refuses NISQ inference" || bad "placement missing NISQ"
 echo "$place" | grep -q 'dense' && ok "placement refuses dense matmul" || bad "placement missing dense matmul"
+echo "$place" | grep -q 'not an entanglement link' && ok "Stargaze stays classical" || bad "Stargaze fused with entanglement"
+echo "$place" | grep -q 'Call a LEO radio handover an entangled pair' && ok "beam-switch stays classical" || bad "beam-switch fused with entanglement"
 
 echo "---"
 if [[ "$fail" -ne 0 ]]; then

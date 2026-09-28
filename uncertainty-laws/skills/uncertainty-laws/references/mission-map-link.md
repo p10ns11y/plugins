@@ -21,7 +21,7 @@
 | **Do** | Pass 1–3, then Kelly-size the hours/cash |
 | **Risk** | Law 2–3 first; signpost before size |
 | **Wait** | Often `nothing-now` until signpost |
-| **Park** | Refuse; Law1 against or ∇T ≈ 0 |
+| **Park** | Refuse; Law 1 against, or the stage does not move arrival |
 
 ## Shock rule (shared)
 
