@@ -208,6 +208,21 @@
       ]
     },
     {
+      "name": "concordance",
+      "description": "Corroborate one closed decision. Proceed only when the two labels match and p_dm >= tau. Hold returns to the router.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./concordance"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "concordance",
+        "corroboration",
+        "intelli-route"
+      ]
+    },
+    {
       "name": "uncertainty-laws",
       "description": "Four napkin probability laws for decisions under uncertainty (EV, base rates, ruin, Kelly). Honest fog-breaking for finance/wealth/life. Links to mission-map.",
       "category": "productivity",

@@ -82,6 +82,7 @@ let load_ids = [
     "uncertainty-laws",
     "split-machine",
     "trust-stack",
+    "concordance",
     "master-planner",
     "higher-order-decision-architect",
     "stellar-spacemap",
@@ -107,6 +108,7 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/uncertainty-laws/skills/uncertainty-laws/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/split-machine/skills/split-machine/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/trust-stack/skills/trust-stack/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/concordance/skills/concordance/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/master-planner/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/higher-order-decision-architect/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/stellar-spacemap/SKILL.md",
@@ -189,6 +191,7 @@ classify_prompt += "layout-content-view (overflow, clip, landmarks, viewport); p
 classify_prompt += "arch-machine (host audit, thin path only); peram_senior_mlai_engineer (prose or public voice); ";
 classify_prompt += "split-machine (quantum, QPU, GPU placement, Hamiltonian, entanglement, LEO handover, beam switching, obstruction, conjunction screen, Stargaze, space situational awareness, NISQ, BQP, or which machine; also a closed decision software will branch on); ";
 classify_prompt += "trust-stack (shipping, review load, a repeated bad pattern, agent trust, or fanning out writers); ";
+classify_prompt += "concordance (a closed decision that must be corroborated); ";
 classify_prompt += "master-planner (a master plan, a skill pack, or an ontology for a large repo); ";
 classify_prompt += "higher-order-decision-architect (a hard-to-revert choice: dependency, public API, security, or a pre-mortem); ";
 classify_prompt += "stellar-spacemap (a roadmap, coming-next, or blueprint cards); ";
@@ -327,6 +330,7 @@ act_prompt += "If route is empty: write knowns, unknowns, one idk, disprove_with
 act_prompt += "If route is light: follow that one playbook. pstack poteto-mode if it is installed, otherwise the house row in pstack-map/skills/pstack-map/references/map.md. Take the first bounded step. Reversible edits may proceed.\n";
 act_prompt += "If split-machine is in the URL list, emit its Split card before the engineering step. Do not run a quantum device or a dense training job from this workflow. The card's next step is the action.\n";
 act_prompt += "If trust-stack is in the URL list, emit its Trust card. Verification is a command you run. Do not merge or push. A repeated bad pattern is deleted and moved to an earlier layer, not explained in a comment.\n";
+act_prompt += "If concordance is in the URL list, that skill emits its card. This workflow does not decide agreement.\n";
 act_prompt += "If Bend is installed, a shape-layer invariant is proved by trust-stack/test/bend-critical.sh (bend PROOF.bend on trust-stack/bend/LAWS.bend). A passing proof does not retire the test, the review, or a person on guide. If Bend is absent, say the proof was not run. Refuse the proof when bunfig.toml is beside it. Do not mark a def @unsafe to skip a failed proof.\n";
 act_prompt += "If route is card: name the phase, the budget, and one verify command, then do only the current phase.\n";
 act_prompt += "verify_cmd is the single test or build command you ran, or empty. It must be one command with no pipe, redirect, or chained shell.\n";

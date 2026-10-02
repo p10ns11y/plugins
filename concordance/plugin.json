@@ -1,0 +1,16 @@
+{
+  "name": "concordance",
+  "version": "0.1.0",
+  "description": "Corroborate one closed decision. Proceed only when the decision-model label and the LLM label match and p_dm >= tau. Hold returns to the router.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "concordance",
+    "corroboration",
+    "intelli-route",
+    "split-machine"
+  ]
+}

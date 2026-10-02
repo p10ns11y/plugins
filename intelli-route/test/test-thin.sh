@@ -54,6 +54,20 @@ echo "$rhai" | grep -q 'agent(' && ok "workflow calls agent" || bad "workflow mi
 echo "$rhai" | grep -q 'complete(' && ok "workflow calls complete" || bad "workflow missing complete("
 if echo "$rhai" | grep -q 'prompt('; then bad "workflow calls prompt("; else ok "workflow has no prompt("; fi
 
+cc_when='a closed decision that must be corroborated'
+manifest="$(cat "$ROOT/manifest.json")"
+rule="$(cat "$ROOT/cursor/rules/intelli-route.mdc")"
+echo "$rhai" | grep -Fq "$cc_when" && ok "workflow names concordance" || bad "workflow missing concordance when"
+echo "$manifest" | grep -Fq "$cc_when" && ok "manifest names concordance" || bad "manifest missing concordance when"
+echo "$rule" | grep -Fq "$cc_when" && ok "cursor rule names concordance" || bad "cursor rule missing concordance when"
+for surface in manifest.json README.md commands/intelli-route.md cursor/commands/intelli-route.md cursor/rules/intelli-route.mdc agents/intelli-route.md bot/intelli-route.md AGENTS.md .grok/workflows/intelli-route.rhai; do
+  if grep -Eq 'label_dm|kappa_window|p_dm' "$ROOT/$surface"; then
+    bad "comparison folded into $surface"
+  else
+    ok "router leaves comparison out of $surface"
+  fi
+done
+
 for surface in commands/intelli-route.md cursor/commands/intelli-route.md cursor/rules/intelli-route.mdc agents/intelli-route.md bot/intelli-route.md AGENTS.md README.md; do
   text="$(cat "$ROOT/$surface")"
   echo "$text" | grep -q 'money, legal, or health' && ok "HITL $surface" || bad "HITL missing in $surface"

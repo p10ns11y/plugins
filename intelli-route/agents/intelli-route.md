@@ -33,3 +33,4 @@ pstack is Lauren Tan’s MIT plugin (https://github.com/cursor/plugins/tree/main
 - Graphite auto-land, or a silent push
 - Rewrite pstack-models.mdc
 - Count `clt-dual-load` as a load
+- Decide agreement between two labels. That card is `concordance`

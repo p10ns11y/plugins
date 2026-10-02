@@ -69,6 +69,7 @@ Slash: `/trust-stack`.
 | The playbook steps | installed pstack, else `pstack-map` |
 | A plan that is getting grandiose | `odysseus-navigator` |
 | The diff is the proof | `adversarial-audit` |
+| A closed decision that must be corroborated | `concordance` |
 
 ---
 
