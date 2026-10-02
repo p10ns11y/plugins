@@ -14,7 +14,7 @@ A paste or dump with no single ask goes through `control-feeder`. Then the first
 | Multi-step, until-done, or the same step is being redone | `card` | `control-graph` |
 | Otherwise | `light` | `pstack-map`, then one playbook or the house row |
 
-Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimization`, `agent-orchestrator`, `git-worktrees`, `adversarial-audit`, `pulse-memory`, `mission-map`, `uncertainty-laws`, `layout-content-view`, `premflow`, `arch-machine`, `peram_senior_mlai_engineer`, `split-machine`, `trust-stack`, `master-planner`, `higher-order-decision-architect`, `stellar-spacemap`, `architecture-synthesis`. Stop at four loads. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimization`, `agent-orchestrator`, `git-worktrees`, `adversarial-audit`, `pulse-memory`, `mission-map`, `uncertainty-laws`, `layout-content-view`, `premflow`, `arch-machine`, `peram_senior_mlai_engineer`, `split-machine`, `trust-stack`, `concordance`, `master-planner`, `higher-order-decision-architect`, `stellar-spacemap`, `architecture-synthesis`. Stop at four loads. `clt-dual-load` is a host rule. Do not paste it and do not count it.
 
 `hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the route and stop. Reversible edits proceed.
 
@@ -40,6 +40,8 @@ Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimizatio
 The card is the kind of decision System One is for: one goal in, a closed `route`, at most four `loads`, and a `confidence` the script can branch on. Low confidence stays read-only.
 
 Classify is still an agent. The confidence is a word that agent picks. It is not a calibrated probability, and this plugin does not call [Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev). A later host may fill the same card from a System One model. Until then, the act step stays the slow work.
+
+A closed decision that must be corroborated loads `concordance`. This card does not compare the two labels.
 
 ## Install
 

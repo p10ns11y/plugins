@@ -158,6 +158,14 @@
       "path": "trust-stack/skills/trust-stack/SKILL.md"
     },
     {
+      "id": "concordance",
+      "tier": "signal",
+      "when": "a closed decision that must be corroborated",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "concordance/skills/concordance/SKILL.md"
+    },
+    {
       "id": "master-planner",
       "tier": "signal",
       "when": "a master plan, a skill pack, or an ontology for a large repo",

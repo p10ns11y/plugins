@@ -48,6 +48,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **intelli-route** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelli-route` · `/workflow intelli-route` |
 | **split-machine** | Place a job on Earth, orbit, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
 | **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
+| **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 
 ---
@@ -162,6 +163,21 @@ grok plugin install ./trust-stack --trust
 ```
 
 See [trust-stack/README.md](trust-stack/README.md) and [trust-stack/NOTICE.md](trust-stack/NOTICE.md).
+
+---
+
+## concordance
+
+Corroborates one closed decision. The decision model proposes a label. The LLM confirms a label. Proceed on a match at or above the caller's tau. Hold goes back to intelli-route, which does not compute the match.
+
+intelli-route loads this skill when the goal is a closed decision that must be corroborated.
+
+```bash
+grok plugin install ./concordance --trust
+# slash: /concordance
+```
+
+See [concordance/README.md](concordance/README.md) and [concordance/NOTICE.md](concordance/NOTICE.md).
 
 ---
 
