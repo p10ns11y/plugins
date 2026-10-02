@@ -1,5 +1,5 @@
 [Unit]
-Description=Mission-map heading refresh at 20:00 (life-os graph + cos θ)
+Description=Mission-map heading refresh at 20:00 (life-os graph + alignment)
 
 [Timer]
 OnCalendar=*-*-* 20:00:00

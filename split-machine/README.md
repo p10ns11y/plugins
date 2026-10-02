@@ -4,14 +4,16 @@ Places one job on the machine that can do it, then names the act.
 
 | Substrate | Holds |
 |---|---|
-| `earth-qpu` | The processor. Millikelvin, shielding, the circuit. |
-| `orbit-link` | The entanglement WAN. Not the fridge. |
+| `earth-qpu` | The processor. Superconducting circuits near 10 mK, or an ion or atom QPU. Not a payload. |
+| `orbit-link` | The entanglement link. Not the fridge, and not a radio handover. |
+| `beam-switch` | One classical LEO radio path. Many satellites in view. The session stays up across the switch. |
+| `orbit-screen` | Conjunction screening in LEO. Owner ephemeris wins while a vehicle is thrusting. |
 | `gpu-factory` | Dense training, token serving, and the millisecond loop. |
 | `bqp-slice` | Quantum simulation, factoring-class problems, and Ising-shaped inner loops that can wait. |
 | `system-one` | A closed decision software will branch on, with a confidence. |
 | `system-two` | Prose, a plan, or code a person will read. |
 
-You evolve a state under a Hamiltonian. You do not evolve the Hamiltonian. A low confidence does not take the branch.
+You evolve a state under a Hamiltonian. You do not evolve the Hamiltonian. A radio handover and a conjunction screen are classical. A low confidence does not take the branch.
 
 intelli-route loads this skill when the goal is a machine choice. The route stays intelli-route's. This card constrains the next step.
 

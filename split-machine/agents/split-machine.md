@@ -19,8 +19,11 @@ Read `skills/split-machine/SKILL.md`. Open `references/placement.md` only to pic
 
 ## Do not
 
-- Evolve "the Hamiltonian". Evolve a state under it.
+- Evolve "the Hamiltonian". Evolve a state under it. A drive may be Ĥ(t).
 - Put a dilution refrigerator in orbit, or a dense training run on a QPU.
+- Call line-of-sight radio an entanglement link.
+- Call a free-fall clock or interferometer a link. If it is not an Earth QPU, stop and ask.
+- Treat a star tracker as a deep-space telescope, or a pre-burn miss-distance as current.
 - Treat NISQ as production inference.
 - Call a vendor model or invent fidelities.
 - Paste the source posts into the answer.

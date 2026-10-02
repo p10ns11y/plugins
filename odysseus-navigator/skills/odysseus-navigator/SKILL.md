@@ -183,4 +183,4 @@ on-kern eval   --correctness 0.9 --effectiveness 0.7 --efficiency 0.2
 on-kern hubris --metis 1 --metis-allowed 0
 ```
 
-Path math (`path_te`, `∇T`, `cosθ`) stays in **mission-map** — suggest `/mission-map`, do not recompute here.
+Path math (`path_te`, stage sensitivity, assigned alignment) stays in **mission-map** — suggest `/mission-map`, do not recompute here.
