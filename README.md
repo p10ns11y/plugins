@@ -51,6 +51,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 | **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |
+| **craft** | Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener. [craft/README.md](craft/README.md) | `/craft` |
 
 ---
 

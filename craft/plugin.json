@@ -1,0 +1,9 @@
+{
+  "name": "craft",
+  "version": "0.1.0",
+  "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener.",
+  "author": {"name": "p10ns11y"},
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": ["craft", "clean-code", "crap", "mutation-testing", "acceptance-tests"]
+}

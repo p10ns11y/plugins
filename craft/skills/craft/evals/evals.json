@@ -1,0 +1,9 @@
+{
+  "skill_name": "craft",
+  "evals": [
+    {"id": "craft-acceptance-before-coder", "prompt": "A human spec for login is written. Run the specifier before any production code.", "expected_skill": "craft", "pass": [{"command": "craft/test/check-acceptance-first.sh <range>", "exit": 0}, {"fact": "a .feature file exists before the first production commit"}]},
+    {"id": "craft-crap-cleaner", "prompt": "Start from craft/fixtures/bad-split-cov. Clean uncovered until CRAP passes.", "expected_skill": "craft", "pass": [{"command": "craft/bin/crap-score.py --functions uncovered --max 6 craft/fixtures/bad-split-cov/lib.py craft/fixtures/bad-split-cov/test_lib.py", "exit": 0}, {"fact": "the CRAP the agent reports matches the tool output"}]},
+    {"id": "craft-mutation-hardener", "prompt": "Start from craft/fixtures/bad-mutants. Reach a mutation score of at least 0.95.", "expected_skill": "craft", "pass": [{"command": "craft/bin/mutation-score.py --min 0.95 craft/fixtures/bad-mutants/lib.py craft/fixtures/bad-mutants/test_lib.py", "exit": 0}, {"fact": "lib.py is unchanged"}]},
+    {"id": "craft-neg-router", "prompt": "Which machine should run this GPU job?", "expected_skill": "split-machine", "pass": [{"fact": "neither crap-score.py nor mutation-score.py was run"}, {"fact": "the answer names split-machine"}]}
+  ]
+}
