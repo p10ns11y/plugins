@@ -5,6 +5,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from score_lib import crap, cyclomatic, function_coverage, prepare, print_scope, require_tool, run_coverage_json
+
+
 def main() -> int:
     args, lib, test, functions, scope, targets = prepare("CRAP score for Python functions", "--max", 6.0)
     require_tool("coverage")
@@ -22,5 +24,7 @@ def main() -> int:
             worst, worst_name = score, name
     print(f"worst={worst_name} crap_max={worst:.2f} threshold={args.limit:g}")
     return 0 if worst <= args.limit else 1
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

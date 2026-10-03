@@ -12,6 +12,8 @@ REPLACEMENTS = (
     (" + ", " - "), (" - ", " + "), (" == ", " != "), (" != ", " == "),
     (" < ", " > "), (" > ", " < "), ("return ", "return 0  # "),
 )
+
+
 def mutants_for(source: str, functions: dict, targets: set[str]) -> dict[str, list[str]]:
     lines = source.splitlines()
     spans = sorted(
@@ -37,6 +39,8 @@ def mutants_for(source: str, functions: dict, targets: set[str]) -> dict[str, li
                 continue
             out[owner].append(text)
     return out
+
+
 def run_pytest(cwd: Path, test_name: str, timeout: float | None) -> int:
     cmd = [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--tb=no", test_name]
     try:
@@ -46,6 +50,8 @@ def run_pytest(cwd: Path, test_name: str, timeout: float | None) -> int:
     except subprocess.TimeoutExpired:
         return 1
     return proc.returncode
+
+
 def main() -> int:
     require_tool("pytest")
     args, lib, test, functions, scope, targets = prepare("Mutation score for Python functions", "--min", 0.95)
@@ -87,5 +93,7 @@ def main() -> int:
             print(f"{name}: mutation_score={dead / count:.2f} mutants={count} killed={dead}")
     print(f"mutation_score={killed / total:.2f} mutants={total} killed={killed} threshold={args.limit:g}")
     return 0 if killed / total >= args.limit else 1
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

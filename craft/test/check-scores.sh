@@ -59,6 +59,8 @@ bad-crap|1|messy:|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/bad-crap/lib
 bad-split|1|uncovered: comp=4 cov=0.00 crap=20.00|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/bad-split-cov/lib.py $ROOT/fixtures/bad-split-cov/test_lib.py
 uncalled|1|uncalled: comp=3 cov=0.00 crap=12.00|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/uncalled/lib.py $ROOT/fixtures/uncalled/test_lib.py
 uncalled-oneliner|1|never: comp=3 cov=0.00 crap=12.00|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/uncalled/lib.py $ROOT/fixtures/uncalled/test_lib.py
+line1-uncalled|1|never: comp=3 cov=0.00 crap=12.00|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/line1-uncalled/lib.py $ROOT/fixtures/line1-uncalled/test_lib.py
+unmeasured|2|lib not measured|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/unmeasured/lib.py $ROOT/fixtures/unmeasured/test_lib.py
 methods|1|Cart.total: comp=3 cov=0.00 crap=12.00~load: comp=3 cov=0.00 crap=12.00|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/methods/lib.py $ROOT/fixtures/methods/test_lib.py
 methods-mut|1|Cart.total: mutation_score=0.00~load: mutation_score=0.00|python3 $BIN/mutation-score.py --min 0.95 $ROOT/fixtures/methods/lib.py $ROOT/fixtures/methods/test_lib.py
 branches|0|tern: comp=4~using: comp=1~matchy: comp=4~multi: comp=3~kept: comp=4|python3 $BIN/crap-score.py --max 6 $ROOT/fixtures/branches/lib.py $ROOT/fixtures/branches/test_lib.py

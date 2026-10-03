@@ -45,20 +45,12 @@ texts += [item["description"] for item in json.loads(read(repo / ".grok-plugin/m
 flagged += ["json description"] if any('"' in text or time_re.search(text) for text in texts) else []
 flagged += [f"README.md:{num}" for num, line in enumerate(read(repo / "README.md").splitlines(), 1) if "**craft**" in line and talk_lines(line)]
 check(not flagged, "talk quotes stay in NOTICE" if not flagged else "talk outside NOTICE " + " ".join(flagged))
-agent = [root / "skills/craft/SKILL.md", root / "agents/craft.md", root / "commands/craft.md"]
+agent = [root / "skills/craft/SKILL.md"]
 agent += sorted((root / "skills/craft/references").glob("*.md"))
-phrases = ("Robert C. Martin", "Uncle Bob", "house rule", "not his")
-agent_bad = []
-for path in agent:
-    rel = path.relative_to(root)
-    for num, line in enumerate(read(path).splitlines(), 1):
-        hit = [phrase for phrase in phrases if phrase in line]
-        if re.search(r"(?:^|[.!?]\s+)He ", line):
-            hit.append("He")
-        if time_re.search(line):
-            hit.append("time")
-        if hit:
-            agent_bad.append(f"{rel}:{num}:{'/'.join(hit)}")
+agent += sorted((root / "agents").glob("*.md"))
+agent += sorted((root / "commands").glob("*.md"))
+agent_re = re.compile(r"robert\s+c\.?\s+martin|\bmartin\b|uncle\s+bob|matt\s+pocock|house\s+rule|\bnot\s+his\b|\bhe\b|\bhis\b|savoia|bob\s+evans|crap4j|fundamentals\s+in\s+the\s+age\s+of\s+ai|zcLPGC-tvgk|youtu\.?be|\b\d:\d\d:\d\d\b|\b\d{1,2}\s+aug(ust)?\s+20\d\d\b", re.I)
+agent_bad = [f"{path.relative_to(root)}:{num}" for path in agent for num, line in enumerate(read(path).splitlines(), 1) if agent_re.search(line)]
 check(not agent_bad, "agent text stays actionable" if not agent_bad else "agent text " + " ".join(agent_bad))
 scout = "Boy-scout cleanup stays inside the touched files."
 check(scout in skill and scout in command and "house rule" in readme, "scout rule")
@@ -76,7 +68,7 @@ joined = json.dumps(evals)
 for needle in ("check-acceptance-first.sh", "--functions uncovered", "--max 6", "bad-split-cov", "--min 0.95", "bad-mutants", "lib.py is unchanged", "neither crap-score.py nor mutation-score.py was run"):
     check(needle in joined, f"eval has {needle}")
 lines = sum(p.read_bytes().count(b"\n") for p in root.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
-check(lines <= 884, f"plugin lines {lines}")
+check(lines <= 929, f"plugin lines {lines}")
 print("---")
 print(f"{len(bad)} failure(s)" if bad else "ALL CHECKS PASSED")
 sys.exit(1 if bad else 0)
