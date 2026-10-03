@@ -36,3 +36,17 @@ jobs:
         run: ./craft/test/check-scores.sh
       - name: Run craft acceptance check
         run: ./craft/test/check-acceptance-first.sh --self
+      - name: Run craft proof check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download v2.0.35 --repo bendlang/bend --pattern bend-2.0.35-linux-x64.tar.gz --clobber --dir "$RUNNER_TEMP"
+          tar --warning=no-unknown-keyword -xzf "$RUNNER_TEMP/bend-2.0.35-linux-x64.tar.gz" -C "$RUNNER_TEMP"
+          gh release download v4.34.0 --repo leanprover/lean4 --pattern lean-4.34.0-linux.tar.zst --clobber --dir "$RUNNER_TEMP"
+          command -v zstd >/dev/null 2>&1 || sudo apt-get install -y zstd
+          tar --zstd -xf "$RUNNER_TEMP/lean-4.34.0-linux.tar.zst" -C "$RUNNER_TEMP"
+          export PATH="$RUNNER_TEMP/bend/bin:$RUNNER_TEMP/lean-4.34.0-linux/bin:$PATH"
+          bend version
+          lean --version
+          ./craft/test/check-proof.sh --self

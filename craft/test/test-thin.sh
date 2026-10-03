@@ -13,7 +13,7 @@ def check(cond, msg):
 need = ("plugin.json", "LICENSE", "NOTICE.md", "README.md", "commands/craft.md", "agents/craft.md",
         "skills/craft/SKILL.md", "skills/craft/references/thresholds.md", "skills/craft/references/acceptance.md",
         "skills/craft/evals/evals.json", "bin/crap-score.py", "bin/mutation-score.py", "bin/score_lib.py",
-        "test/check-scores.sh", "test/check-acceptance-first.sh")
+        "test/check-scores.sh", "test/check-acceptance-first.sh", "test/check-proof.sh")
 for rel in need:
     check((root / rel).is_file(), f"exists {rel}")
 check(not (root / "skills/craft/references/chain.md").exists(), "chain merged")
@@ -56,6 +56,10 @@ scout = "Boy-scout cleanup stays inside the touched files."
 check(scout in skill and scout in command and "house rule" in readme, "scout rule")
 check("A .feature file, or a file under features/ or qa/, exists before the first production commit" in readme, "specifier check")
 check("crap_max" in skill and "crap_max" not in command and "--diff" not in readme, "one card")
+check("Bend covers pure transitions only, not IO or timing." in readme, "bend scope")
+check("2.0.35" in readme and "v4.34.0" in readme and "check-proof.sh" in readme, "bend pin")
+check("LAWS.bend" in read(root / "skills/craft/references/acceptance.md"), "laws acceptance")
+check("Do not weaken the law." in skill and "non-Bend code" in skill, "holes stay")
 check(all(name not in readme and name not in notice for name in ("split-machine", "trust-stack", "pstack-map")), "neighbors stay in the skill")
 evals = json.loads(read(root / "skills/craft/evals/evals.json"))
 skills = {"craft": root / "skills/craft/SKILL.md", "split-machine": repo / "split-machine/skills/split-machine/SKILL.md"}
@@ -68,7 +72,7 @@ joined = json.dumps(evals)
 for needle in ("check-acceptance-first.sh", "--functions uncovered", "--max 6", "bad-split-cov", "--min 0.95", "bad-mutants", "lib.py is unchanged", "neither crap-score.py nor mutation-score.py was run"):
     check(needle in joined, f"eval has {needle}")
 lines = sum(p.read_bytes().count(b"\n") for p in root.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
-check(lines <= 929, f"plugin lines {lines}")
+check(lines <= 1047, f"plugin lines {lines}")
 print("---")
 print(f"{len(bad)} failure(s)" if bad else "ALL CHECKS PASSED")
 sys.exit(1 if bad else 0)
