@@ -50,6 +50,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
 | **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
+| **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |
 
 ---
 
@@ -199,6 +200,19 @@ grok plugin install p10ns11y/plugins@feat/layout-content-view#layout-content-vie
 ```
 
 See [layout-content-view/README.md](layout-content-view/README.md).
+
+---
+
+## michelin-kitchen
+
+Seven habits for running agent work like a professional kitchen. Grounded in [Lauren Tan's talk](https://www.youtube.com/watch?v=MN9dGgmLyso), hosted by Matt Pocock. Several skills include our adaptations.
+
+```bash
+grok plugin install ./michelin-kitchen --trust
+# slash: /michelin-kitchen <habit>
+```
+
+See [michelin-kitchen/README.md](michelin-kitchen/README.md).
 
 ---
 

@@ -1,0 +1,19 @@
+{
+  "name": "michelin-kitchen",
+  "version": "0.2.0",
+  "description": "Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills, and more. Several include our adaptations.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "michelin-kitchen",
+    "lauren-tan",
+    "matt-pocock",
+    "verification",
+    "pstack",
+    "trust-stack",
+    "intelli-route"
+  ]
+}

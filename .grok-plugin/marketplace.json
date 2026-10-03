@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map, layout-content-view, uncertainty-laws, intelli-route",
+  "description": "Grok Build plugins: premflow, arch-machine, eva-emptiness, mission-map, odysseus-navigator, pulse-memory, pstack-map, layout-content-view, uncertainty-laws, intelli-route, michelin-kitchen",
   "owner": {
     "name": "p10ns11y"
   },
@@ -239,6 +239,25 @@
         "finance",
         "wealth",
         "mission-map"
+      ]
+    },
+    {
+      "name": "michelin-kitchen",
+      "description": "Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills, and more. Several include our adaptations.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./michelin-kitchen"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "michelin-kitchen",
+        "lauren-tan",
+        "matt-pocock",
+        "verification",
+        "pstack",
+        "trust-stack",
+        "intelli-route"
       ]
     }
   ]
