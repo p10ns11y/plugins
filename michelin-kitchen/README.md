@@ -7,13 +7,13 @@ Pick the habits you need. The talk's own metaphor is a chef who brings their own
 ## Caveats from the talk
 
 - Lauren Tan: "I don't want to sell this as something that you can just do easily by using pstack" (~52:30). **pstack** is [Lauren Tan's Cursor plugin](https://github.com/cursor/plugins/tree/main/pstack) (poteto, MIT). This repo ships **pstack-map** when pstack is installed. Neither promises her production volume.
-- Own your knives (~1:02:30): combine habits with your transcripts, lint, and verify paths.
+- Lauren Tan (~1:02:30–1:03:30): "everyone should have their own set of knives"; trust as "trust in your own tools". Combine pstack, Matt Pocock's skills and your own, and mine your past transcripts for the times you corrected an agent.
 
 ## Habits
 
 | Skill | Source | Talk (approx.) |
 |---|---|---|
-| [shared-scripts](skills/shared-scripts/SKILL.md) | Lauren Tan | ~22:00–25:00 — extract deterministic glue into a script inside the skill |
+| [shared-scripts](skills/shared-scripts/SKILL.md) | Lauren Tan + ours | ~22:00–25:00 — extract deterministic glue into a script inside the skill |
 | [findings-first](skills/findings-first/SKILL.md) | Lauren Tan + ours | ~49:00 — append to a document; review every few days for patterns |
 | [events-over-timers](skills/events-over-timers/SKILL.md) | Lauren Tan + ours | ~36:00–39:00 outer loop; ~37:30–38:30 subscriptions; ~44:30–45:30 bursts to a coordinator; ~48:30 she also has timer routines — ranking timers last is ours |
 | [workflow-skills](skills/workflow-skills/SKILL.md) | Lauren Tan | ~1:05:00 — skills as workflows, not command dumps |
