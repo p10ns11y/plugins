@@ -17,15 +17,19 @@ Collect coverage and CRAP:
 
 ```bash
 python3 craft/bin/crap-score.py --max 6 path/to/lib.py path/to/test_lib.py
+python3 craft/bin/crap-score.py --max 6 --functions discount,apply path/to/lib.py path/to/test_lib.py
+python3 craft/bin/crap-score.py --max 6 --diff HEAD~1..HEAD path/to/lib.py path/to/test_lib.py
 ```
 
 Mutation score:
 
 ```bash
 python3 craft/bin/mutation-score.py --min 0.95 path/to/lib.py path/to/test_lib.py
+python3 craft/bin/mutation-score.py --min 0.95 --functions discount path/to/lib.py path/to/test_lib.py
+python3 craft/bin/mutation-score.py --min 0.95 --diff HEAD~1..HEAD path/to/lib.py path/to/test_lib.py
 ```
 
-`crap-score.py` runs `coverage` on the test file when installed, else uses a direct pytest pass/fail map. Install for full coverage: `pip install coverage pytest`.
+Without `--functions` or `--diff`, output includes `scope=file`. Scoped runs list the touched functions. `coverage` is required; if missing the tool exits with `coverage missing: pip install coverage`.
 
 Run all fixture checks:
 

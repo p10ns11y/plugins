@@ -22,6 +22,9 @@ need skills/craft/references/acceptance.md
 need skills/craft/evals/evals.json
 need bin/crap-score.py
 need bin/mutation-score.py
+need bin/score_lib.py
+need fixtures/bad-split-cov/lib.py
+need fixtures/bad-split-cov/test_lib.py
 need test/check-scores.sh
 need test/check-acceptance-first.sh
 

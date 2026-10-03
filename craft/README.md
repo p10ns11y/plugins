@@ -33,8 +33,12 @@ On Python files you changed in the last commit:
 
 ```bash
 ./craft/bin/crap-score.py --max 6 craft/fixtures/good/lib.py craft/fixtures/good/test_lib.py
+./craft/bin/crap-score.py --max 6 --functions discount craft/fixtures/good/lib.py craft/fixtures/good/test_lib.py
+./craft/bin/crap-score.py --max 6 --diff HEAD~1..HEAD craft/fixtures/good/lib.py craft/fixtures/good/test_lib.py
 ./craft/bin/mutation-score.py --min 0.95 craft/fixtures/good/lib.py craft/fixtures/good/test_lib.py
 ```
+
+`coverage` is required. Without it the tools exit with `coverage missing: pip install coverage`.
 
 See [skills/craft/references/thresholds.md](skills/craft/references/thresholds.md) for the full commands and how coverage is collected.
 
