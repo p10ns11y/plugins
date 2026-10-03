@@ -13,13 +13,13 @@ Pick the habits you need. The talk's own metaphor is a chef who brings their own
 
 | Skill | Source | Talk (approx.) |
 |---|---|---|
-| [shared-scripts](skills/shared-scripts/SKILL.md) | Lauren Tan + ours | ~21:00–24:00 — extract deterministic glue into a script inside the skill |
-| [findings-first](skills/findings-first/SKILL.md) | Lauren Tan + ours | ~48:00 — append to a document; review every few days for patterns |
-| [events-over-timers](skills/events-over-timers/SKILL.md) | Lauren Tan + ours | ~35:00–38:00 outer loop; ~36:30–37:30 subscriptions; ~43:30–44:30 bursts to a coordinator; ~47:30 she also has timer routines — ranking timers last is ours |
-| [workflow-skills](skills/workflow-skills/SKILL.md) | Lauren Tan | ~1:04:00 — skills as workflows, not command dumps |
-| [repeat-or-leave](skills/repeat-or-leave/SKILL.md) | Lauren Tan | ~50:30–51:00 — one-off: maybe nothing to fix; repeats across agents: amend the kitchen |
-| [scaled-verifiers](skills/scaled-verifiers/SKILL.md) | **Our adaptation** | ~49:30–50:00 sampling; ~53:30 one verifier instead of ten; ~56:30–57:00 one-way doors depend on verifiability |
-| [kitchen-time](skills/kitchen-time/SKILL.md) | **Our adaptation** | ~26:30–28:30 low-trust trap; ~46:00 gardening PRs. No prescribed time slice |
+| [shared-scripts](skills/shared-scripts/SKILL.md) | Lauren Tan + ours | ~21:00–24:00, CLI inside the skill ~23:30. JSON stdout, a scripts index, and no LLM in the checker are ours |
+| [findings-first](skills/findings-first/SKILL.md) | Lauren Tan + ours | ~48:00 — append to a document; review every few days; cluster before fixing. Before-ping and pointer-only are ours |
+| [events-over-timers](skills/events-over-timers/SKILL.md) | Lauren Tan + ours | ~35:00–38:00 outer loop; ~36:30–37:30 subscriptions; ~43:30–44:30 bursts to a coordinator; ~47:30 she also has timer routines ("I have some routines like that as well") — ranking timers last is ours. ~47:30–48:30 findings are code-scanning, not burst buffering |
+| [workflow-skills](skills/workflow-skills/SKILL.md) | Lauren Tan | ~1:04:00 — "almost like implementation details"; "really focus on the workflow" |
+| [repeat-or-leave](skills/repeat-or-leave/SKILL.md) | Lauren Tan | ~50:30–51:00 — "maybe there's nothing to fix there." Repeats across agents: amend the kitchen |
+| [scaled-verifiers](skills/scaled-verifiers/SKILL.md) | **Our adaptation** | ~49:30–50:00 sampling; ~53:30 "instead of like 10 verifier agents, you might do like one"; ~56:30–57:00 one-way doors depend on verifiability. The risk ladder is ours |
+| [kitchen-time](skills/kitchen-time/SKILL.md) | **Our adaptation** | ~26:30–28:30 dull knives, no garlic press; ~46:00 gardening PRs. No prescribed time slice |
 
 ## Overlap with other plugins
 
