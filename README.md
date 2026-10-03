@@ -50,6 +50,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
 | **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
+| **craft** | Robert C. Martin clean-code chain (work in progress): acceptance from spec first, CRAP cleaner, mutation hardener. | `/craft` |
 
 ---
 
@@ -199,6 +200,19 @@ grok plugin install p10ns11y/plugins@feat/layout-content-view#layout-content-vie
 ```
 
 See [layout-content-view/README.md](layout-content-view/README.md).
+
+---
+
+## craft
+
+Agent workflow adapted from Robert C. Martin's clean-code ideas, described by him as work in progress: acceptance tests from the spec before any coder runs, then cleaner with CRAP thresholds and hardener with mutation score on touched functions.
+
+```bash
+grok plugin install ./craft --trust
+# slash: /craft
+```
+
+See [craft/README.md](craft/README.md) and [craft/NOTICE.md](craft/NOTICE.md).
 
 ---
 

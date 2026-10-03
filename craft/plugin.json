@@ -1,0 +1,19 @@
+{
+  "name": "craft",
+  "version": "0.1.0",
+  "description": "Robert C. Martin clean-code chain for agents (work in progress): acceptance tests from spec before any coder runs, cleaner with CRAP thresholds, hardener with mutation score.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "craft",
+    "clean-code",
+    "crap",
+    "mutation-testing",
+    "acceptance-tests",
+    "trust-stack",
+    "pstack-map"
+  ]
+}

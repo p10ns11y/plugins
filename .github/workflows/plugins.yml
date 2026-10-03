@@ -1,0 +1,28 @@
+name: plugins
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  thin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea731be3c52014dd0007892152baf # v5.3.0
+        with:
+          python-version: "3.12"
+      - name: Install Python test tools
+        run: python3 -m pip install pytest coverage
+      - name: Run plugin thin tests
+        run: |
+          set -euo pipefail
+          for script in */test/test-thin.sh; do
+            echo "==> $script"
+            bash "$script"
+          done
+      - name: Run craft score checks
+        run: ./craft/test/check-scores.sh
+      - name: Run craft acceptance check
+        run: ./craft/test/check-acceptance-first.sh --self

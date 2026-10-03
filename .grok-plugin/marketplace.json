@@ -223,6 +223,24 @@
       ]
     },
     {
+      "name": "craft",
+      "description": "Robert C. Martin clean-code chain (work in progress): acceptance from spec first, CRAP cleaner, mutation hardener on touched functions.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./craft"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "craft",
+        "clean-code",
+        "crap",
+        "mutation-testing",
+        "acceptance-tests",
+        "tdd"
+      ]
+    },
+    {
       "name": "uncertainty-laws",
       "description": "Four napkin probability laws for decisions under uncertainty (EV, base rates, ruin, Kelly). Honest fog-breaking for finance/wealth/life. Links to mission-map.",
       "category": "productivity",

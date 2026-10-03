@@ -1,0 +1,56 @@
+{
+  "skill_name": "craft",
+  "evals": [
+    {
+      "id": "craft-acceptance-before-coder",
+      "prompt": "We have a written spec for login. Start the craft chain. Do not write production code until acceptance tests exist.",
+      "expected_output": "The agent writes Gherkin and a QA acceptance procedure from the spec, states acceptance preceded coder, and does not jump to implementation.",
+      "assertions": [
+        "The agent produces Gherkin or a given/when/then acceptance example from the spec",
+        "The agent states acceptance must exist before the coder step",
+        "The agent does not claim production code was written first",
+        "The agent cites the chain as work in progress"
+      ],
+      "expected_skill": "craft",
+      "expected_script": null
+    },
+    {
+      "id": "craft-crap-cleaner",
+      "prompt": "The coder just finished a Python change. Run the cleaner step with CRAP threshold 6 on the touched discount function.",
+      "expected_output": "The agent runs or names crap-score with threshold 6 on touched functions and proposes splits or tests until CRAP passes.",
+      "assertions": [
+        "The agent names CRAP or crap-score with a numeric threshold",
+        "The agent scopes work to functions the change touched",
+        "The agent does not grade on advice alone without a score",
+        "The agent keeps boy-scout cleanup inside touched files"
+      ],
+      "expected_skill": "craft",
+      "expected_script": "craft/test/check-scores.sh"
+    },
+    {
+      "id": "craft-mutation-hardener",
+      "prompt": "CRAP is clean on the touched add helper. Run the hardener with mutation score at least 0.95.",
+      "expected_output": "The agent runs or names mutation-score with minimum 0.95 and adds tests for surviving mutants.",
+      "assertions": [
+        "The agent names mutation testing or mutation-score with a numeric minimum",
+        "The agent targets functions the change touched",
+        "The agent treats a low mutation score as a required check failure",
+        "The agent does not merge or push"
+      ],
+      "expected_skill": "craft",
+      "expected_script": "craft/test/check-scores.sh"
+    },
+    {
+      "id": "craft-neg-router",
+      "prompt": "Which machine should run this GPU job?",
+      "expected_output": "The agent answers placement or loads split-machine. It does not run the craft chain.",
+      "assertions": [
+        "The agent does not emit a full Craft card as the main answer",
+        "The agent names split-machine or machine placement",
+        "The agent does not insist on CRAP or mutation checks for placement"
+      ],
+      "expected_skill": null,
+      "expected_script": null
+    }
+  ]
+}
