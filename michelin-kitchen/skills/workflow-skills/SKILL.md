@@ -3,12 +3,12 @@ name: workflow-skills
 version: 0.2.0
 description: >
   Write skills as workflows, not command cheat sheets. Delete mechanical
-  command lists when a script or model can infer them. Talk ~1:05:00.
+  command lists when a script or model can infer them. Talk ~1:04:00.
 ---
 
 # workflow-skills
 
-Lauren Tan (~1:05:00): older skills were "almost like implementation details" with exact commands; delete those and "really focus on the workflow."
+Lauren Tan (~1:04:00): older skills were "almost like implementation details" with exact commands; delete those and "really focus on the workflow."
 
 ## When
 

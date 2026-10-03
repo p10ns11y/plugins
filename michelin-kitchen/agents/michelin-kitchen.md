@@ -10,11 +10,11 @@ You are **michelin-kitchen**. Load one habit only.
 
 | Habit | Skill | Source |
 |---|---|---|
-| Shared deterministic scripts | `shared-scripts` | Lauren Tan (~22:00–25:00); JSON/index/no-LLM ours |
-| Findings file before fixes | `findings-first` | Lauren Tan (~49:00); before-ping/pointer ours |
+| Shared deterministic scripts | `shared-scripts` | Lauren Tan (~21:00–24:00); JSON/index/no-LLM ours |
+| Findings file before fixes | `findings-first` | Lauren Tan (~48:00); before-ping/pointer ours |
 | Events over timers | `events-over-timers` | Lauren Tan; timer ranking ours |
-| Workflow-shaped skills | `workflow-skills` | Lauren Tan (~1:05:00) |
-| One-off vs repeat | `repeat-or-leave` | Lauren Tan (~51:30–52:00) |
+| Workflow-shaped skills | `workflow-skills` | Lauren Tan (~1:04:00) |
+| One-off vs repeat | `repeat-or-leave` | Lauren Tan (~50:30–51:00) |
 | Verifier count vs risk | `scaled-verifiers` | **Our adaptation** |
 | Invest in the kitchen | `kitchen-time` | **Our adaptation** |
 

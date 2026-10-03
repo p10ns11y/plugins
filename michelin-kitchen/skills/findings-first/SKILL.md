@@ -3,12 +3,12 @@ name: findings-first
 version: 0.2.0
 description: >
   Append findings to a document and review every few days for patterns
-  (~49:00). Before pinging anyone and pointer-only notification are ours.
+  (~48:00). Before pinging anyone and pointer-only notification are ours.
 ---
 
 # findings-first
 
-Lauren Tan (~49:00): tell the agent to append observations to a document; review every few days; cluster before fixing. **Our additions:** write to the file before pinging anyone; if someone must know, the ping is only a pointer to the file.
+Lauren Tan (~48:00): tell the agent to append observations to a document; review every few days; cluster before fixing. **Our additions:** write to the file before pinging anyone; if someone must know, the ping is only a pointer to the file.
 
 ## When
 

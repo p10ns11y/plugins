@@ -3,13 +3,13 @@ name: shared-scripts
 version: 0.2.0
 description: >
   When a job repeats across agents, extract deterministic glue into one script.
-  Lauren Tan kept the CLI inside the skill (~22:00–25:00). JSON stdout, a
+  Lauren Tan kept the CLI inside the skill (~21:00–24:00). JSON stdout, a
   scripts index, and no LLM in the hot path are ours.
 ---
 
 # shared-scripts
 
-Lauren Tan (~22:00–25:00): agents kept rebuilding verification glue; she encoded deterministic parts in a CLI inside the skill (~24:30). **Our additions:** JSON stdout, a separate scripts index, and no LLM in the checker.
+Lauren Tan (~21:00–24:00): agents kept rebuilding verification glue; she encoded deterministic parts in a CLI inside the skill (~23:30). **Our additions:** JSON stdout, a separate scripts index, and no LLM in the checker.
 
 Example shape: a job-posting open/closed checker — deterministic script, one JSON object per URL, one index line.
 

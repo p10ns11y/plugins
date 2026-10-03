@@ -2,7 +2,7 @@
 
 Copyright (c) 2026 p10ns11y. MIT. See `LICENSE`.
 
-These habits are distilled from a [live conversation with Lauren Tan](https://www.youtube.com/watch?v=MN9dGgmLyso), hosted by Matt Pocock. Timestamps in the README point to approximate moments in that recording.
+These habits are distilled from a [live conversation with Lauren Tan](https://www.youtube.com/watch?v=MN9dGgmLyso), hosted by Matt Pocock. Timestamps are approximate (±30 s) and match the published video.
 
 Five habits include **our adaptations**, not claims Lauren Tan made: `shared-scripts`, `findings-first`, `events-over-timers`, `scaled-verifiers`, and `kitchen-time`. Those skills say so plainly.
 

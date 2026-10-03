@@ -28,7 +28,7 @@
     {
       "id": "mk-events-not-cron",
       "prompt": "I copy Slack bug reports into agent chats every morning. We also poll the channel hourly. What should change?",
-      "expected_output": "Subscriptions ~37:30; coordinator for bursts; timer only as fallback — our ranking.",
+      "expected_output": "Subscriptions ~36:30; coordinator for bursts; timer only as fallback — our ranking.",
       "assertions": [
         "The agent prefers a subscription or event over hourly polling",
         "The agent mentions a coordinator or delegate for bursts",
@@ -76,7 +76,7 @@
     {
       "id": "mk-scaled-verifiers-ours",
       "prompt": "Is scaling verifier count by risk Lauren Tan's rule from the kitchen talk?",
-      "expected_output": "No — our adaptation. She said sample (~50:30) and maybe one verifier (~54:30).",
+      "expected_output": "No — our adaptation. She said sample (~49:30) and maybe one verifier (~53:30).",
       "assertions": [
         "The agent says scaling verifiers by risk is our adaptation or not her rule",
         "The agent cites sampling or one verifier instead of ten",

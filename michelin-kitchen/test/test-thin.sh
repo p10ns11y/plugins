@@ -107,24 +107,24 @@ else:
     ok("notice no overlap table")
 
 scaled = (root / "skills/scaled-verifiers/SKILL.md").read_text()
-if "50:30" in scaled and "Our adaptation" in scaled:
+if "49:30" in scaled and "Our adaptation" in scaled:
     ok("scaled-verifiers sampling time")
 else:
     bad("scaled-verifiers sampling time")
-if "57:30" in scaled:
+if "56:30" in scaled:
     ok("scaled one-way verifiability")
 else:
     bad("scaled one-way verifiability")
 
 events = (root / "skills/events-over-timers/SKILL.md").read_text()
-if "37:30" in events and "44:30" in events:
+if "36:30" in events and "43:30" in events:
     ok("events subscription and coordinator times")
 else:
     bad("events times")
-if "48:30" in events and "code-scanning" in events:
-    ok("events 48:30 is scanning not buffer")
+if "47:30" in events and "code-scanning" in events:
+    ok("events 47:30 is scanning not buffer")
 else:
-    bad("events 48:30 clarification")
+    bad("events 47:30 clarification")
 if "laptop-1" in events or "mac-mini" in events:
     bad("events alias host names")
 else:
