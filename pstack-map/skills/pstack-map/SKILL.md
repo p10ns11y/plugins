@@ -25,7 +25,8 @@ A1  Map; do not copy. pstack bodies stay upstream.
 A2  House HITL ⊨ irreversible  (secrets, prod, shared push, CV, auth unknown)
     — overrides pstack "never-block-on-the-human" on those rows only
 A3  Cursor-only → skip or name fallback (Graphite land, benny Slack,
-    sol/fable Task models, cursor-team-kit deslop)
+    cursor-team-kit deslop). Task models → read pstack-models.mdc or
+    [references/models.md](references/models.md)
 A4  One home: CG Outer, EVA Inner, ON judgment, orchestrator workers
 A5  Credit Lauren Tan / pstack MIT on every emit
 ```
@@ -96,7 +97,7 @@ Worth copying later only if: (1) pstack is **not** installable on the host, **an
 | never-block-on-the-human | proceed on reversible work; **pause** on A2 rows |
 | Graphite land / merge-when-ready | verify; wait for human push |
 | `poteto-agent` | `explore` / `coding` / `review`; use poteto-agent only if pstack installed |
-| sol / fable / opus roles | CG `fast` `coding` `deep` `review`; host default model |
+| pstack per-role models | read `~/.cursor/rules/pstack-models.mdc` or [models.md](references/models.md); CG `fast` `coding` `deep` `review` on other hosts |
 | `/loop` until morning | CG `max_loop_iters`; stop on `no_progress`×2 |
 
 ---

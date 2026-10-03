@@ -44,14 +44,17 @@ Credit: playbook names from [pstack](https://github.com/cursor/plugins/tree/main
 | blast-radius | grep callers; run the proof |
 | prove-it-works | VERIFY real cmds (adversarial-audit) |
 | never-block-on-the-human | **override:** HITL on secrets/prod/irreversible/auth unknown |
-| setup-pstack | optional; CG roles if no Cursor models |
+| setup-pstack | writes `~/.cursor/rules/pstack-models.mdc`; see [models.md](models.md) |
 | no-comments | strip narrating comments |
 | technical-writing | README/PR/commit: short, factual |
 | automate-me / make-bot-ui / benny | skip |
+
+## Models
+
+Read [models.md](models.md). On Cursor, prefer `~/.cursor/rules/pstack-models.mdc` when present; else upstream setup-pstack defaults. On other hosts, map CG `fast` / `coding` / `deep` / `review` to pstack roles there.
 
 ## Cursor-only (name, do not emulate)
 
 - Graphite `merge-when-ready`
 - `cursor-team-kit` `/deslop`, `control-cli`, `control-ui` (use unslop / browser verify)
 - Slack **benny** automations
-- Default Task models `gpt-5.6-sol-max` / `claude-fable-5-thinking-max` (host default unless setup-pstack wrote a rule)

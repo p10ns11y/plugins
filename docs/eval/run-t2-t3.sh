@@ -9,6 +9,8 @@ stamp="${EVAL_STAMP:-$(date -u +%Y%m%dT%H%M%SZ)}"
 out="${EVAL_OUT:-$root/docs/eval/2026-09-08/artifacts/$stamp}"
 results="${SKILLEVALUATOR_RESULTS_DIR:-$root/docs/eval/2026-09-08/results}"
 tiers="${TIERS:-2}"
+# Upstream setup-pstack refactoring role (pstack 0.15.7): grok-4.7-xhigh-fast
+eval_agent_model="${EVAL_AGENT_MODEL:-cursor/grok-4.7-xhigh-fast}"
 
 mkdir -p "$out" "$results"
 
@@ -58,14 +60,14 @@ run_t3() {
 	cp -a "$skill/." "$stage/"
 	# cursor-cli is Harbor's name for cursor-agent. OpenCode plus NVIDIA
 	# for both agent and judge 429'd. Split them: Cursor agent, NVIDIA judge.
-	# Do not pass --verify-models. cursor/composer-2.5 is not an NVIDIA id.
+	# Do not pass --verify-models. EVAL_AGENT_MODEL is a Cursor id, not NVIDIA.
 	se_eval doctor --env-mode local --agents cursor-cli \
-		--agent-model cursor-cli=cursor/composer-2.5 \
+		--agent-model "cursor-cli=$eval_agent_model" \
 		| tee "$out/mission-map-t3-doctor.txt"
 	se_eval tier3 evaluate "$stage" \
 		--env-mode local \
 		--agents cursor-cli \
-		--agent-model cursor-cli=cursor/composer-2.5 \
+		--agent-model "cursor-cli=$eval_agent_model" \
 		--n-concurrent 1 \
 		--timeout-multiplier 2 \
 		--results-dir "$results" \
