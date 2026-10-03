@@ -76,7 +76,7 @@ checks = [
     ("Our adaptation", "readme marks adaptations"),
     ("youtube.com/watch?v=MN9dGgmLyso", "readme youtube link"),
     ("I don't want to sell this", "readme pstack caveat verbatim"),
-    ("Own your knives", "readme own knives"),
+    ("everyone should have their own set of knives", "readme knives quote"),
 ]
 for needle, label in checks:
     if needle in readme:
