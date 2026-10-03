@@ -11,6 +11,7 @@
 docs/eval/**/results/
 .tmp/
 __pycache__/
+.pytest_cache/
 .audit/
 
 # built kernels
