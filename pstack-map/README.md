@@ -13,7 +13,7 @@ pstack stays the source of truth. This plugin does **not** copy playbooks, princ
 
 | Copy into this repo? | Why |
 |----------------------|-----|
-| **No** — 21 principles, 22 playbooks, unslop/how/why, poteto-mode | Already installable; informal first-person; Cursor Graphite/sol/fable; would drift |
+| **No** — 21 principles, 22 playbooks, unslop/how/why, poteto-mode | Already installable; informal first-person; Cursor Graphite; would drift |
 | **No** — benny, automate-me, make-bot-ui | Cursor/Slack/personal |
 | **Yes** — this map, HITL override, NOTICE | Grok house style (formal, short); credits; A2 HITL vs “never block” |
 
@@ -63,5 +63,6 @@ agents/
 skills/pstack-map/   # map SoT
   SKILL.md
   references/map.md
+  references/models.md
 test/test-thin.sh
 ```

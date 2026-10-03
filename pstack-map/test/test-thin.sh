@@ -20,6 +20,7 @@ need cursor/commands/pstack-map.md
 need agents/pstack-map.md
 need skills/pstack-map/SKILL.md
 need skills/pstack-map/references/map.md
+need skills/pstack-map/references/models.md
 
 # Must not vendor pstack
 if [[ -d "$ROOT/skills/poteto-mode" ]]; then bad "poteto-mode vendored"; else ok "no poteto-mode copy"; fi
@@ -58,6 +59,19 @@ echo "$cmd" | grep -q '\*\*credit\*\*' && ok "command emit credit row" || bad "c
 agent="$(cat "$ROOT/agents/pstack-map.md")"
 echo "$agent" | grep -qi 'not a pstack fork' && ok "agent: not a fork" || bad "agent missing not-a-fork"
 echo "$agent" | grep -c '^---' | grep -q '[1-9]' && ok "agent frontmatter" || bad "agent frontmatter"
+
+models="$(cat "$ROOT/skills/pstack-map/references/models.md")"
+echo "$models" | grep -q 'pstack-models.mdc' && ok "models: mdc path" || bad "models missing mdc path"
+echo "$models" | grep -q 'setup-pstack' && ok "models: upstream pointer" || bad "models missing upstream pointer"
+echo "$models" | grep -q 'refactoring' && ok "models: CG coding map" || bad "models missing CG coding map"
+
+stale_rx='claude-fable|composer-2\.5|fable-5-thinking|sol-max.*fable|sol/fable'
+scan="$(cat "$ROOT/skills/pstack-map/SKILL.md" "$ROOT/skills/pstack-map/references/map.md" "$ROOT/README.md")"
+if echo "$scan" | grep -Eiq "$stale_rx"; then
+  bad "stale hardcoded model slug in pstack-map docs"
+else
+  ok "no stale model slugs in pstack-map docs"
+fi
 
 echo "---"
 if [[ "$fail" -ne 0 ]]; then
