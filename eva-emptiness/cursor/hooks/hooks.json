@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "${CURSOR_PLUGIN_ROOT}/cursor/hooks/eva-tether-shell.sh"
+      }
+    ]
+  }
+}

@@ -16,7 +16,7 @@ Agent-internal only: `am-status`, `am-map` — do not tell the user to run those
 ## Agent implementation
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 if echo "$ARGUMENTS" | grep -qw map; then
   "$PLUGIN/bin/am-map"
 else

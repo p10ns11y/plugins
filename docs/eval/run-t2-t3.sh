@@ -9,7 +9,6 @@ stamp="${EVAL_STAMP:-$(date -u +%Y%m%dT%H%M%SZ)}"
 out="${EVAL_OUT:-$root/docs/eval/2026-09-08/artifacts/$stamp}"
 results="${SKILLEVALUATOR_RESULTS_DIR:-$root/docs/eval/2026-09-08/results}"
 tiers="${TIERS:-2}"
-# Upstream setup-pstack refactoring role (pstack 0.15.7): grok-4.7-xhigh-fast
 eval_agent_model="${EVAL_AGENT_MODEL:-cursor/grok-4.7-xhigh-fast}"
 
 mkdir -p "$out" "$results"

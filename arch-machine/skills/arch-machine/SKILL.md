@@ -43,7 +43,7 @@ Design threads: Eagle+Satellites / offline jobs — see host `crates/archy/READM
 ## Resolve plugin + map
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 MAP="$PLUGIN/core-map.json"
 ```
 

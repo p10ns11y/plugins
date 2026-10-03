@@ -147,7 +147,7 @@ Stay on /eva                                           # if auth_horizon=hit
 
 ## Cursor (no Grok plugin / no Rhai engine)
 
-Cursor cannot `grok plugin install` or run `/workflow *.rhai`. Use the **equivalents**:
+Cursor cannot `grok plugin install` or run `/workflow *.rhai`. Installing this directory as a Cursor plugin wires `beforeShellExecution` to `cursor/hooks/eva-tether-shell.sh`. Use the **equivalents**:
 
 | Grok | Cursor equivalent |
 |------|-------------------|

@@ -1,0 +1,10 @@
+{
+  "name": "premflow",
+  "version": "1.1.0",
+  "description": "Capture notes, wins, tasks; review; coach; external pomo; agent-safe journal. CLI via PATH or /premflow:init (consent install from github.com/thecuriousts/premflow).",
+  "author": {
+    "name": "premflow"
+  },
+  "skills": "./skills/",
+  "commands": "./commands/"
+}

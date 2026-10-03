@@ -18,7 +18,7 @@ Do not tell the user to run `am-init` in a shell.
 ## Step 1 — Status
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/am-init" --status
 ```
 
@@ -35,7 +35,7 @@ If thin tools missing, explain:
 ## Step 3 — Install
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/am-init" $ARGUMENTS
 ```
 

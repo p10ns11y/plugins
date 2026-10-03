@@ -23,7 +23,7 @@ EVA_TETHER_MODE=cursor
 export EVA_TETHER_MODE
 
 HERE=$(CDPATH= cd -- "$(dirname -- "$EVA_TETHER_ARG0")" && pwd)
-ROOT=${GROK_PLUGIN_ROOT:-}
+ROOT=${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-${GROK_PLUGIN_ROOT:-}}}
 if [ -z "$ROOT" ]; then
   for _try in \
     "${HERE}/../.." \

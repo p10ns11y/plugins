@@ -5,10 +5,10 @@ argument-hint: task title
 
 # /task — open work item
 
-Assumes `premflow` is on PATH (system install). If missing → suggest `/init`, then `/init --yes` after consent.
+Assumes `premflow` is on PATH (system install). If missing → suggest `/premflow:init`, then `/premflow:init --yes` after consent.
 
 ```bash
-PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /init"; exit 1; }
+PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /premflow:init"; exit 1; }
 $PF task add "$ARGUMENTS"
 ```
 

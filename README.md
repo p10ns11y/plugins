@@ -3,13 +3,37 @@
 Grok Build / agent **marketplace plugins** (installable skill + command + agent + hook packages).
 
 **Location:** `~/Work/personal/plugins` (not `~/plugins`).  
-**Catalog:** `.grok-plugin/marketplace.json`
+**Catalogs:** `.grok-plugin/marketplace.json`, `.claude-plugin/marketplace.json`, `.cursor-plugin/marketplace.json`
+
+## Install by name
+
+Add this repository once, then install a plugin by its directory name.
+
+Grok Build:
 
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git
-# or local: grok plugin marketplace add ~/Work/personal/plugins
-grok plugin install eva-emptiness --trust
+grok plugin install <name> --trust
 ```
+
+`grok plugin marketplace add p10ns11y/plugins` is the same add. The install stops unless you pass `--trust`.
+
+Claude Code:
+
+```text
+/plugin marketplace add p10ns11y/plugins
+/plugin install <name>@p10ns11y-plugins
+```
+
+Open `/plugin`, choose Marketplaces, select `p10ns11y-plugins`, and choose Enable auto-update. Do that once. Auto-update stays off for this marketplace until then.
+
+Cursor:
+
+```bash
+agent plugin marketplace add https://github.com/p10ns11y/plugins.git
+```
+
+The same command is `cursor-agent plugin marketplace add` when the program is installed under that name. Then run `/plugin`, open Marketplace, and install the plugin.
 
 ---
 
@@ -253,8 +277,8 @@ Check:
 command -v premflow && premflow
 ```
 
-**Alternative:** finish step 2 first, then in Grok run `/init` (status) and, after
-you consent, **`/init --yes`**. Same end result: `premflow` on `PATH`.
+**Alternative:** finish step 2 first, then in Grok run `/premflow:init` (status) and, after
+you consent, **`/premflow:init --yes`**. Same end result: `premflow` on `PATH`.
 
 ### 2. Install this plugin
 
@@ -277,8 +301,8 @@ Reload Grok (or Plugins tab → `r`).
 
 | Command | What it does |
 |---------|----------------|
-| `/init` | Check CLI on PATH |
-| `/init --yes` | Consent install/upgrade of CLI |
+| `/premflow:init` | Check CLI on PATH |
+| `/premflow:init --yes` | Consent install/upgrade of CLI |
 | `/note` `/win` `/task` | Capture via real CLI |
 | `/review` | Smart daily review |
 | `/coach` | Coach from real ledger data only |
