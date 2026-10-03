@@ -20,7 +20,7 @@ Read `skills/trust-stack/SKILL.md`. Open `references/layers.md` only to pick one
 ## Do not
 
 - Merge, push, or tell agents to land the change
-- Copy pstack or poteto-mode
+- Copy pstack
 - Add a comment that excuses the bug
 - Spawn more writers because one agent is untrusted
 - Treat a pull-request count as the goal

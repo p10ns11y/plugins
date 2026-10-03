@@ -12,7 +12,7 @@ https://x.com/poteto/status/2101384547543978195
 
 https://bend-lang.com
 
-Playbook names stay in pstack (Lauren Tan, MIT). This plugin does not copy pstack.
+Playbook names stay in pstack (Lauren Tan, MIT). The installed playbook name is `poteto-mode`. This plugin does not copy pstack, and it does not claim the talk's production setup.
 
 Her agents merge their own pull requests. This plugin does not merge. Landing stays a human act until the repo’s own rules say otherwise.
 

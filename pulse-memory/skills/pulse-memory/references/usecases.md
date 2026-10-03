@@ -152,7 +152,7 @@ If `as_of` is missing, the run **pauses** (`Pass args.as_of`). That is why `/pul
 
 ---
 
-## Worked sitting (29 Aug 2026)
+## Worked sitting (2026-08-29)
 
 | Piece | Path / value |
 |-------|----------------|

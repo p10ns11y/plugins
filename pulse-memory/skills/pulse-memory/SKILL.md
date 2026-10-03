@@ -6,13 +6,12 @@ description: >
   (source, time, status, kind). Pulse sparse snippets instead of dumping
   transcripts. Use when claims disagree, a story was completed under pressure,
   the user says pulse / admissions / context tags / archive-not-memory, or runs
-  /pulse-memory. Essays: captain.kingsparrow.space/focus/memory-issue
-  and /archive-not-memory.
+  /pulse-memory.
 ---
 
 # pulse-memory
 
-> **Load rule:** This file is the **filter plane**. Expand [references/usecases.md](references/usecases.md) for modes / `thinking_path` / `harness_path` / `as_of`. Expand [references/admissions.md](references/admissions.md) only if a tag or conflict rule is still ambiguous. Store: [references/store.md](references/store.md). Do not paste the essays.
+> **Load rule:** This file is the **filter plane**. Expand [references/usecases.md](references/usecases.md) for modes / `thinking_path` / `harness_path` / `as_of`. Expand [references/admissions.md](references/admissions.md) only if a tag or conflict rule is still ambiguous. Store: [references/store.md](references/store.md). Do not paste source prose.
 
 ```text
 Archive  : residue (logs, tickets, embeddings, full transcripts)
@@ -31,7 +30,7 @@ Kind     ∈ { data, context, fact, memory }
 4. Every sentence you promote to memory **must** carry hint tags. Untagged write = hypothesis, not memory.
 5. Abstention is legal. If you cannot tag it, do not save it.
 
-Sources (do not copy bodies): [Pulse instead of dump](https://captain.kingsparrow.space/focus/memory-issue) · [Archive is not memory](https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory)
+Do not copy source prose into the answer.
 
 ---
 

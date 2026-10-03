@@ -26,4 +26,4 @@ Do not spawn a crowd of writers until one agent is already trusted on this tree.
 
 Verification is the agent using the same surface a user has: the test, the trace, the running UI. A prose claim that it works is not a pass.
 
-Volume is not the goal. The layers compound into trust. A count of pull requests is someone else’s outcome, not a target.
+Volume is not the goal. The layers compound into trust. A count of pull requests is not a target.

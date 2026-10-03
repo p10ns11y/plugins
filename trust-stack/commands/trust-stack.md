@@ -32,4 +32,3 @@ Load skill **trust-stack**. Open `references/layers.md` only to pick one row.
 | **next** | |
 ```
 
-Credit Lauren Tan / pstack MIT when a playbook runs. The talk credit is in `NOTICE.md`.
