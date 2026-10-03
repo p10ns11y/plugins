@@ -77,9 +77,7 @@ apply_repo() {
   done
   msg="$(cd "$dir" && check_range HEAD 2>&1 || true)"
   [[ -z "$msg" ]] && got=pass
-  if [[ "$name" == fail-laws && "$msg" != *"acceptance after production"* ]]; then
-    bad "fail-laws reason"
-  fi
+  [[ "$name" == fail-laws && "$msg" != *"acceptance after production"* ]] && bad "fail-laws reason"
   if [[ "$name" == pass-first ]]; then
     (cd "$dir" && check_range HEAD~1..HEAD >/dev/null) && ok "range-base" || bad "range-base"
   fi

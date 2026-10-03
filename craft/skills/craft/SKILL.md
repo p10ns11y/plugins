@@ -46,7 +46,6 @@ A5  This skill does not merge.
 | **touched** | |
 | **crap_max** | |
 | **mutation** | |
-| **proof** | |
 | **scout** | touched files only \| violated |
 | **next** | |
 ```

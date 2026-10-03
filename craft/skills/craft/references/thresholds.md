@@ -22,4 +22,4 @@ python3 craft/bin/mutation-score.py --min 0.95 --diff HEAD~1..HEAD path/to/lib.p
 ./craft/test/check-proof.sh path/to/dir
 ```
 
-`scope=file` scores every function. `--functions` and `--diff` score the named or touched functions. A bad `--diff` range prints the git error and exits 2. Zero mutants exits 2. Bend 2.0.35 and Lean v4.34.0. `check-proof.sh` runs `bend --verdict PROOF.bend` and exits 2 when bend is missing.
+`scope=file` scores every function. `--functions` and `--diff` score the named or touched functions. A bad `--diff` range prints the git error and exits 2. Zero mutants exits 2. See [README](../../../README.md).
