@@ -16,6 +16,8 @@ jobs:
       - name: Install Python test tools
         run: python3 -m pip install pytest coverage
       - name: Run plugin thin tests
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           for script in */test/test-thin.sh; do
