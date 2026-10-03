@@ -243,7 +243,7 @@
     },
     {
       "name": "michelin-kitchen",
-      "description": "Eight kitchen habits from Lauren Tan and Matt Pocock's talk: scripts, findings-first, events over timers, workflow skills, and more. Two habits are house adaptations.",
+      "description": "Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills, and more. Several include our adaptations.",
       "category": "development",
       "source": {
         "type": "local",

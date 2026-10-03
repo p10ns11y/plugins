@@ -9,9 +9,8 @@ need() {
   [[ -f "$ROOT/$1" || -d "$ROOT/$1" ]] && ok "exists $1" || bad "missing $1"
 }
 
-for habit in shared-scripts findings-first events-over-timers workflow-skills no-rule-one-off environment-on-repeat scaled-verifiers kitchen-time; do
+for habit in shared-scripts findings-first events-over-timers workflow-skills repeat-or-leave scaled-verifiers kitchen-time; do
   need "skills/$habit/SKILL.md"
-  need "commands/$habit.md"
 done
 
 need plugin.json
@@ -19,62 +18,147 @@ need LICENSE
 need NOTICE.md
 need README.md
 need agents/michelin-kitchen.md
-need skills/michelin-kitchen/SKILL.md
-need skills/michelin-kitchen/evals/evals.json
-need examples/posting-check/README.md
+need commands/michelin-kitchen.md
+need evals/evals.json
 
-pj="$(cat "$ROOT/plugin.json")"
-echo "$pj" | grep -q '"name": "michelin-kitchen"' && ok "name" || bad "name"
+if [[ -f "$ROOT/commands/shared-scripts.md" ]]; then bad "stale per-habit command"; else ok "single command file"; fi
+if [[ -d "$ROOT/examples" ]]; then bad "examples dir present"; else ok "no examples dir"; fi
+if [[ -f "$ROOT/skills/michelin-kitchen/SKILL.md" ]]; then bad "index skill still present"; else ok "index folded into agent"; fi
 
-readme="$(cat "$ROOT/README.md")"
-echo "$readme" | grep -q 'Lauren Tan' && ok "readme credits Lauren Tan" || bad "readme missing Lauren Tan"
-echo "$readme" | grep -q 'Matt Pocock' && ok "readme credits Matt Pocock" || bad "readme missing Matt Pocock"
-echo "$readme" | grep -q 'House adaptation' && ok "readme marks adaptations" || bad "readme missing adaptation label"
-echo "$readme" | grep -q 'does not want to sell this' && ok "readme pstack caveat" || bad "readme missing pstack caveat"
-echo "$readme" | grep -q 'Own your knives' && ok "readme own knives" || bad "readme missing own knives"
-echo "$readme" | grep -q 'Lauren Tan.s Cursor plugin' && ok "readme pstack is Cursor plugin" || bad "readme pstack attribution"
-echo "$readme" | grep -q '3 Oct 2026' && ok "readme 3 Oct findings note" || bad "readme missing 3 Oct note"
-if echo "$readme" | grep -qi '\bgate\b'; then bad "readme uses gate"; else ok "readme avoids gate"; fi
+python3 - "$ROOT" <<'PY'
+import json, sys
+from pathlib import Path
 
-scaled="$(cat "$ROOT/skills/scaled-verifiers/SKILL.md")"
-echo "$scaled" | grep -q 'house adaptation' && ok "scaled-verifiers marked adaptation" || bad "scaled-verifiers not marked"
-echo "$scaled" | grep -q 'did not offer a general recipe' && ok "scaled one-way caveat" || bad "scaled missing one-way caveat"
+root = Path(sys.argv[1])
+fail = 0
 
-kitchen="$(cat "$ROOT/skills/kitchen-time/SKILL.md")"
-echo "$kitchen" | grep -q 'house adaptation' && ok "kitchen-time marked adaptation" || bad "kitchen-time not marked"
-if echo "$kitchen" | grep -qi '20%'; then bad "kitchen-time invents slice"; else ok "kitchen-time no fake slice"; fi
+def ok(msg):
+    print(f"ok  {msg}")
 
-oneoff="$(cat "$ROOT/skills/no-rule-one-off/SKILL.md")"
-echo "$oneoff" | grep -q 'nothing to fix' && ok "one-off quote" || bad "one-off missing quote"
+def bad(msg):
+    global fail
+    print(f"FAIL {msg}")
+    fail += 1
 
-repeat="$(cat "$ROOT/skills/environment-on-repeat/SKILL.md")"
-echo "$repeat" | grep -q 'multiple agents' && ok "repeat needs multiple agents" || bad "repeat missing multi-agent"
+pj = json.loads((root / "plugin.json").read_text())
+if pj.get("name") == "michelin-kitchen":
+    ok("plugin.json name")
+else:
+    bad("plugin.json name")
 
-findings="$(cat "$ROOT/skills/findings-first/SKILL.md")"
-echo "$findings" | grep -q '3 Oct 2026' && ok "findings 3 Oct note" || bad "findings missing 3 Oct"
+ev = json.loads((root / "evals/evals.json").read_text())
+skills = {p.name for p in (root / "skills").iterdir() if p.is_dir()}
+seen = set()
+for case in ev.get("evals", []):
+    cid = case.get("id", "?")
+    exp = case.get("expected_skill")
+    if exp is None:
+        ok(f"eval {cid} null skill")
+        continue
+    seen.add(exp)
+    if exp in skills:
+        ok(f"eval {cid} -> {exp}")
+    else:
+        bad(f"eval {cid} missing skill folder {exp}")
 
-events="$(cat "$ROOT/skills/events-over-timers/SKILL.md")"
-echo "$events" | grep -q 'findings-first' && ok "events links findings buffer" || bad "events missing findings link"
+required = {
+    "shared-scripts", "findings-first", "events-over-timers",
+    "workflow-skills", "repeat-or-leave", "scaled-verifiers", "kitchen-time",
+}
+missing_cases = required - seen
+for skill in sorted(missing_cases):
+    bad(f"no eval case for {skill}")
 
-workflow="$(cat "$ROOT/skills/workflow-skills/SKILL.md")"
-echo "$workflow" | grep -q 'workflow' && ok "workflow-skills topic" || bad "workflow-skills missing topic"
-if echo "$workflow" | grep -q 'github.com/cursor/plugins'; then ok "workflow cites pstack upstream"; else bad "workflow missing pstack link"; fi
+readme = (root / "README.md").read_text()
+checks = [
+    ("Lauren Tan", "readme credits Lauren Tan"),
+    ("Matt Pocock", "readme credits Matt Pocock"),
+    ("Our adaptation", "readme marks adaptations"),
+    ("youtube.com/watch?v=MN9dGgmLyso", "readme youtube link"),
+    ("I don't want to sell this", "readme pstack caveat verbatim"),
+    ("Own your knives", "readme own knives"),
+]
+for needle, label in checks:
+    if needle in readme:
+        ok(label)
+    else:
+        bad(label)
+if "3 Oct" in readme:
+    bad("readme still has 3 Oct story")
+else:
+    ok("readme no 3 Oct story")
+if "host-neutral" in readme.lower():
+    bad("readme host-neutral")
+else:
+    ok("readme no host-neutral")
+if "gate" in readme.lower():
+    bad("readme uses gate")
+else:
+    ok("readme avoids gate")
 
-scripts="$(cat "$ROOT/skills/shared-scripts/SKILL.md")"
-echo "$scripts" | grep -q 'JSON' && ok "shared-scripts JSON" || bad "shared-scripts missing JSON"
+notice = (root / "NOTICE.md").read_text()
+if "youtube.com/watch?v=MN9dGgmLyso" in notice:
+    ok("notice youtube link")
+else:
+    bad("notice youtube link")
+if "trust-stack" in notice:
+    bad("notice overlap table leaked")
+else:
+    ok("notice no overlap table")
 
-notice="$(cat "$ROOT/NOTICE.md")"
-echo "$notice" | grep -q 'house adaptations' && ok "notice adaptations" || bad "notice missing adaptations"
-echo "$notice" | grep -q 'trust-stack' && ok "notice overlap trust-stack" || bad "notice missing trust-stack"
+scaled = (root / "skills/scaled-verifiers/SKILL.md").read_text()
+if "50:30" in scaled and "Our adaptation" in scaled:
+    ok("scaled-verifiers sampling time")
+else:
+    bad("scaled-verifiers sampling time")
+if "57:30" in scaled:
+    ok("scaled one-way verifiability")
+else:
+    bad("scaled one-way verifiability")
 
-evals="$(cat "$ROOT/skills/michelin-kitchen/evals/evals.json")"
-echo "$evals" | grep -q 'mk-shared-scripts-repeat' && ok "eval shared-scripts" || bad "eval missing shared-scripts"
-echo "$evals" | grep -q 'mk-findings-before-ping' && ok "eval findings" || bad "eval missing findings"
-echo "$evals" | grep -q 'mk-scaled-verifiers-adaptation' && ok "eval scaled" || bad "eval missing scaled"
+events = (root / "skills/events-over-timers/SKILL.md").read_text()
+if "37:30" in events and "44:30" in events:
+    ok("events subscription and coordinator times")
+else:
+    bad("events times")
+if "48:30" in events and "code-scanning" in events:
+    ok("events 48:30 is scanning not buffer")
+else:
+    bad("events 48:30 clarification")
+if "laptop-1" in events or "mac-mini" in events:
+    bad("events alias host names")
+else:
+    ok("events no alias hosts")
 
-posting="$(cat "$ROOT/examples/posting-check/README.md")"
-echo "$posting" | grep -q 'Deterministic' && ok "posting-check example" || bad "posting-check example weak"
-if echo "$posting" | grep -q '/workspace'; then bad "posting-check has real path"; else ok "posting-check host-neutral"; fi
+findings = (root / "skills/findings-first/SKILL.md").read_text()
+if "Our additions" in findings and "3 Oct" not in findings:
+    ok("findings ours labeled, no 3 Oct")
+else:
+    bad("findings labeling")
+
+scripts = (root / "skills/shared-scripts/SKILL.md").read_text()
+if "Our additions" in scripts and "posting" in scripts.lower():
+    ok("shared-scripts inline example")
+else:
+    bad("shared-scripts example")
+
+kitchen = (root / "skills/kitchen-time/SKILL.md").read_text()
+import re
+if re.search(r"\d+\s*%|\d+\s*hours|\d+\s*h\/week|hours.per.week", kitchen, re.I):
+    bad("kitchen-time invents time slice")
+else:
+    ok("kitchen-time no invented slice")
+
+repeat = (root / "skills/repeat-or-leave/SKILL.md").read_text()
+if "trust-stack" in repeat and "shape | check" not in repeat:
+    ok("repeat links trust-stack")
+else:
+    bad("repeat copies trust-stack table")
+
+sys.exit(fail)
+PY
+rc=$?
+if [[ "$rc" -ne 0 ]]; then fail=$((fail + rc)); fi
 
 echo "---"
 if [[ "$fail" -ne 0 ]]; then

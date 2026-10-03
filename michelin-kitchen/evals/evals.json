@@ -1,0 +1,112 @@
+{
+  "skill_name": "michelin-kitchen",
+  "evals": [
+    {
+      "id": "mk-shared-scripts-repeat",
+      "prompt": "Three agents each wrote their own Python snippet to check whether job postings are still open. What should we do?",
+      "expected_output": "One deterministic script; our JSON stdout and scripts index; judgment stays in the skill.",
+      "assertions": [
+        "The agent proposes one shared script, not per-agent glue",
+        "The agent mentions JSON or structured stdout as our addition",
+        "The agent does not put an LLM inside the checker"
+      ],
+      "expected_skill": "shared-scripts",
+      "expected_script": null
+    },
+    {
+      "id": "mk-findings-before-ping",
+      "prompt": "A scout found twelve similar lint issues and wants to ping me on chat with the raw log. What first?",
+      "expected_output": "Append to a findings file; our rule: before pinging; pointer only if needed.",
+      "assertions": [
+        "The agent puts findings in a file before pinging",
+        "The agent says the ping is only a pointer, not a raw dump",
+        "The agent mentions reviewing or clustering before fix PRs"
+      ],
+      "expected_skill": "findings-first",
+      "expected_script": null
+    },
+    {
+      "id": "mk-events-not-cron",
+      "prompt": "I copy Slack bug reports into agent chats every morning. We also poll the channel hourly. What should change?",
+      "expected_output": "Subscriptions ~37:30; coordinator for bursts; timer only as fallback — our ranking.",
+      "assertions": [
+        "The agent prefers a subscription or event over hourly polling",
+        "The agent mentions a coordinator or delegate for bursts",
+        "The agent treats timer-only as fallback or says retiring cron is our ranking"
+      ],
+      "expected_skill": "events-over-timers",
+      "expected_script": null
+    },
+    {
+      "id": "mk-workflow-not-commands",
+      "prompt": "This skill is eighty lines of bash commands and three lines of when to run it. Fix the shape.",
+      "expected_output": "Rewrite as workflow steps; move mechanics to shared-scripts.",
+      "assertions": [
+        "The agent says to focus on workflow not command dumps",
+        "The agent proposes removing or relocating mechanical commands",
+        "The agent mentions an Emit table or workflow steps"
+      ],
+      "expected_skill": "workflow-skills",
+      "expected_script": null
+    },
+    {
+      "id": "mk-repeat-one-occurrence",
+      "prompt": "One agent left an excuse comment in a single PR. Nobody else did. New lint rule?",
+      "expected_output": "Leave it — maybe nothing to fix; document one-off.",
+      "assertions": [
+        "The agent says one occurrence may not need a new rule",
+        "The agent quotes or paraphrases maybe nothing to fix there",
+        "The agent does not add a permanent lint for one PR"
+      ],
+      "expected_skill": "repeat-or-leave",
+      "expected_script": null
+    },
+    {
+      "id": "mk-repeat-three-occurrences",
+      "prompt": "Three agents copied the same workaround comment about skipping error handling. What now?",
+      "expected_output": "Fix the environment; load trust-stack for the layer; delete the pattern.",
+      "assertions": [
+        "The agent cites multiple occurrences",
+        "The agent says to amend the environment not lecture one chat",
+        "The agent points to trust-stack for the layer choice"
+      ],
+      "expected_skill": "repeat-or-leave",
+      "expected_script": null
+    },
+    {
+      "id": "mk-scaled-verifiers-ours",
+      "prompt": "Is scaling verifier count by risk Lauren Tan's rule from the kitchen talk?",
+      "expected_output": "No — our adaptation. She said sample (~50:30) and maybe one verifier (~54:30).",
+      "assertions": [
+        "The agent says scaling verifiers by risk is our adaptation or not her rule",
+        "The agent cites sampling or one verifier instead of ten",
+        "The agent does not claim she prescribed a risk ladder"
+      ],
+      "expected_skill": "scaled-verifiers",
+      "expected_script": null
+    },
+    {
+      "id": "mk-kitchen-time-slice",
+      "prompt": "What time slice per week did Lauren Tan prescribe for environment work?",
+      "expected_output": "None — our adaptation; she described the trap but no calendar slice.",
+      "assertions": [
+        "The agent says she did not prescribe a time slice",
+        "The agent identifies kitchen-time as our adaptation",
+        "The agent does not invent a percentage or hours-per-week quota"
+      ],
+      "expected_skill": "kitchen-time",
+      "expected_script": null
+    },
+    {
+      "id": "mk-neg-typo",
+      "prompt": "Fix the typo in README line 3: 'teh' should be 'the'.",
+      "expected_output": "Direct typo fix. No kitchen workflow.",
+      "assertions": [
+        "The agent fixes the typo",
+        "The agent does not load a michelin-kitchen habit for a one-line typo"
+      ],
+      "expected_skill": null,
+      "expected_script": null
+    }
+  ]
+}

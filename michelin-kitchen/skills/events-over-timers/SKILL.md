@@ -1,64 +1,39 @@
 ---
 name: events-over-timers
-version: 0.1.0
+version: 0.2.0
 description: >
-  Prefer reacting to a real event (webhook, CI result, mail, channel message)
-  over polling on a schedule. Connect the outer loop to the inner loop. Use a
-  findings file as a buffer when bursts arrive. Talk ~36:00–39:00, ~48:00.
+  Wire outer-loop subscriptions into the inner loop (~37:30–38:30). Bursts
+  go to a coordinator (~44:30–45:30). Ranking timers last and retiring cron
+  are ours; she also keeps timer routines (~48:30).
 ---
 
 # events-over-timers
 
-> **Load rule:** This file owns trigger choice. Use `findings-first` when events arrive faster than fixes.
+Lauren Tan: stop ferrying Slack, mail, and bug reports by hand (~36:00–39:00). Wire subscriptions so agents pull context (~37:30–38:30). When many issues arrive at once, a coordinator agent delegates (~44:30–45:30). At ~48:30 she also has timer routines ("I have some routines like that as well"). **Our adaptation:** prefer events first; use a timer only when no event surface exists; retire cron when an event path covers the same signal.
 
-```text
-OUTER : Slack, mail, CI, bug tracker — context outside the repo
-INNER : agents working the code toward an intent
-EVENT : webhook, subscription, CI completion, message arrival
-TIMER : cron or poll — fallback only when no event surface exists
-```
+The findings document she describes at ~48:30–49:30 is a code-scanning routine, not burst buffering. Use `findings-first` for that pattern separately.
 
-**Mission:** Stop being the proxy between outer-loop noise and inner-loop work.
-
-Lauren Tan described being the bottleneck ferrying bug reports from Slack or mail into agent chats (~36:00–39:00). She wires subscriptions so agents pull context themselves (~37:30–38:30). When bursts arrive, a findings document buffers before execution (~48:00–50:00).
-
-Credit Lauren Tan and Matt Pocock.
-
----
-
-## Activate / Skip
+## When
 
 | Signal | Action |
 |--------|--------|
-| A human copies context from chat or mail into every agent run | Activate |
-| Work is on a cron but a webhook or CI event exists | Activate |
-| Burst of similar reports risks duplicate fix PRs | Activate; pair `findings-first` |
-| No event surface and low stakes | Timer is acceptable; document why |
-
-Slash: `/events-over-timers`.
-
----
+| A human copies chat or mail into every agent run | Activate |
+| Cron polls a channel that could subscribe | Activate |
+| Burst of similar reports may duplicate work | Activate; pair coordinator + `findings-first` |
+| No event surface and low stakes | Timer acceptable; say why |
 
 ## Workflow
 
-1. Name the outer-loop source. Where does context appear before an agent sees it?
-2. List what you manually copy each time. That list is the subscription spec.
-3. Prefer an event hook: channel subscription, CI result, inbound mail rule, webhook. Host names as aliases only (`laptop-1`, `mac-mini`).
-4. Wire the hook to the inner loop: message to a project, file drop, or queue row — not straight to ten parallel fixers when themes may overlap.
-5. When events burst, append to a findings file first (`findings-first`). Delegate fix work after clustering.
-6. Retire the timer if an event path now covers the same signal.
+1. Name the outer-loop source.
+2. List what you copy manually each time. That is the subscription spec.
+3. Prefer an event hook: channel subscription, CI result, mail rule, webhook.
+4. Hand off to the inner loop: project message, queue row, or coordinator — not ten parallel fixers on overlapping themes.
+5. When bursts overlap, let a coordinator delegate (~44:30–45:30) and/or buffer in a findings file (`findings-first`).
+6. If cron still runs, document why. Retire it when an event path covers the same signal (**our ranking**).
 
-### Neighbors
+Load `intelli-route` to pick the inner-loop skill. Load `trust-stack` for verify after pickup.
 
-| Need | Load |
-|------|------|
-| Findings file before pings or PRs | `findings-first` |
-| Route which skill runs on the event | `intelli-route` |
-| Verification after the inner loop picks up work | `trust-stack` |
-
----
-
-## Emit (required)
+## Emit
 
 ```markdown
 ## Events over timers
@@ -66,21 +41,7 @@ Slash: `/events-over-timers`.
 |-------|--------|
 | **outer_source** | |
 | **event_hook** | what fires |
-| **inner_handoff** | |
-| **buffer** | findings file or none |
-| **timer_retired** | yes \| no \| n/a |
+| **inner_handoff** | coordinator \| project \| queue |
+| **timer** | fallback \| retired \| only option |
 | **next** | one wiring step |
 ```
-
----
-
-## Done when
-
-- A real event carries context the agent used to need from a human
-- Bursts use a findings buffer when themes may overlap
-- Cron is justified or removed
-
-## Limitations
-
-- Does not install connectors; names the shape only.
-- Does not replace `intelli-route` for skill choice.

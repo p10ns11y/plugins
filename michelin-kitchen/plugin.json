@@ -1,7 +1,7 @@
 {
   "name": "michelin-kitchen",
-  "version": "0.1.0",
-  "description": "Eight kitchen habits from Lauren Tan and Matt Pocock's talk: shared scripts, findings-first, events over timers, workflow skills, and more. Two habits are house adaptations.",
+  "version": "0.2.0",
+  "description": "Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills, and more. Several include our adaptations.",
   "author": {
     "name": "p10ns11y"
   },
@@ -13,7 +13,7 @@
     "matt-pocock",
     "verification",
     "pstack",
-    "intelli-route",
-    "trust-stack"
+    "trust-stack",
+    "intelli-route"
   ]
 }

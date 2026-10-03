@@ -1,61 +1,38 @@
 ---
 name: shared-scripts
-version: 0.1.0
+version: 0.2.0
 description: >
-  When a job repeats across agents, write one deterministic script with JSON
-  output and an index entry instead of each agent rebuilding it. Use for
-  repeated checks, verification glue, or mechanical transforms. Talk ~22:00.
+  When a job repeats across agents, extract deterministic glue into one script.
+  Lauren Tan kept the CLI inside the skill (~22:00–25:00). JSON stdout, a
+  scripts index, and no LLM in the hot path are ours.
 ---
 
 # shared-scripts
 
-> **Load rule:** This file owns the workflow. Example layout: [examples/posting-check/README.md](../../examples/posting-check/README.md). Do not paste the whole example into context.
+Lauren Tan (~22:00–25:00): agents kept rebuilding verification glue; she encoded deterministic parts in a CLI inside the skill (~24:30). **Our additions:** JSON stdout, a separate scripts index, and no LLM in the checker.
 
-```text
-DETERMINISTIC : no LLM in the hot path; stdlib or thin glue only
-JSON          : one object per item; stable field names
-INDEX         : one line in a scripts index so the next agent finds it
-JUDGMENT      : stays in the skill; the script does the mechanical part
-```
+Example shape: a job-posting open/closed checker — deterministic script, one JSON object per URL, one index line.
 
-**Mission:** Extract what every agent was redoing by hand into one script they can call.
-
-Credit Lauren Tan and Matt Pocock. Talk ~22:00–25:00.
-
----
-
-## Activate / Skip
+## When
 
 | Signal | Action |
 |--------|--------|
-| Two or more agents wrote similar glue for the same check | Activate |
-| A skill keeps re-explaining how to call an API mechanically | Activate |
-| One-off edit with no repeat expected | Skip |
-
-Slash: `/shared-scripts`.
-
----
+| Two or more agents wrote similar glue | Activate |
+| A skill re-explains the same API call | Activate |
+| One-off with no repeat expected | Skip |
 
 ## Workflow
 
-1. Name the repeated job in one sentence. What must every agent get the same answer for?
-2. List what the last two agents did differently. That diff is the script spec.
-3. Write the script: deterministic, JSON to stdout, exit codes documented. No LLM inside.
-4. Add an index entry (path, one-line purpose, example invocation). Host-neutral paths only.
-5. Shrink the skill: keep judgment and when-to-run; delete the rediscovered commands.
-6. Run the script once from a clean shell. Attach sample output or point to a checked fixture.
+1. Name the repeated job. What must every agent answer the same way?
+2. Diff what the last two agents did. That is the script spec.
+3. Write deterministic glue. **Our shape:** JSON to stdout, documented exit codes, no LLM inside.
+4. Add a scripts-index entry: path, purpose, example call.
+5. Shrink the skill: keep judgment and when-to-run; delete rediscovered commands.
+6. Run once from a clean shell; keep sample output or a fixture.
 
-### Neighbors
+Load `findings-first` when observations should land in a file first. Load `trust-stack` when the script enforces an invariant.
 
-| Need | Load |
-|------|------|
-| Where a finding should land before anyone is pinged | `findings-first` |
-| Verification layers for an invariant | `trust-stack` |
-| Playbook steps when pstack is installed | installed pstack, else `pstack-map` |
-
----
-
-## Emit (required)
+## Emit
 
 ```markdown
 ## Shared script
@@ -65,20 +42,6 @@ Slash: `/shared-scripts`.
 | **script** | path |
 | **output** | JSON shape |
 | **index** | where listed |
-| **skill_delta** | what to delete from the skill |
+| **skill_delta** | what to delete |
 | **next** | one verification run |
 ```
-
----
-
-## Done when
-
-- The script runs without an LLM
-- JSON fields are stable
-- The index entry exists
-- The skill no longer asks agents to reinvent the glue
-
-## Limitations
-
-- Not a place for judgment calls, novel refactors, or one-off fixes.
-- Does not replace `trust-stack` checks; it carries deterministic verify steps.

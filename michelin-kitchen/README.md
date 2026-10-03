@@ -1,34 +1,31 @@
 # michelin-kitchen
 
-Eight habits for running agent work like a professional kitchen. Grounded in a conversation between **Lauren Tan** and **Matt Pocock** about scaling quality, verification, and trust with agents.
+Seven habits for running agent work like a professional kitchen. Grounded in a [live conversation](https://www.youtube.com/watch?v=MN9dGgmLyso) with **Lauren Tan**, hosted by **Matt Pocock**.
 
-Pick the habits you need. You do not have to install the whole set — the talk's own metaphor is a chef who brings their own knives to a new restaurant (~1:02:30).
+Pick the habits you need. The talk's own metaphor is a chef who brings their own knives to a new restaurant (~1:02:30).
 
 ## Caveats from the talk
 
-- Lauren Tan: she does not want to sell this as something you can just do easily by using pstack (~52:30). **pstack** is [Lauren Tan's Cursor plugin](https://github.com/cursor/plugins/tree/main/pstack) (poteto, MIT). This repo ships **pstack-map**, which maps pstack onto house skills when it is installed. Neither plugin promises her production volume.
-- Own your knives (~1:02:30): combine habits with your transcripts, lint, and verify paths. Everyone's kitchen looks different.
+- Lauren Tan: "I don't want to sell this as something that you can just do easily by using pstack" (~52:30). **pstack** is [Lauren Tan's Cursor plugin](https://github.com/cursor/plugins/tree/main/pstack) (poteto, MIT). This repo ships **pstack-map** when pstack is installed. Neither promises her production volume.
+- Own your knives (~1:02:30): combine habits with your transcripts, lint, and verify paths.
 
 ## Habits
 
 | Skill | Source | Talk (approx.) |
 |---|---|---|
-| [shared-scripts](skills/shared-scripts/SKILL.md) | Lauren Tan | ~22:00–25:00 — extract deterministic work into scripts; agents stopped rebuilding glue |
-| [findings-first](skills/findings-first/SKILL.md) | Lauren Tan + house note | ~49:00 — append to a document before fixing; review for patterns. On 3 Oct 2026, three draft PRs before a findings file forced a human "pick one" question |
-| [events-over-timers](skills/events-over-timers/SKILL.md) | Lauren Tan | ~36:00–39:00, ~48:00 — outer-loop events into the inner loop; buffer bursts in a findings file |
-| [workflow-skills](skills/workflow-skills/SKILL.md) | Lauren Tan | ~62:00–65:30 — skills as workflows, not command dumps |
-| [no-rule-one-off](skills/no-rule-one-off/SKILL.md) | Lauren Tan | ~51:30 — "maybe there's nothing to fix there" for a one-off |
-| [environment-on-repeat](skills/environment-on-repeat/SKILL.md) | Lauren Tan | ~51:30–52:00 — amend the kitchen when multiple agents repeat the same shortcut |
-| [scaled-verifiers](skills/scaled-verifiers/SKILL.md) | **House adaptation** | ~54:00–55:00 — she said you might use one verifier instead of ten; ~57:00–1:00:30 — no settled answer on irreversible one-way doors. The risk ladder is ours |
-| [kitchen-time](skills/kitchen-time/SKILL.md) | **House adaptation** | ~27:30–29:30 — low-trust trap and dull knives; ~47:00 — gardening PRs. She did not prescribe a calendar time slice. The "invest in the kitchen" prompt is ours |
-
-Illustration for `shared-scripts`: [examples/posting-check/README.md](examples/posting-check/README.md) (job-posting open/closed checker, host-neutral).
+| [shared-scripts](skills/shared-scripts/SKILL.md) | Lauren Tan | ~22:00–25:00 — extract deterministic glue into a script inside the skill |
+| [findings-first](skills/findings-first/SKILL.md) | Lauren Tan + ours | ~49:00 — append to a document; review every few days for patterns |
+| [events-over-timers](skills/events-over-timers/SKILL.md) | Lauren Tan + ours | ~36:00–39:00 outer loop; ~37:30–38:30 subscriptions; ~44:30–45:30 bursts to a coordinator; ~48:30 she also has timer routines — ranking timers last is ours |
+| [workflow-skills](skills/workflow-skills/SKILL.md) | Lauren Tan | ~1:05:00 — skills as workflows, not command dumps |
+| [repeat-or-leave](skills/repeat-or-leave/SKILL.md) | Lauren Tan | ~51:30–52:00 — one-off: maybe nothing to fix; repeats across agents: amend the kitchen |
+| [scaled-verifiers](skills/scaled-verifiers/SKILL.md) | **Our adaptation** | ~50:30–51:00 sampling; ~54:30 one verifier instead of ten; ~57:30–58:00 one-way doors depend on verifiability |
+| [kitchen-time](skills/kitchen-time/SKILL.md) | **Our adaptation** | ~27:30–29:30 low-trust trap; ~47:00 gardening PRs. No prescribed time slice |
 
 ## Overlap with other plugins
 
 | Plugin | Use instead of duplicating |
 |---|---|
-| `trust-stack` | Earliest layer for an invariant (`environment-on-repeat`) |
+| `trust-stack` | Earliest layer for an invariant (`repeat-or-leave`) |
 | `intelli-route` | Route a goal; outer-loop handoff (`events-over-timers`) |
 | `pulse-memory` | Tagged sparse memory vs transcript dumps (`findings-first`) |
 | `premflow` | Capture after a findings review |
@@ -39,9 +36,8 @@ Illustration for `shared-scripts`: [examples/posting-check/README.md](examples/p
 
 ```bash
 grok plugin install ./michelin-kitchen --trust
+# slash: /michelin-kitchen <habit>
 ```
-
-Slash commands: `/shared-scripts`, `/findings-first`, `/events-over-timers`, `/workflow-skills`, `/no-rule-one-off`, `/environment-on-repeat`, `/scaled-verifiers`, `/kitchen-time`.
 
 ## Tests
 
@@ -49,6 +45,6 @@ Slash commands: `/shared-scripts`, `/findings-first`, `/events-over-timers`, `/w
 ./michelin-kitchen/test/test-thin.sh
 ```
 
-Eval dataset: [skills/michelin-kitchen/evals/evals.json](skills/michelin-kitchen/evals/evals.json).
+Eval dataset: [evals/evals.json](evals/evals.json). Cases are checkable pass/fail prompts; run manually or wire into SkillEvaluator when a runner exists for this plugin.
 
 Talk credit: [NOTICE.md](NOTICE.md).
