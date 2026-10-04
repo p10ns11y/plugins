@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/eva-tether-pretool.sh\"",
+            "command": "\"${GROK_PLUGIN_ROOT}/bin/eva-tether-pretool.sh\"",
             "timeout": 5
           }
         ]
