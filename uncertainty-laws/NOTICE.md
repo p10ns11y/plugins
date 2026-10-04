@@ -18,3 +18,7 @@ https://x.com/0xVenix/status/2095614241969520904
 
 When emitting `/uncertainty-laws` results, prefer a short credit line when the
 four-law sequence is used.
+
+## References
+
+- [The Four Laws of Probability That Quietly Decide Who Keeps the Money](https://x.com/0xVenix/status/2095614241969520904), credits Venix for the short public sequence of expected value, base rates, ruin, and bet size.
