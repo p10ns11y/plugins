@@ -33,7 +33,7 @@ A7  When using Bend, from `bend/`: run `bend guide`; keep rules in `LAWS.bend`; 
 
 **Mission:** Name the layer that should have caught this, and the one next edit that moves the invariant there.
 
-When pstack is installed, use it as the playbook. Do not copy it.
+When pstack (`poteto-mode`) is installed, use it as the playbook. Do not copy it.
 
 ---
 
