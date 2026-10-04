@@ -7,7 +7,7 @@ Essays (canonical prose) are under References.
 ## References
 
 - [Pulse instead of dump](https://captain.kingsparrow.space/focus/memory-issue), credits the canonical prose for a compact pulse instead of a context dump.
-- [Archive is not memory](https://captain.kingsparrow.space/focus/archive-not-memory), credits the canonical prose for the admissions rule that archive residue is not memory.
+- [Archive is not memory](https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory), credits the canonical prose for the admissions rule that archive residue is not memory.
 
 Former skill name: `archive-not-memory` (redirect stub).
 

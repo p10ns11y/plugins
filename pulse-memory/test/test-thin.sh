@@ -67,7 +67,7 @@ read = lambda path: path.read_text(errors="ignore")
 readme = read(root / "README.md")
 reference_lines = (
     "- [Pulse instead of dump](https://captain.kingsparrow.space/focus/memory-issue), credits the canonical prose for a compact pulse instead of a context dump.",
-    "- [Archive is not memory](https://captain.kingsparrow.space/focus/archive-not-memory), credits the canonical prose for the admissions rule that archive residue is not memory.",
+    "- [Archive is not memory](https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory), credits the canonical prose for the admissions rule that archive residue is not memory.",
 )
 parts = readme.split("## References", 1)
 check(len(parts) == 2 and "Essays (canonical prose)" in parts[0], "readme References heading")

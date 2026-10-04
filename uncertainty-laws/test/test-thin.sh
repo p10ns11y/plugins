@@ -63,7 +63,7 @@ check("0xVenix" not in blob and "2095614241969520904" not in blob, "agent text o
 restored = (
     ("uncertainty-laws", "https://x.com/0xVenix/status/2095614241969520904"),
     ("pulse-memory", "https://captain.kingsparrow.space/focus/memory-issue"),
-    ("pulse-memory", "https://captain.kingsparrow.space/focus/archive-not-memory"),
+    ("pulse-memory", "https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory"),
 )
 repo = root.parent
 plugins = sorted(path for path in repo.iterdir() if path.is_dir() and (path / "plugin.json").is_file())
