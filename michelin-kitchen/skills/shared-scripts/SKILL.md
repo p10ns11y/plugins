@@ -3,13 +3,13 @@ name: shared-scripts
 version: 0.2.0
 description: >
   When a job repeats across agents, extract deterministic glue into one script.
-  Lauren Tan kept the CLI inside the skill (~21:00–24:00). JSON stdout, a
-  scripts index, and no LLM in the hot path are ours.
+  Keep the CLI inside the skill. JSON stdout, a scripts index, and no LLM in
+  the hot path.
 ---
 
 # shared-scripts
 
-Lauren Tan (~21:00–24:00): agents kept rebuilding verification glue; she encoded deterministic parts in a CLI inside the skill (~23:30). **Our additions:** JSON stdout, a separate scripts index, and no LLM in the checker.
+When agents keep rebuilding verification glue, encode the deterministic parts in a CLI inside the skill. Use JSON stdout, a separate scripts index, and no LLM in the checker.
 
 Example shape: a job-posting open/closed checker — deterministic script, one JSON object per URL, one index line.
 
@@ -25,7 +25,7 @@ Example shape: a job-posting open/closed checker — deterministic script, one J
 
 1. Name the repeated job. What must every agent answer the same way?
 2. Diff what the last two agents did. That is the script spec.
-3. Write deterministic glue. **Our shape:** JSON to stdout, documented exit codes, no LLM inside.
+3. Write deterministic glue. JSON to stdout, documented exit codes, no LLM inside.
 4. Add a scripts-index entry: path, purpose, example call.
 5. Shrink the skill: keep judgment and when-to-run; delete rediscovered commands.
 6. Run once from a clean shell; keep sample output or a fixture.
