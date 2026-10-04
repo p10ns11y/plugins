@@ -35,6 +35,8 @@ agent plugin marketplace add https://github.com/p10ns11y/plugins.git
 
 The same command is `cursor-agent plugin marketplace add` when the program is installed under that name. Then run `/plugin`, open Marketplace, and install the plugin.
 
+`scripts/copy-cursor-skills.sh` copies skills into `~/.cursor/skills`.
+
 ---
 
 ## Layers (avoid confusion)
