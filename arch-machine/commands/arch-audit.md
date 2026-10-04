@@ -31,7 +31,7 @@ Markers: `[ok]` `[!]` `[x]` `[·]` + `## SUMMARY` with exit `0=clean 1=warn 2=fa
 ## Agent
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 TARGET="${ARGUMENTS:-global}"
 "$PLUGIN/bin/am-audit" $TARGET
 ```

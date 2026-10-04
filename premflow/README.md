@@ -7,9 +7,9 @@ interactive pomo and full `$EDITOR` journal stay outside the agent shell.
 
 | Command | Role |
 |---------|------|
-| `/init` | Check whether the CLI is on PATH (safe) |
-| `/init --yes` | After you consent: download, build, install CLI |
-| `/init --yes --force` | Rebuild/reinstall even if already present |
+| `/premflow:init` | Check whether the CLI is on PATH (safe) |
+| `/premflow:init --yes` | After you consent: download, build, install CLI |
+| `/premflow:init --yes --force` | Rebuild/reinstall even if already present |
 | `/note` `/win` `/task` | Capture via real CLI |
 | `/review` | Smart daily review |
 | `/coach` | Review + tasks + journal → coach (no invented facts) |
@@ -59,7 +59,7 @@ premflow              # prints help
 If either fails, slash commands that need the CLI will fail until this is fixed.
 
 **Optional later:** a package install will replace clone/build. Until then use
-manual install (this step) or `/init --yes` after the plugin is installed (step 3).
+manual install (this step) or `/premflow:init --yes` after the plugin is installed (step 3).
 
 ### Step 2 — Install this Grok plugin
 
@@ -84,12 +84,12 @@ Reload Grok, or in the Plugins tab press `r`.
 
 ### Step 3 — If the CLI is still missing
 
-1. In Grok, run **`/init`** (status only — safe).
+1. In Grok, run **`/premflow:init`** (status only — safe).
 2. The agent explains clone → build → `~/.local` install and **asks for consent**.
-3. Approve, then run **`/init --yes`** (or answer yes when asked).
+3. Approve, then run **`/premflow:init --yes`** (or answer yes when asked).
 4. Confirm: `command -v premflow`.
 
-Use **`/init --yes --force`** only to rebuild/reinstall on purpose.
+Use **`/premflow:init --yes --force`** only to rebuild/reinstall on purpose.
 
 ### Step 4 — Optional environment
 
@@ -129,6 +129,6 @@ users should stick to `/…` commands above.
 | Script | Used by | Role |
 |--------|---------|------|
 | `bin/pf-resolve` | other helpers | Resolve `premflow` from `PATH` or `PREMFLOW_BIN` |
-| `bin/pf-init` | `/init` | Status / consent install of CLI |
+| `bin/pf-init` | `/premflow:init` | Status / consent install of CLI |
 | `bin/pf-focus` | `/focus` | External TTY pomo |
 | `bin/pf-journal` | `/journal` | Agent-safe journal ensure (+ optional external editor) |

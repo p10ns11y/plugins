@@ -1,0 +1,83 @@
+{
+  "name": "p10ns11y-plugins",
+  "owner": {
+    "name": "p10ns11y"
+  },
+  "plugins": [
+    {
+      "name": "arch-machine",
+      "description": "Agent-as-TUI for arch-machine: archy control plane, thin-first sentinel, threat-focused audit, consent-gated expand. Prefer over gum tinfoil TUI.",
+      "source": "./arch-machine"
+    },
+    {
+      "name": "concordance",
+      "description": "Corroborate one closed decision. Proceed only when the decision-model label and the LLM label match and p_dm >= tau. Hold returns to the router.",
+      "source": "./concordance"
+    },
+    {
+      "name": "craft",
+      "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener.",
+      "source": "./craft"
+    },
+    {
+      "name": "eva-emptiness",
+      "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents, /eva starter, C+shell secure tether (consent compile), optional Rhai workflow (copy to .grok/workflows).",
+      "source": "./eva-emptiness"
+    },
+    {
+      "name": "intelli-route",
+      "description": "Route one goal onto at most four skills. pstack (Lauren Tan, MIT) when it is installed, otherwise the house row. Does not copy skill bodies or pstack.",
+      "source": "./intelli-route"
+    },
+    {
+      "name": "layout-content-view",
+      "description": "Layout-content-view stability plus lcv-implement companion for data-lcv marks. Not pixel snapshots. Web first.",
+      "source": "./layout-content-view"
+    },
+    {
+      "name": "michelin-kitchen",
+      "description": "Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills, and more. Several include our adaptations.",
+      "source": "./michelin-kitchen"
+    },
+    {
+      "name": "mission-map",
+      "description": "Mission-Impossible-style ops map: steps, calculated risks, what/how/when, replan on outside shocks. C PERT/MC kernels + Rust critical path. Slash /mission-map.",
+      "source": "./mission-map"
+    },
+    {
+      "name": "odysseus-navigator",
+      "description": "Faster intelli core-nailer: diagnose Odysseus mistakes, emit a Navigator, hook control-graph / EVA. No tether, no Rhai, no prior-fork circus.",
+      "source": "./odysseus-navigator"
+    },
+    {
+      "name": "premflow",
+      "description": "Capture notes, wins, tasks; review; coach; external pomo; agent-safe journal. CLI via PATH or /premflow:init (consent install from github.com/thecuriousts/premflow).",
+      "source": "./premflow"
+    },
+    {
+      "name": "pstack-map",
+      "description": "Playbook map from Cursor pstack (Lauren Tan / poteto, MIT) onto control-graph / EVA / house skills. Does not copy pstack bodies. House HITL wins on irreversible work.",
+      "source": "./pstack-map"
+    },
+    {
+      "name": "pulse-memory",
+      "description": "Pulse instead of dump: admit sparse, tagged memory (source, time, status, kind); resolve contradictions without averaging. SQLite archive + pulse workflow.",
+      "source": "./pulse-memory"
+    },
+    {
+      "name": "split-machine",
+      "description": "Place a job on the machine that can do it: Earth QPU, entanglement link, LEO radio handover, conjunction screen, GPU factory, BQP slice, System One decision, or System Two prose. Name the act. Low confidence does not automate.",
+      "source": "./split-machine"
+    },
+    {
+      "name": "trust-stack",
+      "description": "Put each invariant on the earliest layer that can hold it: shape, check, watch, skill, then a human guide. The codebase is the agent's memory. This plugin does not merge.",
+      "source": "./trust-stack"
+    },
+    {
+      "name": "uncertainty-laws",
+      "description": "Four napkin probability laws for decisions under uncertainty: expected value, base rates, variance/ruin, Kelly. Honest fog-breaking for finance, wealth, and life. Links to mission-map for path vs bet-size.",
+      "source": "./uncertainty-laws"
+    }
+  ]
+}

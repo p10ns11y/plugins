@@ -20,13 +20,13 @@ description: >-
 System install only — no personal project path fallbacks:
 
 ```bash
-PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /init"; exit 1; }
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /premflow:init"; exit 1; }
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 # Optional override for tests/packaging: PREMFLOW_BIN=/path/to/premflow
 ```
 
 CLI source: https://github.com/thecuriousts/premflow  
-Missing binary → user runs **`/init`**, then **`/init --yes`** after consent (or manual install in the plugin README).
+Missing binary → user runs **`/premflow:init`**, then **`/premflow:init --yes`** after consent (or manual install in the plugin README).
 
 ## Immutable rules
 
@@ -35,7 +35,7 @@ Missing binary → user runs **`/init`**, then **`/init --yes`** after consent (
 3. **Pomo:** never run multi-minute `premflow pomo` as a waiting tool call. Use `/focus` (agent runs `$PLUGIN/bin/pf-focus`) or print the paste-ready command.
 4. **Journal:** default `/journal` (agent runs `$PLUGIN/bin/pf-journal` / `journal --ensure`) — path only, no editor wait. Optional `/journal --open` for external editor.
 5. Confirm CLI success from real command output.
-6. **Speak slash commands** to the user (`/init --yes`, `/focus 25 "…"`), not `pf-*`.
+6. **Speak slash commands** to the user (`/premflow:init --yes`, `/focus 25 "…"`), not `pf-*`.
 
 ## Capture map
 
@@ -50,7 +50,7 @@ Missing binary → user runs **`/init`**, then **`/init --yes`** after consent (
 | Coach | `/coach` | gather + coach |
 | Focus / pomo | `/focus [plan] [context…]` | `$PLUGIN/bin/pf-focus` |
 | Journal | `/journal` · `/journal --open` | `$PLUGIN/bin/pf-journal` |
-| Init CLI | `/init` · `/init --yes` · `/init --yes --force` | `$PLUGIN/bin/pf-init` |
+| Init CLI | `/premflow:init` · `/premflow:init --yes` · `/premflow:init --yes --force` | `$PLUGIN/bin/pf-init` |
 
 ## Pomo policy (critical)
 
@@ -77,7 +77,7 @@ See [references/ledger-contract.md](references/ledger-contract.md):
 
 ## Slash commands
 
-`/init`, `/note`, `/win`, `/task`, `/review`, `/coach`, `/focus`, `/journal` — same policies.
+`/premflow:init`, `/note`, `/win`, `/task`, `/review`, `/coach`, `/focus`, `/journal` — same policies.
 
 ## Coach (critical)
 

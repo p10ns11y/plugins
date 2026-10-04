@@ -5,10 +5,10 @@ argument-hint: what went well
 
 # /win — celebrate into the ledger
 
-Assumes `premflow` is on PATH (system install). If missing → suggest `/init`, then `/init --yes` after consent.
+Assumes `premflow` is on PATH (system install). If missing → suggest `/premflow:init`, then `/premflow:init --yes` after consent.
 
 ```bash
-PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /init"; exit 1; }
+PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /premflow:init"; exit 1; }
 $PF win "$ARGUMENTS"
 ```
 

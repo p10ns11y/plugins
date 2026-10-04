@@ -25,7 +25,7 @@ fallback** (zsh preferred when available; bash and other POSIX shells work).
 Agent-internal implementation (do not print this as the user instruction):
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/eva-tether-build" --status
 ```
 
@@ -51,7 +51,7 @@ the user running `/eva-tether-init --yes`, proceed.
 Agent-internal (maps from `/eva-tether-init --yes` / `--force`):
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/eva-tether-build" --yes $ARGUMENTS
 ```
 
@@ -64,7 +64,7 @@ PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plug
 ## Step 4 — Verify
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 test -x "$PLUGIN/bin/eva-tether"
 printf '%s' '{"toolInput":"git push origin main"}' | "$PLUGIN/bin/eva-tether" --mode=grok
 # expect: decision deny JSON

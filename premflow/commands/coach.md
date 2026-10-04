@@ -7,7 +7,7 @@ argument-hint: "[optional focus] e.g. evening · stuck on X · plan tomorrow"
 
 You are a **private daily coach**. Use only what premflow actually returns. Optional `$ARGUMENTS` is the user's ask (e.g. evening, stuck, plan tomorrow).
 
-Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/init --yes` with consent).
+Assumes `premflow` is on PATH. If missing → tell user to run `/premflow:init` (then `/premflow:init --yes` with consent).
 
 ## Policy
 
@@ -22,8 +22,8 @@ Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/i
 Agent-internal:
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
-PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /init"; exit 1; }
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
+PF=$(command -v premflow) || { echo "premflow not on PATH — suggest /premflow:init"; exit 1; }
 export PREMFLOW_BIN="$PF"
 
 $PF review
@@ -72,4 +72,4 @@ Reply in this structure (keep it scannable):
 - Inventing “you completed 5 pomos” without stats/review  
 - Running bare `premflow journal` (blocks on editor)  
 - Running `premflow pomo 25` and waiting in the agent shell  
-- Telling the user to run `pf-focus` / `pf-init` instead of `/focus` / `/init`  
+- Telling the user to run `pf-focus` / `pf-init` instead of `/focus` / `/premflow:init`  

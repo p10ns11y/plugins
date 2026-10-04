@@ -27,7 +27,7 @@ export EVA_TETHER_MODE
 
 # Resolve directory containing this script (POSIX; works under zsh/bash/dash).
 HERE=$(CDPATH= cd -- "$(dirname -- "$EVA_TETHER_ARG0")" && pwd)
-ROOT=${GROK_PLUGIN_ROOT:-}
+ROOT=${CLAUDE_PLUGIN_ROOT:-${GROK_PLUGIN_ROOT:-}}
 if [ -z "$ROOT" ]; then
   ROOT=$(CDPATH= cd -- "$HERE/.." && pwd)
 fi

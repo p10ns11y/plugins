@@ -18,7 +18,7 @@ argument-hint: "[--print-root] | [--run]"
 ## Agent
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/am-archy" $ARGUMENTS
 ```
 

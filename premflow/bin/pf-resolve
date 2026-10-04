@@ -27,8 +27,8 @@ cat >&2 <<'EOF'
 premflow CLI not found on PATH.
 
 In Grok:
-  /init           # status
-  /init --yes     # after you consent — clone, build, install
+  /premflow:init           # status
+  /premflow:init --yes     # after you consent — clone, build, install
 
 Or manual install: https://github.com/thecuriousts/premflow
   git clone https://github.com/thecuriousts/premflow.git

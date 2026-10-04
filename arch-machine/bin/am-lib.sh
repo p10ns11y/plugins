@@ -4,8 +4,9 @@
 set -euo pipefail
 
 am_plugin_root() {
-  if [[ -n "${GROK_PLUGIN_ROOT:-}" ]]; then
-    printf '%s\n' "$GROK_PLUGIN_ROOT"
+  local root="${CLAUDE_PLUGIN_ROOT:-${GROK_PLUGIN_ROOT:-}}"
+  if [[ -n "$root" ]]; then
+    printf '%s\n' "$root"
     return 0
   fi
   local here

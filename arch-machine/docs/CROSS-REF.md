@@ -63,7 +63,7 @@ Env useful for the plugin:
 | Variable | Role |
 |----------|------|
 | `ARCH_MACHINE_ROOT` | Force which checkout to use |
-| `GROK_PLUGIN_ROOT` | Set automatically when the plugin runs |
+| `CLAUDE_PLUGIN_ROOT` | Plugin directory when the plugin runs. `GROK_PLUGIN_ROOT` is accepted as well. |
 
 ---
 
