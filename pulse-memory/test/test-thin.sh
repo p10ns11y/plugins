@@ -65,11 +65,14 @@ def check(cond, msg):
 
 read = lambda path: path.read_text(errors="ignore")
 readme = read(root / "README.md")
-check(
-    "https://captain.kingsparrow.space/focus/memory-issue" in readme
-    and "https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory" in readme,
-    "readme carries the credit",
+reference_lines = (
+    "- [Pulse instead of dump](https://captain.kingsparrow.space/focus/memory-issue), credits the canonical prose for a compact pulse instead of a context dump.",
+    "- [Archive is not memory](https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory), credits the canonical prose for the admissions rule that archive residue is not memory.",
 )
+parts = readme.split("## References", 1)
+check(len(parts) == 2 and "Essays (canonical prose)" in parts[0], "readme References heading")
+missing = [line for line in reference_lines if line not in parts[1].splitlines()]
+check(not missing, "readme reference lines" if not missing else "readme reference lines missing")
 agent = sorted((root / "skills").glob("*/SKILL.md"))
 agent += sorted((root / "skills").glob("*/references/*.md"))
 agent += sorted((root / "agents").glob("*.md"))

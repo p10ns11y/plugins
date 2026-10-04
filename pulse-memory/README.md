@@ -2,10 +2,12 @@
 
 **Pulse instead of dump.** Admissions filter for agent recall: sparse, dated, sourced snippets — not transcript floods. Resolves contradictions without averaging them into a fluent lie.
 
-Essays (canonical prose):
+Essays (canonical prose) are under References.
 
-- [Pulse instead of dump](https://captain.kingsparrow.space/focus/memory-issue)
-- [Archive is not memory](https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory)
+## References
+
+- [Pulse instead of dump](https://captain.kingsparrow.space/focus/memory-issue), credits the canonical prose for a compact pulse instead of a context dump.
+- [Archive is not memory](https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory), credits the canonical prose for the admissions rule that archive residue is not memory.
 
 Former skill name: `archive-not-memory` (redirect stub).
 

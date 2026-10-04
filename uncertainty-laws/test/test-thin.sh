@@ -62,30 +62,41 @@ check("0xVenix" not in blob and "2095614241969520904" not in blob, "agent text o
 
 restored = (
     ("uncertainty-laws", "https://x.com/0xVenix/status/2095614241969520904"),
+    ("pulse-memory", "https://captain.kingsparrow.space/focus/memory-issue"),
+    ("pulse-memory", "https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory"),
 )
 repo = root.parent
+plugins = sorted(path for path in repo.iterdir() if path.is_dir() and (path / "plugin.json").is_file())
+allowed = {"NOTICE.md", "README.md", "plugin.json", "marketplace.json"}
+faces = []
+for plugin_dir in plugins:
+    faces += sorted(plugin_dir.glob("**/SKILL.md"))
+    faces += sorted(plugin_dir.glob("**/references/*.md"))
+    faces += sorted(plugin_dir.glob("**/agents/*.md"))
+    faces += sorted(plugin_dir.glob("**/commands/*.md"))
+    faces += sorted(
+        path
+        for path in plugin_dir.rglob("*")
+        if path.is_file()
+        and path.name not in allowed
+        and ("flow" in path.name.lower() or "/.grok/workflows/" in path.as_posix())
+    )
+seen = set()
+agent_files = []
+for path in faces:
+    if not path.is_file() or path.name in allowed:
+        continue
+    key = path.resolve()
+    if key in seen:
+        continue
+    seen.add(key)
+    agent_files.append(path)
 for plugin_name, url in restored:
     plugin = repo / plugin_name
     placed = [name for name in ("NOTICE.md", "README.md") if (plugin / name).is_file() and url in read(plugin / name)]
     check(bool(placed), f"restored link in notice or readme: {url}" if placed else f"restored link missing from notice and readme: {url}")
-    faces = []
-    faces += sorted(plugin.glob("**/SKILL.md"))
-    faces += sorted(plugin.glob("**/references/*.md"))
-    faces += sorted(plugin.glob("**/agents/*.md"))
-    faces += sorted(plugin.glob("**/commands/*.md"))
-    faces += sorted(path for path in plugin.rglob("*") if path.is_file() and ("flow" in path.name.lower() or "/.grok/workflows/" in path.as_posix()))
-    seen = set()
-    hits = []
-    for path in faces:
-        if not path.is_file():
-            continue
-        key = path.resolve()
-        if key in seen:
-            continue
-        seen.add(key)
-        if url in read(path):
-            hits.append(str(path.relative_to(plugin)))
-    check(not hits, "restored link stays out of agent files" if not hits else "restored link in agent files " + " ".join(hits))
+    hits = [str(path.relative_to(repo)) for path in agent_files if url in read(path)]
+    check(not hits, "restored link stays out of agent files" if not hits else f"restored link in agent files {url} " + " ".join(hits))
 sys.exit(fail)
 PY
 if [[ "$python_rc" -ne 0 ]]; then
