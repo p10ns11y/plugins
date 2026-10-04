@@ -22,7 +22,7 @@ Modules: `security`, `ml_ai`, `development`, `productivity`, `system`
 ## Agent
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 # Without --yes in $ARGUMENTS → am-expand fails closed
 "$PLUGIN/bin/am-expand" $ARGUMENTS
 ```

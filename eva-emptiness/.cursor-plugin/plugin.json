@@ -1,0 +1,12 @@
+{
+  "name": "eva-emptiness",
+  "version": "0.2.0",
+  "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents, /eva starter, C+shell secure tether (consent compile), optional Rhai workflow (copy to .grok/workflows).",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "hooks": "./cursor/hooks/hooks.json"
+}

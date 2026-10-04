@@ -3,9 +3,9 @@ description: Check or install the premflow CLI (consent-gated clone + build + us
 argument-hint: "[--status] | [--yes] [--force]"
 ---
 
-# /init — premflow CLI install (with consent)
+# /premflow:init — premflow CLI install (with consent)
 
-**User-facing surface:** `/init`, `/init --yes`, `/init --yes --force`.  
+**User-facing surface:** `/premflow:init`, `/premflow:init --yes`, `/premflow:init --yes --force`.  
 Do not tell the user to run `pf-init` in a shell — that binary is agent-internal.
 
 The plugin assumes the `premflow` CLI is already on **PATH**. This command
@@ -22,14 +22,14 @@ the CLI from the public repo.
 2. Status checks are always safe (read-only).
 3. If the user has **not** consented, explain what will happen and **ask** first.
 4. No personal machine paths. System PATH only.
-5. Talk to the user in **slash-command** terms (`/init --yes`), not `pf-init`.
+5. Talk to the user in **slash-command** terms (`/premflow:init --yes`), not `pf-init`.
 
 ## Step 1 — Status (always run first)
 
 Agent-internal implementation (do not print this as the user instruction):
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/pf-init" --status
 ```
 
@@ -47,22 +47,22 @@ Tell the user clearly:
 
 **Ask:** *May I download and install premflow now?*  
 Only after a clear **yes**, or if `$ARGUMENTS` already contains `--yes` from
-the user running `/init --yes`, proceed.
+the user running `/premflow:init --yes`, proceed.
 
 ## Step 3 — Install (consent given)
 
-Agent-internal (maps from `/init --yes` / `/init --yes --force`):
+Agent-internal (maps from `/premflow:init --yes` / `/premflow:init --yes --force`):
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/pf-init" --yes $ARGUMENTS
 ```
 
 | User runs | Agent runs |
 |-----------|------------|
-| `/init` | `pf-init --status` |
-| `/init --yes` | `pf-init --yes` |
-| `/init --yes --force` | `pf-init --yes --force` |
+| `/premflow:init` | `pf-init --status` |
+| `/premflow:init --yes` | `pf-init --yes` |
+| `/premflow:init --yes --force` | `pf-init --yes --force` |
 
 ## Step 4 — Verify
 

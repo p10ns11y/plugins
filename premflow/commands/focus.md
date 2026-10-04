@@ -5,7 +5,7 @@ argument-hint: "[plan] [context…]" e.g. 25 ship PR  or  20,4 deep work
 
 # /focus — interactive pomo (external TTY only)
 
-Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/init --yes` with consent).
+Assumes `premflow` is on PATH. If missing → tell user to run `/premflow:init` (then `/premflow:init --yes` with consent).
 
 ## Policy (do not violate)
 
@@ -26,7 +26,7 @@ Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/i
 ## Agent action
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/pf-focus" $ARGUMENTS
 ```
 

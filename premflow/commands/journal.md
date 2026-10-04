@@ -5,7 +5,7 @@ argument-hint: "[--open] optional external editor"
 
 # /journal — ensure path; never hang the agent on $EDITOR
 
-Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/init --yes` with consent).
+Assumes `premflow` is on PATH. If missing → tell user to run `/premflow:init` (then `/premflow:init --yes` with consent).
 
 ## Policy (do not violate)
 
@@ -23,7 +23,7 @@ Assumes `premflow` is on PATH. If missing → tell user to run `/init` (then `/i
 ## Agent action (default)
 
 ```bash
-PLUGIN="${GROK_PLUGIN_ROOT:?GROK_PLUGIN_ROOT not set — open via installed plugin}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$GROK_PLUGIN_ROOT}"
 "$PLUGIN/bin/pf-journal"
 # equivalent CLI: premflow journal --ensure
 ```
