@@ -1,5 +1,5 @@
 ---
-description: Specifier, coder, cleaner, hardener, QA. CRAP on touched functions; mutation testing by the hardener.
+description: Specifier, coder, cleaner, hardener, QA. CRAP on touched functions; mutation testing by the hardener. LAWS.bend before PROOF.bend.
 argument-hint: spec path or story name
 ---
 

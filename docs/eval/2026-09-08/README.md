@@ -63,7 +63,7 @@ If NVIDIA returns HTTP 429 or judge timeouts, wait and rerun. Keep `--n-concurre
 
 ## How (tools → tasks)
 
-Same eval-host stack as skills repo:
+Same laptop-1 stack as skills repo:
 
 ```text
 Orca orchestration Run + Grok/cursor workers
@@ -86,4 +86,4 @@ Still open: a publication-complete Tier 3 Skill Lift with scored with-skill vers
 
 ## Owner
 
-Steward · eval-host · paired with skills eval 2026-09-08.
+maintainer · laptop-1 · paired with skills eval 2026-09-08.

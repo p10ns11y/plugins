@@ -2,13 +2,13 @@
 name: repeat-or-leave
 version: 0.2.0
 description: >
-  One-off miss: maybe nothing to fix (~50:30). Same shortcut across several
-  agents: amend the kitchen (~50:30–51:00). Use trust-stack for the layer.
+  One-off miss: maybe nothing to fix. Same shortcut across several
+  agents: amend the kitchen. Use trust-stack for the layer.
 ---
 
 # repeat-or-leave
 
-Lauren Tan (~50:30–51:00): when sampling pull requests, a one-off bad pattern may mean "maybe there's nothing to fix there." When multiple agents repeat the same shortcut, amend skills, constraints, and lint.
+When sampling pull requests, a one-off bad pattern may mean nothing to fix there. When multiple agents repeat the same shortcut, amend skills, constraints, and lint.
 
 ## When
 

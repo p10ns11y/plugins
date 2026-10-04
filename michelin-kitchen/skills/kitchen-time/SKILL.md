@@ -2,14 +2,14 @@
 name: kitchen-time
 version: 0.2.0
 description: >
-  Our adaptation. Lauren Tan described the low-trust trap and dull knives
-  (~26:30–28:30) and gardening PRs (~46:00). She did not prescribe a time
-  slice.
+  Invest before scaling. The low-trust trap is a kitchen that was never set
+  up: dull knives, no garlic press. Many pull requests are gardening and
+  environment work. No calendar slice is prescribed.
 ---
 
 # kitchen-time
 
-**Our adaptation.** Lauren Tan (~26:30–28:30): stuck micromanaging agents because the kitchen was never set up — dull knives, no garlic press. (~46:00): many PRs are gardening and environment work. She did **not** assign a calendar slice. This skill is our prompt to invest before scaling.
+Stuck micromanaging agents because the kitchen was never set up: dull knives, no garlic press. Many pull requests are gardening and environment work. No calendar slice is assigned. Invest before scaling.
 
 ## When
 
@@ -24,7 +24,7 @@ description: >
 1. Name the proxy work you did recently.
 2. Pick one investment that removes it: script (`shared-scripts`), event hook (`events-over-timers`), invariant (`trust-stack` / `repeat-or-leave`), or verify skill.
 3. Do not open a feature PR until that investment has verify or a findings row.
-4. Count gardening PRs honestly (~46:00).
+4. Count gardening PRs honestly.
 5. Re-evaluate trust after the investment lands.
 
 ## Emit
@@ -33,7 +33,6 @@ description: >
 ## Kitchen time
 | Field | Value |
 |-------|--------|
-| **adaptation** | yes — ours |
 | **proxy_work** | |
 | **investment** | script \| hook \| constraint \| verify |
 | **verify** | command or missing |

@@ -2,13 +2,14 @@
 name: findings-first
 version: 0.2.0
 description: >
-  Append findings to a document and review every few days for patterns
-  (~48:00). Before pinging anyone and pointer-only notification are ours.
+  Append findings to a document and review every few days for patterns.
+  Write the file before pinging anyone. A notification is only a pointer
+  to the file.
 ---
 
 # findings-first
 
-Lauren Tan (~48:00): tell the agent to append observations to a document; review every few days; cluster before fixing. **Our additions:** write to the file before pinging anyone; if someone must know, the ping is only a pointer to the file.
+Append observations to a document. Review every few days. Cluster before fixing. Write to the file before pinging anyone. If someone must know, the ping is only a pointer to the file.
 
 ## When
 
