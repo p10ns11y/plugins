@@ -57,6 +57,48 @@ else
   bad "Bend proof of the trust laws"
 fi
 
+python_rc=0
+python3 - "$ROOT" <<'PY' || python_rc=$?
+import re, sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+fail = 0
+
+def ok(msg):
+    print(f"ok  {msg}")
+
+def bad(msg):
+    global fail
+    print(f"FAIL {msg}")
+    fail += 1
+
+def check(cond, msg):
+    (ok if cond else bad)(msg)
+
+read = lambda path: path.read_text(errors="ignore")
+notice = read(root / "NOTICE.md")
+check(
+    "Lauren Tan" in notice
+    and "poteto-mode" in notice
+    and "2102050467505430555" in notice
+    and "production setup" in notice,
+    "notice carries the credit",
+)
+agent = sorted((root / "skills").glob("*/SKILL.md"))
+agent += sorted((root / "skills").glob("*/references/*.md"))
+agent += sorted((root / "agents").glob("*.md"))
+agent += sorted((root / "commands").glob("*.md"))
+cursor_commands = root / "cursor" / "commands"
+if cursor_commands.is_dir():
+    agent += sorted(cursor_commands.glob("*.md"))
+agent_re = re.compile(r"robert\s+c\.?\s+martin|\bmartin\b|uncle\s+bob|matt\s+pocock|house\s+rule|\bnot\s+his\b|\bhe\b|\bhis\b|savoia|bob\s+evans|crap4j|fundamentals\s+in\s+the\s+age\s+of\s+ai|zcLPGC-tvgk|youtu\.?be|\b\d:\d\d:\d\d\b|\b\d{1,2}\s+aug(ust)?\s+20\d\d\b|lauren\s+tan|\bpoteto\b(?!-mode)|mn9dggmlyso|~\d+:\d\d|our\s+additions|our\s+adaptation", re.I)
+agent_bad = [f"{path.relative_to(root)}:{num}" for path in agent for num, line in enumerate(read(path).splitlines(), 1) if agent_re.search(line)]
+check(not agent_bad, "agent text stays actionable" if not agent_bad else "agent text " + " ".join(agent_bad))
+sys.exit(fail)
+PY
+if [[ "$python_rc" -ne 0 ]]; then fail=$((fail + python_rc)); fi
+
 echo "---"
 if [[ "$fail" -ne 0 ]]; then
   echo "$fail failure(s)"

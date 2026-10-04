@@ -10,7 +10,7 @@ description: >
 
 # trust-stack
 
-> **Load rule:** This file owns the layer. Tables live in [references/layers.md](references/layers.md). Open that file only to pick the row. Do not paste the talk.
+> **Load rule:** This file owns the layer. Tables live in [references/layers.md](references/layers.md). Open that file only to pick the row. Do not paste outside prose.
 
 ```text
 // Signature
@@ -33,7 +33,7 @@ A7  When using Bend, from `bend/`: run `bend guide`; keep rules in `LAWS.bend`; 
 
 **Mission:** Name the layer that should have caught this, and the one next edit that moves the invariant there.
 
-pstack (`poteto-mode`) is the playbook when it is installed. This skill does not copy it. Credit Lauren Tan, MIT.
+When pstack (`poteto-mode`) is installed, use it as the playbook. Do not copy it.
 
 ---
 
@@ -103,4 +103,4 @@ Slash: `/trust-stack`.
 - Not a merge bot, a review-bot install, or a Bend compiler.
 - A Bend proof is the shape layer. Bend 2 is new, the checker is young, and a green proof can still be wrong.
 - Does not score a pull-request count as success.
-- Does not claim the talk's production setup. The card is the procedure.
+- The card is the procedure.

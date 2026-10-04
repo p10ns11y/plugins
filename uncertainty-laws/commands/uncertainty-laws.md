@@ -34,4 +34,3 @@ Load skill **uncertainty-laws**. Expand `references/four-laws.md` and `reference
 | **mm_hook** | mission-map node id/class or none |
 ```
 
-Credit napkin framing: Venix https://x.com/0xVenix/status/2095614241969520904

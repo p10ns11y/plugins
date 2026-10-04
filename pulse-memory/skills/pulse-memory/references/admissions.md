@@ -1,9 +1,6 @@
 # Admissions (expand only if SKILL.md is ambiguous)
 
-Essays (canonical prose; this file is the operational extract):
-
-- Pulse / traffic: https://captain.kingsparrow.space/focus/memory-issue
-- Archive / admissions: https://captain.kingsparrow.space/focus/memory-issue/archive-not-memory
+This file is the operational extract.
 
 ## Four kinds (form is not memory; reuse is)
 
