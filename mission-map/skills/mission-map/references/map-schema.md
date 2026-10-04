@@ -2,6 +2,7 @@
 
 ```text
 G            : checkable arrival
+g_by         : optional YYYY-MM-DD; ignored when absent or malformed
 x            : named facts (no PII dumps)
 stages[]     : id, what (public-safe label), how, when_a, when_m, when_b, deadline?, owner,
                class ∈ {Do, Risk, Wait, Park, Done}, depends_on[],

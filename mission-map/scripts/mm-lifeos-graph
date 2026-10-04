@@ -117,8 +117,62 @@ fi
 
 when="$(date +%Y-%m-%dT%H:%M:%S%z)"
 day="$(date +%Y-%m-%d)"
-eval "$(python3 - "$NOW_JSON" "${next_do:-}" <<'PY'
-import json, os, shlex, sys
+eval "$(python3 - "$NOW_JSON" "${next_do:-}" "${path_te:-}" "${g:-}" <<'PY'
+import calendar, datetime, json, os, re, shlex, sys
+
+_MONTHS = {n: i for i, n in enumerate(
+    "january february march april may june july august september october november december".split(),
+    1,
+)}
+
+def _parse_iso(raw):
+    if not isinstance(raw, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", raw.strip()):
+        return None
+    try:
+        return datetime.date.fromisoformat(raw.strip())
+    except ValueError:
+        return None
+
+def _target_date(g_text, g_by):
+    found = _parse_iso(g_by)
+    if found:
+        return found
+    names = "|".join(_MONTHS)
+    hit = re.search(
+        rf"\b(?:(early|mid|late)\s+)?({names})\s+(\d{{4}})\b",
+        g_text or "",
+        re.IGNORECASE,
+    )
+    if not hit:
+        return None
+    mark = (hit.group(1) or "").lower()
+    month = _MONTHS[hit.group(2).lower()]
+    year = int(hit.group(3))
+    if mark == "early":
+        day = 10
+    elif mark == "mid":
+        day = 20
+    else:
+        day = calendar.monthrange(year, month)[1]
+    return datetime.date(year, month, day)
+
+def _today():
+    return _parse_iso(os.environ.get("MISSION_MAP_TODAY") or "") or datetime.date.today()
+
+def _arrive(g_text, g_by, weeks):
+    target = _target_date(g_text, g_by)
+    if target is None:
+        return g_text
+    try:
+        span = datetime.timedelta(days=float(weeks) * 7.0)
+    except (TypeError, ValueError):
+        span = datetime.timedelta(0)
+    today = _today()
+    if today > target:
+        return g_text + " (stale: the target date has passed; restate the goal)"
+    if today + span > target:
+        return g_text + " (stale: the remaining chain runs past the target date; restate the goal)"
+    return g_text
 
 m = json.load(open(sys.argv[1]))
 nid = (sys.argv[2] if len(sys.argv) > 2 else "") or ""
@@ -342,17 +396,31 @@ def lab(i):
     st = by_id.get(i) or {}
     return (st.get("what") or i or "").strip()
 
+_tick = m.get("tick") if isinstance(m.get("tick"), dict) else {}
+_named = str(_tick.get("named_do") or "").strip()
+_has_do = any((s.get("class") or "").lower() == "do" for s in stages)
+if nid:
+    _next_human = lab(nid)
+elif _has_do:
+    _next_human = act_title
+else:
+    _next_human = _named or "Nothing to do now; waiting on them."
+
 print("act_title=" + shlex.quote(act_title))
 print("act_body=" + shlex.quote(act_local))
 print("act_pub=" + shlex.quote(act_pub))
-print("next_human=" + shlex.quote(lab(nid) if nid else act_title))
+print("next_human=" + shlex.quote(_next_human))
 print("time_note=" + shlex.quote((m.get("time_note") or "").strip()))
-_tick = m.get("tick") if isinstance(m.get("tick"), dict) else {}
 print("tick_date=" + shlex.quote(str(_tick.get("date") or "")))
 print("tick_cos=" + shlex.quote(str(_tick.get("cos") if _tick.get("cos") is not None else "")))
 print("tick_did=" + shlex.quote(str(_tick.get("did") or "")))
 print("tick_why=" + shlex.quote(str(_tick.get("why") or "")))
 print("tick_named=" + shlex.quote(str(_tick.get("named_do") or "")))
+print("arrive=" + shlex.quote(_arrive(
+    sys.argv[4] if len(sys.argv) > 4 else str(m.get("g") or ""),
+    m.get("g_by"),
+    sys.argv[3] if len(sys.argv) > 3 else "",
+)))
 
 def pert(s):
     if (s.get("class") or "").lower() == "done":
@@ -393,7 +461,7 @@ Contact mail and posting URLs: \`~/.grok/mission-maps/contacts.md\`.
 
 | | |
 |--|--|
-| **Arrive when** | $g |
+| **Arrive when** | $arrive |
 | **Do this now** | ${next_human:-$act_title} |
 | **Live thread (intro already happened)** | ${live_te:-$path_te} weeks typical |
 | **If that thread dies** | you usually know within ~1 week of silence — not 12 weeks |
