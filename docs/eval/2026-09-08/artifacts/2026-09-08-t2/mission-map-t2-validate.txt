@@ -44,8 +44,8 @@
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
       json        
-/home/sustainableabundance/orca/workspaces/plugins/shrimpfish/docs/eval/2026-09-
+<home>/<workspace>/docs/eval/2026-09-
 08/artifacts/2026-09-08-t2/skillevaluator-output-20260908113239.json
       markdown    
-/home/sustainableabundance/orca/workspaces/plugins/shrimpfish/docs/eval/2026-09-
+<home>/<workspace>/docs/eval/2026-09-
 08/artifacts/2026-09-08-t2/skillevaluator-output-20260908113239.md
