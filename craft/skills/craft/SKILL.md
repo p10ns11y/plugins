@@ -3,14 +3,14 @@ name: craft
 version: 0.1.0
 description: >
   Specifier, coder, cleaner, hardener, QA. CRAP on touched functions;
-  mutation testing by the hardener.
-  Use for /craft, CRAP, or mutation score on touched functions.
+  mutation testing by the hardener. Optional LAWS.bend. PROOF.bend imports it.
+  Use for /craft, CRAP, mutation score, or a Bend proof.
 ---
 
 # craft
 
 ```text
-A1  The specifier writes Gherkin and a QA procedure from the spec before a coder runs.
+A1  The specifier writes Gherkin, a QA procedure, and optional LAWS.bend before a coder runs.
 A2  CRAP and mutation score come from the tools, on functions the change touched.
 A3  Boy-scout cleanup stays inside the touched files.
 A4  One reason to change per module. A full rewrite waits until a seam cannot carry the move.
@@ -20,9 +20,9 @@ A5  This skill does not merge.
 ## Steps
 
 1. Specifier. [references/acceptance.md](references/acceptance.md).
-2. Coder. Unit tests and the implementation.
+2. Coder. Unit tests and the implementation. When LAWS.bend exists, write PROOF.bend that imports it, then run `craft/test/check-proof.sh`. Exit 2 means bend is missing. Report a hole. Do not weaken the law.
 3. Cleaner. `crap-score.py` with `--max` from [references/thresholds.md](references/thresholds.md).
-4. Hardener. `mutation-score.py` with `--min` from the same page.
+4. Hardener. `mutation-score.py` with `--min` from the same page, on non-Bend code.
 5. QA. Run the procedure as a script.
 6. Emit the card.
 
@@ -52,4 +52,4 @@ A5  This skill does not merge.
 
 ## Done when
 
-Acceptance existed before the first production edit. CRAP and mutation on the touched functions meet the thresholds, or the card names the command that failed. Scout stayed inside touched files. No merge.
+Acceptance existed before the first production edit. CRAP and mutation on the touched functions meet the thresholds, or the card names the command that failed. When LAWS.bend exists, `craft/test/check-proof.sh` prints ALL PROOFS CHECK. Scout stayed inside touched files. No merge.

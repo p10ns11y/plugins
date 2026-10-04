@@ -11,8 +11,9 @@ kind_of() {
   b="${p##*/}"
   e="${b##*.}"
   e="${e,,}"
-  if [[ "$p" =~ (^|/)tests?/ || "$b" == test_*.py || "$b" == *_test.py || "$b" =~ \.(spec|test)\.(py|js|jsx|ts|tsx|java)$ ]]; then echo test
-  elif [[ "$e" =~ ^(py|js|jsx|mjs|cjs|ts|tsx|go|rs|c|cc|cpp|h|hpp|java|kt|scala|rb|php|swift|cs|vue|svelte|lua|sh|sql|css|html)$ ]]; then echo prod
+  if [[ "$b" == LAWS.bend ]]; then echo accept
+  elif [[ "$p" =~ (^|/)tests?/ || "$b" == test_*.py || "$b" == *_test.py || "$b" =~ \.(spec|test)\.(py|js|jsx|ts|tsx|java)$ ]]; then echo test
+  elif [[ "$e" == bend || "$e" =~ ^(py|js|jsx|mjs|cjs|ts|tsx|go|rs|c|cc|cpp|h|hpp|java|kt|scala|rb|php|swift|cs|vue|svelte|lua|sh|sql|css|html)$ ]]; then echo prod
   elif [[ "$p" == *.feature || "$p" =~ (^|/)features/ || "$p" =~ (^|/)qa/ ]]; then echo accept
   elif [[ "$e" =~ ^(md|rst|txt|adoc|markdown)$ ]]; then echo doc
   elif [[ "$b" != *.* || "$b" == .* || "$e" =~ ^(yml|yaml|json|toml|ini|cfg|conf|csv|tsv|xml|lock|properties|png|jpg|jpeg|gif|svg|webp|ico)$ || "$p" =~ (^|/)fixtures/ ]]; then echo neutral
@@ -63,7 +64,7 @@ check_range() {
   fi
 }
 apply_repo() {
-  local name="$1" expect="$2" src="$3" dir step got=fail
+  local name="$1" expect="$2" src="$3" dir step got=fail msg
   dir="$(mktemp -d)"
   git -C "$dir" init -q
   git -C "$dir" config user.email craft
@@ -74,7 +75,9 @@ apply_repo() {
     find "$dir" -path "$dir/.git" -prune -o -type f -exec touch {} +
     git -C "$dir" add -A && git -C "$dir" commit -qm step
   done
-  (cd "$dir" && check_range HEAD >/dev/null) && got=pass
+  msg="$(cd "$dir" && check_range HEAD 2>&1 || true)"
+  [[ -z "$msg" ]] && got=pass
+  [[ "$name" == fail-laws && "$msg" != *"acceptance after production"* ]] && bad "fail-laws reason"
   if [[ "$name" == pass-first ]]; then
     (cd "$dir" && check_range HEAD~1..HEAD >/dev/null) && ok "range-base" || bad "range-base"
   fi

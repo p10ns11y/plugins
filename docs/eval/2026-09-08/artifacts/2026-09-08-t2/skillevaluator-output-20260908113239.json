@@ -58,7 +58,7 @@
           "check": "manifest_exists",
           "message": "Found skill manifest: SKILL.md",
           "metadata": {
-            "file_path": "/home/sustainableabundance/orca/workspaces/plugins/shrimpfish/mission-map/skills/mission-map/SKILL.md"
+            "file_path": "<home>/<workspace>/mission-map/skills/mission-map/SKILL.md"
           }
         },
         {
@@ -642,7 +642,7 @@
       "WORKFLOWS.author_format": "high",
       "LICENSE.*": "critical"
     },
-    "source": "/home/sustainableabundance/.local/share/uv/tools/skillevaluator/lib/python3.13/site-packages/skillevaluator/config/profiles/external.yaml"
+    "source": "<home>/.local/share/uv/tools/skillevaluator/lib/python3.13/site-packages/skillevaluator/config/profiles/external.yaml"
   },
   "gating": {
     "tiers": {

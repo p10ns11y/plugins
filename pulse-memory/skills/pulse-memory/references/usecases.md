@@ -60,11 +60,11 @@ Use when operator dump and live notes have drifted.
 ```json
 {
   "mode": "both",
-  "thinking_path": "/home/you/life-os/Projects/collab-finder/sessions/2026-08-29.md",
-  "harness_path": "/home/you/life-os/UI/Dashboard.md",
+  "thinking_path": "<home>/life-os/Projects/collab-finder/sessions/2026-08-29.md",
+  "harness_path": "<home>/life-os/UI/Dashboard.md",
   "as_of": "2026-08-29T20:30:00Z",
   "next_action": "send 4 cash-first Sweden IC applications",
-  "pulse_out": "/home/you/life-os/private/career/2026-08-29-pulse.md"
+  "pulse_out": "<home>/life-os/private/career/2026-08-29-pulse.md"
 }
 ```
 
@@ -93,7 +93,7 @@ Use when you have a dump and have not updated Dashboard yet (admit *intent* befo
 ```json
 {
   "mode": "thinking",
-  "thinking_path": "/home/you/life-os/private/career/2026-08-29-cash-first.md",
+  "thinking_path": "<home>/life-os/private/career/2026-08-29-cash-first.md",
   "as_of": "2026-08-29T18:00:00Z",
   "next_action": "write the public Dashboard sitting line"
 }
@@ -110,7 +110,7 @@ Use when you trust the files as SoT and want a pulse for the next agent turn (no
 ```json
 {
   "mode": "harness",
-  "harness_path": "/home/you/life-os/Projects/collab-finder/README.md",
+  "harness_path": "<home>/life-os/Projects/collab-finder/README.md",
   "as_of": "2026-08-29T20:30:00Z",
   "next_action": "send 4 cash-first Sweden IC applications"
 }
@@ -127,8 +127,8 @@ The workflow **cannot sleep**. A host scheduler fires it and **must** inject a f
 ```json
 {
   "mode": "both",
-  "thinking_path": "/home/you/.grok/scratch/thinking.md",
-  "harness_path": "/home/you/life-os/UI/Dashboard.md",
+  "thinking_path": "<home>/.grok/scratch/thinking.md",
+  "harness_path": "<home>/life-os/UI/Dashboard.md",
   "as_of": "<scheduler fills ISO-8601 now>",
   "next_action": "<copy from Dashboard red line>"
 }
