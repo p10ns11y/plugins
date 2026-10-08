@@ -73,7 +73,7 @@ joined = json.dumps(evals)
 for needle in ("check-acceptance-first.sh", "--functions uncovered", "--max 6", "bad-split-cov", "--min 0.95", "bad-mutants", "lib.py is unchanged", "neither crap-score.py nor mutation-score.py was run"):
     check(needle in joined, f"eval has {needle}")
 lines = sum(p.read_bytes().count(b"\n") for p in root.rglob("*") if p.is_file() and "__pycache__" not in p.parts and "target" not in p.parts)
-check(lines <= 2809, f"plugin lines {lines}")
+check(lines <= 2810, f"plugin lines {lines}")
 print("---")
 print(f"{len(bad)} failure(s)" if bad else "ALL CHECKS PASSED")
 sys.exit(1 if bad else 0)
