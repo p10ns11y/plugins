@@ -13,7 +13,9 @@ def check(cond, msg):
 need = ("plugin.json", "LICENSE", "NOTICE.md", "README.md", "commands/craft.md", "agents/craft.md",
         "skills/craft/SKILL.md", "skills/craft/references/thresholds.md", "skills/craft/references/acceptance.md",
         "skills/craft/evals/evals.json", "bin/crap-score.py", "bin/mutation-score.py", "bin/score_lib.py",
-        "test/check-scores.sh", "test/check-acceptance-first.sh", "test/check-proof.sh")
+        "bin/crap-score.mjs", "bin/mutation-score.mjs", "bin/js-score-lib.mjs",
+        "test/check-scores.sh", "test/check-js-scores.sh", "test/js-score.test.mjs",
+        "test/check-acceptance-first.sh", "test/check-proof.sh")
 for rel in need:
     check((root / rel).is_file(), f"exists {rel}")
 check(not (root / "skills/craft/references/chain.md").exists(), "chain merged")
@@ -70,8 +72,9 @@ joined = json.dumps(evals)
 for needle in ("check-acceptance-first.sh", "--functions uncovered", "--max 6", "bad-split-cov", "--min 0.95", "bad-mutants", "lib.py is unchanged", "neither crap-score.py nor mutation-score.py was run"):
     check(needle in joined, f"eval has {needle}")
 lines = sum(p.read_bytes().count(b"\n") for p in root.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
-check(lines <= 989, f"plugin lines {lines}")
+check(lines <= 1737, f"plugin lines {lines}")
 print("---")
 print(f"{len(bad)} failure(s)" if bad else "ALL CHECKS PASSED")
 sys.exit(1 if bad else 0)
 PY
+bash "$(dirname "$0")/check-js-scores.sh"
