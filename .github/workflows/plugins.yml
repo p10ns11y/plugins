@@ -34,6 +34,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: bash intelli-route/test/test-thin.sh
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
+        with:
+          toolchain: stable
+      - name: Run mission-map lifeos graph test
+        run: |
+          set -euo pipefail
+          cargo build --manifest-path mission-map/rust/Cargo.toml
+          ./mission-map/test/test-lifeos-graph.sh
       - name: Run craft score checks
         run: ./craft/test/check-scores.sh
       - name: Run craft acceptance check

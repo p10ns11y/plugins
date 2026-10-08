@@ -6,8 +6,8 @@ use std::collections::HashSet;
 pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
     let crit: HashSet<&str> = report.critical.iter().map(String::as_str).collect();
     let mut out = String::from("flowchart TB\n");
-    out.push_str("  x[\"Where you are\"]\n");
-    out.push_str(&format!("  G[\"Arrive: {}\"]\n", escape(&map.g)));
+    out.push_str("  where_you_are[\"Where you are\"]\n");
+    out.push_str(&format!("  arrival[\"Arrive: {}\"]\n", escape(&map.g)));
 
     for s in &map.stages {
         let label = node_label(s);
@@ -23,7 +23,11 @@ pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
             } else {
                 "-->"
             };
-            out.push_str(&format!("  x {} {}\n", arrow, mermaid_id(&s.id)));
+            out.push_str(&format!(
+                "  where_you_are {} {}\n",
+                arrow,
+                mermaid_id(&s.id)
+            ));
             linked_from_x.insert(s.id.as_str());
         }
         for dep in &s.depends_on {
@@ -49,9 +53,9 @@ pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
             .map(|s| class_kind(&s.class) != ClassKind::Done)
             .unwrap_or(true)
     }) {
-        out.push_str(&format!("  {} --> G\n", mermaid_id(last)));
+        out.push_str(&format!("  {} --> arrival\n", mermaid_id(last)));
     } else {
-        out.push_str("  x --> G\n");
+        out.push_str("  where_you_are --> arrival\n");
     }
 
     out.push_str("  classDef do fill:#1b4332,stroke:#95d5b2,color:#fff\n");
@@ -59,7 +63,7 @@ pub fn flowchart(map: &MapFile, report: &CriticalReport) -> String {
     out.push_str("  classDef park fill:#3d3d3d,stroke:#9a8c98,color:#ddd\n");
     out.push_str("  classDef done fill:#2d2d2d,stroke:#6c757d,color:#adb5bd\n");
     out.push_str("  classDef goal fill:#5a189a,stroke:#c77dff,color:#fff\n");
-    out.push_str("  class G goal\n");
+    out.push_str("  class arrival goal\n");
 
     assign_class(&mut out, map, ClassKind::Do, "do");
     assign_class(&mut out, map, ClassKind::Wait, "wait");
@@ -144,7 +148,9 @@ mod tests {
         let r = report(&map).expect("report");
         let m = flowchart(&map, &r);
         assert!(m.contains("flowchart TB"));
-        assert!(m.contains("Arrive: started role"));
+        assert!(m.contains("where_you_are[\"Where you are\"]"));
+        assert!(m.contains("arrival[\"Arrive: started role\"]"));
+        assert!(m.contains("class arrival goal"));
         assert!(m.contains("toward start"));
         assert!(m.contains("class pack do"));
         assert!(m.contains("apply pack"));
