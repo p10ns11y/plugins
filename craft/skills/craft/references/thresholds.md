@@ -32,3 +32,11 @@ node craft/bin/mutation-score.mjs --min 0.95 path/to/lib.ts path/to/test.ts
 ```
 
 Coverage comes from vitest. Mutation comes from Stryker. `--report path` scores a saved Stryker JSON and does not run the suite. A missing typescript, vitest, or stryker install exits 2.
+
+Rust, C, and C++ use the same CRAP flags. C and C++ coverage comes from gcov. Rust coverage comes from llvm-cov. The Rust test names the library crate after the library file. A missing gcc, g++, rustc, or llvm-cov exits 2.
+
+```bash
+node craft/bin/crap-score.mjs --max 6 path/to/lib.c path/to/test.c
+node craft/bin/crap-score.mjs --max 6 path/to/lib.cpp path/to/test.cpp
+node craft/bin/crap-score.mjs --max 6 path/to/lib.rs path/to/test.rs
+```

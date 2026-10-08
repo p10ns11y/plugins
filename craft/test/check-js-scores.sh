@@ -7,4 +7,4 @@ if ! NODE_PATH="${NODE_PATH:-}" node --input-type=module -e "import { loadTypeSc
   npm install --prefix "$tmp" typescript@5.9.3 --no-fund --no-audit
   export NODE_PATH="$tmp/node_modules${NODE_PATH:+:$NODE_PATH}"
 fi
-node --test "$ROOT/test/js-score.test.mjs"
+node --test "$ROOT/test/js-score.test.mjs" "$ROOT/test/native-crap.test.mjs"

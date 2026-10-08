@@ -3,6 +3,7 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { nativeLanguage, scoreNative } from "./native-crap.mjs";
 import {
   crapRows,
   findUp,
@@ -59,6 +60,16 @@ function main() {
     readFileSync(lib);
   } catch {
     return fail(`missing ${lib}`);
+  }
+  if (nativeLanguage(lib)) {
+    const native = scoreNative(lib, test, args);
+    if (native.error) return fail(native.error, native.detail);
+    const printed = scoreText(
+      { ...args, scope: native.scope, targets: native.targets },
+      native.rows,
+    );
+    process.stdout.write(printed.text);
+    return printed.code;
   }
   const ts = loadTypeScript(path.dirname(lib));
   if (!ts) return fail("typescript missing");
