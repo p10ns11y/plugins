@@ -40,7 +40,7 @@ grok plugin install p10ns11y/plugins@feat/layout-content-view#layout-content-vie
 node --test test/test-predicates.mjs
 ```
 
-Live probe (from the app repo, Brave + Playwright already there):
+Live probe (from the app repo). The probe uses Playwright's Chromium unless BRAVE_BETA_PATH or CHROMIUM_PATH is set, and it records which one:
 
 ```bash
 FEATURES_DIR=.cursor/skills/verify-devprofile/features \

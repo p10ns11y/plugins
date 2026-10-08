@@ -26,6 +26,7 @@ need scripts/lcv.mjs
 need scripts/adapters/web-dom.mjs
 need scripts/adapters/text-layout.mjs
 need scripts/probe-web.mjs
+need scripts/browser-path.mjs
 need skills/layout-content-view/SKILL.md
 need skills/layout-content-view/references/predicates.md
 need skills/layout-content-view/references/sitemap-graph.md
@@ -34,6 +35,7 @@ need skills/layout-content-view/references/pilot-devprofile.md
 need skills/layout-content-view/references/interact.md
 need skills/layout-content-view/references/ontology.md
 need test/test-predicates.mjs
+need test/test-browser-path.mjs
 need test/fixtures/ellipsis.html
 
 pj="$(cat "$ROOT/plugin.json")"
@@ -79,6 +81,11 @@ else
     ok "predicate tests"
   else
     bad "predicate tests"
+  fi
+  if node --test "$ROOT/test/test-browser-path.mjs"; then
+    ok "browser path tests"
+  else
+    bad "browser path tests"
   fi
 fi
 
