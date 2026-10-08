@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 import { createRequire } from "node:module";
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collectInPage } from "./adapters/web-dom.mjs";
+import { chooseProbeBrowser } from "./browser-path.mjs";
 import { layoutModeFromSize, planVisits, staticMachine, VIEWPORTS, report } from "./lcv.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const origin = process.env.ORIGIN || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const featuresDir = process.env.FEATURES_DIR;
-const brave = process.env.BRAVE_BETA_PATH || "/usr/bin/brave-browser-beta";
 const onlyPath = process.env.VERIFY_FEATURE;
 const stress = process.env.LCV_STRESS === "1";
 const outFile = process.env.LCV_OUT;
@@ -22,9 +22,6 @@ if (viewports.length === 0) {
 
 if (!featuresDir) {
   throw new Error("Set FEATURES_DIR to the verify skill features/ directory");
-}
-if (!existsSync(brave)) {
-  throw new Error(`Brave Beta missing at ${brave}. Set BRAVE_BETA_PATH.`);
 }
 
 function loadPaths(dir) {
@@ -159,10 +156,13 @@ function samplesFromShot(shot, path, vp, uiState) {
 
 const paths = loadPaths(featuresDir);
 const chromium = loadChromium();
-const browser = await chromium.launch({
-  executablePath: brave,
-  headless: true,
-});
+const chosenBrowser = chooseProbeBrowser();
+const launchOptions = { headless: true };
+if (chosenBrowser.executablePath) {
+  launchOptions.executablePath = chosenBrowser.executablePath;
+}
+console.error(`browser: ${chosenBrowser.browser}`);
+const browser = await chromium.launch(launchOptions);
 const findings = [];
 const errors = [];
 const machines = [];
@@ -258,6 +258,7 @@ for (const row of findings) {
 }
 const summary = {
   origin,
+  browser: chosenBrowser.browser,
   plugin: here,
   paths: paths.map((p) => p.path),
   viewports: viewports.map((v) => v.id),
