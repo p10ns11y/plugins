@@ -332,7 +332,7 @@ pipe_body = ""
 if os.path.isfile(pipe):
     pipe_body = open(pipe, encoding="utf-8").read()
 
-priv_mermaid = ["flowchart TB", '  you["You now"]']
+priv_mermaid = ["flowchart TB", '  you_now["You now"]']
 # Four submitted from pipeline table if present (applied/archived with a url).
 submitted = []
 if pipe_body:
@@ -348,8 +348,8 @@ if pipe_body:
         if cells[0] in ("55", "54", "18", "19"):
             continue  # dup / broken Deel urls
         submitted.append(cells)
-for i, cells in enumerate(submitted[:8], 1):
-    anode = f"A{i}"
+for application_index, cells in enumerate(submitted[:8], 1):
+    submitted_application_node = f"submitted_application_{application_index}"
     co = cells[2] if cells[2] not in ("—", "-") else ""
     ti = cells[3] if cells[3] not in ("—", "-") else ""
     url = cells[5] if len(cells) > 5 else ""
@@ -360,20 +360,22 @@ for i, cells in enumerate(submitted[:8], 1):
     if not co:
         co = url.split("/")[2] if "://" in url else f"opp {cells[0]}"
     label = "{co} — {ti} ({st})".format(co=co, ti=(ti or "role")[:40], st=cells[1])
-    priv_mermaid.append(f'  {anode}["{label.replace(chr(34), chr(39))}"]')
-    priv_mermaid.append(f"  you --> {anode}")
-priv_mermaid.append('  nxt["Next: submit this week\'s pack"]')
-priv_mermaid.append('  intro["Live intro — same-day reply / nudge if silent"]')
-priv_mermaid.append('  cal["Interview calendars"]')
-priv_mermaid.append('  start["Employment start date"]')
-priv_mermaid.append("  you --> nxt")
-priv_mermaid.append("  you --> intro")
+    priv_mermaid.append(
+        f'  {submitted_application_node}["{label.replace(chr(34), chr(39))}"]'
+    )
+    priv_mermaid.append(f"  you_now --> {submitted_application_node}")
+priv_mermaid.append('  next_submission["Next: submit this week\'s pack"]')
+priv_mermaid.append('  live_intro["Live intro — same-day reply / nudge if silent"]')
+priv_mermaid.append('  interview_calendars["Interview calendars"]')
+priv_mermaid.append('  employment_start["Employment start date"]')
+priv_mermaid.append("  you_now --> next_submission")
+priv_mermaid.append("  you_now --> live_intro")
 if submitted:
-    last = f"A{min(len(submitted), 8)}"
-    priv_mermaid.append(f"  {last} --> cal")
-priv_mermaid.append("  nxt --> cal")
-priv_mermaid.append("  intro --> cal")
-priv_mermaid.append("  cal --> start")
+    last_submitted_application = f"submitted_application_{min(len(submitted), 8)}"
+    priv_mermaid.append(f"  {last_submitted_application} --> interview_calendars")
+priv_mermaid.append("  next_submission --> interview_calendars")
+priv_mermaid.append("  live_intro --> interview_calendars")
+priv_mermaid.append("  interview_calendars --> employment_start")
 
 os.makedirs(os.path.join(lifeos, "UI"), exist_ok=True)
 open(priv_path, "w", encoding="utf-8").write(
@@ -472,7 +474,7 @@ review_date: $day
 
 # Mission heading
 
-Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. No silent a/m/b overwrite.
+Nightly rewrite (20:00 local). Numbers from \`mission-map-graph\`. Does not silently overwrite duration estimates.
 
 **Do this now:** ${next_human:-$act_title}
 
@@ -519,7 +521,7 @@ EOF
 } >"$OUT"
 
 cp -f "$NOW_JSON" "$LAST_JSON"
-printf '%s kind=%s heading=%s cos=%s next_do=%s delta_te=%s completed=%s\n' \
+printf '%s path_kind=%s heading=%s alignment=%s next_action=%s remaining_weeks_change=%s completed_stages=%s\n' \
   "$when" "$kind" "$heading" "${cos:-}" "${next_do:-}" "${delta_te:-}" "${completed:-}" >>"$LOG"
 
 should_notify=0
