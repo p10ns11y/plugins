@@ -60,104 +60,110 @@ test -f "$TMP/life/UI/_private.Mission.md"
 
 python3 - <<'PY' "$TMP"
 import json, os, sys
-root = sys.argv[1]
+temporary_root = sys.argv[1]
 
-def write(name, doc):
-    maps = os.path.join(root, name, "maps")
-    os.makedirs(maps, exist_ok=True)
-    os.makedirs(os.path.join(root, name, "life", "UI"), exist_ok=True)
-    with open(os.path.join(maps, "now.json"), "w") as f:
-        json.dump(doc, f)
+def write_map(fixture_name, map_document):
+    maps_directory = os.path.join(temporary_root, fixture_name, "maps")
+    os.makedirs(maps_directory, exist_ok=True)
+    os.makedirs(os.path.join(temporary_root, fixture_name, "life", "UI"), exist_ok=True)
+    now_path = os.path.join(maps_directory, "now.json")
+    with open(now_path, "w") as map_file:
+        json.dump(map_document, map_file)
 
-def stage(sid, weeks, what):
+def wait_stage(stage_id, duration_weeks, stage_label):
     return {
-        "id": sid,
-        "a": weeks,
-        "m": weeks,
-        "b": weeks,
+        "id": stage_id,
+        "a": duration_weeks,
+        "m": duration_weeks,
+        "b": duration_weeks,
         "depends_on": [],
         "class": "Wait",
-        "what": what,
+        "what": stage_label,
     }
 
-write("a", {
+write_map("named-do-without-do-stage", {
     "g": "a finished sample",
     "tick": {"named_do": "send the weekly note"},
-    "stages": [stage("hold", 1, "hold for a reply")],
+    "stages": [wait_stage("hold", 1, "hold for a reply")],
 })
-write("b", {
+write_map("waiting-without-named-do", {
     "g": "a finished sample",
-    "stages": [stage("hold", 1, "hold for a reply")],
+    "stages": [wait_stage("hold", 1, "hold for a reply")],
 })
-write("c", {
+write_map("goal-date-already-passed", {
     "g": "a closed sample",
     "g_by": "2020-01-15",
-    "stages": [stage("hold", 1, "hold for a reply")],
+    "stages": [wait_stage("hold", 1, "hold for a reply")],
 })
-write("d", {
+write_map("remaining-chain-past-stated-month", {
     "g": "early October 2026",
-    "stages": [stage("draft", 2, "draft the note")],
+    "stages": [wait_stage("draft", 2, "draft the note")],
 })
-write("e", {
+write_map("goal-date-still-ahead", {
     "g": "a later sample",
     "g_by": "2035-01-15",
-    "stages": [stage("review", 1, "review the note")],
+    "stages": [wait_stage("review", 1, "review the note")],
 })
 PY
 
 run_lifeos() {
-  maps=$1
-  life=$2
-  today=$3
-  if [ -n "$today" ]; then
-    MISSION_MAP_TODAY="$today" \
+  maps_directory=$1
+  life_directory=$2
+  today_override=$3
+  if [ -n "$today_override" ]; then
+    MISSION_MAP_TODAY="$today_override" \
       MISSION_MAP_NOTIFY=0 \
-      MISSION_MAP_NOW="$maps/now.json" \
-      MISSION_MAPS="$maps" \
-      LIFEOS="$life" \
+      MISSION_MAP_NOW="$maps_directory/now.json" \
+      MISSION_MAPS="$maps_directory" \
+      LIFEOS="$life_directory" \
       MISSION_MAP_GRAPH="$ROOT/rust/target/debug/mission-map-graph" \
       "$script" >/dev/null
   else
     env -u MISSION_MAP_TODAY \
       MISSION_MAP_NOTIFY=0 \
-      MISSION_MAP_NOW="$maps/now.json" \
-      MISSION_MAPS="$maps" \
-      LIFEOS="$life" \
+      MISSION_MAP_NOW="$maps_directory/now.json" \
+      MISSION_MAPS="$maps_directory" \
+      LIFEOS="$life_directory" \
       MISSION_MAP_GRAPH="$ROOT/rust/target/debug/mission-map-graph" \
       "$script" >/dev/null
   fi
 }
 
 expect_line() {
-  if ! grep -F -q "$2" "$1"; then
-    echo "missing: $2" >&2
+  mission_page=$1
+  expected_text=$2
+  if ! grep -F -q "$expected_text" "$mission_page"; then
+    echo "missing: $expected_text" >&2
     exit 1
   fi
 }
 
 forbid_line() {
-  if grep -F -q "$2" "$1"; then
-    echo "unexpected: $2" >&2
+  mission_page=$1
+  unexpected_text=$2
+  if grep -F -q "$unexpected_text" "$mission_page"; then
+    echo "unexpected: $unexpected_text" >&2
     exit 1
   fi
 }
 
-note_bin="$TMP/bin"
-mkdir -p "$note_bin"
-cat > "$note_bin/notify-send" <<'EOF'
+notify_stub_directory="$TMP/bin"
+mkdir -p "$notify_stub_directory"
+cat > "$notify_stub_directory/notify-send" <<'EOF'
 #!/bin/sh
 printf '%s\n' "$*" >> "${NOTIFY_LOG:?}"
 EOF
-chmod +x "$note_bin/notify-send"
-NOTIFY_LOG="$TMP/a-notify.log"
+chmod +x "$notify_stub_directory/notify-send"
+named_do_fixture="$TMP/named-do-without-do-stage"
+NOTIFY_LOG="$TMP/named-do-without-do-stage-notify.log"
 : > "$NOTIFY_LOG"
 NOTIFY_LOG="$NOTIFY_LOG" \
-  PATH="$note_bin:$PATH" \
+  PATH="$notify_stub_directory:$PATH" \
   WAYLAND_DISPLAY=wayland-0 \
   MISSION_MAP_NOTIFY=1 \
-  MISSION_MAP_NOW="$TMP/a/maps/now.json" \
-  MISSION_MAPS="$TMP/a/maps" \
-  LIFEOS="$TMP/a/life" \
+  MISSION_MAP_NOW="$named_do_fixture/maps/now.json" \
+  MISSION_MAPS="$named_do_fixture/maps" \
+  LIFEOS="$named_do_fixture/life" \
   MISSION_MAP_GRAPH="$ROOT/rust/target/debug/mission-map-graph" \
   env -u MISSION_MAP_TODAY \
   "$script" >/dev/null
@@ -166,32 +172,36 @@ if [ -s "$NOTIFY_LOG" ]; then
   exit 1
 fi
 
-md="$TMP/a/life/UI/Mission.md"
-expect_line "$md" '**Do this now:** send the weekly note'
-expect_line "$md" '| **Do this now** | send the weekly note |'
-expect_line "$md" '| **Arrive when** | a finished sample |'
-forbid_line "$md" 'Do this now:** Do this now'
-forbid_line "$md" '| **Do this now** | Do this now |'
+mission_page="$named_do_fixture/life/UI/Mission.md"
+expect_line "$mission_page" '**Do this now:** send the weekly note'
+expect_line "$mission_page" '| **Do this now** | send the weekly note |'
+expect_line "$mission_page" '| **Arrive when** | a finished sample |'
+forbid_line "$mission_page" 'Do this now:** Do this now'
+forbid_line "$mission_page" '| **Do this now** | Do this now |'
 
-run_lifeos "$TMP/b/maps" "$TMP/b/life" ""
-md="$TMP/b/life/UI/Mission.md"
-expect_line "$md" '**Do this now:** Nothing to do now; waiting on them.'
-expect_line "$md" '| **Do this now** | Nothing to do now; waiting on them. |'
-forbid_line "$md" 'Do this now:** Do this now'
-forbid_line "$md" '| **Do this now** | Do this now |'
+waiting_fixture="$TMP/waiting-without-named-do"
+run_lifeos "$waiting_fixture/maps" "$waiting_fixture/life" ""
+mission_page="$waiting_fixture/life/UI/Mission.md"
+expect_line "$mission_page" '**Do this now:** Nothing to do now; waiting on them.'
+expect_line "$mission_page" '| **Do this now** | Nothing to do now; waiting on them. |'
+forbid_line "$mission_page" 'Do this now:** Do this now'
+forbid_line "$mission_page" '| **Do this now** | Do this now |'
 
-run_lifeos "$TMP/c/maps" "$TMP/c/life" "2026-10-04"
-md="$TMP/c/life/UI/Mission.md"
-expect_line "$md" '| **Arrive when** | a closed sample (stale: the target date has passed; restate the goal) |'
+passed_goal_fixture="$TMP/goal-date-already-passed"
+run_lifeos "$passed_goal_fixture/maps" "$passed_goal_fixture/life" "2026-10-04"
+mission_page="$passed_goal_fixture/life/UI/Mission.md"
+expect_line "$mission_page" '| **Arrive when** | a closed sample (stale: the target date has passed; restate the goal) |'
 
-run_lifeos "$TMP/d/maps" "$TMP/d/life" "2026-10-04"
-md="$TMP/d/life/UI/Mission.md"
-expect_line "$md" '| **Arrive when** | early October 2026 (stale: the remaining chain runs past the target date; restate the goal) |'
-forbid_line "$md" 'the target date has passed'
+chain_past_month_fixture="$TMP/remaining-chain-past-stated-month"
+run_lifeos "$chain_past_month_fixture/maps" "$chain_past_month_fixture/life" "2026-10-04"
+mission_page="$chain_past_month_fixture/life/UI/Mission.md"
+expect_line "$mission_page" '| **Arrive when** | early October 2026 (stale: the remaining chain runs past the target date; restate the goal) |'
+forbid_line "$mission_page" 'the target date has passed'
 
-run_lifeos "$TMP/e/maps" "$TMP/e/life" "2026-10-04"
-md="$TMP/e/life/UI/Mission.md"
-expect_line "$md" '| **Arrive when** | a later sample |'
-forbid_line "$md" '(stale:'
+future_goal_fixture="$TMP/goal-date-still-ahead"
+run_lifeos "$future_goal_fixture/maps" "$future_goal_fixture/life" "2026-10-04"
+mission_page="$future_goal_fixture/life/UI/Mission.md"
+expect_line "$mission_page" '| **Arrive when** | a later sample |'
+forbid_line "$mission_page" '(stale:'
 
 echo "test-lifeos-graph ok"
