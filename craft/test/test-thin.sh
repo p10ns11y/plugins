@@ -13,7 +13,8 @@ def check(cond, msg):
 need = ("plugin.json", "LICENSE", "NOTICE.md", "README.md", "commands/craft.md", "agents/craft.md",
         "skills/craft/SKILL.md", "skills/craft/references/thresholds.md", "skills/craft/references/acceptance.md",
         "skills/craft/evals/evals.json", "bin/crap-score.py", "bin/mutation-score.py", "bin/score_lib.py",
-        "bin/crap-score.mjs", "bin/mutation-score.mjs", "bin/js-score-lib.mjs", "bin/native-crap.mjs",
+        "bin/crap-score.mjs", "bin/mutation-score.mjs", "bin/js-score-lib.mjs", "bin/crap-score-cc.mjs",
+        "bin/rust-crap/Cargo.toml", "bin/rust-crap/Cargo.lock", "bin/rust-crap/src/main.rs",
         "test/check-scores.sh", "test/check-js-scores.sh", "test/js-score.test.mjs", "test/native-crap.test.mjs",
         "test/check-acceptance-first.sh", "test/check-proof.sh")
 for rel in need:
@@ -71,8 +72,8 @@ check({c["id"] for c in evals["evals"]} == {"craft-acceptance-before-coder", "cr
 joined = json.dumps(evals)
 for needle in ("check-acceptance-first.sh", "--functions uncovered", "--max 6", "bad-split-cov", "--min 0.95", "bad-mutants", "lib.py is unchanged", "neither crap-score.py nor mutation-score.py was run"):
     check(needle in joined, f"eval has {needle}")
-lines = sum(p.read_bytes().count(b"\n") for p in root.rglob("*") if p.is_file() and "__pycache__" not in p.parts)
-check(lines <= 2442, f"plugin lines {lines}")
+lines = sum(p.read_bytes().count(b"\n") for p in root.rglob("*") if p.is_file() and "__pycache__" not in p.parts and "target" not in p.parts)
+check(lines <= 2809, f"plugin lines {lines}")
 print("---")
 print(f"{len(bad)} failure(s)" if bad else "ALL CHECKS PASSED")
 sys.exit(1 if bad else 0)

@@ -5,143 +5,63 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import {
-  bucketsFromLines,
-  functionsIn,
-  gcovFileLines,
-  llvmFileLines,
-  nativeLanguage,
-} from "../bin/native-crap.mjs";
+import { functionsFromClang } from "../bin/crap-score-cc.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const cli = path.join(here, "../bin/crap-score.mjs");
-
-function byName(source, lang) {
-  return Object.fromEntries(functionsIn(source, lang).map((fn) => [fn.name, fn.comp]));
-}
 
 function has(bin) {
   return spawnSync(bin, ["--version"], { encoding: "utf8" }).status === 0;
 }
 
-test("language comes from the library extension", () => {
-  assert.equal(nativeLanguage("lib.rs"), "rust");
-  assert.equal(nativeLanguage("lib.c"), "c");
-  assert.equal(nativeLanguage("lib.cpp"), "cpp");
-  assert.equal(nativeLanguage("lib.ts"), "");
-});
-
-test("c and c++ complexity ignores nested functions", () => {
-  const comp = byName(
-    `
-int plain(int x) { return x; }
-int gate(int x) {
-  if (x > 0 && x < 3) return 1;
-  return 0;
-}
-int choice(int x) { return x ? 1 : 0; }
-int outer(int x) {
-  int inner(int y) { if (y) return 1; return 0; }
-  return inner(x);
-}
-`,
-    "c",
-  );
-  assert.equal(comp.plain, 1);
-  assert.equal(comp.gate, 3);
-  assert.equal(comp.choice, 2);
-  assert.equal(comp.outer, 1);
-  assert.equal(comp["outer.inner"], 2);
-  const cpp = byName(
-    `
-struct Box {
-  int method(int x) {
-    if (x) return 1;
-    return 0;
-  }
-};
-int Box::alone(int x) { return x ? 1 : 0; }
-`,
-    "cpp",
-  );
-  assert.equal(cpp["Box.method"], 2);
-  assert.equal(cpp["Box.alone"], 2);
-});
-
-test("rust complexity counts match arms and impl methods", () => {
-  const comp = byName(
-    `
-pub fn plain(x: i32) -> i32 { x }
-pub fn gate(x: i32) -> i32 {
-    if x > 0 && x < 3 { 1 } else { 0 }
-}
-pub fn choice(x: i32) -> i32 {
-    match x {
-        0 => 1,
-        _ => 0,
-    }
-}
-fn outer(x: i32) -> i32 {
-    fn inner(y: i32) -> i32 { if y > 0 { 1 } else { 0 } }
-    inner(x)
-}
-impl Box {
-    fn method(&self, x: i32) -> i32 { if x > 0 { 1 } else { 0 } }
-}
-`,
-    "rust",
-  );
-  assert.equal(comp.plain, 1);
-  assert.equal(comp.gate, 3);
-  assert.equal(comp.choice, 3);
-  assert.equal(comp.outer, 1);
-  assert.equal(comp["outer.inner"], 2);
-  assert.equal(comp["Box.method"], 2);
-});
-
-test("gcov and llvm line sets feed the same buckets", () => {
-  const functions = functionsIn("int plain(int x) { return x; }\nint gate(int x) {\n  if (x) return 1;\n  return 0;\n}\n", "c");
-  const gcov = gcovFileLines(
-    {
-      files: [
-        {
-          file: "lib.c",
-          lines: [
-            { line_number: 1, count: 1 },
-            { line_number: 2, count: 1 },
-            { line_number: 3, count: 1 },
-            { line_number: 4, count: 0 },
-          ],
-        },
-      ],
-    },
-    "lib.c",
-  );
-  const rows = bucketsFromLines(functions, gcov.covered, gcov.tracked);
-  const gate = functions.find((fn) => fn.name === "gate");
-  assert.equal(rows.get(gate.key).hit, 2);
-  assert.equal(rows.get(gate.key).total, 3);
-  const llvm = llvmFileLines(
-    {
-      data: [
-        {
-          files: [
-            {
-              filename: "/tmp/sample.rs",
-              segments: [
-                [1, 1, 1, true, true, false],
-                [2, 1, 0, true, true, false],
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    "/tmp/sample.rs",
-  );
-  assert.equal(llvm.covered.has(1), true);
-  assert.equal(llvm.tracked.has(2), true);
-  assert.equal(llvm.covered.has(2), false);
+test("clang ast supplies c and c++ complexity", () => {
+  const source = "int plain(int x) { return x; }\nint gate(int x) {\n  if (x > 0 && x < 3) return 1;\n  return 0;\n}\n";
+  const ast = {
+    inner: [
+      {
+        id: "box",
+        kind: "CXXRecordDecl",
+        name: "Box",
+      },
+      {
+        kind: "FunctionDecl",
+        name: "plain",
+        loc: { offset: 4 },
+        range: { end: { offset: 28 } },
+        inner: [{ kind: "CompoundStmt" }],
+      },
+      {
+        kind: "FunctionDecl",
+        name: "gate",
+        loc: { offset: source.indexOf("gate") },
+        range: { end: { offset: source.length - 1 } },
+        inner: [
+          { kind: "CompoundStmt" },
+          { kind: "IfStmt", inner: [{ kind: "BinaryOperator", opcode: "&&" }] },
+        ],
+      },
+      {
+        kind: "CXXMethodDecl",
+        name: "method",
+        parentDeclContextId: "box",
+        isImplicit: true,
+        inner: [{ kind: "CompoundStmt" }],
+      },
+      {
+        kind: "CXXMethodDecl",
+        name: "method",
+        parentDeclContextId: "box",
+        loc: { offset: 0 },
+        range: { end: { offset: 10 } },
+        inner: [{ kind: "CompoundStmt" }, { kind: "IfStmt" }],
+      },
+    ],
+  };
+  const found = Object.fromEntries(functionsFromClang(ast, source).map((fn) => [fn.name, fn.comp]));
+  assert.equal(found.plain, 1);
+  assert.equal(found.gate, 3);
+  assert.equal(found["Box.method"], 2);
+  assert.equal(found.method, undefined);
 });
 
 test("cli rejects a missing native file", () => {
@@ -152,7 +72,7 @@ test("cli rejects a missing native file", () => {
   assert.match(missing.stderr, /missing /);
 });
 
-test("c coverage run scores the touched function", { skip: has("gcc") ? false : "gcc missing" }, () => {
+test("c coverage run scores the touched function", { skip: has("clang") && has("gcc") ? false : "clang or gcc missing" }, () => {
   const dir = mkdtempSync(path.join(tmpdir(), "crap-c-test-"));
   const lib = path.join(dir, "lib.c");
   const testFile = path.join(dir, "test.c");
@@ -164,7 +84,7 @@ test("c coverage run scores the touched function", { skip: has("gcc") ? false : 
   assert.match(run.stdout, /gate: comp=3 /);
 });
 
-test("c++ coverage run keeps the method name", { skip: has("g++") ? false : "g++ missing" }, () => {
+test("c++ coverage run keeps the method name", { skip: has("clang++") && has("g++") ? false : "clang++ or g++ missing" }, () => {
   const dir = mkdtempSync(path.join(tmpdir(), "crap-cpp-test-"));
   const lib = path.join(dir, "lib.cpp");
   const testFile = path.join(dir, "test.cpp");
@@ -175,7 +95,7 @@ test("c++ coverage run keeps the method name", { skip: has("g++") ? false : "g++
   assert.match(run.stdout, /Box\.method: comp=2 /);
 });
 
-test("rust coverage run scores the library crate", { skip: has("rustc") ? false : "rustc missing" }, () => {
+test("rust runner scores the library crate", { skip: has("cargo") && has("rustc") ? false : "cargo or rustc missing", timeout: 180000 }, () => {
   const dir = mkdtempSync(path.join(tmpdir(), "crap-rs-test-"));
   const lib = path.join(dir, "sample.rs");
   const testFile = path.join(dir, "test.rs");

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
-import { nativeLanguage, scoreNative } from "./native-crap.mjs";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { spawnSync } from "node:child_process";
 import {
   crapRows,
   findUp,
@@ -43,6 +43,40 @@ export function scoreText(args, rows) {
   return { code: payload.ok ? 0 : 1, text: `${lines.join("\n")}\n` };
 }
 
+const cppExt = new Set([".cc", ".cpp", ".cxx", ".hh", ".hpp", ".hxx"]);
+const cExt = new Set([".c", ".h"]);
+
+function dispatch(lib, args) {
+  const ext = path.extname(lib);
+  const here = path.dirname(fileURLToPath(import.meta.url));
+  if (ext === ".rs") return runRustRunner(here, args);
+  if (cppExt.has(ext) || cExt.has(ext)) {
+    return forward(process.execPath, [path.join(here, "crap-score-cc.mjs"), ...args]);
+  }
+  return null;
+}
+
+function runRustRunner(here, args) {
+  const manifest = path.join(here, "rust-crap", "Cargo.toml");
+  const target = path.join(tmpdir(), "craft-rust-crap");
+  const built = spawnSync("cargo", ["build", "--quiet", "--manifest-path", manifest, "--target-dir", target], {
+    encoding: "utf8",
+  });
+  if (built.error?.code === "ENOENT") return fail("cargo missing");
+  if (built.status !== 0) return fail("cargo failed", built.stderr || built.stdout);
+  const bin = path.join(target, "debug", "crap-score-rust");
+  if (!existsSync(bin)) return fail("cargo failed");
+  return forward(bin, args);
+}
+
+function forward(bin, args) {
+  const run = spawnSync(bin, args, { encoding: "utf8" });
+  if (run.error?.code === "ENOENT") return fail(`${path.basename(bin)} missing`);
+  if (run.stdout) process.stdout.write(run.stdout);
+  if (run.stderr) process.stderr.write(sanitize(run.stderr));
+  return run.status ?? 2;
+}
+
 function fail(message, detail) {
   process.stderr.write(`${message}\n`);
   if (detail) process.stderr.write(`${sanitize(detail).trim().slice(-2000)}\n`);
@@ -61,16 +95,8 @@ function main() {
   } catch {
     return fail(`missing ${lib}`);
   }
-  if (nativeLanguage(lib)) {
-    const native = scoreNative(lib, test, args);
-    if (native.error) return fail(native.error, native.detail);
-    const printed = scoreText(
-      { ...args, scope: native.scope, targets: native.targets },
-      native.rows,
-    );
-    process.stdout.write(printed.text);
-    return printed.code;
-  }
+  const dispatched = dispatch(lib, process.argv.slice(2));
+  if (dispatched !== null) return dispatched;
   const ts = loadTypeScript(path.dirname(lib));
   if (!ts) return fail("typescript missing");
   const functions = functionComplexity(ts, readFileSync(lib, "utf8"), lib);
