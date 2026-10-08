@@ -11,7 +11,7 @@ Robert C. Martin with Matt Pocock, 19 Aug 2026: [LIVE: Uncle Bob on Software Fun
 | 4 | Hardener | Tests that kill surviving mutants | Mutation score on touched non-Bend functions |
 | 5 | QA | The QA procedure as a script | The script passes |
 
-Commands and numbers: [skills/craft/references/thresholds.md](skills/craft/references/thresholds.md). CRAP uses `coverage`. Mutation score does not. Attribution: [NOTICE.md](NOTICE.md).
+Commands and numbers: [skills/craft/references/thresholds.md](skills/craft/references/thresholds.md). CRAP uses `coverage`. Mutation score does not. TypeScript files use `crap-score.mjs` and `mutation-score.mjs`. Rust is scored by its own runner. C and C++ are scored from clang and gcov. Attribution: [NOTICE.md](NOTICE.md).
 
 ## Install
 

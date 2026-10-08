@@ -21,8 +21,8 @@ A5  This skill does not merge.
 
 1. Specifier. [references/acceptance.md](references/acceptance.md).
 2. Coder. Unit tests and the implementation. When LAWS.bend exists, write PROOF.bend that imports it, then run `craft/test/check-proof.sh`. Exit 2 means bend is missing. Report a hole. Do not weaken the law.
-3. Cleaner. `crap-score.py` with `--max` from [references/thresholds.md](references/thresholds.md).
-4. Hardener. `mutation-score.py` with `--min` from the same page, on non-Bend code.
+3. Cleaner. `crap-score.py` for Python. `crap-score.mjs` for TypeScript, and that command dispatches Rust to the Rust runner and C or C++ to clang plus gcov. `--max` is in [references/thresholds.md](references/thresholds.md).
+4. Hardener. `mutation-score.py` for Python, or `mutation-score.mjs` for TypeScript, with `--min` from the same page, on non-Bend code.
 5. QA. Run the procedure as a script.
 6. Emit the card.
 

@@ -17,6 +17,7 @@ __pycache__/
 # built kernels
 mission-map/bin/
 mission-map/rust/target/
+craft/bin/rust-crap/target/
 
 # arch-machine expand test artifacts
 **/fixtures/**/.arch-expand-state/
