@@ -51,6 +51,12 @@ Slash: `/trust-stack`.
 
 ---
 
+## Day-0
+
+Before product code, apply the three invariants in [references/day-0.md](references/day-0.md). They live in this plugin.
+
+---
+
 ## Instructions
 
 1. Name the invariant in one sentence. What must stay true after the agent leaves?

@@ -18,6 +18,7 @@ need commands/trust-stack.md
 need agents/trust-stack.md
 need skills/trust-stack/SKILL.md
 need skills/trust-stack/references/layers.md
+need skills/trust-stack/references/day-0.md
 need bend/trust.bend
 need bend/LAWS.bend
 need bend/PROOF.bend
@@ -50,6 +51,12 @@ echo "$notice" | grep -q 'does not merge' && ok "notice refuses merge" || bad "n
 echo "$notice" | grep -q 'Lauren Tan' && ok "credits Lauren Tan" || bad "missing credit"
 echo "$skill" | grep -q 'bend-critical.sh' && ok "shape layer names the Bend proof" || bad "missing Bend proof"
 echo "$skill" | grep -q 'that proof was not run' && ok "absent bend is not a pass" || bad "absent bend treated as a pass"
+echo "$skill" | grep -q 'references/day-0.md' && ok "day-0 card is named" || bad "day-0 card is not named"
+
+day0="$(cat "$ROOT/skills/trust-stack/references/day-0.md")"
+echo "$day0" | grep -q "user's latest message" && ok "day-0 side effect" || bad "day-0 side effect missing"
+echo "$day0" | grep -q "admitted in a source file" && ok "day-0 narrative" || bad "day-0 narrative missing"
+echo "$day0" | grep -q "Auto-merge stops" && ok "day-0 auto-merge stop" || bad "day-0 auto-merge stop missing"
 
 if bash "$ROOT/test/bend-critical.sh" | tee /dev/stderr | grep -q -e 'All terms check.' -e 'bend not installed'; then
   ok "Bend proof of the trust laws"
