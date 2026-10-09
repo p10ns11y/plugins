@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# Stage loop and the opt-in hook.
+set -euo pipefail
+ROOT=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
+fail=0
+ok() { echo "ok  $*"; }
+bad() { echo "FAIL $*"; fail=$((fail + 1)); }
+
+need() {
+  [[ -f "$ROOT/$1" ]] && ok "exists $1" || bad "missing $1"
+}
+
+need plugin.json
+need LICENSE
+need NOTICE.md
+need README.md
+need commands/steer-accel.md
+need agents/steer-accel.md
+need skills/steer-accel/SKILL.md
+need skills/steer-accel/references/steps.md
+need bin/steer_accel.py
+need bin/steer-accel
+need bin/steer-accel-pretool.sh
+need hooks/hooks.json
+need cursor/hooks/hooks.json
+
+grep -q 'loop.on' "$ROOT/skills/steer-accel/SKILL.md" && ok "opt-in named" || bad "opt-in"
+grep -q 'steer-log' "$ROOT/skills/steer-accel/SKILL.md" && ok "door stays" || bad "door"
+grep -q 'Read|Write|Edit|Bash' "$ROOT/hooks/hooks.json" && ok "hook matcher" || bad "hook matcher"
+
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
+CHK=(python3 "$ROOT/bin/steer_accel.py")
+
+write_now() {
+  cat >"$TMP/now.md" <<EOF
+stage: $1
+actor: $2
+resumed: $3
+card: $4
+verify: $5
+change: ${6:--}
+EOF
+}
+
+run() {
+  local expect=$1
+  shift
+  set +e
+  out=$("${CHK[@]}" "$@" 2>/dev/null)
+  rc=$?
+  set -e
+  if [[ "$rc" -ne "$expect" ]]; then
+    bad "$* rc $rc want $expect ($out)"
+    return
+  fi
+  ok "$* → $rc"
+}
+
+write_now question builder no INVARIANT.md "pnpm test card"
+run 0 check "$TMP/now.md" "$TMP/stage.log"
+
+write_now automate builder no INVARIANT.md "pnpm test card"
+run 2 check "$TMP/now.md" "$TMP/stage.log"
+
+printf '%s\n' 'delete | drop the extra pass | pnpm test card' >"$TMP/stage.log"
+write_now accelerate builder no INVARIANT.md "pnpm test faster"
+run 0 check "$TMP/now.md" "$TMP/stage.log"
+
+write_now accelerate builder no INVARIANT.md "pnpm test card"
+printf '%s\n' 'delete | drop the extra pass | pnpm test card' 'accelerate | shorter loop | pnpm test card' >"$TMP/stage.log"
+run 2 check "$TMP/now.md" "$TMP/stage.log"
+
+write_now delete coordinator no - "pnpm test card"
+run 2 check "$TMP/now.md" "$TMP/stage.log"
+
+# session read required when --reads is set
+write_now delete builder yes INVARIANT.md "pnpm test card"
+: >"$TMP/reads"
+run 2 check "$TMP/now.md" "$TMP/stage.log" --reads "$TMP/reads" --session s1
+printf '%s\n' $'s1\tINVARIANT.md' >"$TMP/reads"
+run 0 check "$TMP/now.md" "$TMP/stage.log" --reads "$TMP/reads" --session s1
+printf '%s\n' $'old\tINVARIANT.md' >"$TMP/reads"
+run 2 check "$TMP/now.md" "$TMP/stage.log" --reads "$TMP/reads" --session s1
+
+# append then repeat
+write_now delete builder no INVARIANT.md "pnpm test card" "drop the extra pass"
+: >"$TMP/stage.log"
+run 0 append "$TMP/now.md" "$TMP/stage.log"
+run 2 check "$TMP/now.md" "$TMP/stage.log"
+
+# hook: quiet without marker, deny without a read, allow after a read
+HOOK=(python3 "$ROOT/bin/steer_accel.py" hook)
+mkdir -p "$TMP/proj/.steer"
+write_now delete builder no INVARIANT.md "pnpm test card"
+cp "$TMP/now.md" "$TMP/proj/.steer/now.md"
+: >"$TMP/proj/.steer/stage.log"
+
+hook_out() {
+  python3 -c 'import json,sys; print(json.loads(sys.stdin.read())["decision"])' <<<"$1"
+}
+
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"search_replace\",\"toolInput\":{\"file_path\":\"src/app.ts\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "hook quiet" || bad "hook quiet ($out)"
+
+: >"$TMP/proj/.steer/loop.on"
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"search_replace\",\"toolInput\":{\"file_path\":\"src/app.ts\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "deny" ]] && ok "hook denies unread write" || bad "hook deny ($out)"
+
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"read_file\",\"toolInput\":{\"file_path\":\"INVARIANT.md\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "hook records read" || bad "hook read ($out)"
+grep -q $'s9\tINVARIANT.md' "$TMP/proj/.steer/reads" && ok "read line" || bad "read line"
+
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"search_replace\",\"toolInput\":{\"file_path\":\"src/app.ts\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "hook allows after read" || bad "hook allow ($out)"
+
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"search_replace\",\"toolInput\":{\"file_path\":\"$TMP/proj/.steer/now.md\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "hook allows .steer write" || bad "steer write ($out)"
+
+if [[ "$fail" -ne 0 ]]; then
+  echo "$fail failed"
+  exit 1
+fi
+echo "ok steer-accel thin"

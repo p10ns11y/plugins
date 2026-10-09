@@ -1,0 +1,18 @@
+{
+  "name": "steer-accel",
+  "version": "0.1.0",
+  "description": "Steering and acceleration loop. Picks the SpaceX step the stage has earned, refuses a repeated step, and watches reads while a long stretch is on. The hook stays quiet until .steer/loop.on exists.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "steer-accel",
+    "spacex",
+    "acceleration",
+    "context",
+    "watcher",
+    "steer-log"
+  ]
+}

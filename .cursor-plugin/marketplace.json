@@ -4,7 +4,7 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, split-machine, trust-stack, uncertainty-laws"
+    "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
   },
   "plugins": [
     {
@@ -71,6 +71,16 @@
       "name": "split-machine",
       "source": "split-machine",
       "description": "Place a job on the machine that can do it: Earth QPU, entanglement link, LEO radio handover, conjunction screen, GPU factory, BQP slice, System One decision, or System Two prose. Name the act. Low confidence does not automate."
+    },
+    {
+      "name": "steer-accel",
+      "source": "steer-accel",
+      "description": "Steering and acceleration loop. Picks the SpaceX step the stage has earned, refuses a repeated step, and watches reads while a long stretch is on. The hook stays quiet until .steer/loop.on exists."
+    },
+    {
+      "name": "steer-log",
+      "source": "steer-log",
+      "description": "Door for a builder brief and a steering doc. Refuses a brief with no invariant card, and a steering doc that quotes anything other than the append-only log. trust-stack and findings-first stay the engines."
     },
     {
       "name": "trust-stack",
