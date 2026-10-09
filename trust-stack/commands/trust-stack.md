@@ -11,11 +11,12 @@ Load skill **trust-stack**. Open `references/layers.md` only to pick one row.
 
 ## Immediate actions
 
-1. Walk `shape` → `check` → `watch` → `skill` → `guide`. Stop at the first layer that can hold the invariant.
-2. `guide` means hitl. Do not automate taste.
-3. If a bad pattern is spreading, delete it. Write the lesson into a check or a skill. Do not add an excuse comment.
-4. Name one verify command the agent can run. Missing command → the next step is to add it.
-5. One owner for the change. This command does not merge.
+1. A new case copies `skills/trust-stack/references/day-0.md` into workflow P1 before product code.
+2. Walk `shape` → `check` → `watch` → `skill` → `guide`. Stop at the first layer that can hold the invariant.
+3. `guide` means hitl. Do not automate taste.
+4. If a bad pattern is spreading, delete it. Write the lesson into a check or a skill. Do not add an excuse comment.
+5. Name one verify command the agent can run. Missing command → the next step is to add it.
+6. One owner for the change. This command does not merge.
 
 ## Emit (required)
 

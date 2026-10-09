@@ -51,6 +51,12 @@ Slash: `/trust-stack`.
 
 ---
 
+## Day-0
+
+Before product code, the case workflow P1 table copies [references/day-0.md](references/day-0.md). That file is the card. Do not paste it into the case walkthrough.
+
+---
+
 ## Instructions
 
 1. Name the invariant in one sentence. What must stay true after the agent leaves?

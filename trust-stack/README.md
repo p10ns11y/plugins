@@ -12,6 +12,8 @@ Puts one invariant on the earliest layer that can hold it.
 
 The codebase is the agent's memory, so a workaround spreads. Delete it and move the invariant earlier. One owner runs the real check. This plugin does not merge.
 
+Before product code, copy [skills/trust-stack/references/day-0.md](skills/trust-stack/references/day-0.md) into the case workflow P1 table. Three holds: the side effect, the story page, and where auto-merge stops. The case walkthrough does not get a second copy.
+
 intelli-route loads it when the goal is trust, review, a repeated miss, or fan-out. pstack remains the playbook when it is installed.
 
 ## Install

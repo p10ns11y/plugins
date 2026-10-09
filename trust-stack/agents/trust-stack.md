@@ -16,6 +16,7 @@ Read `skills/trust-stack/SKILL.md`. Open `references/layers.md` only to pick one
 2. Earliest layer that can hold the invariant.
 3. One owner. One verify command, or "missing".
 4. Emit the Trust table. `guide` sets hitl.
+5. A new case copies `references/day-0.md` into workflow P1 before product code.
 
 ## Do not
 
