@@ -11,7 +11,7 @@ Load skill **trust-stack**. Open `references/layers.md` only to pick one row.
 
 ## Immediate actions
 
-1. A new case copies `skills/trust-stack/references/day-0.md` into workflow P1 before product code.
+1. Before product code, apply the three invariants in `skills/trust-stack/references/day-0.md`.
 2. Walk `shape` → `check` → `watch` → `skill` → `guide`. Stop at the first layer that can hold the invariant.
 3. `guide` means hitl. Do not automate taste.
 4. If a bad pattern is spreading, delete it. Write the lesson into a check or a skill. Do not add an excuse comment.

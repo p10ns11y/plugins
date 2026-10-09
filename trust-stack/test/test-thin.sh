@@ -55,7 +55,7 @@ echo "$skill" | grep -q 'references/day-0.md' && ok "day-0 card is named" || bad
 
 day0="$(cat "$ROOT/skills/trust-stack/references/day-0.md")"
 echo "$day0" | grep -q "user's latest message" && ok "day-0 side effect" || bad "day-0 side effect missing"
-echo "$day0" | grep -q "admitted pulse file" && ok "day-0 story page" || bad "day-0 story page missing"
+echo "$day0" | grep -q "admitted in a source file" && ok "day-0 narrative" || bad "day-0 narrative missing"
 echo "$day0" | grep -q "Auto-merge stops" && ok "day-0 auto-merge stop" || bad "day-0 auto-merge stop missing"
 
 if bash "$ROOT/test/bend-critical.sh" | tee /dev/stderr | grep -q -e 'All terms check.' -e 'bend not installed'; then
