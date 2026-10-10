@@ -31,11 +31,7 @@ eva_tether_shell_main() {
     return 0
   fi
   if eva_tether_match_git_push "$blob"; then
-    if [ "$EVA_TETHER_MODE" = "cursor" ]; then
-      eva_tether_emit_ask "git push requires human Ask (auth / remote mutate)"
-    else
-      eva_tether_emit_deny "git push requires human Ask (auth / remote mutate)"
-    fi
+    eva_tether_emit_ask "git push requires human Ask (auth / remote mutate)"
     return 0
   fi
   if eva_tether_match_reset_hard "$blob"; then
@@ -159,9 +155,13 @@ eva_tether_emit_ask() {
   _reason="$1"
   _full="eva-emptiness tether: ${_reason}"
   _esc=$(eva_tether_json_escape "$_full")
-  _agent="HITL Ask for git push — proceed only after explicit human approval for this remote mutate."
-  _aesc=$(eva_tether_json_escape "$_agent")
-  printf '%s\n' "{\"permission\":\"ask\",\"user_message\":\"${_esc}\",\"agent_message\":\"${_aesc}\"}"
+  if [ "$EVA_TETHER_MODE" = "cursor" ]; then
+    _agent="HITL Ask for git push — proceed only after explicit human approval for this remote mutate."
+    _aesc=$(eva_tether_json_escape "$_agent")
+    printf '%s\n' "{\"permission\":\"ask\",\"user_message\":\"${_esc}\",\"agent_message\":\"${_aesc}\"}"
+  else
+    printf '%s\n' "{\"decision\":\"ask\",\"reason\":\"${_esc}\"}"
+  fi
 }
 
 eva_tether_emit_allow() {

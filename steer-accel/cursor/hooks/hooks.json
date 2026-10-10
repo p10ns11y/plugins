@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "${CURSOR_PLUGIN_ROOT}/bin/steer-accel-pretool.sh"
+      }
+    ],
+    "beforeReadFile": [
+      {
+        "command": "${CURSOR_PLUGIN_ROOT}/bin/steer-accel-pretool.sh"
+      }
+    ]
+  }
+}

@@ -70,6 +70,16 @@
       "source": "./split-machine"
     },
     {
+      "name": "steer-accel",
+      "description": "Steering and acceleration loop. Picks the SpaceX step the stage has earned, refuses a repeated step, and watches reads while a long stretch is on. The hook stays quiet until .steer/loop.on exists.",
+      "source": "./steer-accel"
+    },
+    {
+      "name": "steer-log",
+      "description": "Door for a builder brief and a steering doc. Refuses a brief with no invariant card, and a steering doc that quotes anything other than the append-only log. trust-stack and findings-first stay the engines.",
+      "source": "./steer-log"
+    },
+    {
       "name": "trust-stack",
       "description": "Put each invariant on the earliest layer that can hold it: shape, check, watch, skill, then a human guide. The codebase is the agent's memory. This plugin does not merge.",
       "source": "./trust-stack"

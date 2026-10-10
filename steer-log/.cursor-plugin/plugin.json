@@ -1,0 +1,20 @@
+{
+  "name": "steer-log",
+  "version": "0.1.0",
+  "description": "Door for a builder brief and a steering doc. Refuses a brief with no invariant card, and a steering doc that quotes anything other than the append-only log. trust-stack and findings-first stay the engines.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "steer-log",
+    "invariant",
+    "steering",
+    "trust-stack",
+    "findings-first"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/"
+}

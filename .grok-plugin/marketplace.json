@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, split-machine, trust-stack, uncertainty-laws",
+  "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
@@ -209,6 +209,41 @@
         "gpu",
         "system-one",
         "intelli-route"
+      ]
+    },
+    {
+      "name": "steer-accel",
+      "description": "Steering and acceleration loop. Picks the SpaceX step the stage has earned, refuses a repeated step, and watches reads while a long stretch is on. The hook stays quiet until .steer/loop.on exists.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./steer-accel"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "steer-accel",
+        "spacex",
+        "acceleration",
+        "context",
+        "watcher",
+        "steer-log"
+      ]
+    },
+    {
+      "name": "steer-log",
+      "description": "Door for a builder brief and a steering doc. Refuses a brief with no invariant card, and a steering doc that quotes anything other than the append-only log. trust-stack and findings-first stay the engines.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./steer-log"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "steer-log",
+        "invariant",
+        "steering",
+        "trust-stack",
+        "findings-first"
       ]
     },
     {

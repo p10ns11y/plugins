@@ -74,6 +74,8 @@ plugin install  ──trust───► agents, hooks, /commands
 | **intelli-route** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelli-route` · `/workflow intelli-route` |
 | **split-machine** | Place a job on Earth, an entanglement link, a LEO radio handover, a conjunction screen, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
 | **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
+| **steer-log** | Door for a builder brief and a steering doc. No card, no brief. A steering doc may quote only the log. | `/steer-log` |
+| **steer-accel** | Five-step loop for a long stretch. Opt-in read watcher while the stretch is on. | `/steer-accel` |
 | **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 | **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |

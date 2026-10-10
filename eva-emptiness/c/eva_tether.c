@@ -128,10 +128,7 @@ eva_tether_status_t eva_tether_classify(eva_tether_decision_t *out_decision,
         return EVA_TETHER_OK;
     }
     if (eva_tether_has_git_push(blob)) {
-        if (mode == EVA_TETHER_MODE_CURSOR)
-            eva_tether_set_ask(out_decision, EVA_TETHER_REASON_GIT_PUSH);
-        else
-            eva_tether_set_deny(out_decision, EVA_TETHER_REASON_GIT_PUSH);
+        eva_tether_set_ask(out_decision, EVA_TETHER_REASON_GIT_PUSH);
         return EVA_TETHER_OK;
     }
     if (eva_tether_has_reset_hard(blob)) {
@@ -657,7 +654,10 @@ static eva_tether_status_t eva_tether_emit_grok(const eva_tether_decision_t *d)
         return EVA_TETHER_OK;
 
     eva_tether_join_reason(full, sizeof full, EVA_TETHER_REASON_PREFIX, d->reason);
-    fputs("{\"decision\":\"deny\",\"reason\":", stdout);
+    if (d->verdict == EVA_TETHER_VERDICT_ASK)
+        fputs("{\"decision\":\"ask\",\"reason\":", stdout);
+    else
+        fputs("{\"decision\":\"deny\",\"reason\":", stdout);
     eva_tether_print_json_string(full);
     fputs("}\n", stdout);
     return EVA_TETHER_OK;

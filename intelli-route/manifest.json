@@ -158,6 +158,22 @@
       "path": "trust-stack/skills/trust-stack/SKILL.md"
     },
     {
+      "id": "steer-log",
+      "tier": "signal",
+      "when": "a builder brief or a steering-doc edit",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "steer-log/skills/steer-log/SKILL.md"
+    },
+    {
+      "id": "steer-accel",
+      "tier": "signal",
+      "when": "a long stretch, a break, a context switch, or generation that must stay on the current stage",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "steer-accel/skills/steer-accel/SKILL.md"
+    },
+    {
       "id": "concordance",
       "tier": "signal",
       "when": "a closed decision that must be corroborated",
