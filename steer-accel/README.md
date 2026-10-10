@@ -5,7 +5,7 @@ A loop for a long stretch. Five steps, in order. Question the requirement, delet
 | Check | What it stops |
 |-------|----------------|
 | Earn table | Accelerate before a delete or a simplify. Automate before both. |
-| Repeat | The same stage and the same verify as the last row. |
+| Repeat | A red verify blocks the next pass until the card changes and still passes `steer-log`. A green row with the same stage and verify is refused. |
 | Session reads | A product write after a break, or by a coordinator, with nothing read in this session. |
 | Card | A coordinator with `card: -`. |
 

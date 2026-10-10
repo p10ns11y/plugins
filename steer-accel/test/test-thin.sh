@@ -83,11 +83,51 @@ run 0 check "$TMP/now.md" "$TMP/stage.log" --reads "$TMP/reads" --session s1
 printf '%s\n' $'old\tINVARIANT.md' >"$TMP/reads"
 run 2 check "$TMP/now.md" "$TMP/stage.log" --reads "$TMP/reads" --session s1
 
-# append then repeat
-write_now delete builder no INVARIANT.md "pnpm test card" "drop the extra pass"
+# append a green row, then the same stage and verify is a stall
+cat >"$TMP/card.md" <<'EOF'
+# Invariant card
+- File creates a draft only on File. Fails: `python3 -c "import sys; sys.exit(1)"`
+EOF
+GREEN='python3 -c "import sys; sys.exit(0)"'
+RED='python3 -c "import sys; sys.exit(1)"'
+write_now delete builder no "$TMP/card.md" "$GREEN" "drop the extra pass"
 : >"$TMP/stage.log"
 run 0 append "$TMP/now.md" "$TMP/stage.log"
 run 2 check "$TMP/now.md" "$TMP/stage.log"
+set +e
+out=$("${CHK[@]}" check "$TMP/now.md" "$TMP/stage.log" 2>/dev/null)
+set -e
+python3 -c 'import json,sys; d=json.loads(sys.argv[1]); assert d["reason"]=="same stage and verify as the last row"' "$out" \
+  && ok "green repeat reason" || bad "green repeat reason ($out)"
+
+# red verify blocks the next pass until the card changes, and seven lines still cap it
+write_now delete builder no "$TMP/card.md" "$RED" "missed the file press"
+: >"$TMP/stage.log"
+run 0 append "$TMP/now.md" "$TMP/stage.log"
+grep -q '| red |' "$TMP/stage.log" && ok "row records red" || bad "row records red"
+run 2 check "$TMP/now.md" "$TMP/stage.log"
+set +e
+out=$("${CHK[@]}" check "$TMP/now.md" "$TMP/stage.log" 2>/dev/null)
+set -e
+python3 -c 'import json,sys; d=json.loads(sys.argv[1]); assert d["reason"]=="last verify is red and the card is unchanged" and d["next"]=="question"' "$out" \
+  && ok "red unchanged" || bad "red unchanged ($out)"
+printf '%s\n' '- A bare budget asks per person or total. Fails: `python3 -c "import sys; sys.exit(1)"`' >>"$TMP/card.md"
+run 0 check "$TMP/now.md" "$TMP/stage.log"
+python3 - "$TMP/card.md" <<'PY'
+from pathlib import Path
+import sys
+path = Path(sys.argv[1])
+lines = ["# Invariant card"]
+for i in range(8):
+    lines.append(f"- Rule {i} holds in the product. Fails: `python3 -c \"import sys; sys.exit(1)\"`")
+path.write_text("\n".join(lines) + "\n")
+PY
+run 2 check "$TMP/now.md" "$TMP/stage.log"
+set +e
+out=$("${CHK[@]}" check "$TMP/now.md" "$TMP/stage.log" 2>/dev/null)
+set -e
+python3 -c 'import json,sys; d=json.loads(sys.argv[1]); assert d["reason"]=="more than seven lines"' "$out" \
+  && ok "seven line cap" || bad "seven line cap ($out)"
 
 # hook: quiet without marker, deny without a read, allow after a read
 HOOK=(python3 "$ROOT/bin/steer_accel.py" hook)

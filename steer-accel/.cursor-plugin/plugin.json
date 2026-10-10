@@ -1,6 +1,6 @@
 {
   "name": "steer-accel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Steering and acceleration loop. Picks the SpaceX step the stage has earned, refuses a repeated step, and watches reads while a long stretch is on. The hook stays quiet until .steer/loop.on exists.",
   "author": {
     "name": "p10ns11y"
