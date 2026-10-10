@@ -64,7 +64,7 @@ chmod +x "$PRE" "$CUR" "$ROOT/bin/eva-tether-build" 2>/dev/null || true
 
 echo "=== C grok mode ==="
 out=$(run_c grok '{"toolInput":"git push origin main"}')
-assert_contains "$out" '"decision":"deny"' "c grok git push deny"
+assert_contains "$out" '"decision":"ask"' "c grok git push ask"
 assert_contains "$out" 'git push' "c grok git push reason"
 
 out=$(run_c grok '{"toolInput":"git push --force origin main"}')
@@ -94,14 +94,14 @@ assert_contains "$out" '"permission":"allow"' "c cursor allow"
 
 echo "=== shell fallback grok ==="
 out=$(run_shell_pre '{"toolInput":"git push origin main"}')
-assert_contains "$out" '"decision":"deny"' "shell grok git push"
+assert_contains "$out" '"decision":"ask"' "shell grok git push ask"
 
 out=$(run_shell_pre '{"toolInput":"echo hi"}')
 assert_empty "$out" "shell grok allow"
 
 echo "=== entry scripts (C preferred) ==="
 out=$(printf '%s' '{"toolInput":"git push"}' | "$PRE")
-assert_contains "$out" 'deny' "pretool git push"
+assert_contains "$out" '"decision":"ask"' "pretool git push ask"
 
 out=$(printf '%s' '{"command":"git push"}' | "$CUR")
 assert_contains "$out" 'ask' "cursor shell git push ask"

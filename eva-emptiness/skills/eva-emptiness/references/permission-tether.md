@@ -34,7 +34,7 @@ Sources: `c/eva_tether.c`, `c/main.c`. Kept binary: `bin/eva-tether`.
 
 | Pattern | Cursor hook | Grok hook |
 |---------|-------------|-----------|
-| `git push` (ordinary) | `permission: ask` (HITL) | `decision: deny` (force HITL — Grok has no ask JSON) |
+| `git push` (ordinary) | `permission: ask` (HITL) | `decision: ask` (HITL prompt) |
 | `git push --force` / `-f` / `--force-with-lease` | `deny` | `deny` |
 | `git reset --hard` | `deny` | `deny` |
 | `rm -rf /` (root) | `deny` | `deny` |
