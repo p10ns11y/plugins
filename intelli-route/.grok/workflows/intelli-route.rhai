@@ -93,6 +93,12 @@ let load_ids = [
     "premflow",
     "arch-machine",
     "peram_senior_mlai_engineer",
+    "peram_data_workflows",
+    "peram_si_native_workflows",
+    "peram_si_service_harness",
+    "peram_deterministic_saas",
+    "peram_infra",
+    "peram_devex",
 ];
 
 let load_urls = [
@@ -120,7 +126,13 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/layout-content-view/skills/layout-content-view/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/premflow/skills/premflow/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/arch-machine/skills/arch-machine/SKILL.md",
-    "https://raw.githubusercontent.com/p10ns11y/skills/master/peram_senior_mlai_engineer/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_senior_mlai_engineer/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_data_workflows/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_si_native_workflows/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_si_service_harness/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_deterministic_saas/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_infra/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_devex/SKILL.md",
 ];
 
 let classify_schema = #{
@@ -192,7 +204,7 @@ classify_prompt += "agent-orchestrator (more than one writer); git-worktrees (pa
 classify_prompt += "adversarial-audit (review, and pstack interrogate Task seats are missing); pulse-memory (notes contradict); ";
 classify_prompt += "mission-map (critical path, shock, or replan); uncertainty-laws (bet, money, or a life fork); ";
 classify_prompt += "layout-content-view (overflow, clip, landmarks, viewport); premflow (note, win, task, journal, focus); ";
-classify_prompt += "arch-machine (host audit, thin path only); peram_senior_mlai_engineer (prose or public voice); ";
+classify_prompt += "arch-machine (host audit, thin path only); ";
 classify_prompt += "split-machine (quantum, QPU, GPU placement, Hamiltonian, entanglement, LEO handover, beam switching, obstruction, conjunction screen, Stargaze, space situational awareness, NISQ, BQP, or which machine; also a closed decision software will branch on); ";
 classify_prompt += "trust-stack (shipping, review load, a repeated bad pattern, agent trust, or fanning out writers); ";
 classify_prompt += "concordance (a closed decision that must be corroborated); ";
@@ -201,6 +213,7 @@ classify_prompt += "higher-order-decision-architect (a hard-to-revert choice: de
 classify_prompt += "stellar-spacemap (a roadmap, coming-next, or blueprint cards); ";
 classify_prompt += "architecture-synthesis (cross-file design or a domain model).\n";
 classify_prompt += "Those four are one family. Load the one the goal names. Do not load the whole family.\n";
+classify_prompt += "SI family, load one: peram_data_workflows (data contract, lineage, replay); peram_si_native_workflows (SI-native draft, review, commit); peram_si_service_harness (SI service admit, route, eval, trace); peram_deterministic_saas (deterministic SaaS invariant and idempotent write); peram_infra (a service only the product needs, cost, blast radius, security that scales); peram_devex (reproduce, verify, review, ship); peram_senior_mlai_engineer (surface not chosen, or machine-first rewrite). Do not load the whole SI family.\n";
 classify_prompt += "confidence is high, med, or low. low means the closed decision is not safe to branch on.\n";
 classify_prompt += "Do not emit clt-dual-load. Do not invent ids.\n";
 classify_prompt += "playbook is one of: investigation, bug-fix, perf-issue, hillclimb, runtime-forensics, trace-forensics, feature, refactoring, prototype, visual-parity, authoring-a-skill, eval, babysit, shipping, autonomous-run, orchestrate, autopilot-full, autopilot-stack, session-pickup, pause-safely, multi-phase-plan, worktree-cleanup, figure-it-out, skip.\n";

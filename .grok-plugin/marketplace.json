@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
+  "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
@@ -188,6 +188,23 @@
         "hint-tags",
         "contradiction",
         "sqlite"
+      ]
+    },
+    {
+      "name": "si",
+      "description": "SI workflows that own the write: data contracts, SI-native review flows, an SI service harness, and deterministic SaaS. Load one profile.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./si"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "si",
+        "data",
+        "workflow",
+        "harness",
+        "saas"
       ]
     },
     {

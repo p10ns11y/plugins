@@ -80,6 +80,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 | **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |
 | **craft** | Specifier, coder, cleaner, hardener, QA. CRAP on touched functions; mutation testing on non-Bend code; Bend proofs for pure transitions. [craft/README.md](craft/README.md) | `/craft` |
+| **si** | SI workflows that own the write. One profile: data, SI-native review, SI service, deterministic SaaS, infra, or devex. [si/README.md](si/README.md) | `/si` |
 
 ---
 
@@ -158,7 +159,7 @@ See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](psta
 
 ## intelli-route
 
-Routes one goal onto at most four skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills), except `eva-emptiness`, which is loaded from this repo because the skills-repo entry is a sibling symlink. This plugin does not copy those bodies, and it does not vendor pstack.
+Routes one goal onto at most four skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills), except `eva-emptiness` and the `si` profiles, which load from this repo because the skills-repo entries are sibling symlinks. This plugin does not copy those bodies, and it does not vendor pstack.
 
 ```bash
 grok plugin install ./intelli-route --trust

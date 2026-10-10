@@ -65,6 +65,11 @@
       "source": "./pulse-memory"
     },
     {
+      "name": "si",
+      "description": "SI workflows that own the write: data contracts, SI-native review flows, an SI service harness, and deterministic SaaS. Load one profile.",
+      "source": "./si"
+    },
+    {
       "name": "split-machine",
       "description": "Place a job on the machine that can do it: Earth QPU, entanglement link, LEO radio handover, conjunction screen, GPU factory, BQP slice, System One decision, or System Two prose. Name the act. Low confidence does not automate.",
       "source": "./split-machine"

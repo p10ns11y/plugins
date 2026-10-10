@@ -1,0 +1,17 @@
+{
+  "name": "si",
+  "version": "0.1.0",
+  "description": "SI workflows that own the write: data contracts, SI-native review flows, an SI service harness, and deterministic SaaS. Load one profile.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "si",
+    "data",
+    "workflow",
+    "harness",
+    "saas"
+  ]
+}
