@@ -34,6 +34,8 @@ Example shape: a job-posting open/closed checker — deterministic script, one J
 
 Load `findings-first` when observations should land in a file first. Load `trust-stack` when the script enforces an invariant.
 
+Upstream: [implement-spec](https://www.aihero.dev/skills-implement-spec) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+
 ## Emit
 
 ```markdown

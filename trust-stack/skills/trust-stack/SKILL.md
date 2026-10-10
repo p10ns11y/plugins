@@ -79,6 +79,8 @@ Before product code, apply the three invariants in [references/day-0.md](referen
 | A closed decision that must be corroborated | `concordance` |
 | A session lookback | this skill, then `findings-first` for the row |
 
+Upstream: [retro](https://www.aihero.dev/skills-retro) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+
 ---
 
 ## Emit (required)

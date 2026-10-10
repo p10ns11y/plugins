@@ -18,6 +18,23 @@ Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimizatio
 
 Upstream alignment names stay upstream. Fog across sessions loads `eva-emptiness`, then `mission-map` once the destination is named. An alignment interview loads `steer-log` and ends when the invariant card is admitted. A settled conversation that needs a spec loads `craft`. Blocking tickets load `mission-map`, and each builder card still goes through `steer-log`. A glossary loads `architecture-synthesis`. A session lookback loads `trust-stack`. A resume on the same harness and directory loads `steer-accel`. A resume that changes harness or directory loads `pulse-memory`. A task graph loads `git-worktrees`. Do not fetch those bodies.
 
+## Upstream
+
+Catalog: [AI Skills for Real Engineers](https://www.aihero.dev/skills). Source: [mattpocock/skills](https://github.com/mattpocock/skills). The bodies stay there.
+
+| Page | House |
+|---|---|
+| [wayfinder](https://www.aihero.dev/skills-wayfinder) | `eva-emptiness`, then `mission-map` |
+| [grill-with-docs](https://www.aihero.dev/skills-grill-with-docs) | `steer-log`; overbuilding returns through `odysseus-navigator` |
+| [to-spec](https://www.aihero.dev/skills-to-spec) | `craft` |
+| [to-tickets](https://www.aihero.dev/skills-to-tickets) | `mission-map`, then a builder card through `steer-log` |
+| [domain-modeling](https://www.aihero.dev/skills-domain-modeling) | `architecture-synthesis` |
+| [retro](https://www.aihero.dev/skills-retro) | `trust-stack`, then `findings-first` |
+| [handoff](https://www.aihero.dev/skills-handoff) | `steer-accel` on the same harness and directory; `pulse-memory` when either changes |
+| [implement-spec](https://www.aihero.dev/skills-implement-spec) | `shared-scripts` and `git-worktrees` |
+| [writing-for-agents](https://www.aihero.dev/skills-writing-for-agents) | `workflow-skills` |
+| [pr](https://www.aihero.dev/skills-pr) | pull request template, `scaled-verifiers`, `pstack-map` shipping row |
+
 `hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the route and stop. Reversible edits proceed.
 
 ## Emit, then act

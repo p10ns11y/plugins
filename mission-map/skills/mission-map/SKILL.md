@@ -15,7 +15,7 @@ metadata:
 
 # mission-map
 
-> **Load rule:** This file owns the **map**. Control-plane phases stay in `control-graph`. Emptiness (unknown map) stays in `eva-emptiness`. Do not forecast life at 7 nines.
+> **Load rule:** This file owns the **map**. Control-plane phases stay in `control-graph`. Emptiness (unknown map) stays in `eva-emptiness`. Once the destination is named, blocking tickets stay here. Do not forecast life at 7 nines.
 
 ## Purpose
 
@@ -53,6 +53,7 @@ Never print a single calendar date as destiny. Print **bands** \(a / m / b\) and
 6. **Signposts** — `watch` → `fires_when` → `continue | switch | Ask`. Every Risk needs one.
 7. **On shock** — re-run steps 3–6 on the remaining DAG only.
 8. **LLM room** — propose a missing stage or band; human confirms.
+9. **Blocking tickets** — each remaining Do names what it blocks. A ticket becomes a builder card only through `steer-log`. The spec is `craft`. This map does not start the code.
 
 Optional numbers (from the plugin root):
 
@@ -90,6 +91,7 @@ Sample DAG: [sample-map.json](../../examples/sample-map.json).
 
 - Not a future oracle. Bands move when facts move.
 - Does not replace control-graph phases or eva-emptiness when the map itself is missing.
+- Does not write the spec or the builder card. Those are `craft` and `steer-log`.
 - C and Rust kernels are optional; a valid map can be prose plus the class table.
 - Email and other PII stay off the public map. See [map-schema](references/map-schema.md).
 
@@ -109,3 +111,4 @@ Sample DAG: [sample-map.json](../../examples/sample-map.json).
 - Kernels: [references/kernels.md](references/kernels.md)
 - Example: [sample-map.json](../../examples/sample-map.json)
 - control-graph · eva-emptiness · north-star-compass
+- Upstream: [to-tickets](https://www.aihero.dev/skills-to-tickets) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.

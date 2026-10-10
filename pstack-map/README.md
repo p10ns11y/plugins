@@ -4,6 +4,8 @@ Playbook **map** from [Cursor pstack](https://github.com/cursor/plugins/tree/mai
 
 pstack stays the source of truth. This plugin does **not** copy playbooks, principles, or agents.
 
+Pull request shape: [pr](https://www.aihero.dev/skills-pr) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+
 ```text
   /pstack-map     match playbook → load pstack or house fallback
   /poteto-mode       pstack itself (install separately)

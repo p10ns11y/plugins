@@ -40,6 +40,8 @@ Do not copy source prose into the answer.
 - User asks to tag, pulse, admit, or clean a dump
 - Writing session/career/memory files that will be retrieved later
 - A resume that changes harness or directory: admit one tagged snippet that points at the stage log and the spec. The traveling file stays out of the repo.
+
+Upstream: [handoff](https://www.aihero.dev/skills-handoff) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
 - `/pulse-memory` (turn) · `/workflow pulse-memory` (`mode`: `both` \| `thinking` \| `harness`)
 
 Skip: one-file typo with no claims about the past. Former name: `archive-not-memory` (alias skill redirects here).

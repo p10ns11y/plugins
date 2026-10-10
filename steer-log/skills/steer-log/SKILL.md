@@ -12,6 +12,8 @@ Run `bin/steer-log` before a builder starts, and before a steering doc changes. 
 
 `trust-stack` places the invariant. `findings-first` stores observations. This skill only opens or shuts the door.
 
+Upstream: [grill-with-docs](https://www.aihero.dev/skills-grill-with-docs) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+
 ## When
 
 | Signal | Action |
@@ -28,6 +30,7 @@ Run `bin/steer-log` before a builder starts, and before a steering doc changes. 
 2. `bin/steer-log doc <doc> --log <log>` before the doc edit. Refuse means stop. Do not fill the doc from the chat.
 3. A new decision is one appended log row. Quote that row in a blockquote. Leave older rows as they are.
 4. Admitted brief: load `trust-stack`. Observation: load `findings-first`.
+5. An open alignment interview asks until every card line has a failing command. It does not write the spec. After `brief` admits the card, the spec is `craft`.
 
 ## Emit
 
