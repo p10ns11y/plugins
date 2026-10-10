@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Stage loop and opt-in watcher. No model."""
 
+import hashlib
+import importlib.util
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -62,12 +65,18 @@ def parse_log(text):
         if not line:
             continue
         parts = [part.strip() for part in line.split("|")]
-        if len(parts) != 3:
+        if len(parts) == 3:
+            stage, change, verify = parts
+            result, digest = "", ""
+        elif len(parts) == 5:
+            stage, change, verify, result, digest = parts
+            if result not in ("red", "green") or not digest:
+                return None, "bad stage row"
+        else:
             return None, "bad stage row"
-        stage, change, verify = parts
         if stage not in STEPS or not change or change == "-" or not verify:
             return None, "bad stage row"
-        rows.append((stage, change, verify))
+        rows.append((stage, change, verify, result, digest))
     return rows, None
 
 
@@ -118,6 +127,51 @@ def session_reads(text, session):
     return found
 
 
+def card_digest(card):
+    if card in ("", "-"):
+        return "-"
+    path = Path(card)
+    if not path.is_file():
+        return "missing"
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def load_card_checker():
+    sibling = Path(__file__).resolve().parents[2] / "steer-log" / "bin" / "steer_log.py"
+    if not sibling.is_file():
+        return None
+    spec = importlib.util.spec_from_file_location("steer_log_card", sibling)
+    if spec is None or spec.loader is None:
+        return None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.check_card
+
+
+def live_card_problem(card, required):
+    if card in ("", "-") or not Path(card).is_file():
+        return "invariant card missing" if required else None
+    checker = load_card_checker()
+    if checker is None:
+        return "steer-log checker missing"
+    return checker(Path(card).read_text(encoding="utf-8"))
+
+
+def run_verify(command):
+    try:
+        proc = subprocess.run(
+            command,
+            shell=True,
+            capture_output=True,
+            timeout=180,
+        )
+    except subprocess.TimeoutExpired:
+        return None
+    if proc.returncode == 0:
+        return "green"
+    return "red"
+
+
 def evaluate(now, rows, reads, session, require_reads):
     if require_reads:
         if reads is None:
@@ -128,8 +182,17 @@ def evaluate(now, rows, reads, session, require_reads):
         return "refuse", "coordinator has no invariant card", "question"
     if not earned(now["stage"], rows, now["card"]):
         return "refuse", "stage is ahead of the log", blocking_step(now["stage"], rows, now["card"])
-    if rows and rows[-1][0] == now["stage"] and rows[-1][2] == now["verify"]:
+    if rows and rows[-1][3] == "red":
+        if card_digest(now["card"]) == rows[-1][4]:
+            return "refuse", "last verify is red and the card is unchanged", "question"
+        problem = live_card_problem(now["card"], True)
+        if problem:
+            return "refuse", problem, "question"
+    elif rows and rows[-1][0] == now["stage"] and rows[-1][2] == now["verify"]:
         return "refuse", "same stage and verify as the last row", "question"
+    problem = live_card_problem(now["card"], False)
+    if problem:
+        return "refuse", problem, "question"
     return "admit", "", now["stage"]
 
 
@@ -199,13 +262,20 @@ def append_cmd(argv):
         return emit(verdict, why, nxt)
     if now["change"] in ("", "-"):
         return emit("refuse", "nothing to record", "stop")
-    row = " | ".join((now["stage"], now["change"], now["verify"]))
+    result = run_verify(now["verify"])
+    if result is None:
+        return emit("refuse", "verify timed out", "stop")
+    row = " | ".join(
+        (now["stage"], now["change"], now["verify"], result, card_digest(now["card"]))
+    )
     path = Path(argv[1])
     path.parent.mkdir(parents=True, exist_ok=True)
     existing = path.read_text(encoding="utf-8") if path.is_file() else ""
     if existing and not existing.endswith("\n"):
         existing += "\n"
     path.write_text(existing + row + "\n", encoding="utf-8")
+    if result == "red":
+        return emit("admit", "verify is red", "question")
     return emit("admit", "", now["stage"])
 
 

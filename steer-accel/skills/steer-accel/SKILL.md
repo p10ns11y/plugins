@@ -11,7 +11,7 @@ description: >
 
 One loop for a long stretch. The step comes from the stage log, not from how long the chat feels. Rules live in [references/steps.md](references/steps.md).
 
-The mix is three checks on that same log. Dynamic means the earliest step the log has earned. Evolution means the log, not the chat, is what a resumed session reads. The repeat check sends a duplicated stage and verify back to `question`.
+The mix is three checks on that same log. Dynamic means the earliest step the log has earned. Evolution means the log, not the chat, is what a resumed session reads. A red verify blocks the next pass until the invariant card changes, and the card must still pass `steer-log`. A green row with the same stage and verify goes back to `question`.
 
 `steer-log` is the door for the card and the steering doc. `trust-stack` places the invariant. `findings-first` stores observations. `pulse-memory` may admit one tagged snippet after a break. This skill does not do those jobs.
 
@@ -29,7 +29,7 @@ The mix is three checks on that same log. Dynamic means the earliest step the lo
 1. On resume, run `bin/steer-accel reset-reads .steer/reads` before the next edit.
 2. Read the card and the stage log. The hook records reads outside `.steer/`.
 3. Set `stage` to what `bin/steer-accel check .steer/now.md .steer/stage.log --reads .steer/reads --session <id>` admits. Exit 2 means do that `next`, not the later step.
-4. When the step lands, set `change`, then `bin/steer-accel append`.
+4. When the step lands, set `change`, then `bin/steer-accel append`. Append runs the verify command and writes `red` or `green` on the row.
 5. A builder brief still goes through `steer-log` first.
 
 ## Emit

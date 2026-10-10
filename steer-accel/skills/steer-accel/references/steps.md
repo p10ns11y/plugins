@@ -30,10 +30,10 @@ change: -
 One row per landed step. Append only.
 
 ```text
-delete | drop the second visual pass | pnpm test file-press
+delete | drop the second visual pass | pnpm test file-press | red | <card-sha256>
 ```
 
-Three fields separated by ` | `. Stage, what changed, verify command.
+Five fields separated by ` | `. Stage, what changed, verify command, `red` or `green`, and the sha256 of the invariant card at append time. `append` runs the verify command and writes that result. A three-field row from before this rule has no result.
 
 ## reads
 
@@ -41,7 +41,9 @@ The hook appends `session<TAB>path` to `.steer/reads` when a file outside `.stee
 
 ## Repeat
 
-If the last log row has the same stage and the same verify as `now.md`, the checker refuses. Change the verify or go back to `question`. That is the recursive step. It does not rewrite a model.
+`append` runs the verify command. Exit 0 writes `green`. Any other exit writes `red`. The next pass is refused while that result is `red` and the card file's sha256 is unchanged. A changed card is admitted only when `steer-log` accepts it, which keeps the seven-line cap. Replacing a line is how a card gets tighter. An eighth line stays refused.
+
+A `green` row with the same stage and the same verify as `now.md` is still refused. Go back to `question`. This loop does not rewrite a model.
 
 ## Watcher
 
