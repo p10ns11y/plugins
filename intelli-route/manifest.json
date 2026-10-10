@@ -240,10 +240,58 @@
     {
       "id": "peram_senior_mlai_engineer",
       "tier": "signal",
-      "when": "the deliverable is prose or public voice",
-      "repo": "https://github.com/p10ns11y/skills",
-      "ref": "master",
-      "path": "peram_senior_mlai_engineer/SKILL.md"
+      "when": "the SI surface is not chosen yet, or a machine-first rewrite",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "si/skills/peram_senior_mlai_engineer/SKILL.md"
+    },
+    {
+      "id": "peram_data_workflows",
+      "tier": "signal",
+      "when": "a data contract, lineage, schema, pipeline, or replay",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "si/skills/peram_data_workflows/SKILL.md"
+    },
+    {
+      "id": "peram_si_native_workflows",
+      "tier": "signal",
+      "when": "an SI-native review flow: intent, draft, diff, or commit",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "si/skills/peram_si_native_workflows/SKILL.md"
+    },
+    {
+      "id": "peram_si_service_harness",
+      "tier": "signal",
+      "when": "an SI service harness: admit, route, eval, quota, or trace",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "si/skills/peram_si_service_harness/SKILL.md"
+    },
+    {
+      "id": "peram_deterministic_saas",
+      "tier": "signal",
+      "when": "a deterministic SaaS write: permission, entitlement, lifecycle, or idempotent replay",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "si/skills/peram_deterministic_saas/SKILL.md"
+    },
+    {
+      "id": "peram_infra",
+      "tier": "signal",
+      "when": "a service, its cost, its blast radius, or a security boundary that must scale",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "si/skills/peram_infra/SKILL.md"
+    },
+    {
+      "id": "peram_devex",
+      "tier": "signal",
+      "when": "the builder path: reproduce, verify, review, or ship",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "si/skills/peram_devex/SKILL.md"
     },
     {
       "id": "clt-dual-load",

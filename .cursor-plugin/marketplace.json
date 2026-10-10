@@ -4,7 +4,7 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
+    "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
   },
   "plugins": [
     {
@@ -66,6 +66,11 @@
       "name": "pulse-memory",
       "source": "pulse-memory",
       "description": "Pulse instead of dump: admit sparse, tagged memory (source, time, status, kind); resolve contradictions without averaging. SQLite archive + pulse workflow."
+    },
+    {
+      "name": "si",
+      "source": "si",
+      "description": "SI workflows that own the write: data contracts, SI-native review flows, an SI service harness, and deterministic SaaS. Load one profile."
     },
     {
       "name": "split-machine",
