@@ -51,6 +51,7 @@ A8  Never romanticize cleverness; never encourage hubris
 | `/odysseus` · several smells | full Navigator table — [commands/odysseus.md](../../commands/odysseus.md) |
 | CG ORIENT / PLAN / REVIEW_GATE on multi-step work | diagnose on Card; do not replace Outer |
 | EVA Score / ActOrAsk when emptiness high | default Ask if auth/irreversible unclear; no Act-from-hubris |
+| An alignment interview starts overbuilding | Name Circe. One YAGNI cut. Return to the `steer-log` card. Do not replace the interview. |
 | ≤2-file obvious fix, mistakes=none | **Skip lecture** → affirm Ithaca + one next step |
 | domain autonomy (finder / CV / X) | domain skill owns domain; ON owns **judgment labels only** |
 

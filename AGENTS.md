@@ -2,7 +2,7 @@
 
 Grok Build / agent **marketplace plugins** — installable skill + command + agent + hook bundles.
 
-**Owner:** product plugins in this repo (`mission-map`, `uncertainty-laws`, `pstack-map`, `layout-content-view`, `pulse-memory`, `odysseus-navigator`, `eva-emptiness`, `arch-machine`, `premflow`, `intelli-route`, `split-machine`, `trust-stack`, `steer-log`, `steer-accel`, `concordance`, `michelin-kitchen`, `craft`, `si`).  
+**Owner:** product plugins in this repo (`mission-map`, `uncertainty-laws`, `pstack-map`, `aihero-map`, `layout-content-view`, `pulse-memory`, `odysseus-navigator`, `eva-emptiness`, `arch-machine`, `premflow`, `intelli-route`, `split-machine`, `trust-stack`, `steer-log`, `steer-accel`, `concordance`, `michelin-kitchen`, `craft`, `si`).  
 **Catalog:** [README.md](README.md) · [.grok-plugin/marketplace.json](.grok-plugin/marketplace.json)
 
 ```bash

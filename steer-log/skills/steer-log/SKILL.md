@@ -12,6 +12,8 @@ Run `bin/steer-log` before a builder starts, and before a steering doc changes. 
 
 `trust-stack` places the invariant. `findings-first` stores observations. This skill only opens or shuts the door.
 
+Upstream name: load `aihero-map`.
+
 ## When
 
 | Signal | Action |
@@ -20,6 +22,7 @@ Run `bin/steer-log` before a builder starts, and before a steering doc changes. 
 | A steering doc is about to change | Activate |
 | The checker already admitted the card and the open question is which layer holds it | Skip. Load `trust-stack`. |
 | The note is an observation, not a decision that was made | Skip. Load `findings-first`. |
+| An alignment interview is still open | Activate. It ends when `brief` admits the card. |
 
 ## Steps
 
@@ -27,6 +30,7 @@ Run `bin/steer-log` before a builder starts, and before a steering doc changes. 
 2. `bin/steer-log doc <doc> --log <log>` before the doc edit. Refuse means stop. Do not fill the doc from the chat.
 3. A new decision is one appended log row. Quote that row in a blockquote. Leave older rows as they are.
 4. Admitted brief: load `trust-stack`. Observation: load `findings-first`.
+5. An open alignment interview asks until every card line has a failing command. It does not write the spec. After `brief` admits the card, the spec is `craft`.
 
 ## Emit
 

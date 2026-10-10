@@ -60,6 +60,15 @@ rule="$(cat "$ROOT/cursor/rules/intelli-route.mdc")"
 echo "$rhai" | grep -Fq "$cc_when" && ok "workflow names concordance" || bad "workflow missing concordance when"
 echo "$manifest" | grep -Fq "$cc_when" && ok "manifest names concordance" || bad "manifest missing concordance when"
 echo "$rule" | grep -Fq "$cc_when" && ok "cursor rule names concordance" || bad "cursor rule missing concordance when"
+chain_when='a settled conversation needs a spec before code'
+lookback_when='session lookback'
+echo "$rhai" | grep -Fq "$chain_when" && ok "workflow names craft" || bad "workflow missing craft when"
+echo "$manifest" | grep -Fq "$chain_when" && ok "manifest names craft" || bad "manifest missing craft when"
+echo "$rule" | grep -Fq "$chain_when" && ok "cursor rule names craft" || bad "cursor rule missing craft when"
+echo "$rhai" | grep -Fq "$lookback_when" && ok "workflow names session lookback" || bad "workflow missing session lookback"
+echo "$manifest" | grep -Fq "$lookback_when" && ok "manifest names session lookback" || bad "manifest missing session lookback"
+echo "$rule" | grep -Fq "$lookback_when" && ok "cursor rule names session lookback" || bad "cursor rule missing session lookback"
+if [[ "$rhai" == *'craft/skills/craft/SKILL.md'* ]]; then ok "workflow fetches craft"; else bad "workflow missing craft url"; fi
 for surface in manifest.json README.md commands/intelli-route.md cursor/commands/intelli-route.md cursor/rules/intelli-route.mdc agents/intelli-route.md bot/intelli-route.md AGENTS.md .grok/workflows/intelli-route.rhai; do
   if grep -Eq 'label_dm|kappa_window|p_dm' "$ROOT/$surface"; then
     bad "comparison folded into $surface"

@@ -72,6 +72,7 @@ let load_ids = [
     "eva-emptiness",
     "control-graph",
     "pstack-map",
+    "aihero-map",
     "odysseus-navigator",
     "ai-optimization",
     "agent-orchestrator",
@@ -99,6 +100,7 @@ let load_ids = [
     "peram_deterministic_saas",
     "peram_infra",
     "peram_devex",
+    "craft",
 ];
 
 let load_urls = [
@@ -106,6 +108,7 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/eva-emptiness/skills/eva-emptiness/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/control-graph/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/pstack-map/skills/pstack-map/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/aihero-map/skills/aihero-map/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/odysseus-navigator/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/ai-optimization/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/agent-orchestrator/SKILL.md",
@@ -133,6 +136,7 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_deterministic_saas/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_infra/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/si/skills/peram_devex/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/craft/skills/craft/SKILL.md",
 ];
 
 let classify_schema = #{
@@ -194,26 +198,30 @@ classify_prompt += "Classify this goal. Do not fetch files and do not edit anyth
 classify_prompt += "Goal JSON:\n";
 classify_prompt += json_encode(goal);
 classify_prompt += "\n\nPrimary, first match after a dump rewrite:\n";
-classify_prompt += "1. No map, unknowns dominate, or authorization is the unknown → route empty. loads include eva-emptiness.\n";
+classify_prompt += "1. No map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog → route empty. loads include eva-emptiness.\n";
 classify_prompt += "2. Multi-step, until-done, or the same step is being redone → route card. loads include control-graph.\n";
 classify_prompt += "3. Otherwise → route light. loads include pstack-map.\n";
 classify_prompt += "If the goal is a paste or dump with no single ask, set feeder true and include control-feeder. Otherwise feeder false.\n";
 classify_prompt += "Add a signal id only when the goal shows that signal. At most four loads total.\n";
-classify_prompt += "Signals: odysseus-navigator (plan, architecture, or review); ai-optimization (context already large); ";
-classify_prompt += "agent-orchestrator (more than one writer); git-worktrees (parallel checkouts or a merge); ";
-classify_prompt += "adversarial-audit (review, and pstack interrogate Task seats are missing); pulse-memory (notes contradict); ";
-classify_prompt += "mission-map (critical path, shock, or replan); uncertainty-laws (bet, money, or a life fork); ";
+classify_prompt += "Signals: aihero-map (an alignment name, which stack wins on an overlap, or an upstream skill page); odysseus-navigator (plan, architecture, review, or an interview that starts overbuilding); ai-optimization (context already large); ";
+classify_prompt += "agent-orchestrator (more than one writer); git-worktrees (parallel checkouts, a merge, or a task graph of tickets); ";
+classify_prompt += "adversarial-audit (review, and pstack interrogate Task seats are missing); pulse-memory (claims contradict, a memory write, or a resume that changes harness or directory); ";
+classify_prompt += "mission-map (critical path, shock, replan, or blocking tickets once a destination is named); uncertainty-laws (bet, money, or a life fork); ";
 classify_prompt += "layout-content-view (overflow, clip, landmarks, viewport); premflow (note, win, task, journal, focus); ";
 classify_prompt += "arch-machine (host audit, thin path only); ";
 classify_prompt += "split-machine (quantum, QPU, GPU placement, Hamiltonian, entanglement, LEO handover, beam switching, obstruction, conjunction screen, Stargaze, space situational awareness, NISQ, BQP, or which machine; also a closed decision software will branch on); ";
-classify_prompt += "trust-stack (shipping, review load, a repeated bad pattern, agent trust, or fanning out writers); ";
+classify_prompt += "trust-stack (shipping, review load, a repeated bad pattern, agent trust, fanning out writers, or a session lookback); ";
 classify_prompt += "concordance (a closed decision that must be corroborated); ";
 classify_prompt += "master-planner (a master plan, a skill pack, or an ontology for a large repo); ";
 classify_prompt += "higher-order-decision-architect (a hard-to-revert choice: dependency, public API, security, or a pre-mortem); ";
 classify_prompt += "stellar-spacemap (a roadmap, coming-next, or blueprint cards); ";
-classify_prompt += "architecture-synthesis (cross-file design or a domain model).\n";
+classify_prompt += "architecture-synthesis (cross-file design, a domain model, a glossary, or an abstraction that should compound).\n";
 classify_prompt += "Those four are one family. Load the one the goal names. Do not load the whole family.\n";
 classify_prompt += "SI family, load one: peram_data_workflows (data contract, lineage, replay); peram_si_native_workflows (SI-native draft, review, commit); peram_si_service_harness (SI service admit, route, eval, trace); peram_deterministic_saas (deterministic SaaS invariant and idempotent write); peram_infra (a service only the product needs, cost, blast radius, security that scales); peram_devex (reproduce, verify, review, ship); peram_senior_mlai_engineer (surface not chosen, or machine-first rewrite). Do not load the whole SI family.\n";
+classify_prompt += "steer-log (a builder brief, a steering-doc edit, or an alignment interview that must end in an invariant card); ";
+classify_prompt += "steer-accel (a long stretch, a break, a context switch, or a resume that stays on this harness and directory); ";
+classify_prompt += "craft (a settled conversation needs a spec before code).\n";
+classify_prompt += "An alignment name loads aihero-map. Do not fetch the upstream body. Fog across sessions stays eva-emptiness, then mission-map once the destination is named. Each builder card still goes through steer-log.\n";
 classify_prompt += "confidence is high, med, or low. low means the closed decision is not safe to branch on.\n";
 classify_prompt += "Do not emit clt-dual-load. Do not invent ids.\n";
 classify_prompt += "playbook is one of: investigation, bug-fix, perf-issue, hillclimb, runtime-forensics, trace-forensics, feature, refactoring, prototype, visual-parity, authoring-a-skill, eval, babysit, shipping, autonomous-run, orchestrate, autopilot-full, autopilot-stack, session-pickup, pause-safely, multi-phase-plan, worktree-cleanup, figure-it-out, skip.\n";

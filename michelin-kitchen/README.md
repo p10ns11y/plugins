@@ -31,6 +31,11 @@ Pick the habits you need. The talk's own metaphor is a chef who brings their own
 | `premflow` | Capture after a findings review |
 | `mission-map` | When the queue needs a map, not a script |
 | `pstack-map` | Playbook map when pstack is installed |
+| `steer-log` | An alignment interview ends when the invariant card is admitted |
+| `craft` | A settled conversation becomes a spec before code |
+| `steer-accel` | Same harness and directory: the stage log is the resume |
+
+Upstream names: `aihero-map`. The bodies stay there.
 
 ## Install
 

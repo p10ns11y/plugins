@@ -2,7 +2,7 @@
 
 Playbook **map** from [Cursor pstack](https://github.com/cursor/plugins/tree/main/pstack) by **Lauren Tan** (poteto). MIT.
 
-pstack stays the source of truth. This plugin does **not** copy playbooks, principles, or agents.
+pstack stays the source of truth. This plugin does **not** copy playbooks, principles, or agents. Alignment names are `aihero-map`.
 
 ```text
   /pstack-map     match playbook → load pstack or house fallback

@@ -21,3 +21,7 @@ Install pstack yourself. `pstack-map` in this repo names the house fallback when
 Procedure text stays in https://github.com/p10ns11y/skills (`master`). This plugin references those paths. It does not vendor `SKILL.md` bodies.
 
 `eva-emptiness` is loaded from this repo: `eva-emptiness/skills/eva-emptiness/SKILL.md`. The SI spine and profiles are loaded from `si/skills/`. The skills-repo names for both are sibling symlinks, which GitHub does not serve.
+
+## Alignment map
+
+AI Hero skills are Matt Pocock's. The map is [aihero-map](../aihero-map/README.md). This plugin loads that map. It does not copy those bodies.

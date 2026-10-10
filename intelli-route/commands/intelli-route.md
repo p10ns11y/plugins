@@ -13,11 +13,11 @@ Read `manifest.json` in this plugin. It is the contract. Do not open every path 
 
 A paste or dump with no single ask goes through `control-feeder` first. Then the first match wins:
 
-1. No map, unknowns dominate, or authorization is the unknown → route `empty`. Load `eva-emptiness`.
+1. No map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog → route `empty`. Load `eva-emptiness`.
 2. Multi-step, until-done, or the same step is being redone → route `card`. Load `control-graph`.
 3. Otherwise → route `light`. Load `pstack-map`, then one installed pstack playbook or the house row in `pstack-map/skills/pstack-map/references/map.md`.
 
-Add a signal load only when its `when` matches. Stop at four loads, including the primary. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+Add a signal load only when its `when` matches, including `craft` when a settled conversation needs a spec before code. Stop at four loads, including the primary. An alignment name loads `aihero-map`. Do not fetch the upstream body. `clt-dual-load` is a host rule. Do not paste it and do not count it.
 
 `hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the table and stop.
 

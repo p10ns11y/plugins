@@ -66,6 +66,7 @@ Before product code, apply the three invariants in [references/day-0.md](referen
 5. State the verify command the agent can run. If Bend is installed and the layer is `shape`, the command is `trust-stack/test/bend-critical.sh`. Refuse it when `bunfig.toml` sits beside the proof. If Bend is absent, verify is `missing` and the proof was not run.
 6. One owner for this change. Name any collector agents separately. They do not edit it.
 7. Hand the card to intelli-route when this skill was loaded as a signal. It does not replace the route.
+8. A session lookback opens the Lookback section in [references/layers.md](references/layers.md). A person picks the row. Append it with `findings-first`. Do not run the lookback unattended.
 
 ### Neighbors
 
@@ -76,6 +77,9 @@ Before product code, apply the three invariants in [references/day-0.md](referen
 | A plan that is getting grandiose | `odysseus-navigator` |
 | The diff is the proof | `adversarial-audit` |
 | A closed decision that must be corroborated | `concordance` |
+| A session lookback | this skill, then `findings-first` for the row |
+
+Upstream name: load `aihero-map`.
 
 ---
 

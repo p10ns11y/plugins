@@ -4,9 +4,14 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
+    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
   },
   "plugins": [
+    {
+      "name": "aihero-map",
+      "source": "aihero-map",
+      "description": "Alignment map from Matt Pocock's AI Hero skills onto house skills. Does not copy those bodies. On an overlap, the house claim wins."
+    },
     {
       "name": "arch-machine",
       "source": "arch-machine",

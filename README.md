@@ -57,6 +57,8 @@ plugin install  ──trust───► agents, hooks, /commands
 .rhai file      ──cp/ln───► ~/.grok/workflows/  (background engine)
 ```
 
+This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills). `aihero-map` names the house skill. The skill bodies stay upstream. How the three stacks meet, and which claim wins on an overlap: [aihero-map/README.md](aihero-map/README.md).
+
 ---
 
 ## Plugin catalog
@@ -71,6 +73,7 @@ plugin install  ──trust───► agents, hooks, /commands
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
+| **aihero-map** | Alignment map from Matt Pocock's AI Hero skills onto house skills. No copy. | `/aihero-map` |
 | **intelli-route** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelli-route` · `/workflow intelli-route` |
 | **split-machine** | Place a job on Earth, an entanglement link, a LEO radio handover, a conjunction screen, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
 | **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
@@ -154,6 +157,19 @@ grok plugin install ./pstack-map --trust
 ```
 
 See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](pstack-map/NOTICE.md).
+
+---
+
+## aihero-map
+
+Alignment map from [AI Hero](https://www.aihero.dev/skills) (Matt Pocock). Does **not** copy those skill bodies. On an overlap, the house claim wins. pstack stays Lauren Tan's playbook map.
+
+```bash
+grok plugin install ./aihero-map --trust
+# slash: /aihero-map
+```
+
+See [aihero-map/README.md](aihero-map/README.md) and [aihero-map/NOTICE.md](aihero-map/NOTICE.md).
 
 ---
 

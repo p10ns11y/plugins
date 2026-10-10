@@ -20,6 +20,7 @@ Example shape: a job-posting open/closed checker — deterministic script, one J
 | Two or more agents wrote similar glue | Activate |
 | A skill re-explains the same API call | Activate |
 | One-off with no repeat expected | Skip |
+| A whole spec is a task graph of tickets | Activate. One deterministic script runs each ready ticket. Parallel tickets use separate worktrees. |
 
 ## Workflow
 
@@ -29,8 +30,11 @@ Example shape: a job-posting open/closed checker — deterministic script, one J
 4. Add a scripts-index entry: path, purpose, example call.
 5. Shrink the skill: keep judgment and when-to-run; delete rediscovered commands.
 6. Run once from a clean shell; keep sample output or a fixture.
+7. For a task graph, the script is the runner. An agent that walks the frontier is only the stand-in until that script exists. Load `git-worktrees` for the parallel checkouts.
 
 Load `findings-first` when observations should land in a file first. Load `trust-stack` when the script enforces an invariant.
+
+Upstream name: load `aihero-map`.
 
 ## Emit
 

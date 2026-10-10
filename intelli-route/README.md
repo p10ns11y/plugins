@@ -10,11 +10,13 @@ A paste or dump with no single ask goes through `control-feeder`. Then the first
 
 | Match | Route | Load |
 |---|---|---|
-| No map, unknowns dominate, or authorization is the unknown | `empty` | `eva-emptiness` in this repo (`eva-emptiness/skills/eva-emptiness/SKILL.md`). The skills-repo entry is a sibling symlink and 404s on GitHub. |
+| No map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog | `empty` | `eva-emptiness` in this repo (`eva-emptiness/skills/eva-emptiness/SKILL.md`). The skills-repo entry is a sibling symlink and 404s on GitHub. |
 | Multi-step, until-done, or the same step is being redone | `card` | `control-graph` |
 | Otherwise | `light` | `pstack-map`, then one playbook or the house row |
 
-Add a signal only when its `when` matches: `odysseus-navigator`, `ai-optimization`, `agent-orchestrator`, `git-worktrees`, `adversarial-audit`, `pulse-memory`, `mission-map`, `uncertainty-laws`, `layout-content-view`, `premflow`, `arch-machine`, `peram_senior_mlai_engineer`, `peram_data_workflows`, `peram_si_native_workflows`, `peram_si_service_harness`, `peram_deterministic_saas`, `peram_infra`, `peram_devex`, `split-machine`, `trust-stack`, `steer-log`, `steer-accel`, `concordance`, `master-planner`, `higher-order-decision-architect`, `stellar-spacemap`, `architecture-synthesis`. Stop at four loads. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+Add a signal only when its `when` matches: `aihero-map`, `odysseus-navigator`, `ai-optimization`, `agent-orchestrator`, `git-worktrees`, `adversarial-audit`, `pulse-memory`, `mission-map`, `uncertainty-laws`, `layout-content-view`, `premflow`, `arch-machine`, `peram_senior_mlai_engineer`, `peram_data_workflows`, `peram_si_native_workflows`, `peram_si_service_harness`, `peram_deterministic_saas`, `peram_infra`, `peram_devex`, `split-machine`, `trust-stack`, `steer-log`, `steer-accel`, `concordance`, `master-planner`, `higher-order-decision-architect`, `stellar-spacemap`, `architecture-synthesis`, `craft`. Stop at four loads. `clt-dual-load` is a host rule. Do not paste it and do not count it.
+
+An alignment name loads `aihero-map`. That map names the house skill and which claim wins on an overlap. Do not fetch the upstream body. Authors: Lauren Tan for pstack, Matt Pocock for AI Hero.
 
 `hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the route and stop. Reversible edits proceed.
 

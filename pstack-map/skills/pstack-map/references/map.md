@@ -19,7 +19,7 @@ Credit: playbook names from [pstack](https://github.com/cursor/plugins/tree/main
 | authoring-a-skill | authoring-a-skill.md | portable-skill-author | — |
 | eval | eval.md | blinded before/after | — |
 | babysit | babysit.md | pr-babysit | — |
-| shipping | shipping.md | tidy-commit-push | Graphite MWR / auto-land |
+| shipping | shipping.md | tidy-commit-push; PR body is a picture, a before and an after, then door and blast radius | Graphite MWR / auto-land |
 | autonomous-run | autonomous-run.md | CG budgets | “until morning” without HITL |
 | orchestrate | orchestrate.md | agent-orchestrator full | — |
 | autopilot-full | autopilot-full.md | one owner per PR; human merge | auto-merge |

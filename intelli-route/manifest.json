@@ -28,7 +28,7 @@
     },
     {
       "id": "eva-emptiness",
-      "when": "there is no map, unknowns dominate, or authorization is the unknown",
+      "when": "there is no map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog",
       "route": "empty"
     },
     {
@@ -78,9 +78,18 @@
       "then": "pstack-map/skills/pstack-map/references/map.md"
     },
     {
+      "id": "aihero-map",
+      "tier": "signal",
+      "when": "an alignment name, which stack wins on an overlap, or an upstream skill page",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "aihero-map/skills/aihero-map/SKILL.md",
+      "then": "aihero-map/skills/aihero-map/references/map.md"
+    },
+    {
       "id": "odysseus-navigator",
       "tier": "signal",
-      "when": "plan, architecture, or review",
+      "when": "plan, architecture, review, or an interview that starts overbuilding",
       "repo": "https://github.com/p10ns11y/skills",
       "ref": "master",
       "path": "odysseus-navigator/SKILL.md"
@@ -104,7 +113,7 @@
     {
       "id": "git-worktrees",
       "tier": "signal",
-      "when": "parallel checkouts or a merge",
+      "when": "parallel checkouts, a merge, or a task graph of tickets",
       "repo": "https://github.com/p10ns11y/skills",
       "ref": "master",
       "path": "git-worktrees/SKILL.md"
@@ -120,7 +129,7 @@
     {
       "id": "pulse-memory",
       "tier": "signal",
-      "when": "claims contradict or a memory write",
+      "when": "claims contradict, a memory write, or a resume that changes harness or directory",
       "repo": "https://github.com/p10ns11y/plugins",
       "ref": "main",
       "path": "pulse-memory/skills/pulse-memory/SKILL.md"
@@ -128,7 +137,7 @@
     {
       "id": "mission-map",
       "tier": "signal",
-      "when": "critical path, shock, or replan",
+      "when": "critical path, shock, replan, or blocking tickets once a destination is named",
       "repo": "https://github.com/p10ns11y/plugins",
       "ref": "main",
       "path": "mission-map/skills/mission-map/SKILL.md"
@@ -152,7 +161,7 @@
     {
       "id": "trust-stack",
       "tier": "signal",
-      "when": "shipping, review load, a repeated bad pattern, agent trust, or fanning out writers",
+      "when": "shipping, review load, a repeated bad pattern, agent trust, fanning out writers, or a session lookback",
       "repo": "https://github.com/p10ns11y/plugins",
       "ref": "main",
       "path": "trust-stack/skills/trust-stack/SKILL.md"
@@ -160,7 +169,7 @@
     {
       "id": "steer-log",
       "tier": "signal",
-      "when": "a builder brief or a steering-doc edit",
+      "when": "a builder brief, a steering-doc edit, or an alignment interview that must end in an invariant card",
       "repo": "https://github.com/p10ns11y/plugins",
       "ref": "main",
       "path": "steer-log/skills/steer-log/SKILL.md"
@@ -168,7 +177,7 @@
     {
       "id": "steer-accel",
       "tier": "signal",
-      "when": "a long stretch, a break, a context switch, or generation that must stay on the current stage",
+      "when": "a long stretch, a break, a context switch, generation that must stay on the current stage, or a resume that stays on this harness and directory",
       "repo": "https://github.com/p10ns11y/plugins",
       "ref": "main",
       "path": "steer-accel/skills/steer-accel/SKILL.md"
@@ -208,7 +217,7 @@
     {
       "id": "architecture-synthesis",
       "tier": "signal",
-      "when": "cross-file design, a domain model, or an abstraction that should compound",
+      "when": "cross-file design, a domain model, a glossary, or an abstraction that should compound",
       "repo": "https://github.com/p10ns11y/skills",
       "ref": "master",
       "path": "architecture-synthesis/SKILL.md"
@@ -294,6 +303,14 @@
       "path": "si/skills/peram_devex/SKILL.md"
     },
     {
+      "id": "craft",
+      "tier": "signal",
+      "when": "a settled conversation needs a spec before code",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "craft/skills/craft/SKILL.md"
+    },
+    {
       "id": "clt-dual-load",
       "tier": "rule",
       "when": "host rule already; do not paste it and do not count it as a load",
@@ -323,6 +340,7 @@
   "skip": [
     "vendor pstack bodies",
     "vendor skills-library bodies",
+    "vendor upstream alignment bodies",
     "open every manifest path",
     "second playbook matcher",
     "benny",

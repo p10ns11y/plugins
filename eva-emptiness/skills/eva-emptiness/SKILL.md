@@ -44,6 +44,8 @@ A8  Evaluate(δ) ≔ (Correctness, Effectiveness, Efficiency,
 
 Related skills (load by name): `control-graph` · `concurrent-cli-agents` · `adversarial-audit` · `higher-order-decision-architect`.
 
+Upstream name: load `aihero-map`.
+
 ---
 
 ## Use / skip
@@ -54,6 +56,7 @@ Related skills (load by name): `control-graph` · `concurrent-cli-agents` · `ad
 | Multiple futures disagree at PLAN | Clear acceptance + known verify cmds |
 | Auth / irreversibility unclear | Pure mechanical refactor with tests |
 | User asks EVA / epistemic emptiness / blank sheet | |
+| A multi-session effort whose route is still fog | Chart decisions, not deliverables. Once the destination is named, load `mission-map`. Do not build from this map. |
 
 ---
 
@@ -153,6 +156,7 @@ Map: [references/grok-build-map.md](references/grok-build-map.md). Compile C tet
 - Nest this inside `control-graph/SKILL.md`  
 - Auto-approve because the model “seems sure”  
 - Mega-step “implement everything” before Score  
+- Build from a fog map. Name the destination, then load `mission-map`. The spec is `craft` after that map is settled.
 - Treat third-party “Arena Mode” as SoT — use forks + blind Score  
 - Compile `bin/eva-tether` without user consent (`/eva-tether-init --yes`)  
 

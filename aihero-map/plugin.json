@@ -1,0 +1,18 @@
+{
+  "name": "aihero-map",
+  "version": "0.1.0",
+  "description": "Alignment map from Matt Pocock's AI Hero skills onto house skills. Does not copy those bodies. On an overlap, the house claim wins.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "aihero",
+    "matt-pocock",
+    "alignment",
+    "map",
+    "intelli-route",
+    "pstack-map"
+  ]
+}

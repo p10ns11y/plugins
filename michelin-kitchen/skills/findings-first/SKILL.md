@@ -18,6 +18,7 @@ Append observations to a document. Review every few days. Cluster before fixing.
 | A scout or linter found something worth tracking | Activate |
 | Someone is about to ping a human with a raw log | Activate |
 | One obvious fix already verified green | Skip |
+| A session lookback has a row a person picked | Activate. Append it. Do not open a fix yet. |
 
 ## Workflow
 
