@@ -57,7 +57,7 @@ plugin install  ──trust───► agents, hooks, /commands
 .rhai file      ──cp/ln───► ~/.grok/workflows/  (background engine)
 ```
 
-This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills). `intelli-route` maps an alignment name onto a house skill. The skill bodies stay upstream. Page links: [intelli-route/README.md](intelli-route/README.md).
+This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills). `intelli-route` maps an alignment name onto a house skill. The skill bodies stay upstream. How the three stacks meet, and which claim wins on an overlap: [intelli-route/README.md](intelli-route/README.md).
 
 ---
 
