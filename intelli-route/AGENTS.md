@@ -9,10 +9,10 @@ Fetch a skill body only after its id is in `loads`. Stop at four. Do not open ev
 ## Decide
 
 1. A paste or dump with no single ask goes through `control-feeder`, then classify the Feed.
-2. No map, unknowns dominate, or authorization is the unknown → route `empty` (`eva-emptiness` in this plugins repo).
+2. No map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog → route `empty` (`eva-emptiness` in this plugins repo).
 3. Multi-step, until-done, or the same step is being redone → route `card` (`control-graph`).
 4. Otherwise → route `light` (`pstack-map`, then installed pstack `poteto-mode` or the house row in `references/map.md`).
-5. Add a signal only when its `when` matches. `clt-dual-load` is a host rule. Do not paste it.
+5. Add a signal only when its `when` matches, including `craft` when a settled conversation needs a spec before code, and `trust-stack` on a session lookback. Upstream alignment names use the house ids in the manifest. Do not fetch those bodies. `clt-dual-load` is a host rule. Do not paste it.
 6. Emit situation, route, loads, skips, playbook, hitl, and next. Then do that next step.
 
 ## Pause

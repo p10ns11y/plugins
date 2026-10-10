@@ -26,6 +26,7 @@ Older skills that are implementation details with exact commands: delete those c
 4. Drop command dumps unless a flag is safety-critical.
 5. Add a small Emit table.
 6. If text duplicates installed pstack or `pstack-map`, link instead of copy.
+7. A user-invoked skill orchestrates and does not call another user-invoked skill. A model-invoked skill holds the discipline. Load the other skill by the skill tool.
 
 ## Emit
 

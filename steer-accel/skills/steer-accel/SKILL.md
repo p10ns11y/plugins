@@ -13,7 +13,7 @@ One loop for a long stretch. The step comes from the stage log, not from how lon
 
 The mix is three checks on that same log. Dynamic means the earliest step the log has earned. Evolution means the log, not the chat, is what a resumed session reads. A red verify blocks the next pass until the invariant card changes, and the card must still pass `steer-log`. A green row with the same stage and verify goes back to `question`.
 
-`steer-log` is the door for the card and the steering doc. `trust-stack` places the invariant. `findings-first` stores observations. `pulse-memory` may admit one tagged snippet after a break. This skill does not do those jobs.
+`steer-log` is the door for the card and the steering doc. `trust-stack` places the invariant. `findings-first` stores observations. `pulse-memory` may admit one tagged snippet after a break, or from a file that changes harness or directory. That file points at the log and the spec, does not copy them, and stays out of the repo. Same harness and directory: the stage log is the resume. This skill does not do those other jobs.
 
 ## When
 

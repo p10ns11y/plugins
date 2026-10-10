@@ -27,12 +27,12 @@ A5  This skill does not merge.
 6. Emit the card.
 
 ## Neighbors
-
 | Need | Who |
 |------|-----|
 | Playbook or the house row | installed pstack or `pstack-map` |
 | Which layer holds an invariant | `trust-stack` |
 | Which machine runs the job | `split-machine` |
+| A settled spec, its card, its tickets | specifier here; card is `steer-log`; tickets are `mission-map` |
 
 ## Emit (required)
 

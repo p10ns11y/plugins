@@ -57,6 +57,8 @@ plugin install  ──trust───► agents, hooks, /commands
 .rhai file      ──cp/ln───► ~/.grok/workflows/  (background engine)
 ```
 
+This marketplace is the control plane beside pstack and Matt Pocock's skills. `intelli-route` maps an alignment name onto a house skill. The skill bodies stay upstream.
+
 ---
 
 ## Plugin catalog

@@ -1,6 +1,14 @@
 ## Summary
 
-<!-- What changed and why (1–3 sentences). Keep PRs small. -->
+<!-- Smallest picture that makes the change clear: pseudocode, a call tree, a file tree, or a diff sketch. Then 1–3 sentences. Keep PRs small. -->
+
+## Evidence
+
+<!-- Before: the check that failed. After: the same check passing. -->
+
+## Merge danger
+
+<!-- Two-way door: revert restores the start. One-way door: the world already changed. Blast radius: one surface, or every consumer. -->
 
 ## Harness
 

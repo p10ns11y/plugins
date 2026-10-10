@@ -22,6 +22,17 @@ One owner agent takes a change from plan through the real check. Other agents ma
 
 Do not spawn a crowd of writers until one agent is already trusted on this tree. An untrusted agent, copied a hundred times, is a hundred copies of the miss.
 
+## Lookback
+
+After a session worth learning from, a person picks the row. Do not run this unattended.
+
+| Miss | Layer |
+|---|---|
+| A mechanical miss a checker can fail | `check` or `watch` |
+| A judgment call | `skill` or `guide` |
+
+Append the chosen row through `findings-first`. A one-off stays a one-off.
+
 ## Verify
 
 Verification is the agent using the same surface a user has: the test, the trace, the running UI. A prose claim that it works is not a pass.

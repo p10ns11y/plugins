@@ -20,6 +20,7 @@ Run `bin/steer-log` before a builder starts, and before a steering doc changes. 
 | A steering doc is about to change | Activate |
 | The checker already admitted the card and the open question is which layer holds it | Skip. Load `trust-stack`. |
 | The note is an observation, not a decision that was made | Skip. Load `findings-first`. |
+| An alignment interview is still open | Activate. It ends when `brief` admits the card. |
 
 ## Steps
 

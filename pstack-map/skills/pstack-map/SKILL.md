@@ -81,7 +81,7 @@ Worth copying later only if: (1) pstack is **not** installable on the host, **an
 | arena / swarm | concurrent-cli-agents; parent owns VERIFY |
 | interrogate | review + adversarial-audit |
 | babysit | pr-babysit |
-| shipping | tidy-commit-push; **no** auto-push |
+| shipping | tidy-commit-push; PR body is a picture, a before and an after, then door and blast radius; **no** auto-push |
 | autonomous / orchestrate / autopilot-* | CG budgets; HITL on land |
 | authoring a skill | portable-skill-author + skill-design-principles |
 | session pickup / pause | agent-orchestrator resume (gap only) |
