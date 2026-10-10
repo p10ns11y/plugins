@@ -1,10 +1,28 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
+  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
   "plugins": [
+    {
+      "name": "aihero-map",
+      "description": "Alignment map from Matt Pocock's AI Hero skills onto house skills. Does not copy those bodies. On an overlap, the house claim wins.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./aihero-map"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "aihero",
+        "matt-pocock",
+        "alignment",
+        "map",
+        "intelli-route",
+        "pstack-map"
+      ]
+    },
     {
       "name": "arch-machine",
       "description": "Agent-as-TUI for arch-machine: archy control plane, thin-first sentinel, threat-focused audit, consent-gated expand. Prefer over gum tinfoil TUI.",

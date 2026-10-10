@@ -35,7 +35,7 @@ Pick the habits you need. The talk's own metaphor is a chef who brings their own
 | `craft` | A settled conversation becomes a spec before code |
 | `steer-accel` | Same harness and directory: the stage log is the resume |
 
-Upstream pages, bodies stay there: [writing-for-agents](https://www.aihero.dev/skills-writing-for-agents), [implement-spec](https://www.aihero.dev/skills-implement-spec), [pr](https://www.aihero.dev/skills-pr), catalog [AI Skills for Real Engineers](https://www.aihero.dev/skills).
+Upstream names: `aihero-map`. The bodies stay there.
 
 ## Install
 

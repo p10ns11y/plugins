@@ -22,6 +22,6 @@ Procedure text stays in https://github.com/p10ns11y/skills (`master`). This plug
 
 `eva-emptiness` is loaded from this repo: `eva-emptiness/skills/eva-emptiness/SKILL.md`. The SI spine and profiles are loaded from `si/skills/`. The skills-repo names for both are sibling symlinks, which GitHub does not serve.
 
-## Alignment skills
+## Alignment map
 
-[AI Skills for Real Engineers](https://www.aihero.dev/skills) (Matt Pocock). Source: https://github.com/mattpocock/skills. This plugin maps a name onto a house skill. It does not copy those bodies. The page list is in [README.md](README.md).
+AI Hero skills are Matt Pocock's. The map is [aihero-map](../aihero-map/README.md). This plugin loads that map. It does not copy those bodies.

@@ -111,4 +111,4 @@ Sample DAG: [sample-map.json](../../examples/sample-map.json).
 - Kernels: [references/kernels.md](references/kernels.md)
 - Example: [sample-map.json](../../examples/sample-map.json)
 - control-graph · eva-emptiness · north-star-compass
-- Upstream: [to-tickets](https://www.aihero.dev/skills-to-tickets) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+- Upstream name: load `aihero-map`.

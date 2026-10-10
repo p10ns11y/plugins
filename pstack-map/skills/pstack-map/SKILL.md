@@ -88,8 +88,6 @@ Worth copying later only if: (1) pstack is **not** installable on the host, **an
 | worktree cleanup | git-worktrees |
 | unslop / technical-writing | unslop if installed; else short formal English |
 
-Upstream: [pr](https://www.aihero.dev/skills-pr) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
-
 ---
 
 ## Overrides (house wins)

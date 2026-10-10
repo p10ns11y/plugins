@@ -78,6 +78,15 @@
       "then": "pstack-map/skills/pstack-map/references/map.md"
     },
     {
+      "id": "aihero-map",
+      "tier": "signal",
+      "when": "an alignment name, which stack wins on an overlap, or an upstream skill page",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "aihero-map/skills/aihero-map/SKILL.md",
+      "then": "aihero-map/skills/aihero-map/references/map.md"
+    },
+    {
       "id": "odysseus-navigator",
       "tier": "signal",
       "when": "plan, architecture, review, or an interview that starts overbuilding",

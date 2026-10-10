@@ -72,6 +72,7 @@ let load_ids = [
     "eva-emptiness",
     "control-graph",
     "pstack-map",
+    "aihero-map",
     "odysseus-navigator",
     "ai-optimization",
     "agent-orchestrator",
@@ -107,6 +108,7 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/eva-emptiness/skills/eva-emptiness/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/control-graph/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/pstack-map/skills/pstack-map/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/aihero-map/skills/aihero-map/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/odysseus-navigator/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/ai-optimization/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/agent-orchestrator/SKILL.md",
@@ -201,7 +203,7 @@ classify_prompt += "2. Multi-step, until-done, or the same step is being redone 
 classify_prompt += "3. Otherwise → route light. loads include pstack-map.\n";
 classify_prompt += "If the goal is a paste or dump with no single ask, set feeder true and include control-feeder. Otherwise feeder false.\n";
 classify_prompt += "Add a signal id only when the goal shows that signal. At most four loads total.\n";
-classify_prompt += "Signals: odysseus-navigator (plan, architecture, review, or an interview that starts overbuilding); ai-optimization (context already large); ";
+classify_prompt += "Signals: aihero-map (an alignment name, which stack wins on an overlap, or an upstream skill page); odysseus-navigator (plan, architecture, review, or an interview that starts overbuilding); ai-optimization (context already large); ";
 classify_prompt += "agent-orchestrator (more than one writer); git-worktrees (parallel checkouts, a merge, or a task graph of tickets); ";
 classify_prompt += "adversarial-audit (review, and pstack interrogate Task seats are missing); pulse-memory (claims contradict, a memory write, or a resume that changes harness or directory); ";
 classify_prompt += "mission-map (critical path, shock, replan, or blocking tickets once a destination is named); uncertainty-laws (bet, money, or a life fork); ";
@@ -219,7 +221,7 @@ classify_prompt += "SI family, load one: peram_data_workflows (data contract, li
 classify_prompt += "steer-log (a builder brief, a steering-doc edit, or an alignment interview that must end in an invariant card); ";
 classify_prompt += "steer-accel (a long stretch, a break, a context switch, or a resume that stays on this harness and directory); ";
 classify_prompt += "craft (a settled conversation needs a spec before code).\n";
-classify_prompt += "Upstream alignment names use these house ids and are not fetched. Fog across sessions stays eva-emptiness, then mission-map once the destination is named. Each builder card still goes through steer-log.\n";
+classify_prompt += "An alignment name loads aihero-map. Do not fetch the upstream body. Fog across sessions stays eva-emptiness, then mission-map once the destination is named. Each builder card still goes through steer-log.\n";
 classify_prompt += "confidence is high, med, or low. low means the closed decision is not safe to branch on.\n";
 classify_prompt += "Do not emit clt-dual-load. Do not invent ids.\n";
 classify_prompt += "playbook is one of: investigation, bug-fix, perf-issue, hillclimb, runtime-forensics, trace-forensics, feature, refactoring, prototype, visual-parity, authoring-a-skill, eval, babysit, shipping, autonomous-run, orchestrate, autopilot-full, autopilot-stack, session-pickup, pause-safely, multi-phase-plan, worktree-cleanup, figure-it-out, skip.\n";

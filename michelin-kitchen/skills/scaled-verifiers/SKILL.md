@@ -26,7 +26,7 @@ You cannot taste every dish at scale. Use one verifier instead of ten. Irreversi
 4. Name verify commands. Independent means fresh context, not the same chat re-reading itself.
 5. Sample merged work on a schedule you choose. Repeated shortcut → `repeat-or-leave`.
 
-Upstream: [pr](https://www.aihero.dev/skills-pr) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+Upstream name: load `aihero-map`.
 
 ## Emit
 

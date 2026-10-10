@@ -10,7 +10,7 @@ A paste or dump with no single ask goes through `control-feeder` first. Then the
 2. Multi-step, until-done, or the same step is being redone → route `card`. Load `control-graph`.
 3. Otherwise → route `light`. Load `pstack-map`, then `/poteto-mode` or the house row.
 
-Add a signal only when its `when` matches, including `odysseus-navigator` for a plan, architecture, or review, and `craft` when a settled conversation needs a spec before code. Stop at four loads. Upstream alignment names use the house ids. Do not fetch those bodies. `clt-dual-load` is already a host rule. Do not paste it.
+Add a signal only when its `when` matches, including `odysseus-navigator` for a plan, architecture, or review, and `craft` when a settled conversation needs a spec before code. Stop at four loads. An alignment name loads `aihero-map`. Do not fetch the upstream body. `clt-dual-load` is already a host rule. Do not paste it.
 
 `hitl` is required for secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, emit the table and stop.
 

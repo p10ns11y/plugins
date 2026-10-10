@@ -44,7 +44,7 @@ A8  Evaluate(δ) ≔ (Correctness, Effectiveness, Efficiency,
 
 Related skills (load by name): `control-graph` · `concurrent-cli-agents` · `adversarial-audit` · `higher-order-decision-architect`.
 
-Upstream: [wayfinder](https://www.aihero.dev/skills-wayfinder) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+Upstream name: load `aihero-map`.
 
 ---
 

@@ -12,7 +12,7 @@ Run `bin/steer-log` before a builder starts, and before a steering doc changes. 
 
 `trust-stack` places the invariant. `findings-first` stores observations. This skill only opens or shuts the door.
 
-Upstream: [grill-with-docs](https://www.aihero.dev/skills-grill-with-docs) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+Upstream name: load `aihero-map`.
 
 ## When
 

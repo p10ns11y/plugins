@@ -1,7 +1,7 @@
 # craft
 
 Specifier, coder, cleaner, hardener, then QA.
-Robert C. Martin with Matt Pocock, 19 Aug 2026: [LIVE: Uncle Bob on Software Fundamentals in the Age of AI](https://www.youtube.com/watch?v=zcLPGC-tvgk). A settled conversation becomes the spec: [to-spec](https://www.aihero.dev/skills-to-spec) on [the skills catalog](https://www.aihero.dev/skills). The body stays upstream.
+Robert C. Martin with Matt Pocock, 19 Aug 2026: [LIVE: Uncle Bob on Software Fundamentals in the Age of AI](https://www.youtube.com/watch?v=zcLPGC-tvgk). A settled conversation becomes the spec through `aihero-map`.
 
 | Order | Role | Output | Check |
 |-------|------|--------|-------|

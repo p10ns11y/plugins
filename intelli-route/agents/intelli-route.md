@@ -18,7 +18,7 @@ pstack is Lauren Tan’s MIT plugin (https://github.com/cursor/plugins/tree/main
 
 1. A paste or dump with no single ask → `control-feeder`, then classify the Feed.
 2. First match: `empty` → `eva-emptiness`, including a multi-session effort whose route is still fog. `card` → `control-graph`. Else `light` → `pstack-map` and one playbook or the house row.
-3. Add a signal only when its `when` matches, including `odysseus-navigator` on a plan, architecture, or review, and `craft` when a settled conversation needs a spec before code. A session lookback loads `trust-stack`. Upstream alignment names use the house ids. Do not fetch those bodies.
+3. Add a signal only when its `when` matches, including `odysseus-navigator` on a plan, architecture, or review, and `craft` when a settled conversation needs a spec before code. A session lookback loads `trust-stack`. An alignment name loads `aihero-map`. Do not fetch the upstream body.
 4. Emit `## Intelli-route` with situation, route, loads, skips, playbook, hitl, and next. Then do that next step.
 5. HITL before secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, stop after the table.
 6. Credit Lauren Tan when a pstack playbook runs.
