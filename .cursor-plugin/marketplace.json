@@ -4,7 +4,7 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
+    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
   },
   "plugins": [
     {
@@ -36,6 +36,11 @@
       "name": "craft",
       "source": "craft",
       "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener."
+    },
+    {
+      "name": "dependency-harden",
+      "source": "dependency-harden",
+      "description": "Installable dependency hardening: fix security, upgrade packages, audit allowBuilds and IDE dependencies, and generate a hardened devcontainer. Skills-repo URLs stay canonical for intelli-route."
     },
     {
       "name": "eva-emptiness",

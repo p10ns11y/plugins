@@ -86,6 +86,7 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **si** | SI workflows that own the write. One profile: data, SI-native review, SI service, deterministic SaaS, infra, or devex. [si/README.md](si/README.md) | `/si` |
 | **control-plane** | Feeder plus control-graph. Skills-repo URLs stay canonical for intelli-route. [control-plane/README.md](control-plane/README.md) | `/feed` `/control-graph` |
 | **context-ignite** | Spec (prune, then synthesis), policy (skills-repo URLs stay canonical; fusion-sage is not copied), and a before/after on the pull request. [context-ignite/README.md](context-ignite/README.md) | `/context-ignite` |
+| **dependency-harden** | Dependency security, upgrades, allowBuilds, IDE deps, and a hardened devcontainer. Skills-repo URLs stay canonical for intelli-route. [dependency-harden/README.md](dependency-harden/README.md) | `/dependency-harden` `/devcontainer` |
 
 ---
 

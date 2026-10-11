@@ -1,0 +1,20 @@
+{
+  "name": "dependency-harden",
+  "version": "0.1.0",
+  "description": "Installable dependency hardening: fix security, upgrade packages, audit allowBuilds and IDE dependencies, and generate a hardened devcontainer. Skills-repo URLs stay canonical for intelli-route.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "dependency-harden",
+    "fix-dependency-security",
+    "upgrade-packages",
+    "audit-allow-builds",
+    "audit-ide-dependencies",
+    "devcontainer-hardened"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/"
+}

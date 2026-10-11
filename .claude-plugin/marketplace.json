@@ -35,6 +35,11 @@
       "source": "./craft"
     },
     {
+      "name": "dependency-harden",
+      "description": "Installable dependency hardening: fix security, upgrade packages, audit allowBuilds and IDE dependencies, and generate a hardened devcontainer. Skills-repo URLs stay canonical for intelli-route.",
+      "source": "./dependency-harden"
+    },
+    {
       "name": "eva-emptiness",
       "description": "Reasoning under epistemic emptiness: Prior → Probe → Simulate → Score → ActOrAsk. Prior-diverse agents, /eva starter, C+shell secure tether (consent compile), optional Rhai workflow (copy to .grok/workflows).",
       "source": "./eva-emptiness"

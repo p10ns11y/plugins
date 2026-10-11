@@ -51,12 +51,6 @@ notice="$(cat "$ROOT/NOTICE.md")"
 echo "$notice" | grep -Fq 'intelli-route' && ok "notice keeps intelli-route on the skills repo" || bad "notice misses intelli-route"
 echo "$notice" | grep -Fq 'control-graph/SKILL.md' && ok "notice names canonical graph" || bad "notice misses canonical graph"
 
-if [[ -d "$ROOT/../dependency-harden" ]]; then
-  bad "dependency-harden was created in this port"
-else
-  ok "dependency-harden absent"
-fi
-
 echo "---"
 if [[ "$fail" -ne 0 ]]; then
   echo "$fail failure(s)"
