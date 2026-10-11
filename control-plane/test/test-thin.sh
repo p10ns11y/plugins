@@ -24,6 +24,12 @@ need cursor/rules/clt-dual-load.mdc
 need cursor/rules/control-graph.mdc
 need cursor/rules/higher-order-decision-architect.mdc
 
+if grep -Fq 'fusion-sage' "$ROOT/skills/higher-order-decision-architect/SKILL.md"; then
+  bad "hoda activation still names fusion-sage"
+else
+  ok "hoda activation uses architecture-synthesis"
+fi
+
 mark='Port copy. Canonical file remains in https://github.com/p10ns11y/skills on master.'
 for skill in control-feeder control-graph higher-order-decision-architect; do
   if grep -Fq "$mark" "$ROOT/skills/$skill/SKILL.md"; then
