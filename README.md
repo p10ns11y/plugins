@@ -85,7 +85,7 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **craft** | Specifier, coder, cleaner, hardener, QA. CRAP on touched functions; mutation testing on non-Bend code; Bend proofs for pure transitions. [craft/README.md](craft/README.md) | `/craft` |
 | **si** | SI workflows that own the write. One profile: data, SI-native review, SI service, deterministic SaaS, infra, or devex. [si/README.md](si/README.md) | `/si` |
 | **control-plane** | Feeder plus control-graph. Skills-repo URLs stay canonical for intelli-route. [control-plane/README.md](control-plane/README.md) | `/feed` `/control-graph` |
-| **context-ignite** | Prune with ai-optimization, then synthesize with architecture-synthesis. Skills-repo URLs stay canonical. [context-ignite/README.md](context-ignite/README.md) | `/context-ignite` |
+| **context-ignite** | Spec (prune, then synthesis), policy (skills-repo URLs stay canonical; fusion-sage is not copied), and a before/after on the pull request. [context-ignite/README.md](context-ignite/README.md) | `/context-ignite` |
 
 ---
 

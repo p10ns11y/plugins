@@ -47,6 +47,9 @@ echo "$notice" | grep -Fq 'fusion-sage' && ok "notice records fusion-sage discov
 
 readme="$(cat "$ROOT/README.md")"
 echo "$readme" | grep -Fq 'If a host compaction pass beats context-sage.py on a real repo, delete the prune half and keep architecture-synthesis.' && ok "readme keeps the compaction exit" || bad "readme misses the compaction exit"
+echo "$readme" | grep -Fq '**Spec.**' && ok "readme names the spec" || bad "readme misses the spec"
+echo "$readme" | grep -Fq '**Policy.**' && ok "readme names the policy" || bad "readme misses the policy"
+echo "$readme" | grep -Fq '**Before/after.**' && ok "readme names the before/after" || bad "readme misses the before/after"
 
 workflow="$(cat "$ROOT/.grok/workflows/context-ignite.rhai" "$ROOT/.grok/workflows/context-ignite.md")"
 echo "$workflow" | grep -Fq 'architecture-synthesis' && ok "workflow points at architecture-synthesis" || bad "workflow misses architecture-synthesis"
