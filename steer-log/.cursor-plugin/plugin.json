@@ -1,7 +1,7 @@
 {
   "name": "steer-log",
-  "version": "0.1.0",
-  "description": "Door for a builder brief and a steering doc. Refuses a brief with no invariant card, and a steering doc that quotes anything other than the append-only log. trust-stack and findings-first stay the engines.",
+  "version": "0.2.0",
+  "description": "Door for a builder brief and a steering doc. Refuses prose around a log quote, an edited older log row, and a pre-builder bundle that fails its checks. trust-stack and findings-first stay the engines.",
   "author": {
     "name": "p10ns11y"
   },

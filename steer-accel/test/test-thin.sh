@@ -24,9 +24,12 @@ need bin/steer-accel-pretool.sh
 need hooks/hooks.json
 need cursor/hooks/hooks.json
 
-grep -q 'loop.on' "$ROOT/skills/steer-accel/SKILL.md" && ok "opt-in named" || bad "opt-in"
+grep -q 'loop.on' "$ROOT/skills/steer-accel/SKILL.md" && ok "marker named" || bad "marker"
+grep -q 'coordinator' "$ROOT/skills/steer-accel/SKILL.md" && ok "coordinator arms watch" || bad "coordinator"
 grep -q 'steer-log' "$ROOT/skills/steer-accel/SKILL.md" && ok "door stays" || bad "door"
 grep -q 'Read|Write|Edit|Bash' "$ROOT/hooks/hooks.json" && ok "hook matcher" || bad "hook matcher"
+grep -q 'preToolUse' "$ROOT/cursor/hooks/hooks.json" && ok "cursor write hook" || bad "cursor write hook"
+grep -q 'failClosed' "$ROOT/cursor/hooks/hooks.json" && ok "cursor fail closed" || bad "cursor fail closed"
 
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
@@ -73,6 +76,13 @@ run 2 check "$TMP/now.md" "$TMP/stage.log"
 
 write_now delete coordinator no - "pnpm test card"
 run 2 check "$TMP/now.md" "$TMP/stage.log"
+write_now delete coordinator no "$TMP/missing-card.md" "pnpm test card"
+run 2 check "$TMP/now.md" "$TMP/stage.log"
+set +e
+out=$("${CHK[@]}" check "$TMP/now.md" "$TMP/stage.log" 2>/dev/null)
+set -e
+python3 -c 'import json,sys; d=json.loads(sys.argv[1]); assert d["reason"]=="coordinator has no invariant card"' "$out" \
+  && ok "coordinator missing card" || bad "coordinator missing card ($out)"
 
 # session read required when --reads is set
 write_now delete builder yes INVARIANT.md "pnpm test card"
@@ -156,6 +166,129 @@ out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"se
 
 out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"search_replace\",\"toolInput\":{\"file_path\":\"$TMP/proj/.steer/now.md\"}}" | "${HOOK[@]}")
 [[ "$(hook_out "$out")" == "allow" ]] && ok "hook allows .steer write" || bad "steer write ($out)"
+
+# coordinator is watched without the marker file
+rm -f "$TMP/proj/.steer/loop.on"
+write_now delete coordinator no INVARIANT.md "pnpm test card"
+cp "$TMP/now.md" "$TMP/proj/.steer/now.md"
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"search_replace\",\"toolInput\":{\"file_path\":\"src/app.ts\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "deny" ]] && ok "coordinator watch without marker" || bad "coordinator watch ($out)"
+
+# steering doc prose is refused even when the stretch watch is off
+write_now delete builder no INVARIANT.md "pnpm test card"
+cp "$TMP/now.md" "$TMP/proj/.steer/now.md"
+cat >"$TMP/proj/.steer/log.md" <<'EOF'
+| decision | why | verify |
+| File creates a draft only on File. | A filed draft was sticking to the next brief. | `pnpm test file-press` |
+EOF
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"Write\",\"toolInput\":{\"file_path\":\"notes/steering.md\",\"contents\":\"The last half hour was pixel polish.\\n\\n> File creates a draft only on File.\\n\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "deny" ]] && ok "hook denies steering prose" || bad "steering prose ($out)"
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"Write\",\"toolInput\":{\"file_path\":\"notes/steering.md\",\"contents\":\"> File creates a draft only on File.\\n\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "hook allows quote-only steering doc" || bad "quote-only doc ($out)"
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"sessionId\":\"s9\",\"toolName\":\"bash\",\"toolInput\":{\"command\":\"cat > notes/steering.md <<EOF\\nnarrative\\nEOF\"}}" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "deny" ]] && ok "hook denies hidden steering write" || bad "hidden steering ($out)"
+
+# older log rows cannot be replaced through a write
+event=$(python3 - "$TMP/proj" <<'PY'
+import json, sys
+project = sys.argv[1]
+print(json.dumps({
+    "cwd": project,
+    "sessionId": "s9",
+    "toolName": "Write",
+    "toolInput": {
+        "file_path": project + "/.steer/log.md",
+        "contents": "| decision | why | verify |\n| File creates a draft on any click. | rewritten | `pnpm test file-press` |\n",
+    },
+}))
+PY
+)
+out=$(printf '%s' "$event" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "deny" ]] && ok "hook denies edited log row" || bad "edited log ($out)"
+event=$(python3 - "$TMP/proj" <<'PY'
+import json, sys
+project = sys.argv[1]
+print(json.dumps({
+    "cwd": project,
+    "sessionId": "s9",
+    "toolName": "Write",
+    "toolInput": {
+        "file_path": project + "/.steer/log.md",
+        "contents": (
+            "| decision | why | verify |\n"
+            "| File creates a draft only on File. | A filed draft was sticking to the next brief. | `pnpm test file-press` |\n"
+            "| Prices stay in their own currency. | A conversion was a guess. | `pnpm test currency` |\n"
+        ),
+    },
+}))
+PY
+)
+out=$(printf '%s' "$event" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "hook allows appended log row" || bad "appended log ($out)"
+event=$(python3 - "$TMP/proj" <<'PY'
+import json, sys
+project = sys.argv[1]
+print(json.dumps({
+    "cwd": project,
+    "sessionId": "s9",
+    "toolName": "Write",
+    "toolInput": {
+        "file_path": project + "/.steer/log.md.prior",
+        "contents": "rewritten\n",
+    },
+}))
+PY
+)
+out=$(printf '%s' "$event" | "${HOOK[@]}")
+[[ "$(hook_out "$out")" == "deny" ]] && ok "hook denies prior edit" || bad "prior edit ($out)"
+
+# a crash while the watch is on denies; a crash while it is off allows
+mkdir -p "$TMP/stub"
+printf '%s\n' '#!/bin/sh' 'exit 1' >"$TMP/stub/python3"
+chmod +x "$TMP/stub/python3"
+: >"$TMP/proj/.steer/loop.on"
+set +e
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"toolName\":\"Write\",\"toolInput\":{\"file_path\":\"src/app.ts\"}}" | PATH="$TMP/stub:$PATH" "$ROOT/bin/steer-accel-pretool.sh")
+rc=$?
+set -e
+[[ "$rc" -eq 2 && "$(hook_out "$out")" == "deny" ]] && ok "armed crash denies" || bad "armed crash rc $rc ($out)"
+rm -f "$TMP/proj/.steer/loop.on"
+write_now delete builder no INVARIANT.md "pnpm test card"
+cp "$TMP/now.md" "$TMP/proj/.steer/now.md"
+set +e
+out=$(printf '%s' "{\"cwd\":\"$TMP/proj\",\"toolName\":\"Write\",\"toolInput\":{\"file_path\":\"src/app.ts\"}}" | PATH="$TMP/stub:$PATH" "$ROOT/bin/steer-accel-pretool.sh")
+rc=$?
+set -e
+[[ "$rc" -eq 0 && "$(hook_out "$out")" == "allow" ]] && ok "quiet crash allows" || bad "quiet crash rc $rc ($out)"
+
+out=$(python3 - "$ROOT/bin/steer_accel.py" "$TMP/proj" <<'PY'
+import importlib.util
+import io
+import json
+import sys
+from pathlib import Path
+
+script, project = sys.argv[1], sys.argv[2]
+Path(project, ".steer", "loop.on").write_text("")
+spec = importlib.util.spec_from_file_location("steer_accel_hook", script)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+def boom(*_args, **_kwargs):
+    raise RuntimeError("boom")
+
+module.evaluate = boom
+event = {
+    "cwd": project,
+    "sessionId": "s9",
+    "toolName": "search_replace",
+    "toolInput": {"file_path": "src/app.ts"},
+}
+module.sys.stdin = io.StringIO(json.dumps(event))
+module.hook_main()
+PY
+)
+[[ "$(hook_out "$out")" == "deny" ]] && ok "armed exception denies" || bad "armed exception ($out)"
 
 if [[ "$fail" -ne 0 ]]; then
   echo "$fail failed"

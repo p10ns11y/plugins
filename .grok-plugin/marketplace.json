@@ -248,7 +248,7 @@
     },
     {
       "name": "steer-accel",
-      "description": "Steering and acceleration loop. Picks the SpaceX step the stage has earned, refuses a repeated step, and watches reads while a long stretch is on. The hook stays quiet until .steer/loop.on exists.",
+      "description": "Steering and acceleration loop. Picks the SpaceX step the stage has earned. The watch is on when .steer/loop.on exists or the actor is coordinator, and a crash while it is on denies the call.",
       "category": "development",
       "source": {
         "type": "local",
@@ -266,7 +266,7 @@
     },
     {
       "name": "steer-log",
-      "description": "Door for a builder brief and a steering doc. Refuses a brief with no invariant card, and a steering doc that quotes anything other than the append-only log. trust-stack and findings-first stay the engines.",
+      "description": "Door for a builder brief and a steering doc. Refuses prose around a log quote, an edited older log row, and a pre-builder bundle that fails its checks. trust-stack and findings-first stay the engines.",
       "category": "development",
       "source": {
         "type": "local",

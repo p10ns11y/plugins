@@ -22,7 +22,7 @@ Upstream name: load `aihero-map`.
 | Signal | Action |
 |--------|--------|
 | The stretch will outlast one sitting, or the session just resumed | Activate. Write `.steer/loop.on` and `.steer/now.md`. |
-| A coordinator is about to edit the product | Activate. `actor: coordinator`. |
+| A coordinator is about to edit the product | Activate. `actor: coordinator` arms the watch without `.steer/loop.on`. |
 | A one-file fix with the card already green and no break | Skip. |
 | The stretch is over | Delete `.steer/loop.on`. |
 
@@ -51,7 +51,8 @@ Upstream name: load `aihero-map`.
 
 - Automate a step the log has not deleted and simplified
 - Let a coordinator write product files with no card and no read in this session
-- Leave the hook on after the stretch. No marker, no watch
+- Leave the hook on after the stretch. No marker and no coordinator means the watch is off
+- Treat a checker crash, while the watch is on, as an allow
 - Treat the chat as the record of what stage you are in
 
 ## Done when

@@ -42,6 +42,10 @@ readme="$(cat "$ROOT/README.md")"
 echo "$readme" | grep -q 'Matt Pocock' && ok "README: Matt Pocock" || bad "README missing Matt Pocock"
 echo "$readme" | grep -q 'Lauren Tan' && ok "README: Lauren Tan" || bad "README missing Lauren Tan"
 echo "$readme" | grep -q 'aihero.dev/skills' && ok "README: catalog link" || bad "README missing catalog link"
+echo "$readme" | grep -q 'Right way, by harness' && ok "README: harness note" || bad "README missing harness note"
+echo "$readme" | grep -q -- '-a cursor' && ok "README: cursor install" || bad "README missing cursor install"
+echo "$readme" | grep -q -- '-a grok' && ok "README: grok install" || bad "README missing grok install"
+echo "$readme" | grep -q 'mattpocock-skills@claude-plugins-official' && ok "README: claude plugin" || bad "README missing claude plugin"
 
 map="$(cat "$ROOT/skills/aihero-map/references/map.md")"
 echo "$map" | grep -q 'wayfinder' && ok "map names wayfinder" || bad "map missing wayfinder"
@@ -51,6 +55,10 @@ echo "$map" | grep -q 'Stronger claim' && ok "map names the stronger claim" || b
 skill="$(cat "$ROOT/skills/aihero-map/SKILL.md")"
 echo "$skill" | grep -q 'Matt Pocock' && ok "skill credits Matt Pocock" || bad "skill missing credit"
 echo "$skill" | grep -q 'do not copy' && ok "skill refuses copy" || bad "skill should refuse copy"
+echo "$skill" | grep -q 'https://www.aihero.dev/skills.md' && ok "skill fetches markdown" || bad "skill missing skills.md"
+echo "$skill" | grep -q 'Claude Code only' && ok "claude plugin stays on claude" || bad "skill missing claude limit"
+echo "$skill" | grep -q 'https://github.com/mattpocock/skills' && ok "skill names the harness repo" || bad "skill missing harness repo"
+echo "$notice" | grep -q 'https://github.com/mattpocock/skills' && ok "NOTICE: harness repo" || bad "NOTICE missing harness repo"
 
 echo "---"
 if [[ "$fail" -ne 0 ]]; then

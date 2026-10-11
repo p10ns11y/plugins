@@ -57,7 +57,7 @@ plugin install  ──trust───► agents, hooks, /commands
 .rhai file      ──cp/ln───► ~/.grok/workflows/  (background engine)
 ```
 
-This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills). `aihero-map` names the house skill. The skill bodies stay upstream. How the three stacks meet, and which claim wins on an overlap: [aihero-map/README.md](aihero-map/README.md).
+This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills.md). `aihero-map` fetches that markdown once. The Claude plugin is Claude Code only. How the three stacks meet, and which claim wins on an overlap: [aihero-map/README.md](aihero-map/README.md).
 
 ---
 
@@ -77,8 +77,8 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **intelli-route** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelli-route` · `/workflow intelli-route` |
 | **split-machine** | Place a job on Earth, an entanglement link, a LEO radio handover, a conjunction screen, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |
 | **trust-stack** | Earliest layer for an invariant: shape, check, watch, skill, then a human guide. Does not merge. | `/trust-stack` |
-| **steer-log** | Door for a builder brief and a steering doc. No card, no brief. A steering doc may quote only the log. | `/steer-log` |
-| **steer-accel** | Five-step loop for a long stretch. Opt-in read watcher while the stretch is on. | `/steer-accel` |
+| **steer-log** | Door for a builder brief and a steering doc. Prose and an edited older log row are refused. | `/steer-log` |
+| **steer-accel** | Five-step loop for a long stretch. A coordinator or `.steer/loop.on` arms the watch. A crash while it is on denies the call. | `/steer-accel` |
 | **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 | **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |
@@ -162,7 +162,7 @@ See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](psta
 
 ## aihero-map
 
-Alignment map from [AI Hero](https://www.aihero.dev/skills) (Matt Pocock). Does **not** copy those skill bodies. On an overlap, the house claim wins. pstack stays Lauren Tan's playbook map.
+Alignment map from [AI Hero](https://www.aihero.dev/skills.md) (Matt Pocock). Does **not** copy those skill bodies. On an overlap, the house claim wins. The Claude plugin is Claude Code only. pstack stays Lauren Tan's playbook map.
 
 ```bash
 grok plugin install ./aihero-map --trust
