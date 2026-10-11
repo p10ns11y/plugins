@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
+  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
@@ -95,6 +95,24 @@
         "crap",
         "mutation-testing",
         "acceptance-tests"
+      ]
+    },
+    {
+      "name": "dependency-harden",
+      "description": "Installable dependency hardening: fix security, upgrade packages, audit allowBuilds and IDE dependencies, and generate a hardened devcontainer. Skills-repo URLs stay canonical for intelli-route.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./dependency-harden"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "dependency-harden",
+        "fix-dependency-security",
+        "upgrade-packages",
+        "audit-allow-builds",
+        "audit-ide-dependencies",
+        "devcontainer-hardened"
       ]
     },
     {

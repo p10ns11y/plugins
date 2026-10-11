@@ -59,12 +59,6 @@ else
   ok "workflow does not name fusion-sage"
 fi
 
-if [[ -d "$ROOT/../dependency-harden" ]]; then
-  bad "dependency-harden was created in this port"
-else
-  ok "dependency-harden absent"
-fi
-
 echo "---"
 if [[ "$fail" -ne 0 ]]; then
   echo "$fail failure(s)"
