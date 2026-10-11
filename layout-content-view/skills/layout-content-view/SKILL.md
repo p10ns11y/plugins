@@ -61,6 +61,7 @@ Skip: pixel-exact migration (pstack **visual-parity** + existing snapshots). Phr
 ## Do not
 
 - Treat PNG snapshots as this algorithm
+- Treat this box and label measurement as the merge check. A must-interaction command is a separate check
 - Generate `sitemap.xml` as layout SoT
 - Unbounded viewport × content fuzz
 - Vendor pstack; inline control-graph / EVA

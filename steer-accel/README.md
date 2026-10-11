@@ -9,7 +9,9 @@ A loop for a long stretch. Five steps, in order. Question the requirement, delet
 | Session reads | A product write after a break, or by a coordinator, with nothing read in this session. |
 | Card | A coordinator with `card: -`. |
 
-The hook runs on read, write, and shell. It allows the call when `.steer/loop.on` is absent. Create that file for the stretch. Delete it when the stretch ends.
+The hook runs on read, write, and shell. It watches when `.steer/loop.on` exists, or when `actor: coordinator` is in `.steer/now.md`. A coordinator does not also need the marker file. A crash while the watch is on denies the call. Create the marker for a long stretch. Delete it when the stretch ends. With neither signal, the hook allows the call.
+
+Cursor `preToolUse` on Write and Edit uses the same script and fails closed. The hook does not run during token generation or compaction.
 
 `steer-log` still admits the brief. `trust-stack` still places the invariant. `findings-first` still stores observations.
 
@@ -32,9 +34,9 @@ ln -sfn "$HOME/Work/personal/plugins/steer-accel" "$HOME/.grok/plugins/steer-acc
 ln -sfn "$HOME/Work/personal/plugins/steer-accel/skills/steer-accel" "$HOME/.grok/skills/steer-accel"
 ```
 
-Review `hooks/hooks.json` and `bin/steer-accel-pretool.sh` before `--trust`. The script allows every call until `.steer/loop.on` exists.
+Review `hooks/hooks.json` and `bin/steer-accel-pretool.sh` before `--trust`. The script allows a call when the watch is off. When the watch is on, a crash denies the call.
 
-Cursor wires `beforeShellExecution` and `beforeReadFile` to the same script. A Cursor file write is not on that list. Grok `PreToolUse` on Write and Edit is the write watch.
+Cursor wires `beforeShellExecution`, `beforeReadFile`, and `preToolUse` for Write and Edit to the same script. Grok `PreToolUse` on Write and Edit is the write watch.
 
 ## Verify
 

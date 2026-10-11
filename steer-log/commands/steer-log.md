@@ -13,8 +13,9 @@ Load skill **steer-log**. Open `references/card.md` only if the checker and the 
 
 1. Run `bin/steer-log brief` on the invariant card. No card, or exit 2: stop. Do not write the builder brief.
 2. Run `bin/steer-log doc --log` before any steering-doc edit. Exit 2: stop. Do not quote the chat.
-3. Append one log row for a decision that was actually made. Do not rewrite older rows.
-4. On an admitted brief, load `trust-stack`. On an observation, load `findings-first`.
+3. Append one log row, then `bin/steer-log log`. Exit 2: the older row changed. Stop.
+4. Run `bin/steer-log pre` before a design pass or a deploy sentence. Exit 2: stop.
+5. On an admitted brief, load `trust-stack`. On an observation, load `findings-first`.
 
 ## Emit
 

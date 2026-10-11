@@ -12,7 +12,7 @@ Read `skills/steer-accel/SKILL.md`.
 
 ## Do
 
-1. Turn on `.steer/loop.on` only for a long stretch, a resume, or a coordinator edit.
+1. Turn on `.steer/loop.on` for a long stretch or a resume. A coordinator is watched from `actor: coordinator` without that file.
 2. Run `bin/steer-accel check` and follow `next`.
 3. Append one stage row when the step lands.
 4. On resume, reset reads before the next product edit.

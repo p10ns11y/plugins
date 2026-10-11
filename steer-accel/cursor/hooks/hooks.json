@@ -3,12 +3,21 @@
   "hooks": {
     "beforeShellExecution": [
       {
-        "command": "${CURSOR_PLUGIN_ROOT}/bin/steer-accel-pretool.sh"
+        "command": "${CURSOR_PLUGIN_ROOT}/bin/steer-accel-pretool.sh",
+        "failClosed": true
       }
     ],
     "beforeReadFile": [
       {
-        "command": "${CURSOR_PLUGIN_ROOT}/bin/steer-accel-pretool.sh"
+        "command": "${CURSOR_PLUGIN_ROOT}/bin/steer-accel-pretool.sh",
+        "failClosed": true
+      }
+    ],
+    "preToolUse": [
+      {
+        "command": "${CURSOR_PLUGIN_ROOT}/bin/steer-accel-pretool.sh",
+        "matcher": "Write|Edit",
+        "failClosed": true
       }
     ]
   }

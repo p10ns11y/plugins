@@ -28,8 +28,9 @@ Upstream name: load `aihero-map`.
 
 1. `bin/steer-log brief <card>` before the brief. Refuse means stop.
 2. `bin/steer-log doc <doc> --log <log>` before the doc edit. Refuse means stop. Do not fill the doc from the chat.
-3. A new decision is one appended log row. Quote that row in a blockquote. Leave older rows as they are.
-4. Admitted brief: load `trust-stack`. Observation: load `findings-first`.
+3. `bin/steer-log log <log>` after a new row. Refuse means the older row changed. Do not rewrite `LOG.prior` by hand.
+4. `bin/steer-log pre <dir>` before a design pass or a deploy sentence. Refuse means stop.
+5. Admitted brief: load `trust-stack`. Observation: load `findings-first`. `findings-first` still appends, clusters, then one pull request per theme. `shared-scripts` still writes the verify script.
 5. An open alignment interview asks until every card line has a failing command. It does not write the spec. After `brief` admits the card, the spec is `craft`.
 
 ## Emit
@@ -47,7 +48,7 @@ Upstream name: load `aihero-map`.
 
 - Add a design skill, a taste score, or a checker that calls a model
 - Reconstruct a stretch of work from the current turn
-- Treat a feeling as a card line
+- Treat a feeling with no failing command as a card line
 
 ## Done when
 

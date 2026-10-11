@@ -14,8 +14,10 @@ Read `skills/steer-log/SKILL.md`.
 
 1. Run `bin/steer-log brief` before a builder brief.
 2. Run `bin/steer-log doc --log` before a steering-doc edit.
-3. Exit 2 stops the edit.
-4. Point an admitted brief at `trust-stack`. Point an observation at `findings-first`.
+3. Run `bin/steer-log log` after a new row. Do not edit `LOG.prior` by hand.
+4. Run `bin/steer-log pre` before a design pass or a deploy sentence.
+5. Exit 2 stops the edit.
+6. Point an admitted brief at `trust-stack`. Point an observation at `findings-first`.
 
 ## Do not
 

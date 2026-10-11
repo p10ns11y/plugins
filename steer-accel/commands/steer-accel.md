@@ -11,7 +11,7 @@ Load skill **steer-accel**. Open `references/steps.md` for the earn table.
 
 ## Immediate actions
 
-1. If this is a resume or a long stretch, create `.steer/loop.on`. On resume, `bin/steer-accel reset-reads .steer/reads`.
+1. If this is a resume or a long stretch, create `.steer/loop.on`. A coordinator sets `actor: coordinator` and is watched without that file. On resume, `bin/steer-accel reset-reads .steer/reads`.
 2. Write `.steer/now.md` from the stage log. A missing card forces `question`.
 3. Run `bin/steer-accel check`. Exit 2: do `next`. Do not jump ahead.
 4. Read the card in this session before a product edit. The hook records that read.

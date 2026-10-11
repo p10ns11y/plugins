@@ -47,4 +47,6 @@ A `green` row with the same stage and the same verify as `now.md` is still refus
 
 ## Watcher
 
-Create `.steer/loop.on` when the stretch is long, the session resumed, or a coordinator might do the work. The hook then records reads and refuses a write or a shell command the checker refuses. Delete `.steer/loop.on` when the stretch ends. With no marker, the hook allows the call.
+Create `.steer/loop.on` when the stretch is long or the session resumed. `actor: coordinator` in `now.md` arms the same watch without that file. The hook then records reads and refuses a write or a shell command the checker refuses. A crash while the watch is on denies the call. Delete `.steer/loop.on` when a builder's stretch ends. With no marker and no coordinator, the hook allows the call.
+
+A write to `steering.md` is refused unless every non-blank line is a log quote. A write that edits an older `.steer/log.md` row is refused. A shell redirect into those files is refused because the checker cannot see the new text. Those two checks run even when the stretch watch is off.
