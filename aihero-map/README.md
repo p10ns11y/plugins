@@ -18,6 +18,24 @@ A stretch runs in that order. Fog stays `eva-emptiness`. A closed decision is a 
 
 On an overlap, load the row with the stronger claim. That is the better chance the check already exists here. It is not a calibrated probability. The table is [references/map.md](skills/aihero-map/references/map.md).
 
+## Right way, by harness
+
+Read [skills.md](https://www.aihero.dev/skills.md). That is the agent index. The HTML page at `/skills` is the same article for a browser. A skill article is `https://www.aihero.dev/skills-<name>.md`. The hashed section links inside the index 404, so do not follow them.
+
+[mattpocock/skills](https://github.com/mattpocock/skills) says to pick one install per agent. A plugin plus `npx skills add` installs every skill twice.
+
+| Harness | Install | Where the files land | Updates |
+|---------|---------|----------------------|---------|
+| Claude Code | `claude plugin install mattpocock-skills@claude-plugins-official` | the Claude plugin, read-only | by itself |
+| Cursor | `npx skills@latest add mattpocock/skills -a cursor` | `.agents/skills/` in the repo, or `~/.cursor/skills/` with `-g` | `npx skills@latest update` |
+| Grok | `npx skills@latest add mattpocock/skills -a grok` | `.grok/skills/` in the repo, or `~/.grok/skills/` with `-g` | `npx skills@latest update` |
+
+When the installer asks which skills to take, include `setup-matt-pocock-skills`. Then run `/setup-matt-pocock-skills` once in that repo. It writes `docs/agents/` and an `## Agent skills` block. If `CLAUDE.md` already exists it writes that file. Grok and Cursor keep `AGENTS.md` as the file they read.
+
+You type a user-invoked skill (`/grill-me`, `/wayfinder`, `/to-spec`). The agent may reach a model-invoked skill when the task fits (`tdd`, `domain-modeling`, `pr`). A user-invoked skill may call a model-invoked skill. It does not call another user-invoked skill.
+
+On an overlap with this map, use the house skill and do not install that upstream name. Leave-upstream names (triage, wizard, teach, wait-what, a throwaway prototype) are the ones worth installing.
+
 ## Install
 
 ```bash

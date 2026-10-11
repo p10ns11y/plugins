@@ -42,7 +42,7 @@ A4  pstack, by Lauren Tan, stays the execution playbook. This map does not repla
 1. Match one alignment name, or `skip`.
 2. Load the house skill in that row.
 3. Fetch https://www.aihero.dev/skills.md once when the name is not in the table. For a matched row, fetch that row's `.md` page. Do not fetch https://www.aihero.dev/skills.
-4. Do not install the Claude plugin. A product repo that wants an editable copy of a leave-upstream name runs `npx skills@latest add mattpocock/skills`. This repo does not.
+4. One install per harness, from README.md "Right way, by harness". Claude: `claude plugin install mattpocock-skills@claude-plugins-official`. Cursor: `npx skills@latest add mattpocock/skills -a cursor`. Grok: `npx skills@latest add mattpocock/skills -a grok`. Do not combine a plugin with `npx skills add`. This repo does not install the bodies.
 5. Setup is once per product repo, before those upstream skills: https://www.aihero.dev/skills-setup-matt-pocock-skills.md. It writes `docs/agents/`. Keep `AGENTS.md` as the file this harness reads.
 6. On an overlap, the stronger-claim column wins. Do not install the upstream skill for that name.
 7. Emit the table. Keep the credit line.
