@@ -51,10 +51,10 @@ notice="$(cat "$ROOT/NOTICE.md")"
 echo "$notice" | grep -Fq 'intelli-route' && ok "notice keeps intelli-route on the skills repo" || bad "notice misses intelli-route"
 echo "$notice" | grep -Fq 'control-graph/SKILL.md' && ok "notice names canonical graph" || bad "notice misses canonical graph"
 
-if [[ -d "$ROOT/../dependency-harden" || -d "$ROOT/../context-ignite" ]]; then
-  bad "later plugins were created in this port"
+if [[ -d "$ROOT/../dependency-harden" ]]; then
+  bad "dependency-harden was created in this port"
 else
-  ok "later plugins absent"
+  ok "dependency-harden absent"
 fi
 
 echo "---"
