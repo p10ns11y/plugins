@@ -1,0 +1,9 @@
+[package]
+name = "context-sage"
+version = "0.1.0"
+edition = "2021"
+description = "Token-budgeted context pack. Rust scans Rust. The C scanner scans C and C++."
+
+[[bin]]
+name = "context-sage"
+path = "src/main.rs"

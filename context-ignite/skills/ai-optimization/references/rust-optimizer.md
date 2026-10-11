@@ -1,5 +1,7 @@
 # Rust Optimizer Reference
 
+`bin/context-sage analyze --lang rust` keeps `pub` items and `impl` headers. Bodies stay in the source file.
+
 ## Public Surface Extraction (cargo expand or manual)
 - `pub struct Name { ... }` → keep fields if <8, else "contains id, name, metadata, timestamps"
 - `pub enum` → full variants (they are usually the API contract)

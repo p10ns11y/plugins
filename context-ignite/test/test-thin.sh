@@ -16,7 +16,11 @@ need NOTICE.md
 need README.md
 need commands/context-ignite.md
 need skills/ai-optimization/SKILL.md
-need skills/ai-optimization/scripts/context-sage.py
+need skills/ai-optimization/Makefile
+need skills/ai-optimization/c/context_sage.c
+need skills/ai-optimization/c/Makefile
+need skills/ai-optimization/rust/Cargo.toml
+need skills/ai-optimization/rust/src/main.rs
 need skills/architecture-synthesis/SKILL.md
 need .grok/workflows/context-ignite.rhai
 need .grok/workflows/context-ignite.md
@@ -25,6 +29,12 @@ if [[ -e "$ROOT/skills/fusion-sage" ]]; then
   bad "fusion-sage was copied"
 else
   ok "fusion-sage absent"
+fi
+
+if [[ -e "$ROOT/skills/ai-optimization/scripts/context-sage.py" ]]; then
+  bad "python packer still present"
+else
+  ok "python packer absent"
 fi
 
 mark='Port copy. Canonical file remains in https://github.com/p10ns11y/skills on master.'
@@ -46,7 +56,9 @@ echo "$notice" | grep -Fq 'architecture-synthesis/SKILL.md' && ok "notice names 
 echo "$notice" | grep -Fq 'fusion-sage' && ok "notice records fusion-sage discovery off" || bad "notice misses fusion-sage"
 
 readme="$(cat "$ROOT/README.md")"
-echo "$readme" | grep -Fq 'If a host compaction pass beats context-sage.py on a real repo, delete the prune half and keep architecture-synthesis.' && ok "readme keeps the compaction exit" || bad "readme misses the compaction exit"
+echo "$readme" | grep -Fq 'If a host compaction pass beats bin/context-sage on a real repo, delete the prune half and keep architecture-synthesis.' && ok "readme keeps the compaction exit" || bad "readme misses the compaction exit"
+echo "$readme" | grep -Fq 'make -C skills/ai-optimization' && ok "readme names the rust packer build" || bad "readme misses the rust packer build"
+echo "$readme" | grep -Fq 'c/context_sage.c' && ok "readme names the c scanner" || bad "readme misses the c scanner"
 echo "$readme" | grep -Fq '**Spec.**' && ok "readme names the spec" || bad "readme misses the spec"
 echo "$readme" | grep -Fq '**Policy.**' && ok "readme names the policy" || bad "readme misses the policy"
 echo "$readme" | grep -Fq '**Before/after.**' && ok "readme names the before/after" || bad "readme misses the before/after"
