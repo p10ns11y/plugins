@@ -1,0 +1,23 @@
+---
+description: >-
+  Agent control-graph: outer state machine / loop, inner DAG or nested loops,
+  budgets, HITL, multi-model routing, dual-actor CLT load balance. Load for
+  multi-step cycles, ReAct thrash risk, model roles, cognitive strain. Formerly looper.
+alwaysApply: false
+---
+
+# control-graph
+
+When the task is a **multi-step agent cycle**, long autonomous run, model-routing choice, risk of unbounded ReAct, or **cognitive-load / strain** design for human+AI:
+
+1. Read [control-graph/SKILL.md](../control-graph/SKILL.md) (formal SoT).
+2. Expand [control-graph/references/english-procedure.md](../control-graph/references/english-procedure.md) **only if** the formal spec is ambiguous.
+3. Expand [control-graph/references/clt-load-balance.md](../control-graph/references/clt-load-balance.md) **only if** dual-actor load (extraneous vs germane, parallel vs serial) is ambiguous.
+4. Open a **Control Card** (phase, budgets, optional `load_diag`, inner DAG/subloop, current model role).
+5. Prefer outer phases (ORIENT → PLAN → EXECUTE → VERIFY → REPAIR → REVIEW_GATE → INTEGRATE → DONE) over implicit “keep calling tools.”
+6. Route **fast / explore / coding / deep / review** per the skill matrix; separate review from implementer context.
+7. Honor HITL pause gates and hard exits (`max_loop_iters`, `no_progress`, cancel). Apply **A8 DualLoad**: minimize extraneous for both actors; preserve germane; fan-out independent agent work (do not cap AI parallelism at human WM).
+
+Compose with `agent-orchestrator` (triage + workers), `subagent-delegation` (explore), `fusion-sage` / `ai-optimization` (synthesis / prune), `odysseus-navigator` (judgment / hubris / Ithaca). Do **not** put domain finder/CV/X logic here — only control-graph shape.
+
+Activation: “control-graph”, “looper”, “structured loop”, “state machine”, “SM+DAG”, “model routing”, “cognitive load”, “CLT”, infinite-loop risk.
