@@ -57,7 +57,7 @@ plugin install  ──trust───► agents, hooks, /commands
 .rhai file      ──cp/ln───► ~/.grok/workflows/  (background engine)
 ```
 
-This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills). `aihero-map` loads that page once for the body. The AI harness needs [mattpocock/skills](https://github.com/mattpocock/skills). How the three stacks meet, and which claim wins on an overlap: [aihero-map/README.md](aihero-map/README.md).
+This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills.md). `aihero-map` fetches that markdown once. The Claude plugin is Claude Code only. How the three stacks meet, and which claim wins on an overlap: [aihero-map/README.md](aihero-map/README.md).
 
 ---
 
@@ -162,7 +162,7 @@ See [pstack-map/README.md](pstack-map/README.md) and [pstack-map/NOTICE.md](psta
 
 ## aihero-map
 
-Alignment map from [AI Hero](https://www.aihero.dev/skills) (Matt Pocock). Does **not** copy those skill bodies. On an overlap, the house claim wins. pstack stays Lauren Tan's playbook map.
+Alignment map from [AI Hero](https://www.aihero.dev/skills.md) (Matt Pocock). Does **not** copy those skill bodies. On an overlap, the house claim wins. The Claude plugin is Claude Code only. pstack stays Lauren Tan's playbook map.
 
 ```bash
 grok plugin install ./aihero-map --trust

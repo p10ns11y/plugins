@@ -1,20 +1,20 @@
 # Alignment map
 
-Expand only to pick a row. Body and content load once from [AI Skills for Real Engineers](https://www.aihero.dev/skills) by **Matt Pocock**. The AI harness is [mattpocock/skills](https://github.com/mattpocock/skills). On an overlap, the house skill is the load.
+Expand only to pick a row. Agents fetch [skills.md](https://www.aihero.dev/skills.md) once, then one row's `.md` page. The HTML catalog is not an agent load. Source: [mattpocock/skills](https://github.com/mattpocock/skills). The Claude plugin is Claude Code only. On an overlap, the house skill is the load.
 
 | Alignment name | Page | House |
 |---|---|---|
-| wayfinder | [wayfinder](https://www.aihero.dev/skills-wayfinder) | `eva-emptiness`, then `mission-map` |
-| grill-with-docs | [grill-with-docs](https://www.aihero.dev/skills-grill-with-docs) | `steer-log`; overbuilding returns through `odysseus-navigator` |
-| to-spec | [to-spec](https://www.aihero.dev/skills-to-spec) | `craft` |
-| to-tickets | [to-tickets](https://www.aihero.dev/skills-to-tickets) | `mission-map`, then a builder card through `steer-log` |
-| domain-modeling | [domain-modeling](https://www.aihero.dev/skills-domain-modeling) | `architecture-synthesis` |
-| retro | [retro](https://www.aihero.dev/skills-retro) | `trust-stack`, then `findings-first` |
-| handoff | [handoff](https://www.aihero.dev/skills-handoff) | `steer-accel` on the same harness and directory; `pulse-memory` when either changes |
-| implement-spec | [implement-spec](https://www.aihero.dev/skills-implement-spec) | `shared-scripts` and `git-worktrees` |
-| writing-for-agents | [writing-for-agents](https://www.aihero.dev/skills-writing-for-agents) | `workflow-skills` |
-| pr | [pr](https://www.aihero.dev/skills-pr) | pull request template, `scaled-verifiers`, `pstack-map` shipping row |
-| ask-matt | [ask-matt](https://www.aihero.dev/skills-ask-matt) | `intelli-route` |
+| wayfinder | [wayfinder](https://www.aihero.dev/skills-wayfinder.md) | `eva-emptiness`, then `mission-map` |
+| grill-with-docs | [grill-with-docs](https://www.aihero.dev/skills-grill-with-docs.md) | `steer-log`; overbuilding returns through `odysseus-navigator` |
+| to-spec | [to-spec](https://www.aihero.dev/skills-to-spec.md) | `craft` |
+| to-tickets | [to-tickets](https://www.aihero.dev/skills-to-tickets.md) | `mission-map`, then a builder card through `steer-log` |
+| domain-modeling | [domain-modeling](https://www.aihero.dev/skills-domain-modeling.md) | `architecture-synthesis` |
+| retro | [retro](https://www.aihero.dev/skills-retro.md) | `trust-stack`, then `findings-first` |
+| handoff | [handoff](https://www.aihero.dev/skills-handoff.md) | `steer-accel` on the same harness and directory; `pulse-memory` when either changes |
+| implement-spec | [implement-spec](https://www.aihero.dev/skills-implement-spec.md) | `shared-scripts` and `git-worktrees` |
+| writing-for-agents | [writing-for-agents](https://www.aihero.dev/skills-writing-for-agents.md) | `workflow-skills` |
+| pr | [pr](https://www.aihero.dev/skills-pr.md) | pull request template, `scaled-verifiers`, `pstack-map` shipping row |
+| ask-matt | [ask-matt](https://www.aihero.dev/skills-ask-matt.md) | `intelli-route` |
 
 ## Stronger claim
 
