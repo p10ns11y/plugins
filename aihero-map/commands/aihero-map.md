@@ -15,8 +15,10 @@ This is **not** an ingestion. Credit Matt Pocock. Do not copy skill bodies.
 
 1. Match **one** alignment name (or `skip`).
 2. Load the house skill in that row.
-3. On an overlap, the stronger-claim column wins.
-4. Emit the **Aihero-map** table with the credit row.
+3. Load the body once from https://www.aihero.dev/skills.
+4. The AI harness needs https://github.com/mattpocock/skills.
+5. On an overlap, the stronger-claim column wins.
+6. Emit the **Aihero-map** table with the credit row.
 
 ## Emit (required)
 
@@ -26,7 +28,9 @@ This is **not** an ingestion. Credit Matt Pocock. Do not copy skill bodies.
 |-------|--------|
 | **alignment** | |
 | **house** | |
+| **content** | https://www.aihero.dev/skills |
+| **harness** | https://github.com/mattpocock/skills |
 | **stronger** | |
-| **credit** | Matt Pocock · https://www.aihero.dev/skills |
+| **credit** | Matt Pocock |
 | **next** | |
 ```

@@ -1,6 +1,6 @@
 # Alignment map
 
-Expand only to pick a row. Bodies stay on [AI Skills for Real Engineers](https://www.aihero.dev/skills) by **Matt Pocock**. The house skill is the load.
+Expand only to pick a row. Body and content load once from [AI Skills for Real Engineers](https://www.aihero.dev/skills) by **Matt Pocock**. The AI harness is [mattpocock/skills](https://github.com/mattpocock/skills). On an overlap, the house skill is the load.
 
 | Alignment name | Page | House |
 |---|---|---|

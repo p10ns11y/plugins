@@ -4,6 +4,8 @@ Load **aihero-map**. Same contract as the Grok command (no `$ARGUMENTS` — use 
 
 1. Match one alignment name (or skip).
 2. Load the house skill in that row.
-3. Do not copy AI Hero files. Credit Matt Pocock.
+3. Load the body once from https://www.aihero.dev/skills.
+4. The AI harness needs https://github.com/mattpocock/skills.
+5. Do not copy AI Hero files. Credit Matt Pocock.
 
 Emit the **Aihero-map** table.

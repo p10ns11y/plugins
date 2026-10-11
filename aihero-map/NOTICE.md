@@ -10,11 +10,11 @@ Original work here: the alignment map, the stronger-claim table, slash commands,
 
 AI Hero skills are created by **Matt Pocock**.
 
-- Catalog: https://www.aihero.dev/skills
-- Source: https://github.com/mattpocock/skills
+- Body and content, load once: https://www.aihero.dev/skills
+- AI harness, required: https://github.com/mattpocock/skills
 - License: MIT, upstream
 
-This repository **does not copy** those skill bodies. Names and page links appear in the map so a host can load the house skill. The upstream page stays the credit.
+This repository **does not copy** those skill bodies. The catalog page is the one content load. The skills repo is what the AI harness installs.
 
 ## pstack (neighbor)
 

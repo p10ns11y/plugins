@@ -51,6 +51,9 @@ echo "$map" | grep -q 'Stronger claim' && ok "map names the stronger claim" || b
 skill="$(cat "$ROOT/skills/aihero-map/SKILL.md")"
 echo "$skill" | grep -q 'Matt Pocock' && ok "skill credits Matt Pocock" || bad "skill missing credit"
 echo "$skill" | grep -q 'do not copy' && ok "skill refuses copy" || bad "skill should refuse copy"
+echo "$skill" | grep -q 'https://www.aihero.dev/skills' && ok "skill loads the catalog once" || bad "skill missing catalog load"
+echo "$skill" | grep -q 'https://github.com/mattpocock/skills' && ok "skill names the harness repo" || bad "skill missing harness repo"
+echo "$notice" | grep -q 'https://github.com/mattpocock/skills' && ok "NOTICE: harness repo" || bad "NOTICE missing harness repo"
 
 echo "---"
 if [[ "$fail" -ne 0 ]]; then

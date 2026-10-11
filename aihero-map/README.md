@@ -2,7 +2,7 @@
 
 Alignment **map** from [AI Hero](https://www.aihero.dev/skills) by **Matt Pocock**.
 
-The bodies stay upstream. This plugin names the house skill. It does **not** ingest those skills.
+Body and content load once from the catalog. The AI harness needs the [skills repo](https://github.com/mattpocock/skills). This plugin names the house skill. It does **not** ingest those skills.
 
 ```text
   /aihero-map     alignment name → house skill

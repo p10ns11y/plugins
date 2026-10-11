@@ -57,7 +57,7 @@ plugin install  ──trust───► agents, hooks, /commands
 .rhai file      ──cp/ln───► ~/.grok/workflows/  (background engine)
 ```
 
-This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills). `aihero-map` names the house skill. The skill bodies stay upstream. How the three stacks meet, and which claim wins on an overlap: [aihero-map/README.md](aihero-map/README.md).
+This marketplace is the control plane beside pstack and [Matt Pocock's skills](https://www.aihero.dev/skills). `aihero-map` loads that page once for the body. The AI harness needs [mattpocock/skills](https://github.com/mattpocock/skills). How the three stacks meet, and which claim wins on an overlap: [aihero-map/README.md](aihero-map/README.md).
 
 ---
 
