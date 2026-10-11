@@ -1,0 +1,31 @@
+---
+description: >-
+  Pre-filter: apply Cognitive Load Theory (CLT) DualLoad before heavy skill work,
+  HITL gates, multi-agent fan-out, or large context fills. Minimize extraneous for
+  human and agent; preserve germane; allow asymmetric agent parallelism.
+alwaysApply: true
+---
+
+# CLT DualLoad pre-filter (on-the-fly)
+
+Apply **before** loading a heavy skill body, filling a large context, opening HITL, or spawning parallel workers. Do **not** paste full CLT essays into replies.
+
+```text
+A8 DualLoad
+  Extraneous ↓  for Human ∧ Agent     // waste: dumps, mega-steps, transcript re-entry
+  Germane     keep for both           // judgment, PLAN, VERIFY ⊥ implementer
+  Intrinsic   chunk by actor          // human gate ≤~4 new elements; Card = active only
+  Parallel    Agent ≥ Human WM        // fan-out independent Inner; serialize human asks
+```
+
+| If you notice… | Do |
+|----------------|-----|
+| Wall of logs / dual transcripts at a human ask | Structured preview only (approve / amend / abort) |
+| Context bloat before coding | [ai-optimization](../ai-optimization/SKILL.md) prune first |
+| Independent steps serialized “because humans hold 4±1” | Fan-out ([concurrent-cli-agents](../concurrent-cli-agents/SKILL.md) / subagents) |
+| Skipping VERIFY/REVIEW to “save load” | Restore germane checks — offloading ≠ efficiency |
+| Multi-step / thrash risk | Open [control-graph](../control-graph/SKILL.md) Card (+ optional `load_diag`) |
+
+**SoT (expand only if tradeoff still ambiguous):** [control-graph/references/clt-load-balance.md](../control-graph/references/clt-load-balance.md)
+
+Domain skills stay data-plane. This rule is control-plane load hygiene — same job as HODA’s always-on router, for capacity instead of decision frameworks.

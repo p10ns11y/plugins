@@ -1,0 +1,18 @@
+{
+  "name": "control-plane",
+  "version": "0.1.0",
+  "description": "Installable control plane: rewrite a dump into a Feed, then run the control-graph. Skills-repo URLs stay canonical for intelli-route.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "control-plane",
+    "control-feeder",
+    "control-graph",
+    "higher-order-decision-architect"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/"
+}

@@ -84,6 +84,7 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |
 | **craft** | Specifier, coder, cleaner, hardener, QA. CRAP on touched functions; mutation testing on non-Bend code; Bend proofs for pure transitions. [craft/README.md](craft/README.md) | `/craft` |
 | **si** | SI workflows that own the write. One profile: data, SI-native review, SI service, deterministic SaaS, infra, or devex. [si/README.md](si/README.md) | `/si` |
+| **control-plane** | Feeder plus control-graph. Skills-repo URLs stay canonical for intelli-route. [control-plane/README.md](control-plane/README.md) | `/feed` `/control-graph` |
 
 ---
 
