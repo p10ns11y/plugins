@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
+  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, craft, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
@@ -46,6 +46,22 @@
         "corroboration",
         "intelli-route",
         "split-machine"
+      ]
+    },
+    {
+      "name": "context-ignite",
+      "description": "Installable fission then fusion: prune with ai-optimization, then synthesize with architecture-synthesis. Skills-repo URLs stay canonical for intelli-route.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./context-ignite"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "context-ignite",
+        "ai-optimization",
+        "architecture-synthesis",
+        "context-sage"
       ]
     },
     {

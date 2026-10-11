@@ -1,0 +1,18 @@
+{
+  "name": "context-ignite",
+  "version": "0.1.0",
+  "description": "Installable fission then fusion: prune with ai-optimization, then synthesize with architecture-synthesis. Skills-repo URLs stay canonical for intelli-route.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "context-ignite",
+    "ai-optimization",
+    "architecture-synthesis",
+    "context-sage"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/"
+}

@@ -20,6 +20,11 @@
       "source": "./concordance"
     },
     {
+      "name": "context-ignite",
+      "description": "Installable fission then fusion: prune with ai-optimization, then synthesize with architecture-synthesis. Skills-repo URLs stay canonical for intelli-route.",
+      "source": "./context-ignite"
+    },
+    {
       "name": "craft",
       "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener.",
       "source": "./craft"
