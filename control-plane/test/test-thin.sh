@@ -19,6 +19,7 @@ need commands/control-graph.md
 need skills/control-feeder/SKILL.md
 need skills/control-graph/SKILL.md
 need skills/higher-order-decision-architect/SKILL.md
+need skills/examples/overlays/thepulimaangani-decision-hooks.md
 need cursor/rules/clt-dual-load.mdc
 need cursor/rules/control-graph.mdc
 need cursor/rules/higher-order-decision-architect.mdc
