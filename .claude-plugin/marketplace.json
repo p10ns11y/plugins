@@ -25,6 +25,11 @@
       "source": "./context-ignite"
     },
     {
+      "name": "control-plane",
+      "description": "Installable control plane: rewrite a dump into a Feed, then run the control-graph. Skills-repo URLs stay canonical for intelli-route.",
+      "source": "./control-plane"
+    },
+    {
       "name": "craft",
       "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener.",
       "source": "./craft"

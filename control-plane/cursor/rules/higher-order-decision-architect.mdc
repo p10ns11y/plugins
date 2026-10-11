@@ -1,0 +1,18 @@
+---
+description: Before material coding decisions, apply the higher-order-decision-architect skill — first principles, multi-order consequences, inversion, systems, probability, antifragility, thrive ascent (2036).
+alwaysApply: true
+---
+
+# Higher-Order Decision Architect (router)
+
+Before **material coding decisions** (architecture, dependencies, public API, security, data contracts, multi-module refactors, or anything hard to revert):
+
+1. Load and follow [higher-order-decision-architect/SKILL.md](../../skills/higher-order-decision-architect/SKILL.md).
+2. Run the mental-model sequence **internally** on every such decision — all **8 steps**, including **thrive ascent (2036)** after honest pre-mortem.
+3. For **non-trivial** choices, surface **Executive Verdict**, **risks**, **thrive ascent**, **confidence**, and **next actions** (full template in the skill — do not paste the entire block on trivial edits).
+
+**Thrive counterweight:** pre-mortem is honest; step 8 reframes risk as trajectory guardrails (refuse vs build toward horizon). Never end on defeat without an acceleration alternative.
+
+Project-specific hooks (e.g. WASM/metre contracts, shell kernel/plugin) live in skill overlays — e.g. [skills/examples/overlays/thepulimaangani-decision-hooks.md](../../skills/examples/overlays/thepulimaangani-decision-hooks.md) or `~/.config/shell/arch-design/overlays/shell-kernel-decision-hooks.md`.
+
+This rule governs **how** to decide; it does not replace language, test commands, or verification steps in project `AGENTS.md`.
