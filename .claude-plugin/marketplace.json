@@ -20,6 +20,11 @@
       "source": "./concordance"
     },
     {
+      "name": "context-ignite",
+      "description": "Installable fission then fusion: prune with ai-optimization, then synthesize with architecture-synthesis. Skills-repo URLs stay canonical for intelli-route.",
+      "source": "./context-ignite"
+    },
+    {
       "name": "control-plane",
       "description": "Installable control plane: rewrite a dump into a Feed, then run the control-graph. Skills-repo URLs stay canonical for intelli-route.",
       "source": "./control-plane"
