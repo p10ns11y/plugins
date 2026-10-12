@@ -20,6 +20,8 @@ Hosts without Cursor Task model lists keep four CG roles. Map each to a pstack r
 | deep | hardest tasks |
 | review | reflect judgment, divergent, synthesizer |
 
+`deep` = planner (keep the pool, strongest first). `review` = judge (one rung down the same family only if confirmed in session; else keep as-is).
+
 ## Snapshot fallback (pstack 0.15.7 · read 2026-10-03)
 
 From [setup-pstack/SKILL.md](https://github.com/cursor/plugins/blob/9511e60321f7e533a187d62854a3d53a53752874/pstack/skills/setup-pstack/SKILL.md) at upstream commit `9511e603`. Re-check upstream when this drifts.
@@ -46,3 +48,13 @@ interrogate reviewers: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
 ```
 
 Budget ladder (upstream): `unlimited` → max; `large` → xhigh; `medium` → high; `small` → medium.
+
+## Plan strong, judge cheap
+
+Sakana MASS: upgrading the planner helps much more than upgrading the judge.
+
+`pstack-models.mdc` role lines win when present. Apply the lists below only on the snapshot fallback, or when the user asks. Do not rewrite that file.
+
+Planner: keep each pool and order it strongest first (higher budget-ladder rung before a lower one; a shared rung keeps snapshot order). Roles: `architect runners`, `hardest tasks`, `how explainer`, `why synthesizer`, `judgment and prose`.
+
+Judge: keep the pool. Step each slug one rung down the upstream budget ladder, same family (max → xhigh). Use the stepped slug only if this session confirms it; otherwise keep the listed slug. Roles: `arena cross-judge pool`, `interrogate reviewers`, `reflect judgment, divergent, synthesizer`.

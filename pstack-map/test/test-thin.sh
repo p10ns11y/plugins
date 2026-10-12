@@ -21,6 +21,7 @@ need agents/pstack-map.md
 need skills/pstack-map/SKILL.md
 need skills/pstack-map/references/map.md
 need skills/pstack-map/references/models.md
+need skills/pstack-map/references/handover.md
 
 # Must not vendor pstack
 if [[ -d "$ROOT/skills/poteto-mode" ]]; then bad "poteto-mode vendored"; else ok "no poteto-mode copy"; fi
@@ -64,6 +65,10 @@ models="$(cat "$ROOT/skills/pstack-map/references/models.md")"
 echo "$models" | grep -q 'pstack-models.mdc' && ok "models: mdc path" || bad "models missing mdc path"
 echo "$models" | grep -q 'setup-pstack' && ok "models: upstream pointer" || bad "models missing upstream pointer"
 echo "$models" | grep -q 'refactoring' && ok "models: CG coding map" || bad "models missing CG coding map"
+
+handover="$(cat "$ROOT/skills/pstack-map/references/handover.md")"
+echo "$handover" | grep -q 'contract' && ok "handover: contract" || bad "handover missing contract"
+echo "$handover" | grep -q 'hop' && ok "handover: hop" || bad "handover missing hop"
 
 stale_rx='claude-fable|composer-2\.5|fable-5-thinking|sol-max.*fable|sol/fable'
 scan="$(cat "$ROOT/skills/pstack-map/SKILL.md" "$ROOT/skills/pstack-map/references/map.md" "$ROOT/README.md")"

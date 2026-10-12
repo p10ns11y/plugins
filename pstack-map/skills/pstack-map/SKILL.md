@@ -129,6 +129,7 @@ Worth copying later only if: (1) pstack is **not** installable on the host, **an
 | hubris / overbuild | odysseus-navigator | optional after Map |
 | dump rewrite | control-feeder | after Feed, map playbook |
 | workers / worktrees | agent-orchestrator · git-worktrees | name, do not restate |
+| handover contract + hop | this map · [handover.md](references/handover.md) | one row per handoff |
 | pstack playbooks / principles | installed **pstack** | load; never paste |
 
 ---
