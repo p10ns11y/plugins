@@ -25,6 +25,10 @@ Copy a pstack file later only if the host cannot install pstack **and** no house
 - License: MIT, Copyright (c) 2026 Lauren Tan — full text in [NOTICE.md](NOTICE.md)
 - This map: p10ns11y, MIT ([LICENSE](LICENSE))
 
+## References
+
+House handover contract + hop and "plan strong, judge cheap", inspired by Sakana MASS: https://pub.sakana.ai/mass/
+
 ## Install
 
 Install **pstack** (Cursor `/add-plugin pstack`, or the Grok marketplace copy). Then:
@@ -64,5 +68,6 @@ skills/pstack-map/   # map SoT
   SKILL.md
   references/map.md
   references/models.md
+  references/handover.md
 test/test-thin.sh
 ```
