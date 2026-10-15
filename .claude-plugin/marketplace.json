@@ -110,6 +110,11 @@
       "source": "./trust-stack"
     },
     {
+      "name": "tstack",
+      "description": "Tomato stack: paces the person in focus blocks. capture, critical path, one block, evidence, replan. Loads house plugins; copies none. Pomodoro sessions run through the premflow CLI.",
+      "source": "./tstack"
+    },
+    {
       "name": "uncertainty-laws",
       "description": "Four napkin probability laws for decisions under uncertainty: expected value, base rates, variance/ruin, Kelly. Honest fog-breaking for finance, wealth, and life. Links to mission-map for path vs bet-size.",
       "source": "./uncertainty-laws"
