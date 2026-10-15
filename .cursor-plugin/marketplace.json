@@ -4,7 +4,7 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws"
+    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
   },
   "plugins": [
     {
@@ -111,6 +111,11 @@
       "name": "trust-stack",
       "source": "trust-stack",
       "description": "Put each invariant on the earliest layer that can hold it: shape, check, watch, skill, then a human guide. The codebase is the agent's memory. This plugin does not merge."
+    },
+    {
+      "name": "tstack",
+      "source": "tstack",
+      "description": "Tomato stack: paces the person in focus blocks. capture, critical path, one block, evidence, replan. Loads house plugins; copies none. Pomodoro sessions run through the premflow CLI."
     },
     {
       "name": "uncertainty-laws",

@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, uncertainty-laws",
+  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
@@ -346,6 +346,24 @@
         "pstack",
         "lauren-tan",
         "intelli-route"
+      ]
+    },
+    {
+      "name": "tstack",
+      "description": "Tomato stack: paces the person in focus blocks. capture, critical path, one block, evidence, replan. Loads house plugins; copies none. Pomodoro sessions run through the premflow CLI.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./tstack"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "tstack",
+        "tomato",
+        "pomodoro",
+        "premflow",
+        "mission-map",
+        "focus"
       ]
     },
     {
