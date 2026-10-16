@@ -31,6 +31,8 @@ A6  This plugin does not merge. Landing stays a human act.
 A7  When using Bend, from `bend/`: run `bend guide`; keep rules in `LAWS.bend`; run `bend PROOF.bend` before committing; parallelize independent calls of similar cost. `trust-stack/test/bend-critical.sh` must print "All terms check." If Bend is absent, that proof was not run. A passing proof is the shape layer only. Keep the test, the review, and a person on `guide`. Do not prove `F32`. Do not `@unsafe` past a failed proof.
 ```
 
+WATCH: `/trust-stack:rule-review` takes `{diff, rulesFile}` and returns flags with evidence lines. It does not land.
+
 **Mission:** Name the layer that should have caught this, and the one next edit that moves the invariant there.
 
 When pstack (`poteto-mode`) is installed, use it as the playbook. Do not copy it.

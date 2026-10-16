@@ -26,6 +26,8 @@ A5  This skill does not merge.
 5. QA. Run the procedure as a script.
 6. Emit the card.
 
+Claude Code: `/craft:run`, a template, not verbatim.
+
 ## Neighbors
 | Need | Who |
 |------|-----|
@@ -33,6 +35,7 @@ A5  This skill does not merge.
 | Which layer holds an invariant | `trust-stack` |
 | Which machine runs the job | `split-machine` |
 | A settled spec, its card, its tickets | specifier here; card is `steer-log`; tickets are `mission-map` |
+| Claude Code run | `/craft:run` in `workflows/craft-run.js` |
 
 ## Emit (required)
 

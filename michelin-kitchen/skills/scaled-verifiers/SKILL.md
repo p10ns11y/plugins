@@ -23,6 +23,7 @@ You cannot taste every dish at scale. Use one verifier instead of ten. Irreversi
 1. Classify reversibility: two-way vs one-way. Name the blast radius in the same breath: one surface, or every consumer. A two-way door with a small radius can be sampled. A one-way door with low verifiability goes to human review.
 2. Classify verifiability: can an agent run the real surface and get a decisive pass?
 3. Pick verifier count: self-verify when cheap to revert; one independent verifier when medium; more only when checks are cheap and stakes are high.
+   Claude Code size: self-verify has no workflow, one verifier is `small`, many verifiers are `medium` (`workflowSizeGuideline`). Many rules on one diff: `/trust-stack:rule-review`.
 4. Name verify commands. Independent means fresh context, not the same chat re-reading itself.
 5. Sample merged work on a schedule you choose. Repeated shortcut → `repeat-or-leave`.
 
