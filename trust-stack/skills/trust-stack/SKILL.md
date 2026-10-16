@@ -79,6 +79,10 @@ Before product code, apply the three invariants in [references/day-0.md](referen
 | A closed decision that must be corroborated | `concordance` |
 | A session lookback | this skill, then `findings-first` for the row |
 
+`/trust-stack:rule-review` follows [flows/specs/rule-review.md](../../../flows/specs/rule-review.md).
+Portable: [flows/portable/rule-review.md](../../../flows/portable/rule-review.md). The skeptic is a fresh context.
+The flag card comes after the skeptic. Sign off before the next flow. This skill does not merge.
+
 Upstream name: load `aihero-map`.
 
 ---

@@ -53,3 +53,6 @@ A5  This skill does not merge.
 ## Done when
 
 Acceptance existed before the first production edit. CRAP and mutation on the touched functions meet the thresholds, or the card names the command that failed. When LAWS.bend exists, `craft/test/check-proof.sh` prints ALL PROOFS CHECK. Scout stayed inside touched files. No merge.
+
+Claude Code `/craft:run`, Grok `/workflow craft-run`, and the portable run share [flows/specs/craft-run.md](../../../flows/specs/craft-run.md).
+Follow [flows/portable/craft-run.md](../../../flows/portable/craft-run.md). QA is a fresh context. The card comes after QA. Sign off before the next flow.

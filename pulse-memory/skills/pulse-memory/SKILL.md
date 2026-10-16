@@ -48,6 +48,10 @@ Skip: one-file typo with no claims about the past. Former name: `archive-not-mem
 
 **Workflow args (file modes):** `as_of` always (ISO-8601). `thinking_path` if mode is `both`/`thinking`. `harness_path` if `both`/`harness`. `next_action` recommended. Examples: [references/usecases.md](references/usecases.md).
 
+Claude Code `/pulse-memory:mine-corrections` and Grok `/workflow mine-corrections` follow [flows/specs/mine-corrections.md](../../../flows/specs/mine-corrections.md).
+Portable: [flows/portable/mine-corrections.md](../../../flows/portable/mine-corrections.md). The filter is a fresh context.
+The rule card comes after the filter. The flow does not edit files. Sign off before the next flow.
+
 ---
 
 ## Always stamp (hint tags)
