@@ -1,0 +1,7 @@
+source: pr
+kind: sign
+ask: A document needs signing.
+deadline: none
+owner: si
+holds: sign
+ref: pr:6

@@ -1,0 +1,7 @@
+source: calendar
+kind: money
+ask: A bill needs a human decision.
+deadline: none
+owner: si
+holds: pay
+ref: calendar:5

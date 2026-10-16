@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)"
+
+usage() {
+  echo "usage: capture-sweep emit FILE | check-allows | live-pr" >&2
+  exit 2
+}
+
+ask_ok() {
+  local ask="$1" low
+  [[ "$ask" =~ ^[A-Za-z][A-Za-z\ ]*\.$ ]] || return 1
+  [[ ${#ask} -ge 2 && ${#ask} -le 120 ]] || return 1
+  low="${ask,,}"
+  [[ "$low" == *@* || "$low" == *http* ]] && return 1
+  return 0
+}
+
+emit_file() {
+  local file="$1" line key val
+  local source="" kind="" ask="" deadline="" owner="" holds="" ref=""
+  local want_holds="" want_owner=""
+  [[ -f "$file" ]] || { echo "no file" >&2; exit 2; }
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -z "$line" ]] && continue
+    [[ "$line" == *": "* ]] || { echo "bad line" >&2; exit 2; }
+    key="${line%%: *}"
+    val="${line#*: }"
+    case "$key" in
+      source) source="$val" ;;
+      kind) kind="$val" ;;
+      ask) ask="$val" ;;
+      deadline) deadline="$val" ;;
+      owner) owner="$val" ;;
+      holds) holds="$val" ;;
+      ref) ref="$val" ;;
+      *) echo "unknown key" >&2; exit 2 ;;
+    esac
+  done <"$file"
+  [[ -n "$source" && -n "$kind" && -n "$ask" && -n "$deadline" && -n "$owner" && -n "$holds" && -n "$ref" ]] || {
+    echo "missing key" >&2; exit 2; }
+  case "$source" in
+    mail|calendar|pr|chat) ;;
+    *) echo "bad source" >&2; exit 2 ;;
+  esac
+  ask_ok "$ask" || { echo "bad ask" >&2; exit 2; }
+  [[ "$deadline" == "none" || "$deadline" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] || {
+    echo "bad deadline" >&2; exit 2; }
+  case "$kind" in
+    none) want_holds=none; want_owner=none ;;
+    money) want_holds=pay; want_owner=si ;;
+    send) want_holds=send; want_owner=si ;;
+    sign) want_holds=sign; want_owner=si ;;
+    *) echo "bad kind" >&2; exit 2 ;;
+  esac
+  [[ "$holds" == "$want_holds" && "$owner" == "$want_owner" ]] || {
+    echo "bad stop" >&2; exit 2; }
+  if [[ "$ref" == "none" ]]; then
+    :
+  elif [[ "$ref" =~ ^(mail|calendar|pr|chat):[0-9]{1,6}$ && "$ref" == "$source:"* ]]; then
+    :
+  else
+    echo "bad ref" >&2; exit 2
+  fi
+  printf '# Card\n- kind: %s\n- source: %s\n- ask: %s\n- deadline: %s\n- holds: %s\n- owner: %s\n- ref: %s\n' \
+    "$kind" "$source" "$ask" "$deadline" "$holds" "$owner" "$ref"
+}
+
+check_allows() {
+  local dir="${CAPTURE_ALLOWS:-$ROOT/connectors}"
+  local base f line got want
+  local -a names=(mail.allow calendar.allow chat.allow pr.allow)
+  shopt -s nullglob
+  local -a found=("$dir"/*.allow)
+  [[ "${#found[@]}" -eq 4 ]] || { echo "allow count" >&2; exit 2; }
+  for base in "${names[@]}"; do
+    f="$dir/$base"
+    [[ -f "$f" ]] || { echo "missing $base" >&2; exit 2; }
+    while IFS= read -r line || [[ -n "$line" ]]; do
+      [[ -z "$line" ]] && continue
+      case "$line" in
+        send|reply|forward|pay|sign|create|delete|update|merge|comment|post|draft|trash|respond|rsvp)
+          echo "denied $line" >&2; exit 2 ;;
+      esac
+    done <"$f"
+  done
+  want=$'list\nget\nsearch'
+  for base in mail.allow calendar.allow chat.allow; do
+    got="$(grep -v '^$' "$dir/$base")"
+    [[ "$got" == "$want" ]] || { echo "allow mismatch $base" >&2; exit 2; }
+  done
+  got="$(grep -v '^$' "$dir/pr.allow")"
+  [[ "$got" == "list" ]] || { echo "allow mismatch pr.allow" >&2; exit 2; }
+}
+
+live_pr() {
+  local raw
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+  if ! raw="$(gh pr list --json number,title,updatedAt --limit 20 2>/dev/null)"; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+  if ! printf '%s' "$raw" | python3 -c '
+import json, sys
+rows = json.load(sys.stdin)
+if not isinstance(rows, list):
+    sys.exit(2)
+blocks = []
+for row in rows:
+    n = row.get("number")
+    if isinstance(n, bool) or not isinstance(n, int) or n < 1 or n > 999999:
+        continue
+    updated = row.get("updatedAt")
+    day = updated[:10] if isinstance(updated, str) else ""
+    if len(day) != 10 or not day[:4].isdigit() or day[4] != "-" or not day[5:7].isdigit() or day[7] != "-" or not day[8:10].isdigit():
+        day = "none"
+    blocks.append("\n".join([
+        "# Card",
+        "- kind: none",
+        "- source: pr",
+        "- ask: A pull request is waiting.",
+        "- deadline: " + day,
+        "- holds: none",
+        "- owner: none",
+        "- ref: pr:" + str(n),
+    ]))
+if blocks:
+    sys.stdout.write("\n\n".join(blocks) + "\n")
+' 2>/dev/null; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+}
+
+case "${1:-}" in
+  emit) [[ -n "${2:-}" ]] || usage; emit_file "$2" ;;
+  check-allows) check_allows ;;
+  live-pr) live_pr ;;
+  *) usage ;;
+esac

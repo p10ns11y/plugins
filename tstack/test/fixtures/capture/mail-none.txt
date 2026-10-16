@@ -1,0 +1,7 @@
+source: mail
+kind: none
+ask: A thread needs a look.
+deadline: none
+owner: none
+holds: none
+ref: mail:1
