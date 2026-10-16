@@ -25,6 +25,6 @@ Open work goes in with `premflow task add <text>`; closing it is `premflow task 
 - Pick: **mission-map** ranks by impact; the top repo Do goes to **pstack-map** for handoff.
 - Area reviews: one area per block on a schedule; **michelin-kitchen** keeps the prep.
 - Long work: **steer-log** time-boxes it; **steer-accel** records the earn. Over the box, steer or stop.
-- Merge check: **concordance** proceeds only when tests are green, a review came from a different model family, and the repo is not under the Proposales freeze. Otherwise `hold`.
-- Weekly pruning: drop unused skills. Keep hiring-signals-onboard, job-boundary, handoff-artifact, routine-arming and navigating-transport-ui.
+- Merge check: **concordance** proceeds only when tests are green, a review came from a different model family, and no freeze is in force. Otherwise `hold`.
+- Weekly pruning: drop unused skills. Keep the ones the owner still runs.
 - Invariants go on the earliest layer: **trust-stack**. SI owns the write: **si**.
