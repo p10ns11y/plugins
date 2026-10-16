@@ -1,5 +1,7 @@
 # mine-corrections
 
+Laws: [flows/bend/LAWS.bend](../bend/LAWS.bend)
+
 Args: `since`, `paths`
 
 | Phase | Mode | Does |
