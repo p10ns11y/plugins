@@ -90,5 +90,5 @@ jobs:
           lean --version
           proof_out="$(./trust-stack/test/bend-critical.sh)"
           printf '%s\n' "$proof_out"
-          printf '%s\n' "$proof_out" | grep -q -e 'All terms check.' -e 'ALL PROOFS CHECK'
+          printf '%s\n' "$proof_out" | grep -q 'All terms check.'
           ./craft/test/check-proof.sh --self

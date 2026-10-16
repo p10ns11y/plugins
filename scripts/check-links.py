@@ -36,10 +36,10 @@ def kind(href: str) -> str:
         return "empty"
     if href.startswith("#"):
         return "fragment"
-    head = href.split("/", 1)[0].split("?", 1)[0].split("#", 1)[0]
-    scheme = head[:-1].lower() if head.endswith(":") else ""
-    if scheme in SCHEMES:
-        return "external"
+    lower = href.lower()
+    for scheme in SCHEMES:
+        if lower.startswith(scheme + ":"):
+            return "external"
     return "relative"
 
 
