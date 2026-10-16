@@ -15,6 +15,13 @@ REPO = E2E.parents[2]
 STATE = TSTACK / "scripts" / "tstack-state"
 SWEEP = TSTACK / "bin" / "capture-sweep"
 MERGE = TSTACK / "bin" / "merge-check"
+PREMFLOW_PATH = TSTACK / "bin" / "premflow-path"
+PUBLIC_ROW = TSTACK / "bin" / "public-row"
+CONCORDANCE = REPO / "concordance" / "bin" / "concordance"
+FEED_BIN = REPO / "control-plane" / "bin" / "feed"
+ROUTER = REPO / "intelli-route" / "bin" / "route"
+HOUSE_MAP = REPO / "pstack-map" / "skills" / "pstack-map" / "references" / "map.md"
+CAPTURE_FIX = TSTACK / "test" / "fixtures" / "capture"
 MAP = E2E / "fixtures" / "map.json"
 RECORDS = E2E / "fixtures" / "records"
 STUB = E2E / "bin" / "premflow"
@@ -50,7 +57,7 @@ def read_text(path):
     return path.read_text(encoding="utf-8")
 
 
-def run(argv, *, env=None, path=None):
+def run(argv, *, env=None, path=None, input_text=None):
     calls.append(tuple(argv))
     name = Path(argv[0]).name
     if name in {"send", "reply", "pay", "sign"}:
@@ -62,7 +69,9 @@ def run(argv, *, env=None, path=None):
         base.update(env)
     if path is not None:
         base["PATH"] = path
-    return subprocess.run(argv, capture_output=True, text=True, env=base)
+    return subprocess.run(
+        argv, capture_output=True, text=True, env=base, input=input_text,
+    )
 
 
 def state(db, args, *, path=None, env=None):
@@ -151,12 +160,6 @@ def called_merge():
 def is_figure(result):
     words = result.lower().split()
     return any(word in ("money", "health", "family") for word in words)
-
-
-def names_no_load(text):
-    words = text.replace("|", " ").replace("*", " ").split()
-    check("load" not in words, "card names a load")
-    check("loads" not in words, "card names a load")
 
 
 def parse_card(text):
@@ -248,113 +251,96 @@ def load_shared(db, path_env=None):
     return nxt
 
 
+def house_playbooks():
+    names = []
+    for line in read_text(HOUSE_MAP).splitlines():
+        if not line.startswith("|"):
+            continue
+        name = line.strip("|").split("|", 1)[0].strip()
+        if not name or name == "Playbook" or name.startswith("-"):
+            continue
+        names.append(name)
+    check(bool(names), "house rows")
+    return names
+
+
+def light_playbook(playbook):
+    check(playbook != "skip", "playbook")
+    check(playbook == "house" or playbook in house_playbooks(), "playbook")
+
+
+def feed_schema(text):
+    fields = []
+    in_schema = False
+    for line in text.splitlines():
+        if line.startswith("## Feed"):
+            in_schema = True
+            continue
+        if in_schema and line.startswith("## "):
+            break
+        if in_schema and line.startswith("| **"):
+            fields.append(line.split("**")[1])
+    return fields
+
+
 def route_for(when):
-    manifest = json.loads(read_text(MANIFEST))
-    if "tstack" not in manifest.get("routes", {}):
-        raise FlowError("missing routes.tstack")
-    skipped = []
-    match = None
-    for row in manifest["primary"]:
-        if row.get("when") == when:
-            match = row
-            break
-        skipped.append("%s: when" % row["id"])
-    if match is None:
-        raise FlowError("missing when")
-    load_id = match["id"]
-    load_path = None
-    for item in manifest["loads"]:
-        if item.get("id") == load_id:
-            load_path = item.get("path")
-            break
-    loads = [load_id]
-    check(len(loads) <= 4, "loads")
-    emit = {
-        "situation": when,
-        "route": match["route"],
-        "loads": loads,
-        "skips": skipped,
-        "playbook": "skip",
-        "hitl": "none",
-        "next": load_id,
-    }
+    proc = run([str(ROUTER), when])
+    must(proc)
+    emit = json.loads(proc.stdout)
     check(
         list(emit) == ["situation", "route", "loads", "skips", "playbook", "hitl", "next"],
         "emit fields",
     )
+    check(len(emit["loads"]) <= 4, "loads")
+    manifest = json.loads(read_text(MANIFEST))
+    if "tstack" not in manifest.get("routes", {}):
+        raise FlowError("missing routes.tstack")
+    load_path = None
+    for item in manifest["loads"]:
+        if item.get("id") == emit["next"]:
+            load_path = item.get("path")
+            break
     return emit, load_path
 
 
-def judge(label_dm, label_llm, p_dm, tau):
-    agree = "yes" if label_dm != "" and label_dm == label_llm else "no"
+def require_concordance(card, tau):
+    fields = field_map(card)
+    check(list(fields) == [
+        "label_dm", "label_llm", "agree", "p_dm", "kappa_window", "act",
+    ], "six fields")
+    check(fields["kappa_window"] == "", "kappa")
+    match = fields["label_dm"] != "" and fields["label_dm"] == fields["label_llm"]
+    check((fields["agree"] == "yes") == match, "agree")
     try:
-        high_enough = float(p_dm) >= float(tau)
+        high = fields["p_dm"] != "" and float(fields["p_dm"]) >= float(tau)
     except ValueError:
-        high_enough = False
-    act = "proceed" if agree == "yes" and high_enough else "hold"
-    return agree, act
+        high = False
+    if fields["act"] == "proceed":
+        check(match and high, "proceed")
+    else:
+        check(fields["act"] == "hold", "hold")
+        check(not (match and high), "hold")
+    return fields
 
 
-def concordance_card(label_dm, label_llm, p_dm, tau):
-    agree, act = judge(label_dm, label_llm, p_dm, tau)
-    card = "\n".join([
-        "## Concordance",
-        "| Field | Value |",
-        "|-------|--------|",
-        "| **label_dm** | %s |" % label_dm,
-        "| **label_llm** | %s |" % label_llm,
-        "| **agree** | %s |" % agree,
-        "| **p_dm** | %s |" % p_dm,
-        "| **kappa_window** | |",
-        "| **act** | %s |" % act,
-        "",
+def concordance_run(label_dm, label_llm, p_dm, tau, log):
+    proc = run([
+        str(CONCORDANCE),
+        "--label-dm", label_dm,
+        "--label-llm", label_llm,
+        "--p-dm", p_dm,
+        "--tau", tau,
+        "--log", str(log),
     ])
-    names_no_load(card)
-    return card, agree, act
+    must(proc)
+    return require_concordance(proc.stdout, tau)
 
 
-def append_line(path, label_dm, label_llm, p_dm, tau, agree, act):
-    line = "label_dm=%s label_llm=%s p_dm=%s tau=%s agree=%s act=%s" % (
-        label_dm, label_llm, p_dm, tau, agree, act,
+def public_row(path, stage_id, result, evidence, path_env=None):
+    return run(
+        [str(PUBLIC_ROW), str(path), DATE, stage_id, result, evidence],
+        path=path_env,
     )
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(line + "\n")
-    writes.append(path)
-    return line
-
-
-def read_printed(action):
-    previous = sys.stdout
-    chunks = []
-
-    class Tee:
-        def write(self, data):
-            previous.write(data)
-            chunks.append(data)
-
-        def flush(self):
-            previous.flush()
-
-    sys.stdout = Tee()
-    try:
-        action()
-    finally:
-        sys.stdout = previous
-    return "".join(chunks)
-
-
-def hitl(kind):
-    card = "# HITL\n- kind: %s\n- owner: SI\n" % kind
-    check("owner: SI" in card, "owner")
-    names_no_load(card)
-    return card
-
-
-def append_public(path, stage_id, result, evidence):
-    line = "%s\t%s\t%s\t%s\n" % (DATE, stage_id, result, evidence)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(line)
-    writes.append(path)
 
 
 def mark_done(db, path_env=None):
@@ -413,22 +399,27 @@ def flow_capture():
         check(ask in dump, ask)
     check("A note is waiting to go out." not in dump, "stop in dump")
     check("See item 2." not in dump, "bad ask in dump")
-    feed = "\n".join([
-        "## Feed",
-        "| Field | Value |",
-        "|-------|--------|",
-        "| **goal** | Review four ordinary cards. |",
-        "| **dump_source** | paste |",
-        "| **route** | light |",
-        "| **why** | else |",
-        "| **next** | agent-orchestrator |",
-    ])
-    fields = field_map(feed)
+    fed = run([str(FEED_BIN)], input_text=dump)
+    check(fed.returncode == 0, fed.stderr)
+    fields = field_map(fed.stdout)
+    required = feed_schema(feeder)
+    for name in (
+        "technique", "skills", "tools", "success", "verify",
+        "non-goals", "unknowns", "harness_gap",
+    ):
+        check(name in required, name)
+        check(fields.get(name, "") != "", name)
     check(fields["goal"] != "", "goal")
     check(fields["dump_source"] == "paste", "dump_source")
     check(fields["route"] == "light", "route")
     check(fields["why"] == "else", "why")
     check(fields["next"] == "agent-orchestrator", "next")
+    check(fields["technique"] in (
+        "single_shot", "light", "cg-outer+standard", "cg-outer+eva",
+    ), "technique")
+    check(fields["harness_gap"] in (
+        "none", "permissions", "AGENTS.md", "mcp", "8192",
+    ), "harness_gap")
     check(not any("control" in path.name.lower() for path in writes), "control card")
     names = [Path(argv[0]).name for argv in calls]
     for banned in ("send", "reply", "pay", "sign", "gh"):
@@ -446,12 +437,11 @@ def flow_admit():
     check(count_stage_put() == puts, "stop stage put")
     nxt = must_json(state(db, ["next", "--map", "loop"]))["stage_id"]
     check(nxt == "short", "next after stop")
-    seen = set()
     mail = run([str(SWEEP), "emit", str(RECORDS / "mail.txt")])
     check(mail.returncode == 0, mail.stderr)
     ask = parse_card(mail.stdout)["ask"]
-    check(ask not in seen, "first ask")
-    seen.add(ask)
+    first_ask = state(db, ["ask", "admit", "--ask", ask])
+    check(first_ask.returncode == 0, "first ask")
     must(state(db, [
         "stage", "put", "--map", "loop", "--id", "ahead",
         "--class", "Do", "--a", "3", "--m", "3", "--b", "3",
@@ -468,8 +458,16 @@ def flow_admit():
     mail_again = run([str(SWEEP), "emit", str(RECORDS / "mail.txt")])
     check(mail_again.returncode == 0, mail_again.stderr)
     repeated = parse_card(mail_again.stdout)["ask"]
-    check(repeated in seen, "repeated ask")
+    again = state(db, ["ask", "admit", "--ask", repeated])
+    check(again.returncode != 0, "repeated ask")
+    check("repeated ask" in again.stdout, "repeated ask")
     check(count_stage_put() == puts + 2, "repeated stage put")
+    stored = scalar(
+        db,
+        "SELECT COUNT(*) FROM archive_events WHERE source=? AND payload=?",
+        ("tstack/ask", repeated),
+    )
+    check(stored == 1, "one ask")
     first = must_json(state(db, [
         "pulse", "admit", "--key", "wording",
         "--snippet", "Keep the first wording.",
@@ -514,8 +512,7 @@ def flow_admit():
 
 
 def flow_replan():
-    shock = "shock"
-    check(shock == "shock", "shock")
+    shock = "deadline moved"
     proc = run([str(SWEEP), "check-allows"])
     check(proc.returncode == 0, proc.stderr)
     start = len(calls)
@@ -525,18 +522,25 @@ def flow_replan():
     check(scalar(db, "SELECT COUNT(*) FROM blocks WHERE status='open'") == 0, "open block")
     for argv in calls[start:]:
         check(not (Path(argv[0]).name == "capture-sweep" and len(argv) > 1 and argv[1] == "emit"), "emit")
+    stages = scalar(db, "SELECT COUNT(*) FROM stages")
+    must(state(db, ["pulse", "archive", "--source", "tstack/replan", "--payload", shock]))
+    stored = scalar(
+        db,
+        "SELECT payload FROM archive_events WHERE source=?",
+        ("tstack/replan",),
+    )
+    check(stored == shock, "shock")
+    check(graph_apply(db) == nxt, "remaining")
+    check(scalar(db, "SELECT COUNT(*) FROM stages") == stages, "remaining stages")
     mark = len(calls)
-
-    def stop_for_empty_g(g):
-        if g != "":
-            raise FlowError("empty g continued")
-        print("Ask: name a checkable arrival.", flush=True)
-
-    trace = read_printed(lambda: stop_for_empty_g(""))
+    proc = state(db, ["map", "put", "--id", "loop", "--g", ""])
+    if proc.returncode == 0:
+        raise FlowError("empty g continued")
+    trace = proc.stdout
     check("checkable arrival" in trace, "empty g ask")
     check("next_do=" not in trace, "empty g next")
+    check(scalar(db, "SELECT g FROM maps WHERE id='loop'") == "checkable arrival", "g kept")
     for argv in calls[mark:]:
-        check(not (len(argv) >= 3 and argv[1] == "map" and argv[2] == "put"), "map put")
         check(not (len(argv) >= 2 and argv[1] == "export-map"), "export-map")
         check(Path(argv[0]).name != "mission-map-graph", "graph")
 
@@ -546,7 +550,7 @@ def flow_route_repo():
     check(emit["route"] == "light", "route")
     check("pstack-map" in emit["loads"], "load")
     check(len(emit["loads"]) <= 4, "load count")
-    check(emit["playbook"] == "skip", "playbook")
+    light_playbook(emit["playbook"])
     check(emit["hitl"] == "none", "hitl")
     check(not called_block_open(), "block open")
     repo = Path(tempfile.mkdtemp())
@@ -594,21 +598,12 @@ def flow_concordance_hold():
     check("label_dm=" in before, "card log shape")
     log = Path(tempfile.mkdtemp()) / "card.md"
     cases = [
-        ("ship", "hold", "0.95", "0.8", "no", "hold"),
-        ("ship", "ship", "0.4", "0.8", "yes", "hold"),
+        ("ship", "hold", "0.95", "0.8"),
+        ("ship", "ship", "0.4", "0.8"),
     ]
-    for label_dm, label_llm, p_dm, tau, agree, act in cases:
-        card, got_agree, got_act = concordance_card(label_dm, label_llm, p_dm, tau)
-        fields = field_map(card)
-        check(list(fields) == [
-            "label_dm", "label_llm", "agree", "p_dm", "kappa_window", "act",
-        ], "six fields")
-        check(fields["agree"] == agree, "agree")
-        check(fields["act"] == act, "act")
-        check(fields["kappa_window"] == "", "kappa")
-        check(got_agree == agree and got_act == act, "judge")
-        hitl("hold")
-        append_line(log, label_dm, label_llm, p_dm, tau, agree, act)
+    for label_dm, label_llm, p_dm, tau in cases:
+        fields = concordance_run(label_dm, label_llm, p_dm, tau, log)
+        check(fields["act"] == "hold", "act")
     check(log.read_text(encoding="utf-8").splitlines() == [
         "label_dm=ship label_llm=hold p_dm=0.95 tau=0.8 agree=no act=hold",
         "label_dm=ship label_llm=ship p_dm=0.4 tau=0.8 agree=yes act=hold",
@@ -621,16 +616,12 @@ def flow_concordance_hold():
 def flow_concordance_proceed():
     before = read_text(CARD_LOG)
     log = Path(tempfile.mkdtemp()) / "card.md"
-    card, agree, act = concordance_card("ship", "ship", "0.91", "0.8")
-    fields = field_map(card)
-    check(list(fields) == [
-        "label_dm", "label_llm", "agree", "p_dm", "kappa_window", "act",
-    ], "six fields")
-    check(fields["agree"] == "yes" and agree == "yes", "agree")
-    check(fields["act"] == "proceed" and act == "proceed", "act")
-    check(fields["kappa_window"] == "", "kappa")
-    line = append_line(log, "ship", "ship", "0.91", "0.8", agree, act)
-    check(line == "label_dm=ship label_llm=ship p_dm=0.91 tau=0.8 agree=yes act=proceed", "log line")
+    fields = concordance_run("ship", "ship", "0.91", "0.8", log)
+    check(fields["agree"] == "yes", "agree")
+    check(fields["act"] == "proceed", "act")
+    check(log.read_text(encoding="utf-8").splitlines() == [
+        "label_dm=ship label_llm=ship p_dm=0.91 tau=0.8 agree=yes act=proceed",
+    ], "log line")
     db = fresh_db()
     load_shared(db, NARROW)
     proc = run(["bash", "-c", "command -v premflow"], path=NARROW)
@@ -653,14 +644,24 @@ def flow_irreversible():
     check("SI owns the write" in skill, "owner phrase")
     db = fresh_db()
     must(state(db, ["init"]))
-    for kind in ("send", "pay", "sign"):
-        card = hitl(kind)
-        check("kind: %s" % kind in card, kind)
-        check("owner: SI" in card, kind)
-    check(scalar(db, "SELECT COUNT(*) FROM blocks") == 0, "blocks")
-    check(not called_block_open(), "block open")
-    check(not called_harvest_add(), "harvest")
-    check(not called_premflow(), "premflow")
+    stops = [
+        (CAPTURE_FIX / "mail-send.txt", "send", "send"),
+        (CAPTURE_FIX / "calendar-money.txt", "money", "pay"),
+        (CAPTURE_FIX / "pr-sign.txt", "sign", "sign"),
+    ]
+    for path, kind, holds in stops:
+        proc = run([str(SWEEP), "emit", str(path)])
+        check(proc.returncode == 0, proc.stderr)
+        card = parse_card(proc.stdout)
+        check(card["kind"] == kind, kind)
+        check(card["holds"] == holds, holds)
+        check(card["owner"] == "si", kind)
+        check(scalar(db, "SELECT COUNT(*) FROM blocks") == 0, "blocks")
+        check(not called_block_open(), "block open")
+        listed = must_json(state(db, ["harvest", "list", "--map", "loop"]))
+        check(listed["rows"] == [], "harvest")
+        check(not called_harvest_add(), "harvest")
+        check(not called_premflow(), "premflow")
 
 
 def flow_harvest_with():
@@ -695,14 +696,17 @@ def flow_harvest_with():
     check(listed["rows"] == [], "empty row")
     public = Path(tempfile.mkdtemp()) / "public.tsv"
     figure = "money 40"
-    check(is_figure(figure), "figure")
-    if is_figure(figure):
-        pass
-    else:
-        raise FlowError("figure passed to harvest add")
-    check(not public.exists(), "figure public")
+    added = state(db, [
+        "harvest", "add", "--map", "loop", "--stage", "short",
+        "--result", figure, "--evidence", "signpost:figure",
+    ], path=path9)
+    check(added.returncode != 0, "figure add")
     listed = must_json(state(db, ["harvest", "list", "--map", "loop"], path=path9))
     check(listed["rows"] == [], "figure row")
+    refused = public_row(public, "short", figure, "signpost:figure", path9)
+    check(refused.returncode != 0, "figure public")
+    body = public.read_text(encoding="utf-8") if public.exists() else ""
+    check(figure not in body, "figure file")
     cases = [
         ("landed", "sha:0123456789abcdef"),
         ("noted", "draft:1"),
@@ -714,10 +718,12 @@ def flow_harvest_with():
             "harvest", "add", "--map", "loop", "--stage", "short",
             "--result", result, "--evidence", evidence,
         ], path=path9))
-        append_public(public, "short", result, evidence)
+        must(public_row(public, "short", result, evidence, path9))
         check(stage_class(db, "short") == "Do", "class after add")
     listed = must_json(state(db, ["harvest", "list", "--map", "loop"], path=path9))
     check([row["evidence"] for row in listed["rows"]] == [item[1] for item in cases], "harvest rows")
+    check(all(not is_figure(row["result"]) and figure not in row["result"] for row in listed["rows"]), "figure result")
+    check(figure not in public.read_text(encoding="utf-8"), "figure file")
     check(public.read_text(encoding="utf-8").splitlines() == [
         "%s\tshort\t%s\t%s" % (DATE, result, evidence) for result, evidence in cases
     ], "public rows")
@@ -759,15 +765,10 @@ def flow_harvest_with():
 
 def flow_without():
     check("PREMFLOW_LOG" not in os.environ, "PREMFLOW_LOG")
-    proc = run(["bash", "-c", "command -v premflow"], path=NARROW)
+    proc = run([str(PREMFLOW_PATH)], path=NARROW)
     check(proc.returncode != 0, "command -v")
-
-    def print_premflow_hint():
-        print("premflow/README.md", flush=True)
-
-    shown = read_printed(print_premflow_hint)
-    check(any("premflow/README.md" in line for line in shown.splitlines()), "hint")
-    check("[POMO]" not in shown, "pomo")
+    check(any("premflow/README.md" in line for line in proc.stdout.splitlines()), "hint")
+    check("[POMO]" not in proc.stdout, "pomo")
     db = fresh_db()
     check(load_shared(db, NARROW) == "short", "next")
     must(state(db, [
@@ -783,7 +784,7 @@ def flow_without():
     check(len(listed["rows"]) == 1, "harvest row")
     check(listed["rows"][0]["evidence"] == "signpost:continue", "evidence")
     public = Path(tempfile.mkdtemp()) / "public.tsv"
-    append_public(public, "short", "continue", "signpost:continue")
+    must(public_row(public, "short", "continue", "signpost:continue", NARROW))
     check(public.read_text(encoding="utf-8").splitlines() == [
         "%s\tshort\tcontinue\tsignpost:continue" % DATE
     ], "public row")

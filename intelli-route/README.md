@@ -36,6 +36,8 @@ An alignment name loads `aihero-map`. That map names the house skill and which c
 | **next** | one action |
 ```
 
+`bin/route` prints those fields for one exact manifest `when`. `playbook` is `skip` only on route `tstack`. Route `light` follows a playbook or the house row.
+
 `light` takes that playbook's first bounded step. `card` names a phase, a budget, and one verify command, then does only the current phase. `empty` writes knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask. `tstack` runs one tomato block and does not start a repo playbook.
 
 ## System One shape

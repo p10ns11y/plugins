@@ -38,6 +38,7 @@ tstack-state block close --id N
 tstack-state block close --map ID
 tstack-state harvest add --map ID --stage ID --result TEXT --evidence TEXT
 tstack-state harvest list --map ID [--stage ID]
+tstack-state ask admit --ask TEXT
 tstack-state pulse archive --source TEXT --payload TEXT [--correlation TEXT]
 tstack-state pulse admit --key TEXT --snippet TEXT --source TEXT --time TEXT \
   --status user-stated|tool-verified|inferred|unknown \
@@ -58,7 +59,9 @@ Map ids and stage ids match `^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$` before insert. `d
 
 `nat_key` is a different column. Length 1–200 after trim. Slashes are allowed. `@` is rejected. Do not put the stage-id pattern on `nat_key`.
 
-`g`, `label`, `plan`, `result`, `evidence`, `snippet`, and `payload` are rejected when they contain `@`. There is no contact column and no email column. A stage without `a`, `m`, and `b` is refused. `stage put` has no deadline column. `harvest add` does not set `class` to Done.
+`g`, `label`, `plan`, `result`, `evidence`, `snippet`, and `payload` are rejected when they contain `@`. A blank `g` is rejected. The error is `Ask: name a checkable arrival.` The stored arrival stays as it was, and the script does not export the map. There is no contact column and no email column. A stage without `a`, `m`, and `b` is refused. `stage put` has no deadline column. `harvest add` does not set `class` to Done. A `result` whose words include `money`, `health`, or `family` is rejected, and no row is written.
+
+`ask admit` stores one ask. The same ask again exits 3 with `repeated ask` and does not insert another row.
 
 `export-map` prints one object. Top-level keys are `g` and `stages`. Each stage has `id`, `a`, `m`, `b`, `depends_on` (a JSON array of strings), `class`, and `what` (from `label`). `effort_cap` stays in `maps` and is omitted. A stored `depends_on` that is not a JSON array exits 3. There is no `email` key and no `contact` key.
 

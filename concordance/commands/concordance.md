@@ -11,7 +11,7 @@ Load skill **concordance**. Open `references/card.md` only to append one log lin
 
 ## Immediate actions
 
-1. Read the two labels, `p_dm`, and `tau`. Leave a missing input empty.
+1. Run `bin/concordance` with the two labels, `p_dm`, and `tau`. Leave a missing input empty. It emits the card and appends the log line only when the caller named a path.
 2. `agree` is `yes` only when both labels are the same token.
 3. proceed only when agree is yes and p_dm >= tau. Every other case is `hold`.
 4. Leave `kappa_window` empty when the caller supplied no window.

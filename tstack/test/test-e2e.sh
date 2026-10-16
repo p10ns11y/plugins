@@ -15,6 +15,11 @@ require() {
 require "tstack/scripts/tstack-state" "$ROOT/scripts/tstack-state"
 require "tstack/bin/capture-sweep" "$ROOT/bin/capture-sweep"
 require "tstack/bin/merge-check" "$ROOT/bin/merge-check"
+require "tstack/bin/premflow-path" "$ROOT/bin/premflow-path"
+require "tstack/bin/public-row" "$ROOT/bin/public-row"
+require "concordance/bin/concordance" "$REPO/concordance/bin/concordance"
+require "control-plane/bin/feed" "$REPO/control-plane/bin/feed"
+require "intelli-route/bin/route" "$REPO/intelli-route/bin/route"
 require "mission-map/rust/target/debug/mission-map-graph" "$REPO/mission-map/rust/target/debug/mission-map-graph"
 [[ "$missing" -eq 0 ]] || exit 1
 

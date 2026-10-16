@@ -14,6 +14,8 @@ for p in plugin.json LICENSE NOTICE.md README.md commands/tomato.md commands/har
   connectors/chat.allow \
   connectors/pr.allow \
   bin/capture-sweep \
+  bin/premflow-path \
+  bin/public-row \
   skills/capture-mail/SKILL.md \
   skills/capture-calendar/SKILL.md \
   skills/capture-chat/SKILL.md \
@@ -142,7 +144,7 @@ agent="$(cat "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/m
 for w in 'Lauren Tan' 'Cirillo' 'thecuriousts' 'Copyright'; do
   [[ "$agent" == *"$w"* ]] && bad "attribution in agent body: $w" || ok "no attribution: $w"
 done
-all="$(cat "$ROOT"/*.md "$ROOT"/plugin.json "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT"/references/*.md "$ROOT"/scripts/schema.sql "$ROOT"/scripts/tstack-state "$ROOT"/connectors/*.allow "$ROOT"/bin/capture-sweep "$ROOT"/test/test-capture.sh "$ROOT"/test/fixtures/capture/*.txt "$ROOT"/test/e2e/run_flows.py "$ROOT"/test/e2e/bin/premflow "$ROOT"/test/e2e/fixtures/map.json "$ROOT"/test/e2e/fixtures/records/*.txt)"
+all="$(cat "$ROOT"/*.md "$ROOT"/plugin.json "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT"/references/*.md "$ROOT"/scripts/schema.sql "$ROOT"/scripts/tstack-state "$ROOT"/connectors/*.allow "$ROOT"/bin/capture-sweep "$ROOT"/bin/premflow-path "$ROOT"/bin/public-row "$ROOT"/test/test-capture.sh "$ROOT"/test/fixtures/capture/*.txt "$ROOT"/test/e2e/run_flows.py "$ROOT"/test/e2e/bin/premflow "$ROOT"/test/e2e/fixtures/map.json "$ROOT"/test/e2e/fixtures/records/*.txt)"
 if echo "$all" | command grep -Eiwq 'AI|demo|gate|/home/|/Users/|mzapan|100\.[0-9]+\.[0-9]+'; then bad "banned word or host"; else ok "clean words"; fi
 
 sweep="$(cat "$ROOT/skills/capture-sweep/SKILL.md")"

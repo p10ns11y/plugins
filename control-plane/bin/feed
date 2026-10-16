@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+"""Emit a Feed for one dump. Does not open a control card."""
+
+import sys
+
+TECHNIQUE = {
+    "light": "light",
+    "cg-outer": "cg-outer+standard",
+    "eva-inner": "cg-outer+eva",
+}
+NEXT = {
+    "light": "agent-orchestrator",
+    "cg-outer": "control-graph",
+    "eva-inner": "control-graph+eva-emptiness",
+}
+
+
+def harness_gap(dump):
+    low = dump.lower()
+    if "8192" in dump:
+        return "8192"
+    if "agents.md" in low:
+        return "AGENTS.md"
+    if "mcp" in low.split():
+        return "mcp"
+    if "permissions" in low.split():
+        return "permissions"
+    return "none"
+
+
+def route_of(dump):
+    low = dump.lower()
+    hits = 0
+    if "unknowns dominate" in low:
+        hits += 1
+    if "futures disagree" in low:
+        hits += 1
+    if "auth/irreversible unclear" in low or "authorization is the unknown" in low:
+        hits += 1
+    if "blank sheet" in low or "asked eva" in low:
+        hits += 1
+    if hits >= 2 and "eva skip" not in low:
+        return "eva-inner", "eva"
+    for needle in ("multi-step", "until done", "until-done", "model routing", "parallel re-entry"):
+        if needle in low:
+            return "cg-outer", "cg"
+    return "light", "else"
+
+
+def main():
+    dump = sys.stdin.read()
+    route, why = route_of(dump)
+    cards = dump.count("# Card")
+    if cards:
+        goal = "Review %d ordinary cards." % cards
+        success = "%d ordinary cards listed" % cards
+    elif dump.strip():
+        goal = "Review the dumped prompt."
+        success = "one rewritten goal"
+    else:
+        goal = "Name the dumped prompt."
+        success = "unknown"
+    fields = [
+        ("goal", goal),
+        ("dump_source", "paste"),
+        ("route", route),
+        ("why", why),
+        ("technique", TECHNIQUE[route]),
+        ("skills", "capture-sweep" if cards else "control-feeder"),
+        ("tools", "read_file"),
+        ("success", success),
+        ("verify", "unknown"),
+        ("non-goals", "open a control card"),
+        ("unknowns", "none" if dump.strip() else "empty dump"),
+        ("harness_gap", harness_gap(dump)),
+        ("next", NEXT[route]),
+    ]
+    lines = ["## Feed", "| Field | Value |", "|-------|--------|"]
+    for name, value in fields:
+        lines.append("| **%s** | %s |" % (name, value))
+    sys.stdout.write("\n".join(lines) + "\n")
+
+
+if __name__ == "__main__":
+    main()

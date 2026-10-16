@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Route one exact manifest when. playbook is skip only for route tstack."""
+
+import json
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+REPO = ROOT.parent
+MANIFEST = ROOT / "manifest.json"
+HOUSE = REPO / "pstack-map" / "skills" / "pstack-map" / "references" / "map.md"
+
+
+def playbook_names(text):
+    names = []
+    for line in text.splitlines():
+        if not line.startswith("|"):
+            continue
+        name = line.strip("|").split("|", 1)[0].strip()
+        if not name or name == "Playbook" or name.startswith("-"):
+            continue
+        names.append(name)
+    return names
+
+
+def named_playbook(situation, names):
+    for name in sorted(names, key=len, reverse=True):
+        if re.search(
+            r"(?<![A-Za-z0-9-])" + re.escape(name) + r"(?![A-Za-z0-9-])",
+            situation,
+        ):
+            return name
+    return None
+
+
+def hitl_for(situation):
+    low = situation.lower()
+    reasons = []
+    for needle, reason in (
+        ("secrets", "secrets"),
+        ("production", "production"),
+        ("irreversible git", "irreversible git"),
+        ("cv promote", "CV promote"),
+        ("unknown authorization", "unknown authorization"),
+    ):
+        if needle in low and reason not in reasons:
+            reasons.append(reason)
+    if re.search(r"\b(money|legal|health)\b", low):
+        reasons.append("money, legal, or health acts")
+    if not reasons:
+        return "none"
+    return "required (" + "; ".join(reasons) + ")"
+
+
+def main():
+    if len(sys.argv) != 2 or not sys.argv[1].strip():
+        sys.stderr.write("usage: route WHEN\n")
+        sys.exit(2)
+    situation = sys.argv[1]
+    manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    if "tstack" not in manifest.get("routes", {}):
+        sys.stderr.write("missing routes.tstack\n")
+        sys.exit(1)
+    skipped = []
+    match = None
+    for row in manifest["primary"]:
+        if row.get("when") == situation:
+            match = row
+            break
+        skipped.append("%s: when" % row["id"])
+    if match is None:
+        sys.stderr.write("missing when\n")
+        sys.exit(1)
+    route = match.get("route")
+    if route not in manifest["routes"]:
+        sys.stderr.write("missing route\n")
+        sys.exit(1)
+    load_id = match["id"]
+    if route == "tstack":
+        playbook = "skip"
+    elif route == "light":
+        playbook = named_playbook(situation, playbook_names(HOUSE.read_text(encoding="utf-8")))
+        if playbook is None:
+            playbook = "house"
+    else:
+        playbook = named_playbook(situation, playbook_names(HOUSE.read_text(encoding="utf-8")))
+        if playbook is None:
+            playbook = "house"
+    emit = {
+        "situation": situation,
+        "route": route,
+        "loads": [load_id],
+        "skips": skipped,
+        "playbook": playbook,
+        "hitl": hitl_for(situation),
+        "next": load_id,
+    }
+    sys.stdout.write(json.dumps(emit) + "\n")
+
+
+if __name__ == "__main__":
+    main()
