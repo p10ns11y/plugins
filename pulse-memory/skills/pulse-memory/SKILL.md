@@ -48,6 +48,10 @@ Skip: one-file typo with no claims about the past. Former name: `archive-not-mem
 
 **Workflow args (file modes):** `as_of` always (ISO-8601). `thinking_path` if mode is `both`/`thinking`. `harness_path` if `both`/`harness`. `next_action` recommended. Examples: [references/usecases.md](references/usecases.md).
 
+Claude Code: `/pulse-memory:mine-corrections` with `{since, paths}`.
+The script returns a proposed-rule list only. It does not edit files.
+A proposed rule stays only when it would have prevented a real miss.
+
 ---
 
 ## Always stamp (hint tags)
