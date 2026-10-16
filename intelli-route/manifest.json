@@ -1,6 +1,6 @@
 {
   "name": "intelli-route",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Routes one goal onto at most four existing skills. pstack when it is installed, otherwise the house row. Does not vendor bodies.",
   "credit": [
     "Lauren Tan / pstack MIT — playbooks and principles stay upstream",
@@ -18,7 +18,8 @@
   "routes": {
     "light": "one playbook, then its first bounded step",
     "card": "control-graph phase, budget, and verify command; execute only the current phase",
-    "empty": "eva-emptiness steps only; ActOrAsk stays Ask when authorization is unknown"
+    "empty": "eva-emptiness steps only; ActOrAsk stays Ask when authorization is unknown",
+    "tstack": "one focus block via tomato-loop; no repo playbook"
   },
   "primary": [
     {
@@ -30,6 +31,11 @@
       "id": "eva-emptiness",
       "when": "there is no map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog",
       "route": "empty"
+    },
+    {
+      "id": "tstack",
+      "when": "a life or mission focus block, and the ask is not repo work",
+      "route": "tstack"
     },
     {
       "id": "control-graph",
@@ -76,6 +82,14 @@
       "ref": "main",
       "path": "pstack-map/skills/pstack-map/SKILL.md",
       "then": "pstack-map/skills/pstack-map/references/map.md"
+    },
+    {
+      "id": "tstack",
+      "tier": "primary",
+      "when": "route tstack",
+      "repo": "https://github.com/p10ns11y/plugins",
+      "ref": "main",
+      "path": "tstack/skills/tomato-loop/SKILL.md"
     },
     {
       "id": "aihero-map",

@@ -60,6 +60,14 @@ rule="$(cat "$ROOT/cursor/rules/intelli-route.mdc")"
 echo "$rhai" | grep -Fq "$cc_when" && ok "workflow names concordance" || bad "workflow missing concordance when"
 echo "$manifest" | grep -Fq "$cc_when" && ok "manifest names concordance" || bad "manifest missing concordance when"
 echo "$rule" | grep -Fq "$cc_when" && ok "cursor rule names concordance" || bad "cursor rule missing concordance when"
+ts_when='a life or mission focus block, and the ask is not repo work'
+echo "$rhai" | grep -Fq "$ts_when" && ok "workflow names tstack" || bad "workflow missing tstack when"
+echo "$manifest" | grep -Fq "$ts_when" && ok "manifest names tstack" || bad "manifest missing tstack when"
+echo "$rule" | grep -Fq "$ts_when" && ok "cursor rule names tstack" || bad "cursor rule missing tstack when"
+echo "$rhai" | grep -Fq 'out.route == "tstack"' && ok "workflow allows out.route tstack" || bad "workflow missing out.route tstack"
+echo "$rhai" | grep -Fq 'route_arg == "tstack"' && ok "workflow allows route_arg tstack" || bad "workflow missing route_arg tstack"
+echo "$rhai" | grep -Fq 'primary = "tstack"' && ok "workflow primary tstack" || bad "workflow missing primary tstack"
+echo "$rhai" | grep -Fq 'if route == "tstack" { playbook = "skip"; }' && ok "tstack sets playbook skip" || bad "tstack route does not assign playbook skip"
 chain_when='a settled conversation needs a spec before code'
 lookback_when='session lookback'
 echo "$rhai" | grep -Fq "$chain_when" && ok "workflow names craft" || bad "workflow missing craft when"
@@ -104,8 +112,8 @@ errors = []
 def bad(msg):
     errors.append(msg)
 
-if plugin.get("version") != "0.3.0" or man.get("version") != "0.3.0":
-    bad("version is not 0.3.0")
+if plugin.get("version") != "0.4.0" or man.get("version") != "0.4.0":
+    bad("version is not 0.4.0")
 if man.get("max_loads") != 4:
     bad("max_loads is not 4")
 emit = man.get("emit")
@@ -113,7 +121,7 @@ for field in ("situation", "route", "loads", "skips", "playbook", "hitl", "next"
     if field not in emit:
         bad(f"emit missing {field}")
 routes = man.get("routes") or {}
-if set(routes) != {"light", "card", "empty"}:
+if set(routes) != {"light", "card", "empty", "tstack"}:
     bad(f"routes {sorted(routes)}")
 
 primary = man.get("primary") or []
@@ -124,7 +132,7 @@ for row in primary:
             bad("control-feeder must not own a route")
         continue
     by_route[row.get("route")] = row["id"]
-if by_route != {"empty": "eva-emptiness", "card": "control-graph", "light": "pstack-map"}:
+if by_route != {"empty": "eva-emptiness", "card": "control-graph", "light": "pstack-map", "tstack": "tstack"}:
     bad(f"primary routes {by_route}")
 
 loads = man.get("loads") or []

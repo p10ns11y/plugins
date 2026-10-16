@@ -72,6 +72,7 @@ let load_ids = [
     "eva-emptiness",
     "control-graph",
     "pstack-map",
+    "tstack",
     "aihero-map",
     "odysseus-navigator",
     "ai-optimization",
@@ -108,6 +109,7 @@ let load_urls = [
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/eva-emptiness/skills/eva-emptiness/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/control-graph/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/pstack-map/skills/pstack-map/SKILL.md",
+    "https://raw.githubusercontent.com/p10ns11y/plugins/main/tstack/skills/tomato-loop/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/plugins/main/aihero-map/skills/aihero-map/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/odysseus-navigator/SKILL.md",
     "https://raw.githubusercontent.com/p10ns11y/skills/master/ai-optimization/SKILL.md",
@@ -199,8 +201,9 @@ classify_prompt += "Goal JSON:\n";
 classify_prompt += json_encode(goal);
 classify_prompt += "\n\nPrimary, first match after a dump rewrite:\n";
 classify_prompt += "1. No map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog → route empty. loads include eva-emptiness.\n";
-classify_prompt += "2. Multi-step, until-done, or the same step is being redone → route card. loads include control-graph.\n";
-classify_prompt += "3. Otherwise → route light. loads include pstack-map.\n";
+classify_prompt += "2. a life or mission focus block, and the ask is not repo work → route tstack. loads include tstack.\n";
+classify_prompt += "3. Multi-step, until-done, or the same step is being redone → route card. loads include control-graph.\n";
+classify_prompt += "4. Otherwise → route light. loads include pstack-map.\n";
 classify_prompt += "If the goal is a paste or dump with no single ask, set feeder true and include control-feeder. Otherwise feeder false.\n";
 classify_prompt += "Add a signal id only when the goal shows that signal. At most four loads total.\n";
 classify_prompt += "Signals: aihero-map (an alignment name, which stack wins on an overlap, or an upstream skill page); odysseus-navigator (plan, architecture, review, or an interview that starts overbuilding); ai-optimization (context already large); ";
@@ -244,14 +247,14 @@ if cls == () || !cls.success {
 
 let route = "light";
 if out != () && type_of(out.route) == "string" {
-    if out.route == "light" || out.route == "card" || out.route == "empty" {
+    if out.route == "light" || out.route == "card" || out.route == "empty" || out.route == "tstack" {
         route = out.route;
     } else {
         log("dropped unknown route");
     }
 }
 if type_of(route_arg) == "string" {
-    if route_arg == "light" || route_arg == "card" || route_arg == "empty" {
+    if route_arg == "light" || route_arg == "card" || route_arg == "empty" || route_arg == "tstack" {
         route = route_arg;
         log("route taken from args");
     } else if route_arg != "" {
@@ -267,6 +270,7 @@ let playbook = "skip";
 if out != () {
     playbook = text_or(out.playbook, "skip");
 }
+if route == "tstack" { playbook = "skip"; }
 let hitl = "none";
 if out != () {
     hitl = text_or(out.hitl, "none");
@@ -294,6 +298,8 @@ if route == "card" {
     primary = "control-graph";
 } else if route == "empty" {
     primary = "eva-emptiness";
+} else if route == "tstack" {
+    primary = "tstack";
 }
 
 let kept = [];
@@ -352,6 +358,7 @@ act_prompt += "\nURLs:\n";
 act_prompt += url_block;
 act_prompt += "\nIf hitl is not none: do not edit, push, spend, or call a tool that changes the machine. next is the human ask.\n";
 act_prompt += "If route is empty: write knowns, unknowns, one idk, disprove_with, and ActOrAsk. Unknown authorization stays Ask. No --always-approve and no --yolo. verify_cmd is empty.\n";
+act_prompt += "If route is tstack: follow tomato-loop for one block and one Do. Do not start a repo playbook. Send, pay, or sign stays hitl.\n";
 act_prompt += "If route is light: follow that one playbook. pstack poteto-mode if it is installed, otherwise the house row in pstack-map/skills/pstack-map/references/map.md. Take the first bounded step. Reversible edits may proceed.\n";
 act_prompt += "If split-machine is in the URL list, emit its Split card before the engineering step. Do not run a quantum device or a dense training job from this workflow. The card's next step is the action.\n";
 act_prompt += "If trust-stack is in the URL list, emit its Trust card. Verification is a command you run. Do not merge or push. A repeated bad pattern is deleted and moved to an earlier layer, not explained in a comment.\n";

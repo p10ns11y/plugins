@@ -26,6 +26,6 @@ Open work goes in with `premflow task add <text>`; closing it is `premflow task 
 - Pick: **mission-map** ranks by impact; the top repo Do goes to **pstack-map** for handoff.
 - Area reviews: one area per block on a schedule; **michelin-kitchen** keeps the prep.
 - Long work: **steer-log** time-boxes it; **steer-accel** records the earn. Over the box, steer or stop.
-- Merge check: **concordance** proceeds only when tests are green, a review came from a different model family, and no freeze is in force. Otherwise `hold`.
+- Merge check: `tstack/bin/merge-check --repo <dir> --tests-exit <n> --writer-family <token> --reviewer-family <token>`. Proceed only when the exit is 0, the reviewer token is a different model family from the writer token, and `<dir>/FREEZE` is absent. Otherwise hold. Concordance does not run this check.
 - Weekly pruning: drop unused skills. Keep the ones the owner still runs.
 - Invariants go on the earliest layer: **trust-stack**. SI owns the write: **si**.

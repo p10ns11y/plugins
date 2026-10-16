@@ -14,8 +14,9 @@ Read `manifest.json` in this plugin. It is the contract. Do not open every path 
 A paste or dump with no single ask goes through `control-feeder` first. Then the first match wins:
 
 1. No map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog → route `empty`. Load `eva-emptiness`.
-2. Multi-step, until-done, or the same step is being redone → route `card`. Load `control-graph`.
-3. Otherwise → route `light`. Load `pstack-map`, then one installed pstack playbook or the house row in `pstack-map/skills/pstack-map/references/map.md`.
+2. a life or mission focus block, and the ask is not repo work → route `tstack`. Load `tstack/skills/tomato-loop/SKILL.md`.
+3. Multi-step, until-done, or the same step is being redone → route `card`. Load `control-graph`.
+4. Otherwise → route `light`. Load `pstack-map`, then one installed pstack playbook or the house row in `pstack-map/skills/pstack-map/references/map.md`.
 
 Add a signal load only when its `when` matches, including `craft` when a settled conversation needs a spec before code. Stop at four loads, including the primary. An alignment name loads `aihero-map`. Fetch https://www.aihero.dev/skills.md. The Claude plugin is Claude Code only. `clt-dual-load` is a host rule. Do not paste it and do not count it.
 
@@ -30,7 +31,7 @@ Write this table before any edit:
 | Field | Value |
 |-------|--------|
 | **situation** | |
-| **route** | light \| card \| empty |
+| **route** | light \| card \| empty \| tstack |
 | **loads** | |
 | **skips** | ids considered and dropped, with a reason |
 | **playbook** | name or skip |
@@ -43,6 +44,7 @@ Then do only `next`:
 - `light` — that playbook's first bounded step. Reversible edits may proceed. Run a real check if you changed files.
 - `card` — phase, budget, verify command, and only the current phase.
 - `empty` — knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask. Do not pass `--always-approve` or `--yolo`.
+- `tstack` — one tomato block. Do not start a repo playbook.
 
 Roles are `fast`, `explore`, `coding`, `deep`, `review` on the host model. Review uses a fresh context.
 

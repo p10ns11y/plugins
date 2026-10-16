@@ -1,6 +1,6 @@
 {
   "name": "intelli-route",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Route one goal onto at most four skills. pstack (Lauren Tan, MIT) when it is installed, otherwise the house row. Does not copy skill bodies or pstack.",
   "author": {
     "name": "p10ns11y"
@@ -14,6 +14,7 @@
     "lauren-tan",
     "control-graph",
     "eva-emptiness",
-    "pstack-map"
+    "pstack-map",
+    "tstack"
   ]
 }

@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo=""
+tests_exit=""
+writer=""
+reviewer=""
+seen_repo=0
+seen_tests=0
+seen_writer=0
+seen_reviewer=0
+
+hold_args() {
+  printf '%s\n' 'hold: args'
+  exit 1
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --repo)
+      [[ $# -ge 2 ]] || hold_args
+      repo="$2"
+      seen_repo=1
+      shift 2
+      ;;
+    --tests-exit)
+      [[ $# -ge 2 ]] || hold_args
+      tests_exit="$2"
+      seen_tests=1
+      shift 2
+      ;;
+    --writer-family)
+      [[ $# -ge 2 ]] || hold_args
+      writer="$2"
+      seen_writer=1
+      shift 2
+      ;;
+    --reviewer-family)
+      [[ $# -ge 2 ]] || hold_args
+      reviewer="$2"
+      seen_reviewer=1
+      shift 2
+      ;;
+    *)
+      hold_args
+      ;;
+  esac
+done
+
+if [[ "$seen_repo" -ne 1 || "$seen_tests" -ne 1 || "$seen_writer" -ne 1 || "$seen_reviewer" -ne 1 ]]; then
+  hold_args
+fi
+
+if [[ "$tests_exit" != "0" ]]; then
+  printf '%s\n' 'hold: tests'
+  exit 1
+fi
+
+trim() {
+  local s=$1
+  s=${s#"${s%%[![:space:]]*}"}
+  s=${s%"${s##*[![:space:]]}"}
+  printf '%s' "$s"
+}
+
+writer="$(trim "$writer")"
+reviewer="$(trim "$reviewer")"
+if [[ -z "$writer" || -z "$reviewer" || "$writer" == "$reviewer" ]]; then
+  printf '%s\n' 'hold: review'
+  exit 1
+fi
+
+if [[ -f "$repo/FREEZE" ]]; then
+  printf '%s\n' 'hold: freeze'
+  exit 1
+fi
+
+exit 0

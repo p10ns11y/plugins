@@ -179,7 +179,7 @@ See [aihero-map/README.md](aihero-map/README.md) and [aihero-map/NOTICE.md](aihe
 
 ## intelli-route
 
-Routes one goal onto at most four skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills), except `eva-emptiness` and the `si` profiles, which load from this repo because the skills-repo entries are sibling symlinks. This plugin does not copy those bodies, and it does not vendor pstack.
+Routes one goal onto at most four skills. Skill bodies stay in [p10ns11y/skills](https://github.com/p10ns11y/skills), except `eva-emptiness` and the `si` profiles, which load from this repo because the skills-repo entries are sibling symlinks. This plugin does not copy those bodies, and it does not vendor pstack. A life or mission focus block whose ask is not repo work takes route `tstack` and loads `tstack/skills/tomato-loop/SKILL.md`.
 
 ```bash
 grok plugin install ./intelli-route --trust
