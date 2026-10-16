@@ -11,7 +11,7 @@ description: >
 
 # pulse-memory
 
-> **Load rule:** This file is the **filter plane**. Expand [references/usecases.md](references/usecases.md) for modes / `thinking_path` / `harness_path` / `as_of`. Expand [references/admissions.md](references/admissions.md) only if a tag or conflict rule is still ambiguous. Store: [references/store.md](references/store.md). Do not paste source prose.
+> **Load rule:** This file is the **filter plane**. Expand [references/usecases.md](references/usecases.md) for modes / `thinking_path` / `harness_path` / `as_of`. Expand [references/admissions.md](references/admissions.md) only if a tag or conflict rule is still ambiguous. Store: [references/store.md](references/store.md). Open work: [references/open-work.md](references/open-work.md) — read before a new request. Do not paste source prose.
 
 ```text
 Archive  : residue (logs, tickets, embeddings, full transcripts)
