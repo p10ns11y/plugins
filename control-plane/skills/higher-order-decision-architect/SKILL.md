@@ -14,7 +14,7 @@ description: >-
 Port copy. Canonical file remains in https://github.com/p10ns11y/skills on master.
 
 > **Load rule:** Formal sequence is SoT. Thrive depth + provenance stay below; expand only if a step is unclear. Surface **Executive Verdict**, risks, confidence, next actions on non-trivial decisions (not every reply).  
-> **CLT:** [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc) — keep human-facing verdicts short (extraneous ↓) while preserving judgment work (germane); do not skip the sequence to “save tokens.”
+> **CLT:** [../rules/clt-dual-load.mdc](../../cursor/rules/clt-dual-load.mdc) — keep human-facing verdicts short (extraneous ↓) while preserving judgment work (germane); do not skip the sequence to “save tokens.”
 
 ```text
 // Material decision ≔ architecture | deps | public API | security | data contracts | multi-module | hard-to-revert
@@ -51,7 +51,7 @@ Run this **after** steps 3–7 so pessimism does not get the last word. Ground o
 
 ### Mandatory thrive outputs (internal or surfaced)
 
-1. **Ten-year thrive picture** — One sentence north star: kernel (durable) + bridge/product (evolving) + boundary. Mermaid or table when in roadmap docs ([stellar-spacemap](../stellar-spacemap/SKILL.md) §0b).
+1. **Ten-year thrive picture** — One sentence north star: kernel (durable) + bridge/product (evolving) + boundary. Mermaid or table when in roadmap docs ([stellar-spacemap] §0b).
 2. **Trajectory forces** — Table: Force | P(horizon) | Effect | **Response** | Confidence. Include at least one **tailwind** (e.g. POSIX shell, manifest-first agents, contract verification).
 3. **Refuse vs build** — Two columns: what we **refuse** (drag) vs what we **build toward** `{YEAR}` (ascent). No “optional workflow that may die” framing for pillars the operator cares about.
 4. **Iron-peak callout** — Which abstraction compounds for a decade? (e.g. `path.contract`, PLUGIN boundary, evidence schema.) Mark positive 3rd-order outcomes explicitly.
@@ -65,7 +65,7 @@ Applied in `~/.config/shell`:
 - `arch-design/coming-next.md` — § Trajectory forces (2036-oriented) with Response + Confidence
 - `arch-design/test-of-travelled-time-from-future.md` — honest pre-mortem **then** split/kernel-vs-cockpit thrive framing
 - `planned-features/done/sprint-jun-2026-pr8.md` — Ten-year thrive picture mermaid (kernel2036 → bridge2036 → launch)
-- [stellar-spacemap](../stellar-spacemap/SKILL.md) — §0b thrive picture, §5 trajectory forces, §6 guardrails
+- [stellar-spacemap] — §0b thrive picture, §5 trajectory forces, §6 guardrails
 
 ---
 
@@ -119,11 +119,11 @@ Applied in `~/.config/shell`:
 
 - User asks for tradeoffs, architecture choice, “what could go wrong”, pre-mortem, second-order effects, or thrive/2036 vision.
 - Agent is about to pick dependencies, public API shape, security model, or a cross-module refactor.
-- Pair with domain skills ([bdd-strategizer](../bdd-strategizer/SKILL.md) for test-first decomposition; [architecture-synthesis](https://github.com/p10ns11y/skills/blob/master/architecture-synthesis/SKILL.md) for long-term surplus; [stellar-spacemap](../stellar-spacemap/SKILL.md) for §0b/§5/§6 in backlog docs; [ai-optimization](../ai-optimization/SKILL.md) for evidence-first scouting; [odysseus-navigator](../odysseus-navigator/SKILL.md) for hubris labels — HODA still owns this sequence).
+- Pair with domain skills ([bdd-strategizer] for test-first decomposition; [architecture-synthesis](https://github.com/p10ns11y/skills/blob/master/architecture-synthesis/SKILL.md) for long-term surplus; [stellar-spacemap] for §0b/§5/§6 in backlog docs; [ai-optimization](../../../context-ignite/skills/ai-optimization/SKILL.md) for evidence-first scouting; [odysseus-navigator](../../../odysseus-navigator/skills/odysseus-navigator/SKILL.md) for hubris labels — HODA still owns this sequence).
 - **Shellyxz shell:** load `arch-design/overlays/shell-kernel-decision-hooks.md` before kernel/plugin/PATH/ontology splits; pair with `.agents/ontology/GRAPH.md` for boundary context.
 
 ## Cursor rule (optional)
 
-Symlink [rules/higher-order-decision-architect.mdc](../rules/higher-order-decision-architect.mdc) into `.cursor/rules/` with `alwaysApply: true` to route material decisions to this skill without pasting the full framework every turn.
+Symlink [rules/higher-order-decision-architect.mdc](../../cursor/rules/higher-order-decision-architect.mdc) into `.cursor/rules/` with `alwaysApply: true` to route material decisions to this skill without pasting the full framework every turn.
 
 **Example provenance:** [Thepulimaangani](https://github.com/p10ns11y/thepulimaangani) (Tamil prosody / WASM parser decisions); [shellyxz shell](https://github.com/p10ns11y/shellyxz.sh) (2036 thrive ascent + trajectory forces).

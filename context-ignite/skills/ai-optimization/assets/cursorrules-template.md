@@ -1,6 +1,6 @@
 # `.cursor/rules` — Context Sage Edition (fission-only fallback)
 
-Copy to **`.cursor/rules/ai-optimization.mdc`** (`alwaysApply: false`). For fission + fusion together, also install [fusion-sage](../../fusion-sage/SKILL.md) and optionally set a fusion router rule with `alwaysApply: true`.
+Copy to **`.cursor/rules/ai-optimization.mdc`** (`alwaysApply: false`). For fission + fusion together, also install [fusion-sage](../../architecture-synthesis/SKILL.md) and optionally set a fusion router rule with `alwaysApply: true`.
 
 In repos that keep portable rules under `.agents/rules/`, mirror and symlink:
 
@@ -58,4 +58,4 @@ This used ~Xk tokens. Expand any symbol with "expand <name>".
 ```
 ```
 
-**Project overlay:** add a TypeScript bullet pointing at your repo's overlay or [examples/overlays/nextjs-portfolio-typescript.md](../../examples/overlays/nextjs-portfolio-typescript.md).
+**Project overlay:** add a TypeScript bullet pointing at your repo's overlay or [examples/overlays/nextjs-portfolio-typescript.md].

@@ -43,17 +43,24 @@ do
   fi
 done
 
-# Shell fallback
-INC="${HERE}/eva-tether-shell.inc"
-if [ ! -f "$INC" ]; then
-  INC="${ROOT}/bin/eva-tether-shell.inc"
-fi
-if [ -f "$INC" ]; then
+# Shell fallback. A candidate counts only when it is readable.
+INC=""
+for _inc in \
+  "${HERE}/eva-tether-shell.inc" \
+  "${ROOT}/bin/eva-tether-shell.inc"
+do
+  if [ -r "$_inc" ]; then
+    INC="$_inc"
+    break
+  fi
+done
+if [ -n "$INC" ]; then
   # shellcheck source=eva-tether-shell.inc
   . "$INC"
   eva_tether_shell_main
   exit 0
 fi
 
-# Last resort: allow (fail-open) if include missing
+# Unread policy: deny JSON. A crash with no JSON still allows.
+printf '%s\n' '{"decision":"deny","reason":"eva-emptiness tether: policy unreadable"}'
 exit 0

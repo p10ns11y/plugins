@@ -1,6 +1,6 @@
 # SkillEvaluator pass — mission-map — 2026-09-08
 
-Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../mission-map/skills/mission-map/). The runner is [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator).
+Companion to `p10ns11y/skills` `docs/eval/2026-09-08/`. Same wave evaluated plugin skill [`mission-map`](../../../mission-map/skills/mission-map/). The runner is [NVIDIA SkillEvaluator](https://docs.nvidia.com/skills/skillevaluator/). Source is [NVIDIA/SkillEvaluator](https://github.com/NVIDIA/SkillEvaluator).
 
 ## Results
 
@@ -26,7 +26,7 @@ Two paths. Inspect the committed artifacts with no key. Rerun the live checks if
 
 1. Open [`artifacts/2026-09-08-t2/mission-map-t2-validate.txt`](artifacts/2026-09-08-t2/mission-map-t2-validate.txt).
 2. Confirm the table lists 12 PASS rows and `all 2 tiers passed`.
-3. Open [`mission-map/skills/mission-map/evals/evals.json`](../../mission-map/skills/mission-map/evals/evals.json).
+3. Open [`mission-map/skills/mission-map/evals/evals.json`](../../../mission-map/skills/mission-map/evals/evals.json).
 4. Confirm four case ids. `mission-map-explicit-replan`, `mission-map-implicit-deadline`, `mission-map-contextual-empty-g`, and `mission-map-neg-lint`.
 
 ### Rerun Tier 1 and Tier 2

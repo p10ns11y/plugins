@@ -12,7 +12,7 @@ description: >-
 
 Port copy. Canonical file remains in https://github.com/p10ns11y/skills on master.
 
-> **Load rule:** This file owns **rewrite + route + Feed emit**. Outer phases live in [control-graph](../control-graph/SKILL.md). EVA Inner lives in [eva-emptiness](../eva-emptiness/SKILL.md). Triage modes live in [agent-orchestrator](../agent-orchestrator/SKILL.md). Do **not** paste Card, EVA DAG, or orchestrator checklists here.
+> **Load rule:** This file owns **rewrite + route + Feed emit**. Outer phases live in [control-graph](../control-graph/SKILL.md). EVA Inner lives in [eva-emptiness](../../../eva-emptiness/skills/eva-emptiness/SKILL.md). Triage modes live in [agent-orchestrator]. Do **not** paste Card, EVA DAG, or orchestrator checklists here.
 
 ```text
 // Signature
@@ -70,7 +70,7 @@ Keep: named paths, verify commands, constraints, explicit non-goals.
 | If | Route | Next owner |
 |----|-------|------------|
 | Missing capability: perms, `AGENTS.md` rule, MCP `command` missing, output 8192 | note `harness_gap`; continue routing the *work* | harness first, then table below |
-| [agent-orchestrator](../agent-orchestrator/SKILL.md) **single_shot** or **light** | `light` | orchestrator / implement — **no Card** |
+| [agent-orchestrator] **single_shot** or **light** | `light` | orchestrator / implement — **no Card** |
 | EVA **Use** column: ≥2 of {unknowns dominate; futures disagree at PLAN; auth/irreversible unclear; user asked EVA/blank sheet} **and** no EVA **Skip** | `eva-inner` | load **control-graph** then **eva-emptiness**; Card `inner_mode=eva` |
 | CG activate: multi-step · thrash / “until done” · model routing · parallel re-entry | `cg-outer` | load **control-graph**; open Card `inner_mode=standard` |
 | else | `light` | orchestrator **light** |
@@ -128,7 +128,7 @@ Print the Feed block. Then load **one** next owner. If `cg-outer` or `eva-inner`
 
 ## Related
 
-Skills: [control-graph](../control-graph/SKILL.md) · [eva-emptiness](../eva-emptiness/SKILL.md) · [odysseus-navigator](../odysseus-navigator/SKILL.md) (judgment after Feed; hooks only) · [agent-orchestrator](../agent-orchestrator/SKILL.md) · [grok-host-prep](../grok-host-prep/SKILL.md)  
+Skills: [control-graph](../control-graph/SKILL.md) · [eva-emptiness](../../../eva-emptiness/skills/eva-emptiness/SKILL.md) · [odysseus-navigator](../../../odysseus-navigator/skills/odysseus-navigator/SKILL.md) (judgment after Feed; hooks only) · [agent-orchestrator] · [grok-host-prep]  
 Plugin: `eva-emptiness` (Grok marketplace / `../plugins/eva-emptiness`) — Inner only; never paste into this file.
 
 Notes in grok-build `intelli-arch-designs/` (why, not copies):

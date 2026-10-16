@@ -1,0 +1,25 @@
+#!/bin/sh
+# Test stub for premflow. Not placed on PATH. The real CLI stays optional.
+set -eu
+
+cmd=${1:-}
+shift || true
+
+case "$cmd" in
+  pomo)
+    printf '%s\n' "[POMO]"
+    ;;
+  task)
+    sub=${1:-}
+    case "$sub" in
+      add|done) ;;
+      *) exit 1 ;;
+    esac
+    ;;
+  win|note|review)
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+exit 0

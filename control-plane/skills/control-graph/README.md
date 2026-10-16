@@ -26,9 +26,9 @@ node control-graph/scripts/validate-skill.mjs
 ```
 
 1. On multi-step work, open a **Control Card** from [references/control-card.md](references/control-card.md).
-2. Compose with [agent-orchestrator](../agent-orchestrator/SKILL.md) (triage/workers), not instead of it.
-3. Optional Cursor discovery rule: [../rules/control-graph.mdc](../rules/control-graph.mdc).
-4. Always-on CLT pre-filter when installed: [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc).
+2. Compose with [agent-orchestrator] (triage/workers), not instead of it.
+3. Optional Cursor discovery rule: [../rules/control-graph.mdc](../../cursor/rules/control-graph.mdc).
+4. Always-on CLT pre-filter when installed: [../rules/clt-dual-load.mdc](../../cursor/rules/clt-dual-load.mdc).
 
 ## Layout
 
@@ -39,8 +39,8 @@ node control-graph/scripts/validate-skill.mjs
 | [references/clt-load-balance.md](references/clt-load-balance.md) | CLT dual-actor middle ground — load only for strain/load decisions |
 | [references/control-card.md](references/control-card.md) | Session control surface (`load_diag` optional) |
 | [scripts/validate-skill.mjs](scripts/validate-skill.mjs) | Structural contract check |
-| [../rules/control-graph.mdc](../rules/control-graph.mdc) | Optional Cursor discovery rule |
-| [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc) | On-the-fly A8 DualLoad pre-filter (`alwaysApply: true`) |
+| [../rules/control-graph.mdc](../../cursor/rules/control-graph.mdc) | Optional Cursor discovery rule |
+| [../rules/clt-dual-load.mdc](../../cursor/rules/clt-dual-load.mdc) | On-the-fly A8 DualLoad pre-filter (`alwaysApply: true`) |
 
 ## Is / is not
 
@@ -52,10 +52,10 @@ node control-graph/scripts/validate-skill.mjs
 
 ## Related
 
-- [clt-dual-load.mdc](../rules/clt-dual-load.mdc) — library-wide DualLoad injection; domain skills inherit via this rule (no paste-duplication)  
-- [odysseus-navigator](../odysseus-navigator/SKILL.md) — judgment plane (hubris / Ithaca); CG still owns Outer  
-- [agent-orchestrator](../agent-orchestrator/SKILL.md)  
-- [subagent-delegation](../subagent-delegation/SKILL.md)  
-- [fusion-sage](../fusion-sage/SKILL.md) / [ai-optimization](../ai-optimization/SKILL.md)  
-- [concurrent-cli-agents](../concurrent-cli-agents/SKILL.md) + [git-worktrees](../git-worktrees/SKILL.md)  
-- [formal/AppGenMathPhyLang.kernel.md](../formal/AppGenMathPhyLang.kernel.md)  
+- [clt-dual-load.mdc](../../cursor/rules/clt-dual-load.mdc) — library-wide DualLoad injection; domain skills inherit via this rule (no paste-duplication)  
+- [odysseus-navigator](../../../odysseus-navigator/skills/odysseus-navigator/SKILL.md) — judgment plane (hubris / Ithaca); CG still owns Outer  
+- [agent-orchestrator]  
+- [subagent-delegation]  
+- [fusion-sage](../../../context-ignite/skills/architecture-synthesis/SKILL.md) / [ai-optimization](../../../context-ignite/skills/ai-optimization/SKILL.md)  
+- [concurrent-cli-agents] + [git-worktrees]  
+- [formal/AppGenMathPhyLang.kernel.md]  

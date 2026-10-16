@@ -106,6 +106,53 @@ assert_contains "$out" '"decision":"ask"' "pretool git push ask"
 out=$(printf '%s' '{"command":"git push"}' | "$CUR")
 assert_contains "$out" 'ask' "cursor shell git push ask"
 
+echo "=== unread policy ==="
+if [ "$(id -u)" -eq 0 ]; then
+  echo "FAIL unread policy case needs a non-root user"
+  fail=1
+else
+  pol_tmp=$(mktemp -d "${TMPDIR:-/tmp}/eva-unread.XXXXXX")
+  pol_home=$(mktemp -d "${TMPDIR:-/tmp}/eva-unread-home.XXXXXX")
+  cp "$PRE" "$pol_tmp/eva-tether-pretool.sh"
+  cp "$CUR" "$pol_tmp/eva-tether-shell.sh"
+  chmod +x "$pol_tmp/eva-tether-pretool.sh" "$pol_tmp/eva-tether-shell.sh"
+
+  unread_case() {
+    _script=$1
+    _input=$2
+    _needle=$3
+    _label=$4
+    _out=""
+    _status=0
+    set +e
+    _out=$(
+      unset CLAUDE_PLUGIN_ROOT CURSOR_PLUGIN_ROOT GROK_PLUGIN_ROOT
+      HOME="$pol_home"
+      export HOME
+      printf '%s' "$_input" | "$_script"
+    )
+    _status=$?
+    set -e
+    if [ "$_status" -ne 0 ]; then
+      echo "FAIL $_label status $_status"
+      echo "  got: $_out"
+      fail=1
+      return 0
+    fi
+    assert_contains "$_out" "$_needle" "$_label"
+    assert_contains "$_out" "policy unreadable" "$_label reason"
+  }
+
+  unread_case "$pol_tmp/eva-tether-pretool.sh" '{"toolInput":"echo hi"}' 'decision":"deny"' "grok no policy deny"
+  unread_case "$pol_tmp/eva-tether-shell.sh" '{"command":"echo hi"}' 'permission":"deny"' "cursor no policy deny"
+
+  cp "$ROOT/bin/eva-tether-shell.inc" "$pol_tmp/eva-tether-shell.inc"
+  chmod 000 "$pol_tmp/eva-tether-shell.inc"
+  unread_case "$pol_tmp/eva-tether-pretool.sh" '{"toolInput":"echo hi"}' 'decision":"deny"' "grok unreadable policy deny"
+  unread_case "$pol_tmp/eva-tether-shell.sh" '{"command":"echo hi"}' 'permission":"deny"' "cursor unreadable policy deny"
+  rm -rf "$pol_tmp" "$pol_home"
+fi
+
 echo "=== build status (no consent) ==="
 if "$ROOT/bin/eva-tether-build" --status >/dev/null; then
   echo "ok build status"

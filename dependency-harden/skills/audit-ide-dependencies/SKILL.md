@@ -162,7 +162,7 @@ Also state **project repo** audit result if run in the same session.
 
 ## Related skills
 
-- [project-editor-profile](../project-editor-profile/SKILL.md) — per-repo extension recommendations and unwanted list to limit editor attack surface
+- [project-editor-profile] — per-repo extension recommendations and unwanted list to limit editor attack surface
 - [fix-dependency-security](../fix-dependency-security/SKILL.md) — project repo CVEs, SFW, `pnpm-workspace.yaml` policy
 - [audit-allow-builds](../audit-allow-builds/SKILL.md) — lifecycle scripts when installing in a plugin tree
 - [upgrade-packages](../upgrade-packages/SKILL.md) — upgrading deps in repos you control (not Cursor cache)

@@ -1,6 +1,6 @@
 # Devcontainer templates
 
-Starter configs live in [examples/devcontainers/](../../examples/devcontainers/) — copy into `.devcontainer/` when applying [SKILL.md](../SKILL.md).
+Starter configs live in [examples/devcontainers/] — copy into `.devcontainer/` when applying [SKILL.md](../SKILL.md).
 
 | Example | Target |
 |---------|--------|
@@ -14,4 +14,4 @@ Before commit:
 3. Match `corepack prepare pnpm@…` to `package.json` → `packageManager`.
 4. Run `pnpm install --frozen-lockfile` inside the built container.
 
-See [examples/README.md](../../examples/README.md) for project provenance.
+See [examples/README.md] for project provenance.
