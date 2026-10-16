@@ -5,7 +5,7 @@ argument-hint: goal or dumped prompt
 
 # /intelli-route
 
-Read `manifest.json` in this plugin. It is the contract. Do not open every path in it.
+Read `manifest.json` in this plugin. It is the contract. Do not open every path in it. An exact `when` is `bin/route`. `playbook` is `skip` only on route `tstack`. Route `light` follows a playbook or the house row.
 
 `$ARGUMENTS` is the goal. If it is empty, use the current turn.
 

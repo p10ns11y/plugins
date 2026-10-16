@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Emit one concordance card. proceed only when the labels match and p_dm >= tau.
+set -euo pipefail
+
+label_dm=""
+label_llm=""
+p_dm=""
+tau=""
+log=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --label-dm) label_dm=${2:-}; shift 2 ;;
+    --label-llm) label_llm=${2:-}; shift 2 ;;
+    --p-dm) p_dm=${2:-}; shift 2 ;;
+    --tau) tau=${2:-}; shift 2 ;;
+    --log) log=${2:-}; shift 2 ;;
+    *)
+      echo "usage: concordance --label-dm L --label-llm L --p-dm N --tau N [--log PATH]" >&2
+      exit 2
+      ;;
+  esac
+done
+
+agree=no
+if [[ -n "$label_dm" && "$label_dm" == "$label_llm" ]]; then
+  agree=yes
+fi
+
+high=no
+if [[ -n "$p_dm" && -n "$tau" ]]; then
+  high=$(awk -v p="$p_dm" -v t="$tau" 'BEGIN {
+    num = "^[0-9]+([.][0-9]+)?$"
+    if (p ~ num && t ~ num && (p + 0) >= (t + 0)) print "yes"
+    else print "no"
+  }')
+fi
+
+act=hold
+if [[ "$agree" == yes && "$high" == yes ]]; then
+  act=proceed
+fi
+
+printf '%s\n' "## Concordance"
+printf '%s\n' "| Field | Value |"
+printf '%s\n' "|-------|--------|"
+printf '| **label_dm** | %s |\n' "$label_dm"
+printf '| **label_llm** | %s |\n' "$label_llm"
+printf '| **agree** | %s |\n' "$agree"
+printf '| **p_dm** | %s |\n' "$p_dm"
+printf '%s\n' "| **kappa_window** | |"
+printf '| **act** | %s |\n' "$act"
+
+if [[ -n "$log" ]]; then
+  printf 'label_dm=%s label_llm=%s p_dm=%s tau=%s agree=%s act=%s\n' \
+    "$label_dm" "$label_llm" "$p_dm" "$tau" "$agree" "$act" >>"$log"
+fi

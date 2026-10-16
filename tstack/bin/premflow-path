@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Resolve premflow. On a miss, print the repo hint and exit 1.
+set -euo pipefail
+
+if command -v premflow >/dev/null 2>&1; then
+  command -v premflow
+  exit 0
+fi
+
+printf '%s\n' "premflow/README.md"
+exit 1

@@ -100,3 +100,18 @@ jobs:
           fi
           printf '%s\n' "$proof_out" | grep -q 'ALL PROOFS CHECK'
           ./craft/test/check-proof.sh --self
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067
+        with:
+          toolchain: stable
+      - name: Build mission-map-graph
+        run: cargo build --manifest-path mission-map/rust/Cargo.toml
+      - name: Run tstack end-to-end flows
+        run: bash tstack/test/test-e2e.sh

@@ -11,7 +11,7 @@ Corroborates one closed decision, then emits a card.
 | `kappa_window` | Optional Cohen's kappa over recent cases. Empty when no window was supplied. |
 | `act` | `proceed` or `hold`. |
 
-proceed only when agree is yes and p_dm >= tau. `tau` is the caller's number. `hold` is the odd case, and intelli-route routes the hold. This plugin does not pick the route.
+proceed only when agree is yes and p_dm >= tau. `tau` is the caller's number. `hold` is the odd case, and intelli-route routes the hold. This plugin does not pick the route. `bin/concordance` emits the card and appends the log line when a path is named.
 
 intelli-route loads this skill when the goal is a closed decision that must be corroborated. split-machine still places the machine. trust-stack still picks the layer and may point at this check.
 

@@ -16,6 +16,7 @@ ENERGIES = ("high", "mid", "low")
 STATUSES = ("user-stated", "tool-verified", "inferred", "unknown")
 KINDS = ("data", "context", "fact", "memory")
 LOCKS = ("open", "locked")
+FIGURE_WORDS = ("money", "health", "family")
 
 
 class Exit(Exception):
@@ -65,6 +66,10 @@ def check_id(kind, value):
 def no_at(field, value):
     if "@" in value:
         reject(f"@ in {field}")
+
+
+def figure_word(text):
+    return any(word in FIGURE_WORDS for word in text.lower().split())
 
 
 def parse_real(name, raw):
@@ -331,6 +336,8 @@ def cmd_map_put(flags):
     g = flags["g"]
     check_id("map", map_id)
     no_at("g", g)
+    if not g.strip():
+        reject("Ask: name a checkable arrival.")
     has_effort = "effort-cap" in flags
     effort = parse_real("effort-cap", flags["effort-cap"]) if has_effort else None
     conn = connect()
@@ -608,6 +615,8 @@ def cmd_harvest_add(flags):
         reject("empty evidence")
     if not result.strip():
         reject("empty result")
+    if figure_word(result):
+        reject("figure in result")
     no_at("evidence", evidence)
     no_at("result", result)
     conn = connect()
@@ -651,6 +660,32 @@ def cmd_harvest_list(flags):
             (map_id, stage_id),
         ).fetchall()
     ok({"rows": [{name: row[name] for name in cols} for row in rows]})
+
+
+def cmd_ask_admit(flags):
+    need(flags, "ask")
+    only(flags, "ask")
+    ask = flags["ask"]
+    if not ask.strip():
+        reject("empty ask")
+    no_at("ask", ask)
+    conn = connect()
+    existing = conn.execute(
+        "SELECT 1 FROM archive_events WHERE source=? AND payload=?",
+        ("tstack/ask", ask),
+    ).fetchone()
+    if existing is not None:
+        reject("repeated ask")
+
+    def work():
+        cur = conn.execute(
+            """INSERT INTO archive_events (ts, source, payload, correlation_id)
+               VALUES (?, 'tstack/ask', ?, NULL)""",
+            (now(), ask),
+        )
+        return {"id": cur.lastrowid}
+
+    ok(in_tx(conn, work))
 
 
 def cmd_pulse_archive(flags):
@@ -805,6 +840,7 @@ COMMANDS = {
     "block close": cmd_block_close,
     "harvest add": cmd_harvest_add,
     "harvest list": cmd_harvest_list,
+    "ask admit": cmd_ask_admit,
     "pulse archive": cmd_pulse_archive,
     "pulse admit": cmd_pulse_admit,
     "pulse list": cmd_pulse_list,

@@ -206,6 +206,12 @@ must "row 15 one" "$STATE" stage put --map loop --id one --class Do --a 1 --m 2 
 must "row 15 two" "$STATE" stage put --map loop --id two --class Do --a 1 --m 2 --b 4 --label Second --depends one
 must "row 15 open" "$STATE" block open --map loop --stage one --energy mid --plan "draft the note"
 must "row 15 harvest" "$STATE" harvest add --map loop --stage one --result shipped --evidence "merged sha"
+expect3 "row 15 empty g" "$STATE" map put --id loop --g ""
+[[ "$(sql "SELECT g FROM maps WHERE id='loop'")" == "Arrive" ]] && ok "row 15 g kept" || bad "row 15 g kept"
+expect3 "row 15 figure" "$STATE" harvest add --map loop --stage one --result "money 40" --evidence "signpost:continue"
+[[ "$(sql "SELECT COUNT(*) FROM harvest_rows")" == "1" ]] && ok "row 15 figure row" || bad "row 15 figure row"
+must "row 15 ask" "$STATE" ask admit --ask "A thread needs a look."
+expect3 "row 15 ask again" "$STATE" ask admit --ask "A thread needs a look."
 must "row 15 close" "$STATE" block close --map loop
 must "row 15 archive" "$STATE" pulse archive --source harvest --payload "merged sha"
 must "row 15 admit" "$STATE" pulse admit --key loop/turn --snippet shipped --source harvest \

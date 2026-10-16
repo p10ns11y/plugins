@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Append one public harvest row. A money, health, or family figure stays out.
+set -euo pipefail
+
+if [[ $# -ne 5 ]]; then
+  echo "usage: public-row FILE date stage result evidence" >&2
+  exit 2
+fi
+
+file=$1
+date=$2
+stage=$3
+result=$4
+evidence=$5
+
+set -f
+for word in $result; do
+  low=$(printf '%s' "$word" | tr '[:upper:]' '[:lower:]')
+  case "$low" in
+    money|health|family)
+      echo "figure in result" >&2
+      exit 3
+      ;;
+  esac
+done
+
+printf '%s\t%s\t%s\t%s\n' "$date" "$stage" "$result" "$evidence" >>"$file"

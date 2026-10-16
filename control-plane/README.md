@@ -4,7 +4,7 @@ Installable feeder and control-graph. The skills repo remains the canonical URL 
 
 | Slash | Loads | Stops short of |
 | --- | --- | --- |
-| `/feed` | `control-feeder` | opening a control card |
+| `/feed` | `control-feeder` | opening a control card. `bin/feed` prints the Feed |
 | `/control-graph` | `control-graph` | restating the feeder |
 
 Rules shipped for Cursor: `cursor/rules/clt-dual-load.mdc`, `cursor/rules/control-graph.mdc`, `cursor/rules/higher-order-decision-architect.mdc`.
