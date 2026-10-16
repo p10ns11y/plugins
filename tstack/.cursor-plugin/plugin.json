@@ -17,5 +17,6 @@
     "sqlite"
   ],
   "skills": "./skills/",
+  "agents": "./agents/",
   "commands": "./commands/"
 }

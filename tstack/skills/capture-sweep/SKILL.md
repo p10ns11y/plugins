@@ -11,3 +11,6 @@ description: Sweep mail, calendar, chats, and pull requests into cards. Read onl
 4. Admit to **mission-map** only a card that changes the next Do. `tstack-state ask admit` refuses a repeated ask. Never average contradictions.
 5. Kind `money`, `send`, or `sign` is not a Do. Load **si**. Connectors do not pay, send, or sign.
 6. Note the sweep in **pulse-memory**. Hint source `tstack/capture-sweep`, time ISO-8601, status `tool-verified`, hint kind `context`, lock `open`. Snippet is counts only.
+7. Claude Code `/tstack:capture-sweep` and Grok `/workflow capture-sweep` follow [flows/specs/capture-sweep.md](../../../flows/specs/capture-sweep.md).
+8. Portable: [flows/portable/capture-sweep.md](../../../flows/portable/capture-sweep.md). A fresh verifier runs before the actor. Only the actor writes `tstack-state`.
+9. The card comes after that verifier. Sign off before the next flow.

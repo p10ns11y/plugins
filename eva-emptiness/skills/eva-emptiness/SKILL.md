@@ -126,6 +126,7 @@ E0 Prior+IDK → E1 one DOE Q → E2 explore probes → E3 Pathways
 | Grok plugin | skill + prior agents + tether + `/eva` + `/eva-tether-init` |
 | Auth tether | C `bin/eva-tether` preferred; portable shell fallback (zsh first); see [permission-tether.md](references/permission-tether.md) |
 | Background | `/workflow eva-emptiness {"goal":"…"}` after `.rhai` copy to `~/.grok/workflows/` or project `.grok/workflows/` |
+| Claude and portable | `/eva-emptiness:eva` and [flows/portable/eva.md](../../../flows/portable/eva.md) follow [flows/specs/eva.md](../../../flows/specs/eva.md). A fresh refuter, then the card. Sign off before the next flow. |
 | Outer SM | control-graph; EVA owns Inner when gate fires |
 
 Map: [references/grok-build-map.md](references/grok-build-map.md). Compile C tether only with consent: `/eva-tether-init --yes`.

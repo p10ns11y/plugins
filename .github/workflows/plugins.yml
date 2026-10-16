@@ -15,6 +15,10 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Check workflow scripts
         run: node scripts/ci/check-workflows.mjs
+      - name: Check flow variants
+        run: node scripts/ci/check-flow-variants.mjs
+      - name: Check flow laws
+        run: bash flows/test/bend-critical.sh
       - name: Check relative links
         run: python3 scripts/check-links.py
       - name: Check catalog drift
@@ -92,6 +96,17 @@ jobs:
           lean --version
           proof_ec=0
           proof_out="$(cd trust-stack/bend && bend PROOF.bend)" || proof_ec=$?
+          printf '%s\n' "$proof_out"
+          [[ "$proof_ec" -eq 0 ]]
+          if printf '%s\n' "$proof_out" | grep -q 'SOME PROOFS FAIL'; then
+            exit 1
+          fi
+          if printf '%s\n' "$proof_out" | grep -qE '(^|[[:space:]])FAIL([[:space:]]|$)'; then
+            exit 1
+          fi
+          printf '%s\n' "$proof_out" | grep -q 'ALL PROOFS CHECK'
+          proof_ec=0
+          proof_out="$(cd flows/bend && bend PROOF.bend)" || proof_ec=$?
           printf '%s\n' "$proof_out"
           [[ "$proof_ec" -eq 0 ]]
           if printf '%s\n' "$proof_out" | grep -q 'SOME PROOFS FAIL'; then
