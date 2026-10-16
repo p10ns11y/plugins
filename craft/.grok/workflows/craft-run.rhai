@@ -1,4 +1,5 @@
 // Spec: flows/specs/craft-run.md
+// Laws: flows/bend/LAWS.bend
 // Install: copy into ~/.grok/workflows/ or <repo>/.grok/workflows/
 // Launch: /workflow craft-run {"change":"…"}
 // Sign-off: return the card. Do not start the next flow.

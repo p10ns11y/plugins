@@ -1,4 +1,5 @@
 // Spec: flows/specs/rule-review.md
+// Laws: flows/bend/LAWS.bend
 // Install: copy into ~/.grok/workflows/ or <repo>/.grok/workflows/
 // Launch: /workflow rule-review {"diff":"…","rulesFile":"…"}
 // Sign-off: return the flag card. Do not merge and do not start the next flow.

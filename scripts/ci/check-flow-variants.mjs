@@ -67,6 +67,7 @@ for (const flow of flows) {
   need(js, flow.spec, flow.js)
   need(rhai, flow.spec, flow.rhai)
   need(portable, flow.spec, flow.portable)
+  need(spec, 'flows/bend/LAWS.bend', flow.spec)
   need(spec, flow.js, flow.spec)
   need(spec, flow.rhai, flow.spec)
   need(spec, flow.portable, flow.spec)
@@ -78,6 +79,26 @@ for (const flow of flows) {
     need(js, phase, flow.js)
     need(rhai, phase, flow.rhai)
   }
+}
+
+const laws = read('flows/bend/LAWS.bend')
+const proof = read('flows/bend/PROOF.bend')
+const model = read('flows/bend/flow.bend')
+const critical = read('flows/test/bend-critical.sh')
+need(proof, 'import ./LAWS.bend', 'flows/bend/PROOF.bend')
+need(laws, 'import ./flow.bend', 'flows/bend/LAWS.bend')
+for (const [name, text] of [
+  ['flows/bend/LAWS.bend', laws],
+  ['flows/bend/PROOF.bend', proof],
+  ['flows/bend/flow.bend', model],
+]) {
+  if (/\bF32\b|@unsafe/.test(text)) failures.push(`${name} uses F32 or @unsafe`)
+}
+const notRun = critical.indexOf('formal proof not run')
+const proved = critical.indexOf('ALL PROOFS CHECK')
+if (notRun < 0) failures.push('flows/test/bend-critical.sh does not report an absent bend')
+if (proved < 0 || (notRun >= 0 && proved < notRun)) {
+  failures.push('flows/test/bend-critical.sh treats an absent bend as a pass')
 }
 
 if (failures.length) {
