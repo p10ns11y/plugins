@@ -16,7 +16,7 @@ Port copy. Canonical file remains in https://github.com/p10ns11y/skills on maste
 > **Alias history:** portable rename of `fusion-sage` (procedure unchanged; human scanner notes in README).
 
 > **Load rule:** Formal SoT below. Depth (playbooks, surplus examples, state schema) → repo files linked here; expand English [references/english-procedure.md](references/english-procedure.md) **only if** fusion/surplus still ambiguous.  
-> **CLT:** [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc) — fission containment first (extraneous ↓); surplus must not inflate EXECUTE with optional walls of prose.
+> **CLT:** [../rules/clt-dual-load.mdc](../../../control-plane/cursor/rules/clt-dual-load.mdc) — fission containment first (extraneous ↓); surplus must not inflate EXECUTE with optional walls of prose.
 
 ```text
 // Signature
@@ -36,7 +36,7 @@ A6  Prefer outputs that move project toward IronPeak
 A7  Evaluate(δ) ≔ (Correctness, Effectiveness, Efficiency)
 ```
 
-Pair: [ai-optimization](../ai-optimization/SKILL.md) · [higher-order-decision-architect](../higher-order-decision-architect/SKILL.md) · [stellar-spacemap](../stellar-spacemap/SKILL.md).
+Pair: [ai-optimization](../ai-optimization/SKILL.md) · [higher-order-decision-architect](../../../control-plane/skills/higher-order-decision-architect/SKILL.md) · [stellar-spacemap].
 
 ---
 

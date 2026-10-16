@@ -233,7 +233,7 @@ Summarize for the user:
 
 ## Project-specific notes
 
-See [examples/README.md](../examples/README.md) for hardened pnpm workspace examples (e.g. Next.js portfolio).
+See [examples/README.md] for hardened pnpm workspace examples (e.g. Next.js portfolio).
 
 ---
 

@@ -54,6 +54,8 @@ Ordinary `git push` must not hard-deny forever — after explicit human approval
 
 Fail-open on hook crash — keep explicit `deny` / `ask` JSON for real blocks.
 
+An unread policy file is deny, and a stdin crash stays allow.
+
 ## Card signal
 
 On any permission deny or human reject of a dangerous tool: set `auth_horizon=hit` and transition to HITL Ask.

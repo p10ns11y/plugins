@@ -60,7 +60,7 @@ Keep agent creativity, wrap it in deterministic skeleton:
 | “control-graph”, “looper”, “state machine”, “SM+DAG”, “loop card” | full skill |
 | cognitive load / CLT / strain / “remove load for AI+human” | full skill + diagnose Load on Card; expand clt-load-balance if needed |
 | domain autonomy (finder / CV / X) | domain skill owns domain; CG owns **shape only** |
-| ≤1–2 files, obvious fix | **Skip** → [agent-orchestrator](../agent-orchestrator/SKILL.md) triage only |
+| ≤1–2 files, obvious fix | **Skip** → [agent-orchestrator] triage only |
 
 ```text
 SkillLoad(ORIENT) ≔ description-match ∨ explicit-attach
@@ -187,7 +187,7 @@ cancel_when, model_role, inputs (minimal), outputs (re-enter Outer)
 
 1. Bound first — write step list before tools; default ≤7 steps/batch  
 2. One primary outcome per step  
-3. Parallel ⇔ independent paths → [concurrent-cli-agents](../concurrent-cli-agents/SKILL.md) + [subagent-delegation](../subagent-delegation/SKILL.md) — prefer fan-out when safe (A8); never parallelize to dump concurrent asks on the human  
+3. Parallel ⇔ independent paths → [concurrent-cli-agents] + [subagent-delegation] — prefer fan-out when safe (A8); never parallelize to dump concurrent asks on the human  
 4. Re-enter Outer with `{step_id, status, artifacts, errors, next_hint}` — not full transcript  
 5. Nested loop allowed only if it inherits budgets + `done_when` (no nested unbounded ReAct)  
 6. Cancel is first-class — leave tree consistent; reason on Card  
@@ -248,18 +248,18 @@ Domain guards stay in domain skills; CG requires honoring pause results as Outer
 
 | Concern | Owner | CG does |
 |---------|-------|---------|
-| triage single-shot vs multi-worker | [agent-orchestrator](../agent-orchestrator/SKILL.md) | wrap work in Outer phases |
-| explore return format | [subagent-delegation](../subagent-delegation/SKILL.md) | explore Role + Inner steps |
-| worktrees / merge | [git-worktrees](../git-worktrees/SKILL.md) | INTEGRATE uses merge, not `cp` |
-| parallel agents | [concurrent-cli-agents](../concurrent-cli-agents/SKILL.md) | independent Inner only |
-| token prune | [ai-optimization](../ai-optimization/SKILL.md) | before deep/coding fill (agent extraneous ↓) |
-| surplus | [fusion-sage](../fusion-sage/SKILL.md) | PLAN/INTEGRATE surplus |
+| triage single-shot vs multi-worker | [agent-orchestrator] | wrap work in Outer phases |
+| explore return format | [subagent-delegation] | explore Role + Inner steps |
+| worktrees / merge | [git-worktrees] | INTEGRATE uses merge, not `cp` |
+| parallel agents | [concurrent-cli-agents] | independent Inner only |
+| token prune | [ai-optimization](../../../context-ignite/skills/ai-optimization/SKILL.md) | before deep/coding fill (agent extraneous ↓) |
+| surplus | [fusion-sage](../../../context-ignite/skills/architecture-synthesis/SKILL.md) | PLAN/INTEGRATE surplus |
 | dual-actor CLT detail | [references/clt-load-balance.md](references/clt-load-balance.md) | diagnose Load; A8 middle ground |
-| on-the-fly CLT pre-filter | [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc) (`alwaysApply: true`) | inject A8 before heavy skills; **no paste-duplication** into domain SKILL.md bodies |
+| on-the-fly CLT pre-filter | [../rules/clt-dual-load.mdc](../../cursor/rules/clt-dual-load.mdc) (`alwaysApply: true`) | inject A8 before heavy skills; **no paste-duplication** into domain SKILL.md bodies |
 | product autonomy | finder-reactor / agentic-reactor | **shape only** |
-| epistemic emptiness (Prior→Probe→Simulate→Score→ActOrAsk) | [eva-emptiness](../eva-emptiness/SKILL.md) | Outer only; EVA owns Inner when emptiness gate fires — **do not inline** |
-| pathway switch / signposts | [eva-emptiness](../eva-emptiness/SKILL.md) | honor `continue\|switch\|Ask`; Outer owns re-ORIENT on switch |
-| hubris / wandering / over-clever (Cyclops…Prophecy) | [odysseus-navigator](../odysseus-navigator/SKILL.md) | ORIENT/PLAN/REVIEW: Navigator labels + `cg_hook`; **do not inline** myth essay |
+| epistemic emptiness (Prior→Probe→Simulate→Score→ActOrAsk) | [eva-emptiness](../../../eva-emptiness/skills/eva-emptiness/SKILL.md) | Outer only; EVA owns Inner when emptiness gate fires — **do not inline** |
+| pathway switch / signposts | [eva-emptiness](../../../eva-emptiness/skills/eva-emptiness/SKILL.md) | honor `continue\|switch\|Ask`; Outer owns re-ORIENT on switch |
+| hubris / wandering / over-clever (Cyclops…Prophecy) | [odysseus-navigator](../../../odysseus-navigator/skills/odysseus-navigator/SKILL.md) | ORIENT/PLAN/REVIEW: Navigator labels + `cg_hook`; **do not inline** myth essay |
 
 `CG = control plane` · domain = data plane · orchestrator = multi-worker logistics · CLT pre-filter = DualLoad hygiene for Human∧Agent.
 
@@ -330,7 +330,7 @@ Update Card on **every** phase transition. If phase unnameable → unbounded ReA
 | Env | Load |
 |-----|------|
 | Grok / Cursor / AGENTS.md | description match · `/control-graph` · “looper” alias |
-| Cursor rule | [../rules/control-graph.mdc](../rules/control-graph.mdc) |
+| Cursor rule | [../rules/control-graph.mdc](../../cursor/rules/control-graph.mdc) |
 | Validate | `node control-graph/scripts/validate-skill.mjs` |
 
 **Rename note:** formerly `looper`. Same contract; name matches Outer SM/loop + Inner DAG/nested-loop graph.
@@ -340,7 +340,7 @@ Update Card on **every** phase transition. If phase unnameable → unbounded ReA
 - **English expansion (only if needed):** [references/english-procedure.md](references/english-procedure.md)
 - **CLT dual-actor load (only if needed):** [references/clt-load-balance.md](references/clt-load-balance.md)
 - **Card template:** [references/control-card.md](references/control-card.md)
-- **Library formal kernel:** [../formal/AppGenMathPhyLang.kernel.md](../formal/AppGenMathPhyLang.kernel.md)
+- **Library formal kernel:** [../formal/AppGenMathPhyLang.kernel.md]
 - **Thesis:** [@Peramanathan structured loops](https://x.com/Peramanathan/status/2067890630345494578)
 
 **Creativity inside the edges — never instead of them. Capacity for the work that builds capability — for both minds in the loop.**

@@ -66,9 +66,9 @@ intervene: minimize_extraneous | chunk_intrinsic | protect_germane | fan_out_par
 
 ## Composition
 
-- **Token / context prune** → [ai-optimization](../../ai-optimization/SKILL.md) (extraneous for agent)
-- **Surplus synthesis** → [fusion-sage](../../fusion-sage/SKILL.md) (after INTEGRATE; do not inflate EXECUTE)
-- **Parallel workers** → [concurrent-cli-agents](../../concurrent-cli-agents/SKILL.md) + [subagent-delegation](../../subagent-delegation/SKILL.md) (asymmetric capacity)
-- **Triage skip CG** → [agent-orchestrator](../../agent-orchestrator/SKILL.md) (avoid intrinsic overload on trivial work)
+- **Token / context prune** → [ai-optimization](../../../../context-ignite/skills/ai-optimization/SKILL.md) (extraneous for agent)
+- **Surplus synthesis** → [fusion-sage](../../../../context-ignite/skills/architecture-synthesis/SKILL.md) (after INTEGRATE; do not inflate EXECUTE)
+- **Parallel workers** → [concurrent-cli-agents] + [subagent-delegation] (asymmetric capacity)
+- **Triage skip CG** → [agent-orchestrator] (avoid intrinsic overload on trivial work)
 
 CLT diagnoses **load**; CG still owns **phase, budget, gate, route**.

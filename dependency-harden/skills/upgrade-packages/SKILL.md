@@ -217,7 +217,7 @@ Report to the user:
 
 ## Project-specific notes
 
-See [examples/README.md](../examples/README.md) for battle-tested upgrade notes (e.g. Next.js portfolio / devprofile overlay).
+See [examples/README.md] for battle-tested upgrade notes (e.g. Next.js portfolio / devprofile overlay).
 
 ---
 

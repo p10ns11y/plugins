@@ -1,6 +1,6 @@
 # TypeScript / JavaScript Optimizer Reference
 
-Portable defaults. **Project overlays:** see [examples/overlays/nextjs-portfolio-typescript.md](../../examples/overlays/nextjs-portfolio-typescript.md) and [examples/README.md](../../examples/README.md).
+Portable defaults. **Project overlays:** see [examples/overlays/nextjs-portfolio-typescript.md] and [examples/README.md].
 
 ## Extraction Strategy (no full parser needed in basic mode)
 - Scan for `export interface`, `export type`, `export class`, `export function`, `export const`

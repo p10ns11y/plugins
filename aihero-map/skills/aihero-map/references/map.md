@@ -32,7 +32,7 @@ On an overlap, load the house skill. That is the better chance the check already
 | Resume, same harness and directory | `steer-accel` | The stage log is what the next session reads. |
 | Resume, harness or directory changes | `pulse-memory` | One tagged snippet points at the log and the spec. The traveling file stays out of the repo. |
 | Task graph of tickets | `shared-scripts` and `git-worktrees` | One deterministic script runs each ready ticket. Parallel tickets use separate worktrees. |
-| Named engineering | pstack when installed, else [pstack-map](../../../pstack-map/skills/pstack-map/references/map.md) | The playbook is the execution pass. `craft` still owns spec-before-code and the scores. One test-first owner per task. |
+| Named engineering | pstack when installed, else [pstack-map](../../../../pstack-map/skills/pstack-map/references/map.md) | The playbook is the execution pass. `craft` still owns spec-before-code and the scores. One test-first owner per task. |
 | Pull request body | house template, then the pstack shipping row | A picture, a before and an after, then a one-way or two-way door and the blast radius. |
 | Writing a skill | `workflow-skills` | A user-invoked skill orchestrates. A model-invoked skill holds the discipline. Load the other skill by the skill tool. |
 | Which skill to load | `intelli-route` | The router caps the loads at four. |

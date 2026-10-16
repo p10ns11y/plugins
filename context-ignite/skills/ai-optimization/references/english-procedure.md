@@ -58,7 +58,7 @@ Target: fix auth token refresh in `src/auth/session.ts`.
 
 ## Hand-off to fusion
 
-After pruning, if the user needs architecture, domain models, or compounding improvements, load [fusion-sage](../../fusion-sage/SKILL.md). Fission remains the containment field; fusion adds synthesis and surplus.
+After pruning, if the user needs architecture, domain models, or compounding improvements, load [fusion-sage](../../architecture-synthesis/SKILL.md). Fission remains the containment field; fusion adds synthesis and surplus.
 
 ## Self-improvement loop
 

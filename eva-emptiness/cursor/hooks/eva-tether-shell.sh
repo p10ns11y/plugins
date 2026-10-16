@@ -2,7 +2,7 @@
 # Cursor beforeShellExecution tether (eva-emptiness).
 # Prefers C binary (eva-tether); falls back to portable shell.
 # Shell preference: re-exec under zsh when available; bash/dash/sh must work.
-# Deny trauma patterns; fail-open if unreadable. No eval.
+# An unread policy prints deny JSON. A crash with no JSON still allows. No eval.
 
 # Capture script path at top level (zsh: $0 inside functions is the function name).
 EVA_TETHER_ARG0=$0
@@ -48,9 +48,9 @@ do
 done
 
 INC=""
-if [ -f "${HERE}/eva-tether-shell.inc" ]; then
+if [ -r "${HERE}/eva-tether-shell.inc" ]; then
   INC="${HERE}/eva-tether-shell.inc"
-elif [ -n "${ROOT:-}" ] && [ -f "${ROOT}/bin/eva-tether-shell.inc" ]; then
+elif [ -n "${ROOT:-}" ] && [ -r "${ROOT}/bin/eva-tether-shell.inc" ]; then
   INC="${ROOT}/bin/eva-tether-shell.inc"
 fi
 
@@ -61,6 +61,6 @@ if [ -n "$INC" ]; then
   exit 0
 fi
 
-# Fail-open for Cursor: explicit allow
-printf '%s\n' '{"permission":"allow"}'
+# Unread policy: deny JSON. A crash with no JSON still allows.
+printf '%s\n' '{"permission":"deny","user_message":"eva-emptiness tether: policy unreadable","agent_message":"eva-emptiness tether: policy unreadable"}'
 exit 0

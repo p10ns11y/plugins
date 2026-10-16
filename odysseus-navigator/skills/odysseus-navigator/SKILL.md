@@ -13,7 +13,7 @@ description: >-
 # odysseus-navigator
 
 > **Load rule:** This file is the **formal SoT** (judgment plane). Expand [references/english-procedure.md](references/english-procedure.md) **only if** a mistake, spirit, or CG/EVA hook is still ambiguous. The English file also holds the copy-paste system prompt.  
-> **CLT:** [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc) — name the mistake + one next action; do not lecture the myth.
+> **CLT:** [../rules/clt-dual-load.mdc](../../../control-plane/cursor/rules/clt-dual-load.mdc) — name the mistake + one next action; do not lecture the myth.
 
 ```text
 // ── Signature ──────────────────────────────────────────────
@@ -131,13 +131,13 @@ Spirit\{Ithaca}  ⇏  skip Antidote   // cunning never replaces opacity, budgets
 
 | Concern | Owner | ON does |
 |---------|-------|---------|
-| Outer phase / budget / HITL | [control-graph](../control-graph/SKILL.md) | name `cg_hook`; never restated phases |
-| Inner emptiness DAG | [eva-emptiness](../eva-emptiness/SKILL.md) | name `eva_hook` ∈ {continue, switch, Ask, skip} |
-| dump → route | [control-feeder](../control-feeder/SKILL.md) | after Feed, if cg-outer/eva-inner: diagnose at ORIENT |
-| material consequence / 2036 | [higher-order-decision-architect](../higher-order-decision-architect/SKILL.md) | labels Sirens/Circe/Scylla; HODA owns the sequence |
-| surplus / iron-peak | [architecture-synthesis](../architecture-synthesis/SKILL.md) | Circe vs iron-peak: surplus must serve Ithaca |
-| refute-first review | [adversarial-audit](../adversarial-audit/SKILL.md) | Prophecy + Cyclops evidence pack |
-| DualLoad | [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc) | Navigator is short (extraneous ↓); judgment is germane |
+| Outer phase / budget / HITL | [control-graph](../../../control-plane/skills/control-graph/SKILL.md) | name `cg_hook`; never restated phases |
+| Inner emptiness DAG | [eva-emptiness](../../../eva-emptiness/skills/eva-emptiness/SKILL.md) | name `eva_hook` ∈ {continue, switch, Ask, skip} |
+| dump → route | [control-feeder](../../../control-plane/skills/control-feeder/SKILL.md) | after Feed, if cg-outer/eva-inner: diagnose at ORIENT |
+| material consequence / 2036 | [higher-order-decision-architect](../../../control-plane/skills/higher-order-decision-architect/SKILL.md) | labels Sirens/Circe/Scylla; HODA owns the sequence |
+| surplus / iron-peak | [architecture-synthesis](../../../context-ignite/skills/architecture-synthesis/SKILL.md) | Circe vs iron-peak: surplus must serve Ithaca |
+| refute-first review | [adversarial-audit] | Prophecy + Cyclops evidence pack |
+| DualLoad | [../rules/clt-dual-load.mdc](../../../control-plane/cursor/rules/clt-dual-load.mdc) | Navigator is short (extraneous ↓); judgment is germane |
 | Grok/Cursor slash harness | [README.md](../../README.md) | `/odysseus-core` fast path; **no** C tether, Rhai, priors, or hooks |
 
 `ON = judgment plane` · `CG = control plane` · `EVA = epistemic Inner` · HODA = material decision sequence.

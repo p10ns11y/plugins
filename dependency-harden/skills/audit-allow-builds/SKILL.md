@@ -185,7 +185,7 @@ Summarize for the user:
 
 ## Project-specific notes
 
-See [examples/README.md](../examples/README.md) for example `allowBuilds` whitelists (e.g. Next.js + ML native deps).
+See [examples/README.md] for example `allowBuilds` whitelists (e.g. Next.js + ML native deps).
 
 ---
 

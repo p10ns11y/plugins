@@ -11,7 +11,7 @@ Treat fission as the **containment vessel** (pressure without melt-down) and fus
 - Multiple files encode one implicit domain concept.
 - The user is designing for the next year, not only this diff.
 - The same class of question has appeared thrice — time to abstract.
-- Backlog or reactor work where [stellar-spacemap](../../stellar-spacemap/SKILL.md) or [finder-reactor](../../finder-reactor/SKILL.md) need a fused map.
+- Backlog or reactor work where [stellar-spacemap] or [finder-reactor] need a fused map.
 
 ## Synthesis stage (how)
 
@@ -54,6 +54,6 @@ Do not inject "Generated with …" / "Co-Authored-By: Claude" (or similar) into 
 | Need | Skill |
 |------|-------|
 | Prune / budget / never-compress | [ai-optimization](../../ai-optimization/SKILL.md) |
-| Material tradeoff / pre-mortem + thrive | [higher-order-decision-architect](../../higher-order-decision-architect/SKILL.md) |
-| Backlog blueprint cards | [stellar-spacemap](../../stellar-spacemap/SKILL.md) |
-| Master plan skill web | [master-planner](../../master-planner/SKILL.md) |
+| Material tradeoff / pre-mortem + thrive | [higher-order-decision-architect](../../../../control-plane/skills/higher-order-decision-architect/SKILL.md) |
+| Backlog blueprint cards | [stellar-spacemap] |
+| Master plan skill web | [master-planner] |

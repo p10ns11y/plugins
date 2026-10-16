@@ -26,7 +26,8 @@ fi
 cd "$BEND_DIR"
 out="$("$bend_bin" PROOF.bend)"
 printf '%s\n' "$out"
-if printf '%s\n' "$out" | grep -q 'All terms check.'; then
+# Bend 2.0.35 prints ALL PROOFS CHECK. Older notes say All terms check.
+if printf '%s\n' "$out" | grep -q -e 'All terms check.' -e 'ALL PROOFS CHECK'; then
   exit 0
 fi
 echo "FAIL bend PROOF.bend did not check"

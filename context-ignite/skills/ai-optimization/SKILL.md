@@ -18,11 +18,11 @@ metadata:
 Port copy. Canonical file remains in https://github.com/p10ns11y/skills on master.
 
 > **Load rule:** Formal SoT below. Lang playbooks → [references/](references/) only if needed. Expand [references/english-procedure.md](references/english-procedure.md) **only if** scoring/budget still ambiguous.
-> **CLT:** this skill is the primary **agent-extraneous** reducer under [../rules/clt-dual-load.mdc](../rules/clt-dual-load.mdc) — prune before deep/coding fill; do not strip germane VERIFY evidence.
+> **CLT:** this skill is the primary **agent-extraneous** reducer under [../rules/clt-dual-load.mdc](../../../control-plane/cursor/rules/clt-dual-load.mdc) — prune before deep/coding fill; do not strip germane VERIFY evidence.
 
 ## Purpose
 
-Cut input-code tokens without trading correctness. Pair with [fusion-sage](../fusion-sage/SKILL.md) for synthesis/surplus. Skip for a one-file typo or when the full file is already pasted.
+Cut input-code tokens without trading correctness. Pair with [fusion-sage](../architecture-synthesis/SKILL.md) for synthesis/surplus. Skip for a one-file typo or when the full file is already pasted.
 
 ## Prerequisites
 
@@ -34,7 +34,7 @@ Cut input-code tokens without trading correctness. Pair with [fusion-sage](../fu
 
 ```text
 Fission  ≔ prune + compress + budget   // this skill
-Fusion   ≔ synthesis + surplus         // [fusion-sage](../fusion-sage/SKILL.md)
+Fusion   ≔ synthesis + surplus         // [fusion-sage](../architecture-synthesis/SKILL.md)
 Score    ∈ 0..100                      // relevance
 Budget   ≔ context cap for *input* code/docs (not model CoT)
 
@@ -47,7 +47,7 @@ A6  Correctness ⊥ tokens         // never trade correctness for compression
 A7  Evaluate(δ) ≔ (C, E, η)      // keep tactics with Δ>0
 ```
 
-Pair: [fusion-sage](../fusion-sage/SKILL.md) · [master-planner](../master-planner/SKILL.md) overlays · [examples/overlays/](../examples/overlays/).
+Pair: [fusion-sage](../architecture-synthesis/SKILL.md) · [master-planner] overlays · [examples/overlays/].
 
 ```text
 intent → map (modules/API surface) → score → compress form → budget trim → act

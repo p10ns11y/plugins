@@ -13,7 +13,7 @@ Port copy. Canonical file remains in https://github.com/p10ns11y/skills on maste
 
 Produce **small, explicit** Dev Container configs that prioritize **supply-chain safety** and **failure isolation** — not a kitchen-sink image.
 
-Pair with [fix-dependency-security](../fix-dependency-security/SKILL.md) (pnpm policy, `sfw` installs) and [project-editor-profile](../project-editor-profile/SKILL.md) (`.editor` extension allowlist).
+Pair with [fix-dependency-security](../fix-dependency-security/SKILL.md) (pnpm policy, `sfw` installs) and [project-editor-profile] (`.editor` extension allowlist).
 
 ## Design principles (less is more)
 
@@ -233,13 +233,13 @@ Document Cursor steps in `.devcontainer/README.md`.
 
 ## Step 7: Example starter configs
 
-Copy and adapt from [examples/devcontainers/](../examples/devcontainers/) (see [examples/README.md](../examples/README.md) for provenance):
+Copy and adapt from [examples/devcontainers/] (see [examples/README.md] for provenance):
 
-- [nextjs-portfolio.devcontainer.json](../examples/devcontainers/nextjs-portfolio.devcontainer.json)
-- [nextjs-portfolio.Dockerfile](../examples/devcontainers/nextjs-portfolio.Dockerfile)
+- [nextjs-portfolio.devcontainer.json]
+- [nextjs-portfolio.Dockerfile]
 
 - **Node major:** run [scripts/resolve-node-lts-major.mjs](scripts/resolve-node-lts-major.mjs) unless `engines.node` / `.nvmrc` already pins the repo
-- Extensions: mirror `.editor/profile.json` ([project-editor-profile](../project-editor-profile/SKILL.md))
+- Extensions: mirror `.editor/profile.json` ([project-editor-profile])
 - `postCreateCommand`: corepack + pnpm from `packageManager` + `pnpm install --frozen-lockfile`
 - No Playwright browser download in `postCreateCommand` when using host-browser E2E
 

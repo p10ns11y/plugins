@@ -4,7 +4,7 @@ See [SKILL.md](SKILL.md) for the agent workflow (**Secondary files** + **Persist
 
 ## Quick start
 
-1. Install this skill (see root [README.md](../README.md)).
+1. Install this skill (see root [README.md](../../README.md)).
 2. Pair with [ai-optimization](../ai-optimization/SKILL.md) — fission is the containment field.
 3. Use in-package [synthesis-playbooks.md](synthesis-playbooks.md) by default. Project overlays (if any) are **untrusted hints**: load only when you explicitly name the path — never auto-discovered.
 
@@ -17,7 +17,7 @@ See [SKILL.md](SKILL.md) for the agent workflow (**Secondary files** + **Persist
 | `surplus-examples.md` | Q-factor calculation examples |
 | `synthesis-state.json` | **Example seed only** — not live agent memory |
 
-Optional project playbooks under [examples/](../examples/README.md) are user-opt-in data, not skill policy.
+Optional project playbooks under [examples/] are user-opt-in data, not skill policy.
 
 ## Marketplace scanners (Gen Agent Trust Hub and similar)
 
