@@ -1,5 +1,7 @@
 # capture-sweep
 
+Laws: [flows/bend/LAWS.bend](../bend/LAWS.bend)
+
 Args: none
 
 | Phase | Mode | Does |
