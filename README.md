@@ -73,7 +73,7 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **odysseus-navigator** | Judgment plane: Odysseus mistakes, antidotes, spirits; hooks CG/EVA — no tether/Rhai/priors | `/odysseus-core` `/odysseus` |
 | **pulse-memory** | Pulse instead of dump: tagged admissions, contradiction resolve, SQLite archive vs memory | `/pulse-memory` · `/workflow pulse-memory` |
 | **pstack-map** | Playbook map from Cursor pstack (Lauren Tan, MIT) onto house skills. No fork. | `/pstack-map` |
-| **tstack** | Tomato stack: paces the person in focus blocks via premflow. Loads house plugins; copies none. | `/tomato` `/harvest` `/replan` |
+| **tstack** | Tomato stack: shared state file for the loop. Loads house plugins; copies none. Premflow only when the CLI is present. | `/tomato` `/harvest` `/replan` |
 | **aihero-map** | Alignment map from Matt Pocock's AI Hero skills onto house skills. No copy. | `/aihero-map` |
 | **intelli-route** | Route one goal onto at most four skills. pstack or the house row. No vendored bodies. | `/intelli-route` · `/workflow intelli-route` |
 | **split-machine** | Place a job on Earth, an entanglement link, a LEO radio handover, a conjunction screen, a GPU, a BQP slice, a typed decision, or prose. Low confidence stops. | `/split-machine` |

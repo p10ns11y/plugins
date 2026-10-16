@@ -173,4 +173,4 @@ After admit, **fix harness files** (Dashboard/Map/Career) so the next pulse does
 2. Pick mode: turn · both · thinking · harness.  
 3. If workflow: set `as_of` first — then paths.  
 4. Read `pulse.md` / `pulse_out`. Conflicts listed, not merged.  
-5. Optional: upsert winners into `~/.local/share/pulse-memory/pulse.sqlite` (`kind=memory` only).
+5. Loop turns: tstack-state harvest list, then tstack-state pulse archive, then tstack-state pulse admit when the admissions test passes (kind=memory only).
