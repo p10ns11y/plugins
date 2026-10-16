@@ -9,6 +9,7 @@
 | Time-box long work | steer-log |
 | Earn table | steer-accel |
 | Proceed or hold on a closed decision | concordance |
+| Merge of repo work | `tstack/bin/merge-check`. `FREEZE` at that repo root holds. |
 | Invariant on the earliest layer | trust-stack |
 | SI owns the write | si |
 | Prep and shared scripts | michelin-kitchen |

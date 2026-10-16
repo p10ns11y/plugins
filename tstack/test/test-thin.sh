@@ -31,11 +31,13 @@ for s in \
   '/focus' \
   'premflow task add' \
   'different model family' \
-  'no freeze is in force' \
+  'tstack/bin/merge-check' \
+  'FREEZE' \
   'Weekly pruning: drop unused skills. Keep the ones the owner still runs.'
 do
   [[ "$loop" == *"$s"* ]] && ok "loop: $s" || bad "loop missing: $s"
 done
+[[ "$loop" == *'**concordance** proceeds'* ]] && bad "merge bullet still sends concordance" || ok "merge bullet leaves concordance"
 
 # Code points only. The private spellings are not written in this file.
 spell() {
@@ -75,6 +77,54 @@ harvest="$(cat "$ROOT/skills/harvest/SKILL.md")"
 [[ "$harvest" == *"premflow task done"* ]] && ok "premflow task done" || bad "premflow task done"
 [[ "$harvest" == *"premflow/README.md"* ]] && ok "premflow readme" || bad "premflow readme"
 bash "$ROOT/test/test-state.sh" && ok "test-state" || bad "test-state"
+
+merge="$ROOT/bin/merge-check"
+[[ -x "$merge" ]] && ok "executable merge-check" || bad "merge-check not executable"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+errf="$tmp/err"
+
+status=0
+out="$("$merge" --repo "$tmp" --tests-exit 0 --writer-family grok --reviewer-family claude 2>"$errf")" || status=$?
+err="$(cat "$errf")"
+if [[ "$status" -eq 0 && -z "$out" && -z "$err" ]]; then
+  ok "merge proceed"
+else
+  bad "merge proceed status=$status out=$out err=$err"
+fi
+
+status=0
+out="$("$merge" --repo "$tmp" --tests-exit 1 --writer-family grok --reviewer-family claude 2>"$errf")" || status=$?
+if [[ "$status" -eq 1 && "$out" == "hold: tests" ]]; then
+  ok "hold tests"
+else
+  bad "hold tests status=$status out=$out"
+fi
+
+status=0
+out="$("$merge" --repo "$tmp" --tests-exit 0 --writer-family grok --reviewer-family grok 2>"$errf")" || status=$?
+if [[ "$status" -eq 1 && "$out" == "hold: review" ]]; then
+  ok "hold review"
+else
+  bad "hold review status=$status out=$out"
+fi
+
+touch "$tmp/FREEZE"
+status=0
+out="$("$merge" --repo "$tmp" --tests-exit 0 --writer-family grok --reviewer-family claude 2>"$errf")" || status=$?
+if [[ "$status" -eq 1 && "$out" == "hold: freeze" ]]; then
+  ok "hold freeze"
+else
+  bad "hold freeze status=$status out=$out"
+fi
+
+status=0
+out="$("$merge" --repo "$tmp" --tests-exit 0 --writer-family grok 2>"$errf")" || status=$?
+if [[ "$status" -eq 1 && "$out" == "hold: args" ]]; then
+  ok "hold args"
+else
+  bad "hold args status=$status out=$out"
+fi
 
 agent="$(cat "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/map.md" "$ROOT/references/state.md")"
 for w in 'Lauren Tan' 'Cirillo' 'thecuriousts' 'Copyright'; do

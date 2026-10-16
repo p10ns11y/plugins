@@ -11,6 +11,7 @@ A paste or dump with no single ask goes through `control-feeder`. Then the first
 | Match | Route | Load |
 |---|---|---|
 | No map, unknowns dominate, authorization is the unknown, or a multi-session effort whose route is still fog | `empty` | `eva-emptiness` in this repo (`eva-emptiness/skills/eva-emptiness/SKILL.md`). The skills-repo entry is a sibling symlink and 404s on GitHub. |
+| a life or mission focus block, and the ask is not repo work | `tstack` | `tstack/skills/tomato-loop/SKILL.md` |
 | Multi-step, until-done, or the same step is being redone | `card` | `control-graph` |
 | Otherwise | `light` | `pstack-map`, then one playbook or the house row |
 
@@ -27,7 +28,7 @@ An alignment name loads `aihero-map`. That map names the house skill and which c
 | Field | Value |
 |-------|--------|
 | **situation** | |
-| **route** | light \| card \| empty |
+| **route** | light \| card \| empty \| tstack |
 | **loads** | |
 | **skips** | |
 | **playbook** | |
@@ -35,7 +36,7 @@ An alignment name loads `aihero-map`. That map names the house skill and which c
 | **next** | one action |
 ```
 
-`light` takes that playbook's first bounded step. `card` names a phase, a budget, and one verify command, then does only the current phase. `empty` writes knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask.
+`light` takes that playbook's first bounded step. `card` names a phase, a budget, and one verify command, then does only the current phase. `empty` writes knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask. `tstack` runs one tomato block and does not start a repo playbook.
 
 ## System One shape
 
@@ -43,7 +44,7 @@ The card is the kind of decision System One is for: one goal in, a closed `route
 
 Classify is still an agent. The confidence is a word that agent picks. It is not a calibrated probability, and this plugin does not call [Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev). A later host may fill the same card from a System One model. Until then, the act step stays the slow work.
 
-A closed decision that must be corroborated loads `concordance`. This card does not compare the two labels.
+A closed decision that must be corroborated loads `concordance`. This card does not compare the two labels. A repo merge is `tstack/bin/merge-check`.
 
 ## Install
 
