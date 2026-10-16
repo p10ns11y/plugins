@@ -2,13 +2,13 @@
 
 Do not dump transcripts into the context window. Keep **archive** (append-only) and **memory** (admitted, tagged) as two tables. Pattern from `agent-local-db`: WAL, best-effort writes, never block the agent loop.
 
-Default path: `~/.local/share/pulse-memory/pulse.sqlite` (0600). Optional override `PULSE_MEMORY_DB`.
+Default file: $XDG_DATA_HOME/tstack/state.sqlite, or ~/.local/share/tstack/state.sqlite when XDG_DATA_HOME is unset. TSTACK_STATE_DB overrides, else PULSE_MEMORY_DB. Writes, FTS rebuild, and migrations go through tstack-state (see references/state.md in the tstack plugin). Do not move or delete ~/.local/share/pulse-memory/pulse.sqlite. Point PULSE_MEMORY_DB at that file to keep using it. Mode 0600.
 
 ## Tools
 
 | Tool | Job |
 |------|-----|
-| `sqlite3` CLI | inspect, FTS, migrations |
+| `tstack-state` | writes, FTS rebuild, and migrations. The `sqlite3` CLI is inspect only. |
 | `/pulse-memory` skill | tag + resolve in the conversation |
 | `/workflow pulse-memory` | one pulse cycle over thinking + harness files |
 | scheduler (host) | fire the workflow; pass `as_of` (script has no wall clock) |

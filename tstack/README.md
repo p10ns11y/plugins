@@ -19,4 +19,4 @@ flowchart LR
 ```
 
 Commands: `/tomato`, `/harvest`, `/replan`. Route table: [references/map.md](references/map.md).
-Needs `premflow` on PATH for timed blocks. Loads mission-map, intelli-route, control-plane, pulse-memory, steer-log, steer-accel, concordance, trust-stack, si, michelin-kitchen and pstack-map; copies none. Credits: [NOTICE.md](NOTICE.md).
+State file: tstack-state, default $XDG_DATA_HOME/tstack/state.sqlite or ~/.local/share/tstack/state.sqlite. Premflow is optional, and only when its CLI is on PATH. Loads mission-map, intelli-route, control-plane, pulse-memory, steer-log, steer-accel, concordance, trust-stack, si, michelin-kitchen and pstack-map; copies none. Credits: [NOTICE.md](NOTICE.md).

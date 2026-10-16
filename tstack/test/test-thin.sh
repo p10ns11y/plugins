@@ -64,11 +64,23 @@ for f in stop pause start --stop --start; do
   [[ "$loop" == *"premflow pomo $f"* || "$loop" == *"premflow $f"* ]] && bad "invented premflow $f" || true
 done
 
-agent="$(cat "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/map.md")"
+for p in references/state.md scripts/schema.sql scripts/tstack-state test/test-state.sh; do
+  [[ -f "$ROOT/$p" ]] && ok "exists $p" || bad "missing $p"
+done
+[[ -x "$ROOT/scripts/tstack-state" ]] && ok "executable tstack-state" || bad "not executable"
+harvest="$(cat "$ROOT/skills/harvest/SKILL.md")"
+[[ "$harvest" == *tstack-state* ]] && ok "harvest names tstack-state" || bad "harvest tstack-state"
+[[ "$loop" == *tstack-state* ]] && ok "tomato names tstack-state" || bad "tomato tstack-state"
+[[ "$harvest" == *"premflow win"* ]] && ok "premflow win" || bad "premflow win"
+[[ "$harvest" == *"premflow task done"* ]] && ok "premflow task done" || bad "premflow task done"
+[[ "$harvest" == *"premflow/README.md"* ]] && ok "premflow readme" || bad "premflow readme"
+bash "$ROOT/test/test-state.sh" && ok "test-state" || bad "test-state"
+
+agent="$(cat "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/map.md" "$ROOT/references/state.md")"
 for w in 'Lauren Tan' 'Cirillo' 'thecuriousts' 'Copyright'; do
   [[ "$agent" == *"$w"* ]] && bad "attribution in agent body: $w" || ok "no attribution: $w"
 done
-all="$(cat "$ROOT"/*.md "$ROOT"/plugin.json "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/map.md")"
+all="$(cat "$ROOT"/*.md "$ROOT"/plugin.json "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/map.md" "$ROOT/references/state.md" "$ROOT/scripts/schema.sql" "$ROOT/scripts/tstack-state")"
 if echo "$all" | command grep -Eiwq 'AI|demo|gate|/home/|/Users/|mzapan|100\.[0-9]+\.[0-9]+'; then bad "banned word or host"; else ok "clean words"; fi
 
 echo "---"

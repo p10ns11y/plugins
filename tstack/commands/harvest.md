@@ -1,8 +1,8 @@
 ---
-description: Turn the last block's evidence into one LOG.md row
+description: Turn evidence into a shared state row.
 argument-hint: "[evidence link or note]"
 ---
 
 # /harvest
 
-Load skill **harvest**. `$ARGUMENTS` is the evidence. Empty means the last block.
+Load skill **harvest**. Non-empty `$ARGUMENTS` go to `tstack-state harvest add`. Empty arguments do not write a row.

@@ -111,7 +111,7 @@
     },
     {
       "name": "tstack",
-      "description": "Tomato stack: paces the person in focus blocks. capture, critical path, one block, evidence, replan. Loads house plugins; copies none. Pomodoro sessions run through the premflow CLI.",
+      "description": "Tomato stack: paces the person in focus blocks. Shared SQLite state for the loop. Loads house plugins; copies none. Premflow only when its CLI is on PATH.",
       "source": "./tstack"
     },
     {

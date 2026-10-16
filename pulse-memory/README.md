@@ -78,4 +78,4 @@ Workflow smoke: `/workflow pulse-memory` with fixture paths + `as_of`. Example a
 
 ## Store
 
-SQLite proposal (two layers: archive events vs admitted traces): [skills/pulse-memory/references/store.md](skills/pulse-memory/references/store.md). Pair with the `agent-local-db` skill for WAL / best-effort / `seen_count`.
+SQLite proposal (two layers: archive events vs admitted traces): [skills/pulse-memory/references/store.md](skills/pulse-memory/references/store.md). Pair with the `agent-local-db` skill for WAL / best-effort / `seen_count`. Shared loop rows go through tstack-state.

@@ -1,0 +1,851 @@
+#!/usr/bin/env python3
+"""Shared SQLite state for the tstack loop."""
+
+import json
+import os
+import re
+import sqlite3
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+SCHEMA = Path(__file__).resolve().parent / "schema.sql"
+ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")
+CLASSES = ("Do", "Risk", "Wait", "Park", "Done")
+ENERGIES = ("high", "mid", "low")
+STATUSES = ("user-stated", "tool-verified", "inferred", "unknown")
+KINDS = ("data", "context", "fact", "memory")
+LOCKS = ("open", "locked")
+
+
+class Exit(Exception):
+    def __init__(self, code, payload):
+        super().__init__(code)
+        self.code = code
+        self.payload = payload
+
+
+def usage(message):
+    raise Exit(2, {"error": message})
+
+
+def reject(message):
+    raise Exit(3, {"error": message})
+
+
+def broken(message):
+    raise Exit(1, {"error": message})
+
+
+def ok(payload):
+    raise Exit(0, payload)
+
+
+def now():
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def need(flags, *names):
+    missing = [name for name in names if name not in flags]
+    if missing:
+        usage("usage")
+
+
+def only(flags, *allowed):
+    extra = [name for name in flags if name not in allowed]
+    if extra:
+        usage("usage")
+
+
+def check_id(kind, value):
+    if not ID_RE.fullmatch(value):
+        reject(f"bad {kind}")
+
+
+def no_at(field, value):
+    if "@" in value:
+        reject(f"@ in {field}")
+
+
+def parse_real(name, raw):
+    try:
+        value = float(raw)
+    except ValueError:
+        reject(f"bad {name}")
+    if value != value or value in (float("inf"), float("-inf")):
+        reject(f"bad {name}")
+    return value
+
+
+def parse_bit(name, raw):
+    if raw not in ("0", "1"):
+        reject(f"bad {name}")
+    return int(raw)
+
+
+def parse_key(raw):
+    key = raw.strip()
+    if not key or len(key) > 200 or "@" in key:
+        reject("bad nat_key")
+    return key
+
+
+def resolve_path():
+    chosen = os.environ.get("TSTACK_STATE_DB")
+    if chosen:
+        return Path(chosen)
+    chosen = os.environ.get("PULSE_MEMORY_DB")
+    if chosen:
+        return Path(chosen)
+    xdg = os.environ.get("XDG_DATA_HOME")
+    if xdg:
+        return Path(xdg) / "tstack" / "state.sqlite"
+    return Path.home() / ".local" / "share" / "tstack" / "state.sqlite"
+
+
+def connect():
+    os.umask(0o077)
+    path = resolve_path()
+    parent = path.parent
+    created_parent = False
+    if not parent.is_dir():
+        parent.mkdir(parents=True, mode=0o700)
+        created_parent = True
+    if created_parent:
+        os.chmod(parent, 0o700)
+    created_file = not path.exists()
+    conn = sqlite3.connect(path)
+    conn.isolation_level = None
+    conn.row_factory = sqlite3.Row
+    if created_file:
+        os.chmod(path, 0o600)
+    conn.execute("PRAGMA foreign_keys = ON")
+    fk = conn.execute("PRAGMA foreign_keys").fetchone()[0]
+    if fk != 1:
+        broken("foreign_keys")
+    mode = conn.execute("PRAGMA journal_mode = WAL").fetchone()[0]
+    if str(mode).lower() != "wal":
+        broken("journal_mode")
+    return conn
+
+
+def rollback(conn):
+    try:
+        conn.execute("ROLLBACK")
+    except sqlite3.Error:
+        pass
+
+
+def in_tx(conn, fn):
+    conn.execute("BEGIN")
+    try:
+        result = fn()
+        conn.execute("COMMIT")
+        return result
+    except Exception:
+        rollback(conn)
+        raise
+
+
+def split_sql(body):
+    stmts = []
+    buf = []
+    i = 0
+    n = len(body)
+    in_str = False
+    while i < n:
+        c = body[i]
+        if in_str:
+            buf.append(c)
+            if c == "'":
+                if i + 1 < n and body[i + 1] == "'":
+                    buf.append(body[i + 1])
+                    i += 2
+                    continue
+                in_str = False
+            i += 1
+            continue
+        if c == "'":
+            in_str = True
+            buf.append(c)
+            i += 1
+            continue
+        if c == "-" and i + 1 < n and body[i + 1] == "-":
+            while i < n and body[i] != "\n":
+                buf.append(body[i])
+                i += 1
+            continue
+        if c == ";":
+            stmt = "".join(buf).strip()
+            if stmt and has_sql(stmt):
+                stmts.append(stmt)
+            buf = []
+            i += 1
+            continue
+        buf.append(c)
+        i += 1
+    tail = "".join(buf).strip()
+    if tail and has_sql(tail):
+        stmts.append(tail)
+    return stmts
+
+
+def has_sql(stmt):
+    i = 0
+    n = len(stmt)
+    in_str = False
+    kept = []
+    while i < n:
+        c = stmt[i]
+        if in_str:
+            kept.append(c)
+            if c == "'":
+                if i + 1 < n and stmt[i + 1] == "'":
+                    kept.append(stmt[i + 1])
+                    i += 2
+                    continue
+                in_str = False
+            i += 1
+            continue
+        if c == "'":
+            in_str = True
+            kept.append(c)
+            i += 1
+            continue
+        if c == "-" and i + 1 < n and stmt[i + 1] == "-":
+            while i < n and stmt[i] != "\n":
+                i += 1
+            continue
+        kept.append(c)
+        i += 1
+    return bool("".join(kept).strip())
+
+
+def load_sections():
+    if not SCHEMA.is_file():
+        broken("missing schema")
+    text = SCHEMA.read_text(encoding="utf-8")
+    parts = re.split(r"(?m)^-- migration[ \t]+(\d+)[ \t]*$", text)
+    if parts[0].strip():
+        broken("schema preamble")
+    if len(parts) < 3 or (len(parts) - 1) % 2 != 0:
+        broken("schema markers")
+    sections = []
+    index = 1
+    while index < len(parts):
+        version = int(parts[index])
+        statements = split_sql(parts[index + 1])
+        if not statements:
+            broken(f"migration {version} empty")
+        sections.append((version, statements))
+        index += 2
+    if [version for version, _ in sections] != [1, 2]:
+        broken("schema versions")
+    return sections
+
+
+def applied(conn):
+    try:
+        rows = conn.execute("SELECT version FROM schema_migrations").fetchall()
+    except sqlite3.OperationalError:
+        return set()
+    return {row["version"] for row in rows}
+
+
+def parse_depends(conn, raw, map_id, stage_id):
+    parts = [] if raw.strip() == "" else raw.split(",")
+    for dep in parts:
+        check_id("stage", dep)
+        if dep == stage_id:
+            reject("unknown dependency")
+        found = conn.execute(
+            "SELECT 1 FROM stages WHERE map_id=? AND stage_id=?",
+            (map_id, dep),
+        ).fetchone()
+        if found is None:
+            reject("unknown dependency")
+    return parts
+
+
+def insert_trace(conn, key, snippet, source, time_s, status, kind, lock):
+    return conn.execute(
+        """INSERT INTO memory_traces (
+             nat_key, snippet, source, time, status, kind, lock,
+             verify_hash, prefetch_key, seen_count, superseded_by,
+             first_seen, last_seen
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL, 1, NULL, ?, ?)""",
+        (key, snippet, source, time_s, status, kind, lock, time_s, time_s),
+    )
+
+
+def fresh_key(conn, base):
+    n = 2
+    while True:
+        candidate = f"{base}-{n}"
+        if len(candidate) > 200:
+            reject("bad nat_key")
+        taken = conn.execute(
+            "SELECT 1 FROM memory_traces WHERE nat_key=?",
+            (candidate,),
+        ).fetchone()
+        if taken is None:
+            return candidate
+        n += 1
+
+
+def rebuild_fts(conn):
+    conn.execute("INSERT INTO memory_fts(memory_fts) VALUES('rebuild')")
+
+
+def cmd_init(flags):
+    only(flags)
+    conn = connect()
+    sections = load_sections()
+    have = applied(conn)
+    for version, statements in sections:
+        if version in have:
+            continue
+
+        def work(statements=statements, version=version):
+            for statement in statements:
+                conn.execute(statement)
+            conn.execute(
+                "INSERT INTO schema_migrations (version, applied_at) VALUES (?, ?)",
+                (version, now()),
+            )
+
+        try:
+            in_tx(conn, work)
+        except sqlite3.Error as exc:
+            broken(f"migration {version}: {exc}")
+    rows = conn.execute(
+        "SELECT version FROM schema_migrations ORDER BY version"
+    ).fetchall()
+    ok({"versions": [row["version"] for row in rows]})
+
+
+def cmd_map_put(flags):
+    need(flags, "id", "g")
+    only(flags, "id", "g", "effort-cap")
+    map_id = flags["id"]
+    g = flags["g"]
+    check_id("map", map_id)
+    no_at("g", g)
+    has_effort = "effort-cap" in flags
+    effort = parse_real("effort-cap", flags["effort-cap"]) if has_effort else None
+    conn = connect()
+
+    def work():
+        existing = conn.execute("SELECT id FROM maps WHERE id=?", (map_id,)).fetchone()
+        ts = now()
+        if existing and has_effort:
+            conn.execute(
+                "UPDATE maps SET g=?, effort_cap=?, updated_at=? WHERE id=?",
+                (g, effort, ts, map_id),
+            )
+        elif existing:
+            conn.execute(
+                "UPDATE maps SET g=?, updated_at=? WHERE id=?",
+                (g, ts, map_id),
+            )
+        else:
+            conn.execute(
+                "INSERT INTO maps (id, g, effort_cap, updated_at) VALUES (?, ?, ?, ?)",
+                (map_id, g, effort, ts),
+            )
+        return {"id": map_id}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_stage_put(flags):
+    need(flags, "map", "id", "class", "a", "m", "b", "label")
+    only(flags, "map", "id", "class", "a", "m", "b", "label", "depends", "critical", "next")
+    map_id = flags["map"]
+    stage_id = flags["id"]
+    check_id("map", map_id)
+    check_id("stage", stage_id)
+    klass = flags["class"]
+    if klass not in CLASSES:
+        reject("bad class")
+    label = flags["label"]
+    if "@" in label or not (1 <= len(label) <= 120):
+        reject("bad label")
+    a = parse_real("a", flags["a"])
+    m = parse_real("m", flags["m"])
+    b = parse_real("b", flags["b"])
+    critical = parse_bit("critical", flags["critical"]) if "critical" in flags else None
+    nxt = parse_bit("next", flags["next"]) if "next" in flags else None
+    depends_raw = flags.get("depends")
+    conn = connect()
+    if conn.execute("SELECT 1 FROM maps WHERE id=?", (map_id,)).fetchone() is None:
+        reject("missing map")
+    parsed = None if depends_raw is None else parse_depends(conn, depends_raw, map_id, stage_id)
+
+    def work():
+        existing = conn.execute(
+            "SELECT depends_on, critical, next_do FROM stages WHERE map_id=? AND stage_id=?",
+            (map_id, stage_id),
+        ).fetchone()
+        if parsed is None:
+            depends_json = existing["depends_on"] if existing else "[]"
+        else:
+            depends_json = json.dumps(parsed)
+        if critical is None:
+            critical_v = existing["critical"] if existing else 0
+        else:
+            critical_v = critical
+        if nxt is None:
+            next_v = existing["next_do"] if existing else 0
+        else:
+            next_v = nxt
+        if next_v == 1:
+            conn.execute("UPDATE stages SET next_do=0 WHERE map_id=?", (map_id,))
+        if existing:
+            conn.execute(
+                """UPDATE stages
+                   SET label=?, class=?, a=?, m=?, b=?, depends_on=?, critical=?, next_do=?
+                   WHERE map_id=? AND stage_id=?""",
+                (label, klass, a, m, b, depends_json, critical_v, next_v, map_id, stage_id),
+            )
+        else:
+            conn.execute(
+                """INSERT INTO stages (
+                     map_id, stage_id, label, class, a, m, b, depends_on, critical, next_do
+                   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (map_id, stage_id, label, klass, a, m, b, depends_json, critical_v, next_v),
+            )
+        return {"map_id": map_id, "stage_id": stage_id}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_next(flags):
+    need(flags, "map")
+    only(flags, "map")
+    map_id = flags["map"]
+    check_id("map", map_id)
+    conn = connect()
+    row = conn.execute(
+        "SELECT stage_id FROM stages WHERE map_id=? AND next_do=1",
+        (map_id,),
+    ).fetchone()
+    ok({"stage_id": None if row is None else row["stage_id"]})
+
+
+def cmd_export(flags):
+    need(flags, "map")
+    only(flags, "map")
+    map_id = flags["map"]
+    check_id("map", map_id)
+    conn = connect()
+    row = conn.execute("SELECT g FROM maps WHERE id=?", (map_id,)).fetchone()
+    if row is None:
+        reject("missing map")
+    stages = []
+    for stage in conn.execute(
+        """SELECT stage_id, a, m, b, depends_on, class, label
+           FROM stages WHERE map_id=? ORDER BY rowid""",
+        (map_id,),
+    ):
+        try:
+            depends = json.loads(stage["depends_on"])
+        except json.JSONDecodeError:
+            reject("depends_on is not a JSON array")
+        if not isinstance(depends, list) or any(not isinstance(item, str) for item in depends):
+            reject("depends_on is not a JSON array")
+        stages.append(
+            {
+                "id": stage["stage_id"],
+                "a": stage["a"],
+                "m": stage["m"],
+                "b": stage["b"],
+                "depends_on": depends,
+                "class": stage["class"],
+                "what": stage["label"],
+            }
+        )
+    ok({"g": row["g"], "stages": stages})
+
+
+def cmd_apply(flags):
+    need(flags, "map", "critical")
+    only(flags, "map", "critical", "next")
+    map_id = flags["map"]
+    check_id("map", map_id)
+    critical_ids = flags["critical"].split(",")
+    for cid in critical_ids:
+        check_id("stage", cid)
+    next_id = None
+    if "next" in flags:
+        next_id = flags["next"]
+        check_id("stage", next_id)
+    conn = connect()
+
+    def work():
+        known = {
+            item["stage_id"]
+            for item in conn.execute(
+                "SELECT stage_id FROM stages WHERE map_id=?",
+                (map_id,),
+            )
+        }
+        for cid in critical_ids:
+            if cid not in known:
+                reject("unknown id")
+        if next_id is not None and next_id not in known:
+            reject("unknown id")
+        conn.execute(
+            "UPDATE stages SET critical=0, next_do=0 WHERE map_id=?",
+            (map_id,),
+        )
+        for cid in critical_ids:
+            conn.execute(
+                "UPDATE stages SET critical=1 WHERE map_id=? AND stage_id=?",
+                (map_id, cid),
+            )
+        if next_id is not None:
+            conn.execute(
+                "UPDATE stages SET next_do=1 WHERE map_id=? AND stage_id=?",
+                (map_id, next_id),
+            )
+        return {"map_id": map_id, "critical": critical_ids, "next": next_id}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_block_open(flags):
+    need(flags, "map", "stage", "energy")
+    only(flags, "map", "stage", "energy", "plan")
+    map_id = flags["map"]
+    stage_id = flags["stage"]
+    check_id("map", map_id)
+    check_id("stage", stage_id)
+    energy = flags["energy"]
+    if energy not in ENERGIES:
+        reject("bad energy")
+    plan = flags.get("plan")
+    if plan is not None:
+        no_at("plan", plan)
+    conn = connect()
+    stage = conn.execute(
+        "SELECT class FROM stages WHERE map_id=? AND stage_id=?",
+        (map_id, stage_id),
+    ).fetchone()
+    if stage is None:
+        reject("missing stage")
+    if stage["class"] != "Do":
+        reject("stage is not Do")
+    if conn.execute(
+        "SELECT id FROM blocks WHERE map_id=? AND status='open'",
+        (map_id,),
+    ).fetchone() is not None:
+        reject("second open block")
+
+    def work():
+        try:
+            cur = conn.execute(
+                """INSERT INTO blocks (
+                     map_id, stage_id, energy, plan, status, started_at, closed_at
+                   ) VALUES (?, ?, ?, ?, 'open', ?, NULL)""",
+                (map_id, stage_id, energy, plan, now()),
+            )
+        except sqlite3.IntegrityError:
+            reject("second open block")
+        return {"id": cur.lastrowid, "map_id": map_id, "stage_id": stage_id}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_block_close(flags):
+    only(flags, "id", "map")
+    has_id = "id" in flags
+    has_map = "map" in flags
+    if has_id == has_map:
+        usage("usage")
+    conn = connect()
+    if has_id:
+        if not re.fullmatch(r"[0-9]+", flags["id"]):
+            reject("unknown id")
+        block_id = int(flags["id"])
+        row = conn.execute(
+            "SELECT id, status FROM blocks WHERE id=?",
+            (block_id,),
+        ).fetchone()
+        if row is None or row["status"] != "open":
+            reject("no open block")
+    else:
+        map_id = flags["map"]
+        check_id("map", map_id)
+        row = conn.execute(
+            "SELECT id FROM blocks WHERE map_id=? AND status='open'",
+            (map_id,),
+        ).fetchone()
+        if row is None:
+            reject("no open block")
+        block_id = row["id"]
+
+    def work():
+        conn.execute(
+            "UPDATE blocks SET status='closed', closed_at=? WHERE id=? AND status='open'",
+            (now(), block_id),
+        )
+        return {"id": block_id, "status": "closed"}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_harvest_add(flags):
+    need(flags, "map", "stage", "result", "evidence")
+    only(flags, "map", "stage", "result", "evidence")
+    map_id = flags["map"]
+    stage_id = flags["stage"]
+    check_id("map", map_id)
+    check_id("stage", stage_id)
+    result = flags["result"]
+    evidence = flags["evidence"]
+    if not evidence.strip():
+        reject("empty evidence")
+    if not result.strip():
+        reject("empty result")
+    no_at("evidence", evidence)
+    no_at("result", result)
+    conn = connect()
+    if conn.execute(
+        "SELECT 1 FROM stages WHERE map_id=? AND stage_id=?",
+        (map_id, stage_id),
+    ).fetchone() is None:
+        reject("missing stage")
+
+    def work():
+        cur = conn.execute(
+            """INSERT INTO harvest_rows (ts, map_id, stage_id, result, evidence)
+               VALUES (?, ?, ?, ?, ?)""",
+            (now(), map_id, stage_id, result, evidence),
+        )
+        return {"id": cur.lastrowid}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_harvest_list(flags):
+    need(flags, "map")
+    only(flags, "map", "stage")
+    map_id = flags["map"]
+    check_id("map", map_id)
+    stage_id = flags.get("stage")
+    if stage_id is not None:
+        check_id("stage", stage_id)
+    conn = connect()
+    cols = ["id", "ts", "map_id", "stage_id", "result", "evidence"]
+    if stage_id is None:
+        rows = conn.execute(
+            """SELECT id, ts, map_id, stage_id, result, evidence
+               FROM harvest_rows WHERE map_id=? ORDER BY id""",
+            (map_id,),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            """SELECT id, ts, map_id, stage_id, result, evidence
+               FROM harvest_rows WHERE map_id=? AND stage_id=? ORDER BY id""",
+            (map_id, stage_id),
+        ).fetchall()
+    ok({"rows": [{name: row[name] for name in cols} for row in rows]})
+
+
+def cmd_pulse_archive(flags):
+    need(flags, "source", "payload")
+    only(flags, "source", "payload", "correlation")
+    payload = flags["payload"]
+    no_at("payload", payload)
+    source = flags["source"]
+    correlation = flags.get("correlation")
+    conn = connect()
+
+    def work():
+        cur = conn.execute(
+            """INSERT INTO archive_events (ts, source, payload, correlation_id)
+               VALUES (?, ?, ?, ?)""",
+            (now(), source, payload, correlation),
+        )
+        return {"id": cur.lastrowid}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_pulse_admit(flags):
+    need(flags, "key", "snippet", "source", "time", "status", "kind")
+    only(flags, "key", "snippet", "source", "time", "status", "kind", "lock")
+    key = parse_key(flags["key"])
+    snippet = flags["snippet"]
+    if not snippet.strip():
+        reject("empty snippet")
+    no_at("snippet", snippet)
+    source = flags["source"]
+    time_s = flags["time"]
+    if not time_s.strip():
+        reject("bad time")
+    status = flags["status"]
+    if status not in STATUSES:
+        reject("bad status")
+    kind = flags["kind"]
+    if kind not in KINDS:
+        reject("bad kind")
+    lock = flags.get("lock", "open")
+    if lock not in LOCKS:
+        reject("bad lock")
+    conn = connect()
+
+    def work():
+        row = conn.execute(
+            "SELECT id, snippet, lock, seen_count FROM memory_traces WHERE nat_key=?",
+            (key,),
+        ).fetchone()
+        if row is None:
+            cur = insert_trace(conn, key, snippet, source, time_s, status, kind, lock)
+            payload = {"id": cur.lastrowid, "nat_key": key, "seen_count": 1}
+        elif row["lock"] == "open" or row["snippet"] == snippet:
+            conn.execute(
+                "UPDATE memory_traces SET seen_count = seen_count + 1, last_seen=? WHERE id=?",
+                (time_s, row["id"]),
+            )
+            payload = {
+                "id": row["id"],
+                "nat_key": key,
+                "seen_count": row["seen_count"] + 1,
+            }
+        else:
+            fresh = fresh_key(conn, key)
+            cur = insert_trace(conn, fresh, snippet, source, time_s, status, kind, lock)
+            new_id = cur.lastrowid
+            conn.execute(
+                """INSERT INTO conflicts (subject, left_id, right_id, resolution, ts)
+                   VALUES (?, ?, ?, 'not in the evidence', ?)""",
+                (key, row["id"], new_id, time_s),
+            )
+            payload = {"id": new_id, "nat_key": fresh, "seen_count": 1}
+        rebuild_fts(conn)
+        return payload
+
+    ok(in_tx(conn, work))
+
+
+def cmd_pulse_list(flags):
+    only(flags, "limit")
+    limit = 8
+    if "limit" in flags:
+        if not re.fullmatch(r"[1-9][0-9]*", flags["limit"]):
+            usage("usage")
+        limit = int(flags["limit"])
+    conn = connect()
+    cols = [
+        "id",
+        "nat_key",
+        "snippet",
+        "source",
+        "time",
+        "status",
+        "kind",
+        "lock",
+        "seen_count",
+        "first_seen",
+        "last_seen",
+    ]
+    rows = conn.execute(
+        """SELECT id, nat_key, snippet, source, time, status, kind, lock,
+                  seen_count, first_seen, last_seen
+           FROM memory_traces
+           WHERE kind='memory' AND superseded_by IS NULL
+           ORDER BY time DESC, id DESC
+           LIMIT ?""",
+        (limit,),
+    ).fetchall()
+    ok({"rows": [{name: row[name] for name in cols} for row in rows]})
+
+
+def cmd_pulse_conflict(flags):
+    need(flags, "subject", "left", "right", "resolution")
+    only(flags, "subject", "left", "right", "resolution")
+    subject = flags["subject"]
+    left_key = parse_key(flags["left"])
+    right_key = parse_key(flags["right"])
+    resolution = flags["resolution"]
+    conn = connect()
+
+    def work():
+        left = conn.execute(
+            "SELECT id FROM memory_traces WHERE nat_key=?",
+            (left_key,),
+        ).fetchone()
+        right = conn.execute(
+            "SELECT id FROM memory_traces WHERE nat_key=?",
+            (right_key,),
+        ).fetchone()
+        if left is None or right is None:
+            reject("unknown nat_key")
+        cur = conn.execute(
+            """INSERT INTO conflicts (subject, left_id, right_id, resolution, ts)
+               VALUES (?, ?, ?, ?, ?)""",
+            (subject, left["id"], right["id"], resolution, now()),
+        )
+        rebuild_fts(conn)
+        return {"id": cur.lastrowid}
+
+    ok(in_tx(conn, work))
+
+
+COMMANDS = {
+    "init": cmd_init,
+    "map put": cmd_map_put,
+    "stage put": cmd_stage_put,
+    "next": cmd_next,
+    "export-map": cmd_export,
+    "apply-report": cmd_apply,
+    "block open": cmd_block_open,
+    "block close": cmd_block_close,
+    "harvest add": cmd_harvest_add,
+    "harvest list": cmd_harvest_list,
+    "pulse archive": cmd_pulse_archive,
+    "pulse admit": cmd_pulse_admit,
+    "pulse list": cmd_pulse_list,
+    "pulse conflict": cmd_pulse_conflict,
+}
+
+
+def parse(argv):
+    if not argv:
+        usage("usage")
+    words = []
+    i = 0
+    while i < len(argv) and not argv[i].startswith("-"):
+        words.append(argv[i])
+        i += 1
+    if not words:
+        usage("usage")
+    flags = {}
+    while i < len(argv):
+        token = argv[i]
+        if not token.startswith("--") or token == "--":
+            usage("usage")
+        name = token[2:]
+        if not name or name in flags or i + 1 >= len(argv):
+            usage("usage")
+        flags[name] = argv[i + 1]
+        i += 2
+    return " ".join(words), flags
+
+
+def main():
+    try:
+        cmd, flags = parse(sys.argv[1:])
+        handler = COMMANDS.get(cmd)
+        if handler is None:
+            usage("usage")
+        handler(flags)
+    except Exit as exc:
+        print(json.dumps(exc.payload))
+        sys.exit(exc.code)
+
+
+if __name__ == "__main__":
+    main()

@@ -21,6 +21,7 @@ signposts[]  : watch, fires_when, then ∈ {continue, switch, Ask}
 ```
 
 JSON for the Rust CLI is the subset in `examples/sample-map.json` (`g`, `stages[].id/a/m/b/depends_on/class`).
+The loop store has no `email` column and no `contact` column.
 
 ```bash
 mission-map-graph map.json --mermaid

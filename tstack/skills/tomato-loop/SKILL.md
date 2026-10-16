@@ -8,6 +8,7 @@ description: One focus block on one Do. Energy check, premflow pomodoro, evidenc
 ## Loop
 
 1. Energy check: high, mid or low. Low picks the shortest Do.
+Record the open block with tstack-state as in references/state.md, and pass the plan text. If premflow is missing, print one line that points at premflow/README.md and still open the block.
 2. Load **mission-map**. Take the top Do on the critical path. Park is not work.
 3. Load **intelli-route**. Repo work goes to **pstack-map**. A closed decision goes to **concordance**; `hold` becomes a HITL card.
 4. Start the block. Never wait on the timer in the agent shell; it is not a TTY.
@@ -16,7 +17,7 @@ description: One focus block on one Do. Energy check, premflow pomodoro, evidenc
    - Stop: press `q` in the block's terminal. Pause `space`, restart segment `r`, reset plan `R`. The CLI has no stop subcommand.
    - On block end premflow writes a `[POMO]` row to its ledger.
 5. Send, pay, sign or anything irreversible: stop and raise a HITL card.
-6. Load **harvest**, then **pulse-memory**, then return to step 1.
+6. Load **harvest**, then return to step 1.
 
 Open work goes in with `premflow task add <text>`; closing it is `premflow task done <n>`. Read with `premflow task list` or `premflow review`.
 

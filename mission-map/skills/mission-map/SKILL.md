@@ -80,6 +80,13 @@ mm-kern pert 2 4 8
 
 Sample DAG: [sample-map.json](../../examples/sample-map.json).
 
+## Loop record
+When tstack is installed, persist the confirmed map with tstack-state
+(references/state.md in that plugin). Read harvest list before marking a
+stage Done. Follow that reference for export-map, mission-map-graph, and
+apply-report. Read pulse list after the next Do is stored. If the binary
+is missing, keep the human-confirmed classes. Do not link SQLite into Rust or C.
+
 ## Done when
 
 - One \(G\), one critical path, one **next Do**

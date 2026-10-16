@@ -43,6 +43,7 @@ uc="$(cat "$ROOT/skills/pulse-memory/references/usecases.md")"
 echo "$uc" | grep -q 'thinking_path' && ok "usecases thinking_path" || bad "usecases missing thinking_path"
 echo "$uc" | grep -q 'harness_path' && ok "usecases harness_path" || bad "usecases missing harness_path"
 echo "$uc" | grep -q 'as_of' && ok "usecases as_of" || bad "usecases missing as_of"
+command grep -q 'tstack-state' "$ROOT/skills/pulse-memory/references/store.md" && ok "store tstack-state" || bad "store tstack-state"
 
 python_rc=0
 python3 - "$ROOT" <<'PY' || python_rc=$?
