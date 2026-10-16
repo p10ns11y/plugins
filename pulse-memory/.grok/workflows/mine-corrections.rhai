@@ -1,5 +1,4 @@
 // Spec: flows/specs/mine-corrections.md
-// Laws: flows/bend/LAWS.bend
 // Install: copy into ~/.grok/workflows/ or <repo>/.grok/workflows/
 // Launch: /workflow mine-corrections {"since":"…","paths":["…"]}
 // Sign-off: return proposed rules only. Do not edit files. Do not start the next flow.

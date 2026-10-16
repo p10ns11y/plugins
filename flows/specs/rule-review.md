@@ -1,7 +1,5 @@
 # rule-review
 
-Laws: [flows/bend/LAWS.bend](../bend/LAWS.bend)
-
 Args: `diff`, `rulesFile`
 
 | Phase | Mode | Does |

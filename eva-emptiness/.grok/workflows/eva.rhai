@@ -1,5 +1,4 @@
 // Spec: flows/specs/eva.md
-// Laws: flows/bend/LAWS.bend
 // Install: copy into ~/.grok/workflows/ or <repo>/.grok/workflows/
 // Launch: /workflow eva {"goal":"…"}
 // This file is the Claude eva port. eva-emptiness.rhai stays the longer Prior → ActOrAsk flow.
