@@ -133,6 +133,8 @@ done
 all="$(cat "$ROOT"/*.md "$ROOT"/plugin.json "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/map.md" "$ROOT/references/state.md" "$ROOT/scripts/schema.sql" "$ROOT/scripts/tstack-state")"
 if echo "$all" | command grep -Eiwq 'AI|demo|gate|/home/|/Users/|mzapan|100\.[0-9]+\.[0-9]+'; then bad "banned word or host"; else ok "clean words"; fi
 
+bash "$ROOT/test/test-capture.sh"
+
 echo "---"
 [[ "$fail" -eq 0 ]] || { echo "$fail failure(s)"; exit 1; }
 echo "ALL CHECKS PASSED"

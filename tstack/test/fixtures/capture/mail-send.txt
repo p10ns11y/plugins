@@ -1,0 +1,7 @@
+source: mail
+kind: send
+ask: A note is waiting to go out.
+deadline: none
+owner: si
+holds: send
+ref: mail:2
