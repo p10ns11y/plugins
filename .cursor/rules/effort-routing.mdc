@@ -1,0 +1,12 @@
+---
+description: Request this during planning, before a subagent or a model choice, and follow intelli-route effort from the task.
+alwaysApply: false
+---
+
+# Effort routing
+
+Run `intelli-route/bin/route --signals` and use its `effort` (`low`, `medium`, `high`, `xhigh`) and one-line `reason` before launching a subagent or picking a model.
+
+xhigh is hard or novel planning, risky work, cross-cutting work, security or data-loss work, and a first feature build. high is a normal feature or a review. medium or low is a routine fix, a re-review of a small diff, docs, a rename, or mechanical batch work. Batch small related changes into one PR.
+
+Pass diff size and spread, novelty, reversibility, blast radius (ci, auth, money, data), time pressure, and a prior REQUEST_CHANGES (that escalates one level). Choose from this task, not a fixed playbook rule.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Route one exact manifest when. playbook is skip only for route tstack."""
+"""Route one exact manifest when. Effort comes from task signals, not the route id."""
 
 import json
 import re
@@ -10,6 +10,28 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent
 MANIFEST = ROOT / "manifest.json"
 HOUSE = REPO / "pstack-map" / "skills" / "pstack-map" / "references" / "map.md"
+
+LEVELS = ("low", "medium", "high", "xhigh")
+KINDS = {"", "plan", "feature", "build", "review", "fix", "rereview", "docs", "rename", "batch"}
+BLASTS = ("ci", "auth", "money", "data")
+REVIEWS = {"", "approve", "request_changes", "REQUEST_CHANGES"}
+BOOLS = ("novel", "hard", "cross_cutting", "first_build", "security", "data_loss", "reversible", "pressure")
+KEYS = {
+    "kind", "novel", "hard", "cross_cutting", "first_build", "security", "data_loss",
+    "reversible", "files", "spread", "blast", "review", "pressure",
+}
+PROTECTED = {
+    "security", "data-loss", "blast auth", "blast money", "blast data",
+    "hard planning", "novel planning", "cross-cutting",
+    "first build of a new feature", "risky",
+}
+MECHANICAL = {"docs", "rename", "batch"}
+USAGE = "usage: route WHEN [--signals JSON]\n       route --signals JSON\n"
+
+
+def die(msg, code):
+    sys.stderr.write(msg if msg.endswith("\n") else msg + "\n")
+    sys.exit(code)
 
 
 def playbook_names(text):
@@ -53,15 +75,146 @@ def hitl_for(situation):
     return "required (" + "; ".join(reasons) + ")"
 
 
+def as_bool(name, value):
+    if not isinstance(value, bool):
+        die("signals %s must be a boolean" % name, 2)
+    return value
+
+
+def as_count(name, value):
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        die("signals %s must be a non-negative integer" % name, 2)
+    return value
+
+
+def normalize(raw):
+    if not isinstance(raw, dict):
+        die("signals must be an object", 2)
+    unknown = sorted(set(raw) - KEYS)
+    if unknown:
+        die("unknown signals " + ", ".join(unknown), 2)
+    kind = raw.get("kind", "")
+    if not isinstance(kind, str) or kind not in KINDS:
+        die("signals kind is not allowed", 2)
+    review = raw.get("review", "")
+    if not isinstance(review, str) or review not in REVIEWS:
+        die("signals review is not allowed", 2)
+    if review == "REQUEST_CHANGES":
+        review = "request_changes"
+    blast = raw.get("blast", [])
+    if not isinstance(blast, list) or any(not isinstance(item, str) or item not in BLASTS for item in blast):
+        die("signals blast must list ci, auth, money, or data", 2)
+    out = {
+        "kind": kind,
+        "review": review,
+        "blast": blast,
+        "files": as_count("files", raw.get("files", 0)),
+        "spread": as_count("spread", raw.get("spread", 0)),
+    }
+    for name in BOOLS:
+        default = True if name == "reversible" else False
+        out[name] = as_bool(name, raw[name]) if name in raw else default
+    return out
+
+
+def effort_for(raw):
+    """Pick one level from this task. Route id is not an input."""
+    s = normalize(raw)
+    kind = s["kind"]
+    blast = s["blast"]
+    serious = [name for name in ("auth", "money", "data") if name in blast]
+    small = s["files"] <= 5 and s["spread"] <= 2
+    wide = s["spread"] >= 4
+
+    if s["security"]:
+        rank, reason, protect = 3, "security", True
+    elif s["data_loss"]:
+        rank, reason, protect = 3, "data-loss", True
+    elif serious:
+        rank, reason, protect = 3, "blast " + serious[0], True
+    elif kind == "plan" and s["hard"]:
+        rank, reason, protect = 3, "hard planning", True
+    elif kind == "plan" and s["novel"]:
+        rank, reason, protect = 3, "novel planning", True
+    elif s["cross_cutting"] or (wide and kind in {"feature", "build", "plan", "fix"}):
+        rank, reason, protect = 3, "cross-cutting", True
+    elif s["first_build"] and kind in {"feature", "build", "plan"}:
+        rank, reason, protect = 3, "first build of a new feature", True
+    elif not s["reversible"] and kind in {"feature", "build", "fix", "plan", "rename"}:
+        rank, reason, protect = 3, "risky", True
+    elif kind == "review":
+        rank, reason, protect = 2, "review", False
+    elif kind == "plan":
+        rank, reason, protect = 2, "planning", False
+    elif kind in {"feature", "build", ""}:
+        rank, reason, protect = 2, "normal feature", False
+    elif kind == "fix":
+        rank, reason, protect = 1, "routine fix", False
+    elif kind == "rereview" and small:
+        rank, reason, protect = 0, "re-review of a small diff", False
+    elif kind == "rereview":
+        rank, reason, protect = 1, "re-review", False
+    elif kind == "docs":
+        rank, reason, protect = 0, "docs", False
+    elif kind == "rename":
+        rank, reason, protect = 0, "rename", False
+    elif kind == "batch":
+        rank, reason, protect = 0, "mechanical batch; one PR", False
+    else:
+        die("signals kind is not allowed", 2)
+
+    if s["files"] >= 20 and kind not in MECHANICAL and rank < 2:
+        rank, reason = 2, "wide diff"
+    if "ci" in blast and not protect and rank < 2:
+        rank, reason = rank + 1, "blast ci"
+
+    if s["novel"] and not protect and rank < 3:
+        rank, reason = rank + 1, reason + "; novel"
+    if s["hard"] and not protect and rank < 3:
+        rank, reason = rank + 1, reason + "; hard"
+    if s["pressure"] and s["reversible"] and not protect and rank > 0:
+        rank, reason = rank - 1, reason + "; time pressure"
+    if s["review"] == "request_changes" and rank < 3:
+        rank, reason = rank + 1, reason + "; escalated after REQUEST_CHANGES"
+
+    return LEVELS[rank], reason
+
+
+def parse_args(argv):
+    situation = None
+    signals = None
+    i = 1
+    while i < len(argv):
+        arg = argv[i]
+        if arg == "--signals":
+            if signals is not None or i + 1 >= len(argv):
+                die(USAGE, 2)
+            try:
+                signals = json.loads(argv[i + 1])
+            except json.JSONDecodeError:
+                die("signals must be JSON", 2)
+            i += 2
+            continue
+        if arg.startswith("-") or situation is not None:
+            die(USAGE, 2)
+        situation = arg
+        i += 1
+    if situation is not None and not situation.strip():
+        die(USAGE, 2)
+    if situation is None and signals is None:
+        die(USAGE, 2)
+    return situation, {} if signals is None else signals
+
+
 def main():
-    if len(sys.argv) != 2 or not sys.argv[1].strip():
-        sys.stderr.write("usage: route WHEN\n")
-        sys.exit(2)
-    situation = sys.argv[1]
+    situation, signals = parse_args(sys.argv)
+    effort, reason = effort_for(signals)
+    if situation is None:
+        sys.stdout.write(json.dumps({"effort": effort, "reason": reason}) + "\n")
+        return
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     if "tstack" not in manifest.get("routes", {}):
-        sys.stderr.write("missing routes.tstack\n")
-        sys.exit(1)
+        die("missing routes.tstack", 1)
     skipped = []
     match = None
     for row in manifest["primary"]:
@@ -70,19 +223,13 @@ def main():
             break
         skipped.append("%s: when" % row["id"])
     if match is None:
-        sys.stderr.write("missing when\n")
-        sys.exit(1)
+        die("missing when", 1)
     route = match.get("route")
     if route not in manifest["routes"]:
-        sys.stderr.write("missing route\n")
-        sys.exit(1)
+        die("missing route", 1)
     load_id = match["id"]
     if route == "tstack":
         playbook = "skip"
-    elif route == "light":
-        playbook = named_playbook(situation, playbook_names(HOUSE.read_text(encoding="utf-8")))
-        if playbook is None:
-            playbook = "house"
     else:
         playbook = named_playbook(situation, playbook_names(HOUSE.read_text(encoding="utf-8")))
         if playbook is None:
@@ -95,6 +242,8 @@ def main():
         "playbook": playbook,
         "hitl": hitl_for(situation),
         "next": load_id,
+        "effort": effort,
+        "reason": reason,
     }
     sys.stdout.write(json.dumps(emit) + "\n")
 

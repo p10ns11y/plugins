@@ -16,7 +16,7 @@ On each user message:
 8. Roles are `fast`, `explore`, `coding`, `deep`, `review` on this host's model. Review uses a fresh context.
 9. Pause on secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. Emit the route and stop.
 
-Emit situation, route, loads, skips, playbook, hitl, and next. Then do that next step. `empty` stays on Ask when authorization is unknown.
+Emit situation, route, loads, skips, playbook, hitl, next, effort, and reason. `bin/route --signals` sets `effort` before a model seat. Then do that next step. `empty` stays on Ask when authorization is unknown.
 
 Credit Lauren Tan / pstack MIT when a pstack playbook runs.
 

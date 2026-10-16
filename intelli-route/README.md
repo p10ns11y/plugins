@@ -34,9 +34,13 @@ An alignment name loads `aihero-map`. That map names the house skill and which c
 | **playbook** | |
 | **hitl** | none \| required (reason) |
 | **next** | one action |
+| **effort** | low \| medium \| high \| xhigh |
+| **reason** | one line |
 ```
 
 `bin/route` prints those fields for one exact manifest `when`. `playbook` is `skip` only on route `tstack`. Route `light` follows a playbook or the house row.
+
+`bin/route --signals JSON` sets `effort` and `reason` from this task at plan time. Signals are diff size and spread, novelty, reversibility, blast radius (`ci`, `auth`, `money`, `data`), a prior `REQUEST_CHANGES` (one level up), and time pressure. Keys are `kind`, `novel`, `hard`, `cross_cutting`, `first_build`, `security`, `data_loss`, `reversible`, `files`, `spread`, `blast`, `review`, and `pressure`. No signals reads as a normal feature. The route id does not pick the level.
 
 `light` takes that playbook's first bounded step. `card` names a phase, a budget, and one verify command, then does only the current phase. `empty` writes knowns, unknowns, one idk, `disprove_with`, and ActOrAsk. Unknown authorization stays Ask. `tstack` runs one tomato block and does not start a repo playbook.
 
@@ -98,7 +102,9 @@ cursor/rules/intelli-route.mdc
 .grok/workflows/intelli-route.rhai
 bot/intelli-route.md
 agents/intelli-route.md
+bin/route
 test/test-thin.sh
+test/test_effort.py
 ```
 
 No `skills/` directory. Procedures live upstream.

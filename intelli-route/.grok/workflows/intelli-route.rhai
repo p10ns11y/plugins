@@ -229,6 +229,7 @@ classify_prompt += "confidence is high, med, or low. low means the closed decisi
 classify_prompt += "Do not emit clt-dual-load. Do not invent ids.\n";
 classify_prompt += "playbook is one of: investigation, bug-fix, perf-issue, hillclimb, runtime-forensics, trace-forensics, feature, refactoring, prototype, visual-parity, authoring-a-skill, eval, babysit, shipping, autonomous-run, orchestrate, autopilot-full, autopilot-stack, session-pickup, pause-safely, multi-phase-plan, worktree-cleanup, figure-it-out, skip.\n";
 classify_prompt += "hitl is none, or a short reason if the goal needs secrets, production, irreversible git, CV promote, unknown authorization, or a money, legal, or health act.\n";
+classify_prompt += "Do not choose model effort. bin/route --signals sets effort and a one-line reason from the task.\n";
 
 let cls = agent(classify_prompt, #{
     label: "classify",

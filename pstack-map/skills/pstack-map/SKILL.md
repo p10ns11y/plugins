@@ -68,6 +68,7 @@ Worth copying later only if: (1) pstack is **not** installable on the host, **an
 3. Set `hitl`: `required` iff secrets / prod / irreversible git / CV / auth unknown.
 4. Name `cg_hook` / `eva_hook`. Do not inline Outer or EVA Inner.
 5. Emit Map. Credit line required.
+6. Before a subagent or a model slug, run `intelli-route/bin/route --signals` and use its `effort` (`low`, `medium`, `high`, `xhigh`) and one-line `reason`. That follows the task. Do not copy the snapshot ladder onto every playbook.
 
 ### Playbook → house (short)
 

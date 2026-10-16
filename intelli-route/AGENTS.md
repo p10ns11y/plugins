@@ -14,7 +14,7 @@ Fetch a skill body only after its id is in `loads`. Stop at four. Do not open ev
 4. Multi-step, until-done, or the same step is being redone → route `card` (`control-graph`).
 5. Otherwise → route `light` (`pstack-map`, then installed pstack `poteto-mode` or the house row in `references/map.md`).
 6. Add a signal only when its `when` matches, including `craft` when a settled conversation needs a spec before code, and `trust-stack` on a session lookback. An alignment name loads `aihero-map`. Fetch https://www.aihero.dev/skills.md. The Claude plugin is Claude Code only. `clt-dual-load` is a host rule. Do not paste it.
-7. Emit situation, route, loads, skips, playbook, hitl, and next. Then do that next step.
+7. Emit situation, route, loads, skips, playbook, hitl, next, effort, and reason. `bin/route --signals` sets `effort` from the task before a subagent or a model slug. Then do that next step.
 
 ## Pause
 
