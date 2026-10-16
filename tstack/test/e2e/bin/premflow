@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ -n "${PREMFLOW_LOG:-}" ]]; then
+  printf '%s\n' "$*" >>"$PREMFLOW_LOG"
+fi
+
+case "${1:-}" in
+  pomo)
+    printf '%s\n' "[POMO]"
+    exit 0
+    ;;
+  win|task)
+    exit 0
+    ;;
+  *)
+    exit 2
+    ;;
+esac

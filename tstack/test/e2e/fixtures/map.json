@@ -1,0 +1,41 @@
+{
+  "g": "checkable arrival",
+  "stages": [
+    {
+      "id": "done-node",
+      "a": 1,
+      "m": 1,
+      "b": 1,
+      "depends_on": [],
+      "class": "Done",
+      "what": "done-node"
+    },
+    {
+      "id": "short",
+      "a": 2,
+      "m": 2,
+      "b": 2,
+      "depends_on": ["done-node"],
+      "class": "Do",
+      "what": "short"
+    },
+    {
+      "id": "long",
+      "a": 8,
+      "m": 8,
+      "b": 8,
+      "depends_on": ["short"],
+      "class": "Do",
+      "what": "long"
+    },
+    {
+      "id": "side",
+      "a": 1,
+      "m": 1,
+      "b": 1,
+      "depends_on": [],
+      "class": "Park",
+      "what": "side"
+    }
+  ]
+}

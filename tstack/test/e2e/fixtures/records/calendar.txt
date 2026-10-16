@@ -1,0 +1,7 @@
+source: calendar
+kind: none
+ask: A calendar block changed.
+deadline: none
+owner: none
+holds: none
+ref: calendar:2
