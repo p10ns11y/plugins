@@ -1,5 +1,7 @@
 # craft-run
 
+Laws: [flows/bend/LAWS.bend](../bend/LAWS.bend)
+
 Args: `change`
 
 | Phase | Mode | Does |

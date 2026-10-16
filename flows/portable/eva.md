@@ -22,3 +22,5 @@ Emit the spec card only after that verifier. Check every field the spec lists. A
 ## Sign-off
 
 Stop. A person signs off before the next flow. Do not start it.
+
+Laws: [flows/bend/LAWS.bend](../bend/LAWS.bend)

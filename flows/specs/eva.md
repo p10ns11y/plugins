@@ -1,5 +1,7 @@
 # eva
 
+Laws: [flows/bend/LAWS.bend](../bend/LAWS.bend)
+
 Args: `goal`
 
 | Phase | Mode | Does |

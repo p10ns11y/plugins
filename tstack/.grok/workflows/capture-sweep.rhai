@@ -1,4 +1,5 @@
 // Spec: flows/specs/capture-sweep.md
+// Laws: flows/bend/LAWS.bend
 // Install: copy into ~/.grok/workflows/ or <repo>/.grok/workflows/
 // Launch: /workflow capture-sweep
 // Sign-off: return the card. Do not post, pay, or sign. Do not start the next flow.
