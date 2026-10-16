@@ -290,6 +290,13 @@ PY
 )
 [[ "$(hook_out "$out")" == "deny" ]] && ok "armed exception denies" || bad "armed exception ($out)"
 
+cmd=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hooks"]["PreToolUse"][0]["hooks"][0]["command"])' "$ROOT/hooks/hooks.json")
+[[ "$cmd" == *'${CLAUDE_PLUGIN_ROOT}'* && "$cmd" == *'${GROK_PLUGIN_ROOT}'* ]] && ok "hook names both roots" || bad "hook names both roots"
+out=$(printf '%s' "{\"cwd\":\"$TMP/absent\",\"toolName\":\"Read\",\"toolInput\":{\"file_path\":\"x\"}}" | env -u GROK_PLUGIN_ROOT CLAUDE_PLUGIN_ROOT="$ROOT" sh -c "$cmd")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "claude root hook allows" || bad "claude root hook ($out)"
+out=$(printf '%s' "{\"cwd\":\"$TMP/absent\",\"toolName\":\"Read\",\"toolInput\":{\"file_path\":\"x\"}}" | env -u CLAUDE_PLUGIN_ROOT GROK_PLUGIN_ROOT="$ROOT" sh -c "$cmd")
+[[ "$(hook_out "$out")" == "allow" ]] && ok "grok root hook allows" || bad "grok root hook ($out)"
+
 if [[ "$fail" -ne 0 ]]; then
   echo "$fail failed"
   exit 1
