@@ -323,6 +323,26 @@ def append_line(path, label_dm, label_llm, p_dm, tau, agree, act):
     return line
 
 
+def read_printed(action):
+    previous = sys.stdout
+    chunks = []
+
+    class Tee:
+        def write(self, data):
+            previous.write(data)
+            chunks.append(data)
+
+        def flush(self):
+            previous.flush()
+
+    sys.stdout = Tee()
+    try:
+        action()
+    finally:
+        sys.stdout = previous
+    return "".join(chunks)
+
+
 def hitl(kind):
     card = "# HITL\n- kind: %s\n- owner: SI\n" % kind
     check("owner: SI" in card, "owner")
@@ -506,10 +526,13 @@ def flow_replan():
     for argv in calls[start:]:
         check(not (Path(argv[0]).name == "capture-sweep" and len(argv) > 1 and argv[1] == "emit"), "emit")
     mark = len(calls)
-    g = ""
-    trace = ""
-    if g == "":
-        trace = "Ask: name a checkable arrival."
+
+    def stop_for_empty_g(g):
+        if g != "":
+            raise FlowError("empty g continued")
+        print("Ask: name a checkable arrival.", flush=True)
+
+    trace = read_printed(lambda: stop_for_empty_g(""))
     check("checkable arrival" in trace, "empty g ask")
     check("next_do=" not in trace, "empty g next")
     for argv in calls[mark:]:
@@ -738,9 +761,13 @@ def flow_without():
     check("PREMFLOW_LOG" not in os.environ, "PREMFLOW_LOG")
     proc = run(["bash", "-c", "command -v premflow"], path=NARROW)
     check(proc.returncode != 0, "command -v")
-    hint = "premflow/README.md"
-    check("premflow/README.md" in hint, "hint")
-    check("[POMO]" not in hint, "pomo")
+
+    def print_premflow_hint():
+        print("premflow/README.md", flush=True)
+
+    shown = read_printed(print_premflow_hint)
+    check(any("premflow/README.md" in line for line in shown.splitlines()), "hint")
+    check("[POMO]" not in shown, "pomo")
     db = fresh_db()
     check(load_shared(db, NARROW) == "short", "next")
     must(state(db, [
