@@ -24,6 +24,7 @@ need cursor/rules/intelli-route.mdc
 need .grok/workflows/intelli-route.rhai
 need bot/intelli-route.md
 need agents/intelli-route.md
+need bin/route
 
 if [[ -d "$ROOT/skills" ]]; then bad "skills/ present (bodies must stay upstream)"; else ok "no skills/ copy"; fi
 if [[ -d "$ROOT/skills/poteto-mode" || -d "$ROOT/poteto-mode" ]]; then bad "poteto-mode vendored"; else ok "no poteto-mode copy"; fi
@@ -117,9 +118,11 @@ if plugin.get("version") != "0.4.0" or man.get("version") != "0.4.0":
 if man.get("max_loads") != 4:
     bad("max_loads is not 4")
 emit = man.get("emit")
-for field in ("situation", "route", "loads", "skips", "playbook", "hitl", "next"):
+for field in ("situation", "route", "loads", "skips", "playbook", "hitl", "next", "effort", "reason"):
     if field not in emit:
         bad(f"emit missing {field}")
+if man.get("effort") != ["low", "medium", "high", "xhigh"]:
+    bad("effort levels")
 routes = man.get("routes") or {}
 if set(routes) != {"light", "card", "empty", "tstack"}:
     bad(f"routes {sorted(routes)}")
@@ -225,6 +228,12 @@ PY
   else
     bad "manifest contract"
   fi
+fi
+
+if python3 "$ROOT/test/test_effort.py"; then
+  ok "effort table"
+else
+  bad "effort table"
 fi
 
 proof="$ROOT/../trust-stack/test/bend-critical.sh"

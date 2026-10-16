@@ -288,9 +288,14 @@ def route_for(when):
     must(proc)
     emit = json.loads(proc.stdout)
     check(
-        list(emit) == ["situation", "route", "loads", "skips", "playbook", "hitl", "next"],
+        list(emit) == [
+            "situation", "route", "loads", "skips", "playbook", "hitl", "next",
+            "effort", "reason",
+        ],
         "emit fields",
     )
+    check(emit["effort"] == "high", "effort")
+    check(emit["reason"] == "normal feature", "reason")
     check(len(emit["loads"]) <= 4, "loads")
     manifest = json.loads(read_text(MANIFEST))
     if "tstack" not in manifest.get("routes", {}):

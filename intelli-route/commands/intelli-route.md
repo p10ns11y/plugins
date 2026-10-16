@@ -37,6 +37,8 @@ Write this table before any edit:
 | **playbook** | name or skip |
 | **hitl** | none \| required (reason) |
 | **next** | one action |
+| **effort** | low \| medium \| high \| xhigh |
+| **reason** | one line from `bin/route --signals` |
 ```
 
 Then do only `next`:

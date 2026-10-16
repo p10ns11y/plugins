@@ -19,7 +19,7 @@ pstack is Lauren Tan’s MIT plugin (https://github.com/cursor/plugins/tree/main
 1. A paste or dump with no single ask → `control-feeder`, then classify the Feed.
 2. First match: `empty` → `eva-emptiness`, including a multi-session effort whose route is still fog. `tstack` when a life or mission focus block, and the ask is not repo work → `tstack/skills/tomato-loop/SKILL.md`. `card` → `control-graph`. Else `light` → `pstack-map` and one playbook or the house row.
 3. Add a signal only when its `when` matches, including `odysseus-navigator` on a plan, architecture, or review, and `craft` when a settled conversation needs a spec before code. A session lookback loads `trust-stack`. An alignment name loads `aihero-map`. Fetch https://www.aihero.dev/skills.md. The Claude plugin is Claude Code only.
-4. Emit `## Intelli-route` with situation, route, loads, skips, playbook, hitl, and next. Then do that next step.
+4. Emit `## Intelli-route` with situation, route, loads, skips, playbook, hitl, next, effort, and reason. `bin/route --signals` sets `effort` before a subagent or a model slug. Then do that next step.
 5. HITL before secrets, production, irreversible git, CV promote, unknown authorization, and money, legal, or health acts. On HITL, stop after the table.
 6. Credit Lauren Tan when a pstack playbook runs.
 
