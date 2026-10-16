@@ -28,7 +28,7 @@ The checker is young, mostly un-audited, and its Lean model does not match `bend
 
 ## In scope
 
-Work inside a plugin directory or shared repo docs. Each plugin owns its `README.md`, `skills/`, `commands/`, and optional `.grok/workflows/*.rhai` (copy/symlink into a Grok workflows root — plugins do not auto-register Rhai).
+Work inside a plugin directory or shared repo docs. Each plugin owns its `README.md`, `skills/`, `commands/`, optional `.grok/workflows/*.rhai` (copy into a Grok workflows root; plugins do not auto-register Rhai), and optional `workflows/*.js` for Claude Code ([docs/workflows.md](docs/workflows.md)).
 
 ## Out of scope (do not touch from here)
 

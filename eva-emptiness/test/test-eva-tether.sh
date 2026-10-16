@@ -103,6 +103,24 @@ echo "=== entry scripts (C preferred) ==="
 out=$(printf '%s' '{"toolInput":"git push"}' | "$PRE")
 assert_contains "$out" '"decision":"ask"' "pretool git push ask"
 
+echo "=== hook command resolves either plugin root ==="
+cmd=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["hooks"]["PreToolUse"][0]["hooks"][0]["command"])' "$ROOT/hooks/hooks.json")
+case $cmd in
+  *'${CLAUDE_PLUGIN_ROOT}'*) echo "ok hook names CLAUDE_PLUGIN_ROOT" ;;
+  *) echo "FAIL hook missing CLAUDE_PLUGIN_ROOT"; fail=1 ;;
+esac
+case $cmd in
+  *'${GROK_PLUGIN_ROOT}'*) echo "ok hook names GROK_PLUGIN_ROOT" ;;
+  *) echo "FAIL hook missing GROK_PLUGIN_ROOT"; fail=1 ;;
+esac
+out=$(printf '%s' '{"toolInput":"git push origin main"}' | env -u GROK_PLUGIN_ROOT CLAUDE_PLUGIN_ROOT="$ROOT" sh -c "$cmd")
+assert_contains "$out" '"decision":"ask"' "claude root hook ask"
+out=$(printf '%s' '{"toolInput":"git push origin main"}' | env -u CLAUDE_PLUGIN_ROOT GROK_PLUGIN_ROOT="$ROOT" sh -c "$cmd")
+assert_contains "$out" '"decision":"ask"' "grok root hook ask"
+sub=$(printf '%s' "$cmd" | python3 -c 'import sys; print(sys.stdin.read().replace("${CLAUDE_PLUGIN_ROOT}", sys.argv[1]), end="")' "$ROOT")
+out=$(printf '%s' '{"toolInput":"echo hello"}' | env -u CLAUDE_PLUGIN_ROOT -u GROK_PLUGIN_ROOT sh -c "$sub")
+assert_empty "$out" "substituted claude root allows"
+
 out=$(printf '%s' '{"command":"git push"}' | "$CUR")
 assert_contains "$out" 'ask' "cursor shell git push ask"
 
