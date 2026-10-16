@@ -7,7 +7,19 @@ ok() { echo "ok  $*"; }
 bad() { echo "FAIL $*"; fail=$((fail + 1)); }
 
 for p in plugin.json LICENSE NOTICE.md README.md commands/tomato.md commands/harvest.md commands/replan.md \
-  skills/tomato-loop/SKILL.md skills/capture-sweep/SKILL.md skills/harvest/SKILL.md references/map.md; do
+  skills/tomato-loop/SKILL.md skills/capture-sweep/SKILL.md skills/harvest/SKILL.md references/map.md \
+  references/cards.md \
+  connectors/mail.allow \
+  connectors/calendar.allow \
+  connectors/chat.allow \
+  connectors/pr.allow \
+  bin/capture-sweep \
+  skills/capture-mail/SKILL.md \
+  skills/capture-calendar/SKILL.md \
+  skills/capture-chat/SKILL.md \
+  skills/capture-pr/SKILL.md \
+  test/test-capture.sh \
+  test/fixtures/capture/mail-none.txt; do
   [[ -f "$ROOT/$p" ]] && ok "exists $p" || bad "missing $p"
 done
 
@@ -130,8 +142,23 @@ agent="$(cat "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/m
 for w in 'Lauren Tan' 'Cirillo' 'thecuriousts' 'Copyright'; do
   [[ "$agent" == *"$w"* ]] && bad "attribution in agent body: $w" || ok "no attribution: $w"
 done
-all="$(cat "$ROOT"/*.md "$ROOT"/plugin.json "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT/references/map.md" "$ROOT/references/state.md" "$ROOT/scripts/schema.sql" "$ROOT/scripts/tstack-state")"
+all="$(cat "$ROOT"/*.md "$ROOT"/plugin.json "$ROOT"/commands/*.md "$ROOT"/skills/*/SKILL.md "$ROOT"/references/*.md "$ROOT"/scripts/schema.sql "$ROOT"/scripts/tstack-state "$ROOT"/connectors/*.allow "$ROOT"/bin/capture-sweep "$ROOT"/test/test-capture.sh "$ROOT"/test/fixtures/capture/*.txt)"
 if echo "$all" | command grep -Eiwq 'AI|demo|gate|/home/|/Users/|mzapan|100\.[0-9]+\.[0-9]+'; then bad "banned word or host"; else ok "clean words"; fi
+
+sweep="$(cat "$ROOT/skills/capture-sweep/SKILL.md")"
+for s in capture-mail capture-calendar capture-pr capture-chat control-plane pulse-memory mission-map michelin-kitchen check-allows; do
+  [[ "$sweep" == *"$s"* ]] && ok "sweep $s" || bad "sweep lacks $s"
+done
+[[ "$sweep" == *'**si**'* ]] && ok "sweep si" || bad "sweep lacks si"
+map="$(cat "$ROOT/references/map.md")"
+for s in capture-mail capture-calendar capture-pr capture-chat; do
+  [[ "$map" == *"$s"* ]] && ok "route $s" || bad "route lacks $s"
+done
+if command grep -E -q 'gh pr (create|comment|merge|review|close|edit|diff|view)|send_message|create_event|curl |wget ' "$ROOT/bin/capture-sweep"; then
+  bad "write command in script"
+else
+  ok "script reads only"
+fi
 
 bash "$ROOT/test/test-capture.sh"
 

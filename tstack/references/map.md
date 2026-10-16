@@ -16,3 +16,4 @@
 | Block becomes repo work | pstack-map |
 | Timed block, ledger rows | premflow |
 | Loop record | tstack-state |
+| Mail, calendar, pull request, and chat reads | capture-mail, capture-calendar, capture-pr, capture-chat |
