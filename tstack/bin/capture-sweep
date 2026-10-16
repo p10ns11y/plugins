@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT="$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)"
 
 usage() {
-  echo "usage: capture-sweep emit FILE" >&2
+  echo "usage: capture-sweep emit FILE | check-allows" >&2
   exit 2
 }
 
@@ -66,7 +66,35 @@ emit_file() {
     "$kind" "$source" "$ask" "$deadline" "$holds" "$owner" "$ref"
 }
 
+check_allows() {
+  local dir="${CAPTURE_ALLOWS:-$ROOT/connectors}"
+  local base f line got want
+  local -a names=(mail.allow calendar.allow chat.allow pr.allow)
+  shopt -s nullglob
+  local -a found=("$dir"/*.allow)
+  [[ "${#found[@]}" -eq 4 ]] || { echo "allow count" >&2; exit 2; }
+  for base in "${names[@]}"; do
+    f="$dir/$base"
+    [[ -f "$f" ]] || { echo "missing $base" >&2; exit 2; }
+    while IFS= read -r line || [[ -n "$line" ]]; do
+      [[ -z "$line" ]] && continue
+      case "$line" in
+        send|reply|forward|pay|sign|create|delete|update|merge|comment|post|draft|trash|respond|rsvp)
+          echo "denied $line" >&2; exit 2 ;;
+      esac
+    done <"$f"
+  done
+  want=$'list\nget\nsearch'
+  for base in mail.allow calendar.allow chat.allow; do
+    got="$(grep -v '^$' "$dir/$base")"
+    [[ "$got" == "$want" ]] || { echo "allow mismatch $base" >&2; exit 2; }
+  done
+  got="$(grep -v '^$' "$dir/pr.allow")"
+  [[ "$got" == "list" ]] || { echo "allow mismatch pr.allow" >&2; exit 2; }
+}
+
 case "${1:-}" in
   emit) [[ -n "${2:-}" ]] || usage; emit_file "$2" ;;
+  check-allows) check_allows ;;
   *) usage ;;
 esac

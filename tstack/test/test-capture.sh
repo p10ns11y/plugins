@@ -90,6 +90,23 @@ else
   [[ ! -s "$TMP/out" ]] && ok "lie refused" || bad "lie printed"
 fi
 
+if "$BIN" check-allows >/dev/null; then
+  ok "allows"
+else
+  bad "allows"
+fi
+
+mkdir -p "$TMP/bad"
+printf '%s\n' list get search >"$TMP/bad/mail.allow"
+printf '%s\n' list get search >"$TMP/bad/calendar.allow"
+printf '%s\n' list >"$TMP/bad/pr.allow"
+printf '%s\n' send >"$TMP/bad/chat.allow"
+if CAPTURE_ALLOWS="$TMP/bad" "$BIN" check-allows >"$TMP/out" 2>"$TMP/err"; then
+  bad "denied token should fail"
+else
+  ok "denied token"
+fi
+
 echo "---"
 [[ "$fail" -eq 0 ]] || { echo "$fail failure(s)"; exit 1; }
 echo "CAPTURE CHECKS PASSED"
