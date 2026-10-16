@@ -107,6 +107,58 @@ else
   ok "denied token"
 fi
 
+mkdir -p "$TMP/nobin" "$TMP/ghbin"
+ln -s "$(command -v bash)" "$TMP/nobin/bash"
+ln -s "$(command -v bash)" "$TMP/ghbin/bash"
+ln -s "$(command -v python3)" "$TMP/ghbin/python3"
+if env PATH="$TMP/nobin" "$BIN" live-pr >"$TMP/out" 2>"$TMP/err"; then
+  [[ ! -s "$TMP/out" ]] && grep -qx 'pr: unavailable' "$TMP/err" && ok "pr missing" || bad "pr missing output"
+else
+  bad "pr missing exit"
+fi
+
+cat >"$TMP/ghbin/gh" <<'EOF'
+#!/usr/bin/env bash
+printf '%s\n' "$*" >>"${GH_LOG:?}"
+[[ "$*" == "pr list --json number,title,updatedAt --limit 20" ]] || exit 9
+if [[ -n "${GH_EXIT:-}" ]]; then
+  printf '%s\n' "${GH_NOISE:-}" >&2
+  exit "$GH_EXIT"
+fi
+printf '%s' "${GH_JSON:?}"
+EOF
+chmod +x "$TMP/ghbin/gh"
+export GH_LOG="$TMP/gh.log"
+export GH_JSON='[{"number":7,"title":"Zebraunique","updatedAt":"2026-10-16T01:02:03Z"}]'
+out="$(env PATH="$TMP/ghbin" GH_LOG="$GH_LOG" GH_JSON="$GH_JSON" "$BIN" live-pr)"
+[[ "$out" == "$(cat <<'EOF'
+# Card
+- kind: none
+- source: pr
+- ask: A pull request is waiting.
+- deadline: 2026-10-16
+- holds: none
+- owner: none
+- ref: pr:7
+EOF
+)" ]] && ok "live pr" || bad "live pr"
+[[ "$out" != *Zebraunique* ]] && ok "title dropped" || bad "title leaked"
+[[ "$(cat "$GH_LOG")" == "pr list --json number,title,updatedAt --limit 20" ]] && ok "argv" || bad "argv"
+
+if env PATH="$TMP/ghbin" GH_LOG="$GH_LOG" GH_JSON='[]' GH_EXIT=1 GH_NOISE=NOTACARD "$BIN" live-pr >"$TMP/out" 2>"$TMP/err"; then
+  [[ ! -s "$TMP/out" ]] && grep -qx 'pr: unavailable' "$TMP/err" && ! grep -q NOTACARD "$TMP/err" && ok "pr fail" || bad "pr fail output"
+else
+  bad "pr fail exit"
+fi
+
+export GH_JSON='[{"number":8,"title":"Zebraunique","updatedAt":"not-a-date"}]'
+out="$(env PATH="$TMP/ghbin" GH_LOG="$GH_LOG" GH_JSON="$GH_JSON" "$BIN" live-pr)"
+[[ "$out" == *"- deadline: none"* && "$out" == *"- ref: pr:8"* ]] && ok "bad date" || bad "bad date"
+
+: >"$GH_LOG"
+env PATH="$TMP/ghbin" GH_LOG="$GH_LOG" GH_JSON='[]' "$BIN" emit "$FIX/mail-none.txt" >/dev/null
+[[ ! -s "$GH_LOG" ]] && ok "emit skips gh" || bad "emit called gh"
+
 echo "---"
 [[ "$fail" -eq 0 ]] || { echo "$fail failure(s)"; exit 1; }
 echo "CAPTURE CHECKS PASSED"

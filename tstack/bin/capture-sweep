@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT="$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)"
 
 usage() {
-  echo "usage: capture-sweep emit FILE | check-allows" >&2
+  echo "usage: capture-sweep emit FILE | check-allows | live-pr" >&2
   exit 2
 }
 
@@ -93,8 +93,51 @@ check_allows() {
   [[ "$got" == "list" ]] || { echo "allow mismatch pr.allow" >&2; exit 2; }
 }
 
+live_pr() {
+  local raw
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+  if ! raw="$(gh pr list --json number,title,updatedAt --limit 20 2>/dev/null)"; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+  if ! printf '%s' "$raw" | python3 -c '
+import json, sys
+rows = json.load(sys.stdin)
+if not isinstance(rows, list):
+    sys.exit(2)
+blocks = []
+for row in rows:
+    n = row.get("number")
+    if isinstance(n, bool) or not isinstance(n, int) or n < 1 or n > 999999:
+        continue
+    updated = row.get("updatedAt")
+    day = updated[:10] if isinstance(updated, str) else ""
+    if len(day) != 10 or not day[:4].isdigit() or day[4] != "-" or not day[5:7].isdigit() or day[7] != "-" or not day[8:10].isdigit():
+        day = "none"
+    blocks.append("\n".join([
+        "# Card",
+        "- kind: none",
+        "- source: pr",
+        "- ask: A pull request is waiting.",
+        "- deadline: " + day,
+        "- holds: none",
+        "- owner: none",
+        "- ref: pr:" + str(n),
+    ]))
+if blocks:
+    sys.stdout.write("\n\n".join(blocks) + "\n")
+' 2>/dev/null; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+}
+
 case "${1:-}" in
   emit) [[ -n "${2:-}" ]] || usage; emit_file "$2" ;;
   check-allows) check_allows ;;
+  live-pr) live_pr ;;
   *) usage ;;
 esac
