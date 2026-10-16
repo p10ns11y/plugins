@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const fixture = join(root, 'scripts/ci/fixtures/bad-workflow.js')
-const banned = /git push|gh pr merge|send/
+const banned = /\bgit\s+push\b|\bgh\s+pr\s+merge\b|\bsend\b/
 const calls = [
   [/Date\s*\.\s*now\s*\(/, 'Date.now'],
   [/Math\s*\.\s*random\s*\(/, 'Math.random'],
