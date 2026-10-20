@@ -1,0 +1,9 @@
+[
+ {"number":1,"title":"frozen","isDraft":false,"createdAt":"2026-10-01T00:00:00Z","updatedAt":"2026-10-19T00:00:00Z","mergeable":"MERGEABLE","reviewDecision":"","statusCheckRollup":[],"labels":[{"name":"frozen"}]},
+ {"number":2,"title":"conflict","isDraft":false,"createdAt":"2026-10-01T00:00:00Z","updatedAt":"2026-10-01T00:00:00Z","mergeable":"CONFLICTING","reviewDecision":"","statusCheckRollup":[],"labels":[]},
+ {"number":3,"title":"red","isDraft":false,"createdAt":"2026-10-18T00:00:00Z","updatedAt":"2026-10-19T00:00:00Z","mergeable":"MERGEABLE","reviewDecision":"","statusCheckRollup":[{"conclusion":"FAILURE"}],"labels":[]},
+ {"number":4,"title":"silent draft","isDraft":true,"createdAt":"2026-10-16T00:00:00Z","updatedAt":"2026-10-17T00:00:00Z","mergeable":"MERGEABLE","reviewDecision":"REVIEW_REQUIRED","statusCheckRollup":[{"conclusion":"SUCCESS"}],"labels":[{"name":"needs-reviewer"}]},
+ {"number":5,"title":"fresh party","isDraft":false,"createdAt":"2026-10-20T00:00:00Z","updatedAt":"2026-10-20T00:00:00Z","mergeable":"MERGEABLE","reviewDecision":"","statusCheckRollup":[],"labels":[{"name":"needs-reviewer"}]},
+ {"number":6,"title":"idle","isDraft":false,"createdAt":"2026-09-01T00:00:00Z","updatedAt":"2026-10-10T00:00:00Z","mergeable":"MERGEABLE","reviewDecision":"","statusCheckRollup":[{"conclusion":"SUCCESS"}],"labels":[]},
+ {"number":7,"title":"green","isDraft":false,"createdAt":"2026-10-19T00:00:00Z","updatedAt":"2026-10-20T00:00:00Z","mergeable":"MERGEABLE","reviewDecision":"APPROVED","statusCheckRollup":[{"conclusion":"SUCCESS"}],"labels":[]}
+]

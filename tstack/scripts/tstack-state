@@ -244,7 +244,7 @@ def load_sections():
             broken(f"migration {version} empty")
         sections.append((version, statements))
         index += 2
-    if [version for version, _ in sections] != [1, 2]:
+    if [version for version, _ in sections] != [1, 2, 3]:
         broken("schema versions")
     return sections
 
@@ -523,7 +523,7 @@ def cmd_apply(flags):
 
 def cmd_block_open(flags):
     need(flags, "map", "stage", "energy")
-    only(flags, "map", "stage", "energy", "plan")
+    only(flags, "map", "stage", "energy", "plan", "timeout-min")
     map_id = flags["map"]
     stage_id = flags["stage"]
     check_id("map", map_id)
@@ -543,19 +543,31 @@ def cmd_block_open(flags):
         reject("missing stage")
     if stage["class"] != "Do":
         reject("stage is not Do")
-    if conn.execute(
-        "SELECT id FROM blocks WHERE map_id=? AND status='open'",
+    held = conn.execute(
+        "SELECT id, stage_id, started_at, heartbeat_at FROM blocks WHERE map_id=? AND status='open'",
         (map_id,),
-    ).fetchone() is not None:
+    ).fetchone()
+    if held is not None:
+        timeout = parse_minutes(flags.get("timeout-min", str(DEFAULT_TIMEOUT_MIN)))
+        age = age_minutes(held["heartbeat_at"] or held["started_at"])
+        if age >= timeout:
+            raise Exit(3, {
+                "error": "stale open block",
+                "id": held["id"],
+                "stage_id": held["stage_id"],
+                "idle_min": age,
+                "next": "resume it (block beat) or close it (block close --id N)",
+            })
         reject("second open block")
 
     def work():
+        ts = now()
         try:
             cur = conn.execute(
                 """INSERT INTO blocks (
-                     map_id, stage_id, energy, plan, status, started_at, closed_at
-                   ) VALUES (?, ?, ?, ?, 'open', ?, NULL)""",
-                (map_id, stage_id, energy, plan, now()),
+                     map_id, stage_id, energy, plan, status, started_at, closed_at, heartbeat_at
+                   ) VALUES (?, ?, ?, ?, 'open', ?, NULL, ?)""",
+                (map_id, stage_id, energy, plan, ts, ts),
             )
         except sqlite3.IntegrityError:
             reject("second open block")
@@ -604,7 +616,8 @@ def cmd_block_close(flags):
 
 def cmd_harvest_add(flags):
     need(flags, "map", "stage", "result", "evidence")
-    only(flags, "map", "stage", "result", "evidence")
+    only(flags, "map", "stage", "result", "evidence", "key")
+    key = parse_key(flags["key"]) if "key" in flags else None
     map_id = flags["map"]
     stage_id = flags["stage"]
     check_id("map", map_id)
@@ -627,12 +640,18 @@ def cmd_harvest_add(flags):
         reject("missing stage")
 
     def work():
+        if key is not None:
+            seen = conn.execute(
+                "SELECT id FROM harvest_rows WHERE idem_key=?", (key,)
+            ).fetchone()
+            if seen is not None:
+                return {"id": seen["id"], "duplicate": True}
         cur = conn.execute(
-            """INSERT INTO harvest_rows (ts, map_id, stage_id, result, evidence)
-               VALUES (?, ?, ?, ?, ?)""",
-            (now(), map_id, stage_id, result, evidence),
+            """INSERT INTO harvest_rows (ts, map_id, stage_id, result, evidence, idem_key)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (now(), map_id, stage_id, result, evidence, key),
         )
-        return {"id": cur.lastrowid}
+        return {"id": cur.lastrowid, "duplicate": False}
 
     ok(in_tx(conn, work))
 
@@ -829,6 +848,214 @@ def cmd_pulse_conflict(flags):
     ok(in_tx(conn, work))
 
 
+DEFAULT_TIMEOUT_MIN = 120
+STEP_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$")
+STEP_ENDS = ("ok", "fail", "abandoned")
+
+
+def parse_minutes(raw):
+    if not re.fullmatch(r"[1-9][0-9]{0,5}", raw):
+        reject("bad timeout-min")
+    return int(raw)
+
+
+def age_minutes(stamp):
+    try:
+        then = datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except (TypeError, ValueError):
+        return 10 ** 6
+    return int((datetime.now(timezone.utc) - then).total_seconds() // 60)
+
+
+def cmd_block_beat(flags):
+    need(flags, "map")
+    only(flags, "map")
+    map_id = flags["map"]
+    check_id("map", map_id)
+    conn = connect()
+
+    def work():
+        ts = now()
+        cur = conn.execute(
+            "UPDATE blocks SET heartbeat_at=? WHERE map_id=? AND status='open'",
+            (ts, map_id),
+        )
+        if cur.rowcount == 0:
+            reject("no open block")
+        return {"map_id": map_id, "heartbeat_at": ts}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_step_start(flags):
+    need(flags, "map", "stage", "step")
+    only(flags, "map", "stage", "step")
+    map_id, stage_id, step = flags["map"], flags["stage"], flags["step"]
+    check_id("map", map_id)
+    check_id("stage", stage_id)
+    if not STEP_RE.fullmatch(step):
+        reject("bad step")
+    conn = connect()
+
+    def work():
+        ts = now()
+        running = conn.execute(
+            """SELECT id, started_at FROM steps
+               WHERE map_id=? AND stage_id=? AND step=? AND status='running'""",
+            (map_id, stage_id, step),
+        ).fetchone()
+        if running is not None:
+            conn.execute("UPDATE steps SET heartbeat_at=? WHERE id=?", (ts, running["id"]))
+            return {"id": running["id"], "resumed": True, "started_at": running["started_at"]}
+        block = conn.execute(
+            "SELECT id FROM blocks WHERE map_id=? AND status='open'", (map_id,)
+        ).fetchone()
+        if block is not None:
+            conn.execute("UPDATE blocks SET heartbeat_at=? WHERE id=?", (ts, block["id"]))
+        cur = conn.execute(
+            """INSERT INTO steps (map_id, stage_id, block_id, step, status,
+                                  started_at, heartbeat_at, ended_at, note)
+               VALUES (?, ?, ?, ?, 'running', ?, ?, NULL, NULL)""",
+            (map_id, stage_id, None if block is None else block["id"], step, ts, ts),
+        )
+        return {"id": cur.lastrowid, "resumed": False, "started_at": ts}
+
+    ok(in_tx(conn, work))
+
+
+def step_row(conn, raw_id):
+    if not re.fullmatch(r"[0-9]+", raw_id):
+        reject("unknown id")
+    row = conn.execute("SELECT id, status FROM steps WHERE id=?", (int(raw_id),)).fetchone()
+    if row is None:
+        reject("unknown id")
+    return row
+
+
+def cmd_step_beat(flags):
+    need(flags, "id")
+    only(flags, "id")
+    conn = connect()
+
+    def work():
+        row = step_row(conn, flags["id"])
+        if row["status"] != "running":
+            reject("step not running")
+        ts = now()
+        conn.execute("UPDATE steps SET heartbeat_at=? WHERE id=?", (ts, row["id"]))
+        return {"id": row["id"], "heartbeat_at": ts}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_step_end(flags):
+    need(flags, "id", "status")
+    only(flags, "id", "status", "note")
+    status = flags["status"]
+    if status not in STEP_ENDS:
+        reject("bad status")
+    note = flags.get("note")
+    if note is not None:
+        no_at("note", note)
+    conn = connect()
+
+    def work():
+        row = step_row(conn, flags["id"])
+        if row["status"] != "running":
+            return {"id": row["id"], "status": row["status"], "duplicate": True}
+        ts = now()
+        conn.execute(
+            "UPDATE steps SET status=?, ended_at=?, heartbeat_at=?, note=? WHERE id=?",
+            (status, ts, ts, note, row["id"]),
+        )
+        return {"id": row["id"], "status": status, "duplicate": False}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_resume(flags):
+    only(flags, "map", "timeout-min")
+    map_id = flags.get("map")
+    if map_id is not None:
+        check_id("map", map_id)
+    timeout = parse_minutes(flags.get("timeout-min", str(DEFAULT_TIMEOUT_MIN)))
+    conn = connect()
+    where = "" if map_id is None else " AND map_id=?"
+    args = () if map_id is None else (map_id,)
+    steps = []
+    for row in conn.execute(
+        "SELECT id, map_id, stage_id, block_id, step, started_at, heartbeat_at FROM steps"
+        " WHERE status='running'" + where + " ORDER BY id",
+        args,
+    ):
+        item = {k: row[k] for k in row.keys()}
+        item["idle_min"] = age_minutes(row["heartbeat_at"])
+        steps.append(item)
+    blocks = []
+    for row in conn.execute(
+        "SELECT id, map_id, stage_id, started_at, heartbeat_at FROM blocks"
+        " WHERE status='open'" + where + " ORDER BY id",
+        args,
+    ):
+        item = {k: row[k] for k in row.keys()}
+        idle = age_minutes(row["heartbeat_at"] or row["started_at"])
+        item["idle_min"] = idle
+        item["stale"] = idle >= timeout
+        blocks.append(item)
+    ok({"unfinished_steps": steps, "open_blocks": blocks, "timeout_min": timeout})
+
+
+def cmd_effect_check(flags):
+    need(flags, "key")
+    only(flags, "key")
+    key = parse_key(flags["key"])
+    conn = connect()
+    row = conn.execute(
+        "SELECT id, kind, ref, ts FROM effects WHERE idem_key=?", (key,)
+    ).fetchone()
+    if row is None:
+        ok({"key": key, "done": False})
+    ok({"key": key, "done": True, "kind": row["kind"], "ref": row["ref"], "ts": row["ts"]})
+
+
+def cmd_effect_record(flags):
+    need(flags, "key", "kind")
+    only(flags, "key", "kind", "ref")
+    key = parse_key(flags["key"])
+    kind = flags["kind"]
+    if not STEP_RE.fullmatch(kind):
+        reject("bad kind")
+    ref = flags.get("ref")
+    if ref is not None:
+        no_at("ref", ref)
+    conn = connect()
+
+    def work():
+        seen = conn.execute("SELECT id FROM effects WHERE idem_key=?", (key,)).fetchone()
+        if seen is not None:
+            return {"id": seen["id"], "key": key, "duplicate": True}
+        cur = conn.execute(
+            "INSERT INTO effects (idem_key, kind, ref, ts) VALUES (?, ?, ?, ?)",
+            (key, kind, ref, now()),
+        )
+        return {"id": cur.lastrowid, "key": key, "duplicate": False}
+
+    ok(in_tx(conn, work))
+
+
+def cmd_effect_list(flags):
+    only(flags, "kind")
+    conn = connect()
+    if "kind" in flags:
+        rows = conn.execute(
+            "SELECT idem_key, kind, ref, ts FROM effects WHERE kind=? ORDER BY id",
+            (flags["kind"],),
+        ).fetchall()
+    else:
+        rows = conn.execute("SELECT idem_key, kind, ref, ts FROM effects ORDER BY id").fetchall()
+    ok({"rows": [{k: r[k] for k in r.keys()} for r in rows]})
+
+
 COMMANDS = {
     "init": cmd_init,
     "map put": cmd_map_put,
@@ -838,6 +1065,14 @@ COMMANDS = {
     "apply-report": cmd_apply,
     "block open": cmd_block_open,
     "block close": cmd_block_close,
+    "block beat": cmd_block_beat,
+    "step start": cmd_step_start,
+    "step beat": cmd_step_beat,
+    "step end": cmd_step_end,
+    "resume": cmd_resume,
+    "effect check": cmd_effect_check,
+    "effect record": cmd_effect_record,
+    "effect list": cmd_effect_list,
     "harvest add": cmd_harvest_add,
     "harvest list": cmd_harvest_list,
     "ask admit": cmd_ask_admit,

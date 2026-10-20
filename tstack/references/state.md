@@ -33,10 +33,11 @@ tstack-state stage put --map ID --id ID --class Do|Risk|Wait|Park|Done \
 tstack-state next --map ID
 tstack-state export-map --map ID
 tstack-state apply-report --map ID --critical id,id [--next ID]
-tstack-state block open --map ID --stage ID --energy high|mid|low [--plan TEXT]
+tstack-state block open --map ID --stage ID --energy high|mid|low [--plan TEXT] [--timeout-min 120]
+tstack-state block beat --map ID
 tstack-state block close --id N
 tstack-state block close --map ID
-tstack-state harvest add --map ID --stage ID --result TEXT --evidence TEXT
+tstack-state harvest add --map ID --stage ID --result TEXT --evidence TEXT [--key KEY]
 tstack-state harvest list --map ID [--stage ID]
 tstack-state ask admit --ask TEXT
 tstack-state pulse archive --source TEXT --payload TEXT [--correlation TEXT]
@@ -45,6 +46,13 @@ tstack-state pulse admit --key TEXT --snippet TEXT --source TEXT --time TEXT \
   --kind data|context|fact|memory [--lock open|locked]
 tstack-state pulse list [--limit 8]
 tstack-state pulse conflict --subject TEXT --left ID --right ID --resolution TEXT
+tstack-state step start --map ID --stage ID --step NAME
+tstack-state step beat --id N
+tstack-state step end --id N --status ok|fail|abandoned [--note TEXT]
+tstack-state resume [--map ID] [--timeout-min 120]
+tstack-state effect check --key KEY
+tstack-state effect record --key KEY --kind push|linear-comment|log-row|... [--ref TEXT]
+tstack-state effect list [--kind KIND]
 ```
 
 `next` prints `{"stage_id": "..."}` or `{"stage_id": null}`. It reads `next_do = 1` and does not scan `class`.
@@ -116,3 +124,13 @@ The graph CLI exits when a map has more than 32 stages. The SQLite file may hold
 Optional. Detect it with `command -v premflow`. Use it for a timed block and for win / task-done only when it is found. The state script does not call it. `blocks.plan` stores the plan string the operator named, or null when `--plan` is omitted. Premflow's ledger stays a separate text store.
 
 Public log rows stay out of the repo. There is no `LOG.md` in tstack. Append a public row only when the operator names a path. Money, health, and family figures stay out of that file and out of `label`, `result`, and `snippet`.
+
+## Durable steps (migration 3)
+
+Install: `tstack/scripts/install.sh [BIN_DIR]` links `tstack-state` and `tstack-pr-triage` into `~/.local/bin` and runs `init`.
+
+- **Step journal.** `step start` writes a `running` row with `started_at` and `heartbeat_at`; `step end` sets `ended_at` and the status. Starting a step that is still `running` returns the same row with `resumed: true`, so a restart after a crash picks up the row instead of adding one. `step end` twice is a no-op.
+- **Resume.** `resume` lists every step started and not ended, and every open block with `idle_min` and `stale` (idle at or past the timeout, default 120 min). Run it first in a session.
+- **Stale blocks.** `block open` on a map whose open block is stale exits 3 with `stale open block` and the block id. Resume it (`block beat`) or close it. A live open block still exits 3 with `second open block`.
+- **Effect keys.** Every side effect gets a key: chunk id, commit SHA and effect kind, e.g. `c22:1a2b3c4:linear-comment`. Check with `effect check` before the effect, do it, then `effect record`. A repeated key is a no-op. A crash between the effect and the record can still repeat that one effect, so the effect itself must be safe to retry where it can (append only if absent, edit the same comment).
+- **Harvest keys.** `harvest add --key KEY` writes once per key; a repeat returns the first row with `duplicate: true`.

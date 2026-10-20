@@ -163,6 +163,7 @@ else
 fi
 
 bash "$ROOT/test/test-capture.sh"
+bash "$ROOT/test/test-durable.sh" && ok "test-durable" || bad "test-durable"
 
 echo "---"
 [[ "$fail" -eq 0 ]] || { echo "$fail failure(s)"; exit 1; }
