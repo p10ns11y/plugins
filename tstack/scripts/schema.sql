@@ -104,3 +104,38 @@ CREATE TABLE IF NOT EXISTS harvest_rows (
   evidence TEXT NOT NULL CHECK (length(trim(evidence)) > 0),
   FOREIGN KEY (map_id, stage_id) REFERENCES stages(map_id, stage_id)
 );
+
+-- migration 3
+-- Step journal: a row opens when a step starts and closes when it ends.
+-- A row still 'running' after a crash is what resume reports.
+CREATE TABLE IF NOT EXISTS steps (
+  id INTEGER PRIMARY KEY,
+  map_id TEXT NOT NULL,
+  stage_id TEXT NOT NULL,
+  block_id INTEGER REFERENCES blocks(id),
+  step TEXT NOT NULL CHECK (length(step) BETWEEN 1 AND 64),
+  status TEXT NOT NULL CHECK (status IN ('running','ok','fail','abandoned')),
+  started_at TEXT NOT NULL,
+  heartbeat_at TEXT NOT NULL,
+  ended_at TEXT,
+  note TEXT
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS one_running_step
+  ON steps(map_id, stage_id, step) WHERE status = 'running';
+
+-- Effects: one row per side effect already done. A repeated key is a no-op.
+CREATE TABLE IF NOT EXISTS effects (
+  id INTEGER PRIMARY KEY,
+  idem_key TEXT NOT NULL UNIQUE CHECK (length(idem_key) BETWEEN 1 AND 200),
+  kind TEXT NOT NULL CHECK (length(kind) BETWEEN 1 AND 64),
+  ref TEXT,
+  ts TEXT NOT NULL
+);
+
+ALTER TABLE blocks ADD COLUMN heartbeat_at TEXT;
+
+ALTER TABLE harvest_rows ADD COLUMN idem_key TEXT;
+
+CREATE UNIQUE INDEX IF NOT EXISTS harvest_idem
+  ON harvest_rows(idem_key) WHERE idem_key IS NOT NULL;

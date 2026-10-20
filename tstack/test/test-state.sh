@@ -70,11 +70,11 @@ parent_mode="$(stat -c %a "$parent")"
 must "row 1 init" "$STATE" init
 [[ "$(stat -c %a "$TSTACK_STATE_DB")" == "600" ]] && ok "row 1 mode 600" || bad "row 1 mode"
 [[ "$(stat -c %a "$parent")" == "$parent_mode" ]] && ok "row 1 parent mode" || bad "row 1 parent mode"
-python3 -c 'import json,sys; assert json.loads(sys.argv[1])["versions"]==[1,2]' "$OUT" \
+python3 -c 'import json,sys; assert json.loads(sys.argv[1])["versions"]==[1,2,3]' "$OUT" \
   && ok "row 1 versions" || bad "row 1 versions"
 must "row 1 init again" "$STATE" init
-[[ "$(sql "SELECT COUNT(*) FROM schema_migrations")" == "2" ]] && ok "row 1 two rows" || bad "row 1 two rows"
-[[ "$(sql "SELECT GROUP_CONCAT(version) FROM (SELECT version FROM schema_migrations ORDER BY version)")" == "1,2" ]] \
+[[ "$(sql "SELECT COUNT(*) FROM schema_migrations")" == "3" ]] && ok "row 1 two rows" || bad "row 1 two rows"
+[[ "$(sql "SELECT GROUP_CONCAT(version) FROM (SELECT version FROM schema_migrations ORDER BY version)")" == "1,2,3" ]] \
   && ok "row 1 versions stay" || bad "row 1 versions stay"
 for extra in "$TSTACK_STATE_DB-wal" "$TSTACK_STATE_DB-shm"; do
   if [[ -f "$extra" ]]; then

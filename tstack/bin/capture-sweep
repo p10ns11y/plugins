@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT="$(cd "${BASH_SOURCE[0]%/*}/.." && pwd)"
 
 usage() {
-  echo "usage: capture-sweep emit FILE | check-allows | live-pr" >&2
+  echo "usage: capture-sweep emit FILE | check-allows | live-pr | pr-age" >&2
   exit 2
 }
 
@@ -135,9 +135,23 @@ if blocks:
   fi
 }
 
+pr_age() {
+  local raw
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+  if ! raw="$(gh pr list --state open --json number,title,isDraft,createdAt,updatedAt,mergeable,reviewDecision,statusCheckRollup,labels --limit 50 2>/dev/null)"; then
+    echo "pr: unavailable" >&2
+    exit 0
+  fi
+  printf '%s' "$raw" | "$ROOT/bin/pr-triage"
+}
+
 case "${1:-}" in
   emit) [[ -n "${2:-}" ]] || usage; emit_file "$2" ;;
   check-allows) check_allows ;;
   live-pr) live_pr ;;
+  pr-age) pr_age ;;
   *) usage ;;
 esac
