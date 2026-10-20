@@ -134,3 +134,9 @@ Install: `tstack/scripts/install.sh [BIN_DIR]` links `tstack-state` and `tstack-
 - **Stale blocks.** `block open` on a map whose open block is stale exits 3 with `stale open block` and the block id. Resume it (`block beat`) or close it. A live open block still exits 3 with `second open block`.
 - **Effect keys.** Every side effect gets a key: chunk id, commit SHA and effect kind, e.g. `c22:1a2b3c4:linear-comment`. Check with `effect check` before the effect, do it, then `effect record`. A repeated key is a no-op. A crash between the effect and the record can still repeat that one effect, so the effect itself must be safe to retry where it can (append only if absent, edit the same comment).
 - **Harvest keys.** `harvest add --key KEY` writes once per key; a repeat returns the first row with `duplicate: true`.
+
+## Credits and prior art
+
+**Credit.** [pi durable](https://www.npmjs.com/package/@earendil-works/pi-durable) (`@earendil-works/pi-durable`) and [@_alejandroao's tutorial](https://x.com/_alejandroao/status/2112112346462089276), for the explicit framing of per-step checkpoints, crash resume without a manual "continue", and the requirement that side effects be idempotent on retry.
+
+**Prior art.** tstack already had a SQLite state store (maps, stages with a DAG, open/closed focus blocks, harvest rows). Ensembly already had crash-safe CRDT memory that dedupes re-appends on merge (`ensembly-memory` `crdt.rs`) and pulse import keyed so importing twice changes nothing. This change fills only a few gaps inspired by pi durable: a step journal with start/heartbeat/end, `resume` crash detection, idempotency-keyed effects, stale-block flagging, and PR age triage.
