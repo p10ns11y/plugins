@@ -11,9 +11,9 @@ BEND_DIR="$ROOT/bend"
 
 dir="$BEND_DIR"
 while :; do
-  for f in bunfig.toml .bunfig.toml .env .env.local .p.ts; do
-    if [[ -e "$dir/$f" ]]; then
-      echo "FAIL forge file $dir/$f near the bend proof"
+  for f in "$dir"/bunfig.toml "$dir"/.bunfig.toml "$dir"/.env "$dir"/.env.* "$dir"/.p.ts; do
+    if [[ -e "$f" ]]; then
+      echo "FAIL forge file $f near the bend proof"
       exit 1
     fi
   done
@@ -34,9 +34,18 @@ if [[ -z "$bend_bin" ]]; then
   exit 0
 fi
 
+if [[ "${BEND_REQUIRED:-0}" == "1" ]]; then
+  want="bend ${BEND_VERSION:-2.0.35}"
+  have="$("$bend_bin" version 2>/dev/null | head -1)"
+  if [[ "$have" != "$want" ]]; then
+    echo "FAIL bend version '$have', want '$want'"
+    exit 1
+  fi
+fi
+
 cd "$BEND_DIR"
 ec=0
-out="$("$bend_bin" PROOF.bend 2>&1)" || ec=$?
+out="$("$bend_bin" --verdict PROOF.bend 2>&1)" || ec=$?
 printf '%s\n' "$out"
 if [[ "$ec" -ne 0 ]]; then
   echo "FAIL bend exited $ec"

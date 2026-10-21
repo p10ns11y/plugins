@@ -100,6 +100,9 @@ if (notRun < 0) failures.push('flows/test/bend-critical.sh does not report an ab
 if (proved < 0 || !critical.includes('BEND_REQUIRED')) {
   failures.push('flows/test/bend-critical.sh treats an absent bend as a pass')
 }
+if (!critical.includes('--verdict PROOF.bend')) {
+  failures.push('flows/test/bend-critical.sh does not run bend --verdict')
+}
 if (critical.includes('All terms check')) {
   failures.push('flows/test/bend-critical.sh accepts the forgeable "All terms check." banner')
 }
