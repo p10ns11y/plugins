@@ -15,3 +15,6 @@ def Laws.irreversible_blocked():
 
 def Laws.early_write_blocked():
   {==}
+
+def Laws.write_makes_verify_stale():
+  {==}
