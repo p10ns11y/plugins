@@ -20,6 +20,7 @@ from datetime import datetime, timezone
 
 USER_LABELS = {"frozen", "user-decision", "blocked-on-user", "needs-user"}
 PARTY_LABELS = {"needs-reviewer", "cross-family-review", "blocked-on-party"}
+GOOD_CHECKS = {"SUCCESS", "NEUTRAL", "SKIPPED"}
 BAD_CHECKS = {"FAILURE", "ERROR", "CANCELLED", "TIMED_OUT", "ACTION_REQUIRED"}
 
 
@@ -37,6 +38,11 @@ def checks_failing(rollup):
         if state in BAD_CHECKS:
             return True
     return False
+
+
+def checks_green(rollup):
+    states = [(i.get("conclusion") or i.get("state") or "").upper() for i in rollup or []]
+    return bool(states) and all(st in GOOD_CHECKS for st in states)
 
 
 def classify(pr, now, frozen=False):
@@ -63,9 +69,14 @@ def classify(pr, now, frozen=False):
     elif idle_d is not None and idle_d >= 7:
         out.update(state="propose-close", action="draft a close note for approval; never auto-close")
     else:
-        out.update(state="resume",
-                   action="green and unblocked: mark ready for review" if out["draft"]
-                   else "green and unblocked: merge when allowed")
+        if not checks_green(pr.get("statusCheckRollup")) or pr.get("mergeable") != "MERGEABLE":
+            out.update(state="resume", action="checks pending or mergeability unknown: re-check next session")
+        elif out["draft"]:
+            out.update(state="resume", action="green and unblocked: mark ready for review")
+        elif pr.get("reviewDecision") == "REVIEW_REQUIRED":
+            out.update(state="resume", action="green: get the required review, then merge")
+        else:
+            out.update(state="resume", action="green and unblocked: merge when allowed")
     return out
 
 
@@ -76,13 +87,21 @@ def main(argv):
     elif argv:
         print("usage: pr-triage [--file PATH]", file=sys.stderr)
         return 2
-    raw = open(path, encoding="utf-8").read() if path else sys.stdin.read()
+    if path:
+        with open(path, encoding="utf-8") as fh:
+            raw = fh.read()
+    else:
+        raw = sys.stdin.read()
     rows = json.loads(raw)
     if not isinstance(rows, list):
         return 2
     now_raw = os.environ.get("TRIAGE_NOW")
-    now = (datetime.strptime(now_raw, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-           if now_raw else datetime.now(timezone.utc))
+    try:
+        now = (datetime.strptime(now_raw, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+               if now_raw else datetime.now(timezone.utc))
+    except ValueError:
+        print("bad TRIAGE_NOW", file=sys.stderr)
+        return 2
     frozen = os.environ.get("FROZEN") == "1"
     for pr in rows:
         print(json.dumps(classify(pr, now, frozen)))

@@ -907,8 +907,13 @@ def cmd_step_start(flags):
         if running is not None:
             conn.execute("UPDATE steps SET heartbeat_at=? WHERE id=?", (ts, running["id"]))
             return {"id": running["id"], "resumed": True, "started_at": running["started_at"]}
+        if conn.execute(
+            "SELECT 1 FROM stages WHERE map_id=? AND stage_id=?", (map_id, stage_id)
+        ).fetchone() is None:
+            reject("missing stage")
         block = conn.execute(
-            "SELECT id FROM blocks WHERE map_id=? AND status='open'", (map_id,)
+            "SELECT id FROM blocks WHERE map_id=? AND stage_id=? AND status='open'",
+            (map_id, stage_id),
         ).fetchone()
         if block is not None:
             conn.execute("UPDATE blocks SET heartbeat_at=? WHERE id=?", (ts, block["id"]))
@@ -920,7 +925,14 @@ def cmd_step_start(flags):
                 (map_id, stage_id, None if block is None else block["id"], step, ts, ts),
             )
         except sqlite3.IntegrityError:
-            reject("step already running")
+            again = conn.execute(
+                """SELECT id, started_at FROM steps
+                   WHERE map_id=? AND stage_id=? AND step=? AND status='running'""",
+                (map_id, stage_id, step),
+            ).fetchone()
+            if again is None:
+                reject("step already running")
+            return {"id": again["id"], "resumed": True, "started_at": again["started_at"]}
         return {"id": cur.lastrowid, "resumed": False, "started_at": ts}
 
     ok(in_tx(conn, work))
@@ -1034,8 +1046,10 @@ def cmd_effect_record(flags):
     conn = connect()
 
     def work():
-        seen = conn.execute("SELECT id FROM effects WHERE idem_key=?", (key,)).fetchone()
+        seen = conn.execute("SELECT id, kind FROM effects WHERE idem_key=?", (key,)).fetchone()
         if seen is not None:
+            if seen["kind"] != kind:
+                reject("key recorded with another kind")
             return {"id": seen["id"], "key": key, "duplicate": True}
         cur = conn.execute(
             "INSERT INTO effects (idem_key, kind, ref, ts) VALUES (?, ?, ?, ?)",
