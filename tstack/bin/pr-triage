@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 USER_LABELS = {"frozen", "user-decision", "blocked-on-user", "needs-user"}
 PARTY_LABELS = {"needs-reviewer", "cross-family-review", "blocked-on-party"}
 GOOD_CHECKS = {"SUCCESS", "NEUTRAL", "SKIPPED"}
-BAD_CHECKS = {"FAILURE", "ERROR", "CANCELLED", "TIMED_OUT", "ACTION_REQUIRED"}
+BAD_CHECKS = {"FAILURE", "ERROR", "CANCELLED", "TIMED_OUT", "ACTION_REQUIRED", "STARTUP_FAILURE", "STALE"}
 
 
 def stamp(raw, now):

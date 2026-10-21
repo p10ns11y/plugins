@@ -543,12 +543,12 @@ def cmd_block_open(flags):
         reject("missing stage")
     if stage["class"] != "Do":
         reject("stage is not Do")
+    timeout = parse_minutes(flags.get("timeout-min", str(DEFAULT_TIMEOUT_MIN)))
     held = conn.execute(
         "SELECT id, stage_id, started_at, heartbeat_at FROM blocks WHERE map_id=? AND status='open'",
         (map_id,),
     ).fetchone()
     if held is not None:
-        timeout = parse_minutes(flags.get("timeout-min", str(DEFAULT_TIMEOUT_MIN)))
         age = age_minutes(held["heartbeat_at"] or held["started_at"])
         if age >= timeout:
             raise Exit(3, {
@@ -887,6 +887,13 @@ def cmd_block_beat(flags):
     ok(in_tx(conn, work))
 
 
+def beat_block(conn, map_id, stage_id, ts):
+    conn.execute(
+        "UPDATE blocks SET heartbeat_at=? WHERE map_id=? AND stage_id=? AND status='open'",
+        (ts, map_id, stage_id),
+    )
+
+
 def cmd_step_start(flags):
     need(flags, "map", "stage", "step")
     only(flags, "map", "stage", "step")
@@ -906,6 +913,7 @@ def cmd_step_start(flags):
         ).fetchone()
         if running is not None:
             conn.execute("UPDATE steps SET heartbeat_at=? WHERE id=?", (ts, running["id"]))
+            beat_block(conn, map_id, stage_id, ts)
             return {"id": running["id"], "resumed": True, "started_at": running["started_at"]}
         if conn.execute(
             "SELECT 1 FROM stages WHERE map_id=? AND stage_id=?", (map_id, stage_id)
@@ -941,7 +949,9 @@ def cmd_step_start(flags):
 def step_row(conn, raw_id):
     if not re.fullmatch(r"[0-9]+", raw_id):
         reject("unknown id")
-    row = conn.execute("SELECT id, status FROM steps WHERE id=?", (int(raw_id),)).fetchone()
+    row = conn.execute(
+        "SELECT id, status, map_id, stage_id FROM steps WHERE id=?", (int(raw_id),)
+    ).fetchone()
     if row is None:
         reject("unknown id")
     return row
@@ -958,6 +968,7 @@ def cmd_step_beat(flags):
             reject("step not running")
         ts = now()
         conn.execute("UPDATE steps SET heartbeat_at=? WHERE id=?", (ts, row["id"]))
+        beat_block(conn, row["map_id"], row["stage_id"], ts)
         return {"id": row["id"], "heartbeat_at": ts}
 
     ok(in_tx(conn, work))
@@ -977,6 +988,8 @@ def cmd_step_end(flags):
     def work():
         row = step_row(conn, flags["id"])
         if row["status"] != "running":
+            if row["status"] != status:
+                reject("step already ended with another status")
             return {"id": row["id"], "status": row["status"], "duplicate": True}
         ts = now()
         conn.execute(
