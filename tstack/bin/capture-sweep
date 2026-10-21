@@ -141,7 +141,7 @@ pr_age() {
     echo "pr: unavailable" >&2
     exit 0
   fi
-  if ! raw="$(gh pr list --state open --json number,title,isDraft,createdAt,updatedAt,mergeable,reviewDecision,statusCheckRollup,labels --limit 50 2>/dev/null)"; then
+  if ! raw="$(gh pr list --state open --json number,title,isDraft,createdAt,updatedAt,mergeable,reviewDecision,statusCheckRollup,labels --limit 500 2>/dev/null)"; then
     echo "pr: unavailable" >&2
     exit 0
   fi

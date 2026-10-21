@@ -63,10 +63,13 @@ ask="$(TRIAGE_NOW=2026-10-20T12:00:00Z "$ROOT/bin/pr-triage" --file "$ROOT/test/
 out="$(FROZEN=1 TRIAGE_NOW=2026-10-20T12:00:00Z "$ROOT/bin/pr-triage" --file "$ROOT/test/fixtures/triage/prs.json" | grep -c blocked-on-user)"
 [[ "$out" == "7" ]] && ok "frozen repo all on user" || bad "frozen $out"
 
+"$S" effect record --key c1:abc:push --kind log-row >/dev/null 2>&1 && bad "kind mismatch accepted" || ok "kind mismatch rejected"
+"$S" step start --map m --stage nope --step x >/dev/null 2>&1 && bad "missing stage accepted" || ok "missing stage rejected"
+
 # install
 bin="$(mktemp -d)"
 TSTACK_STATE_DB="$dir/i.sqlite" bash "$ROOT/scripts/install.sh" "$bin" >/dev/null 2>&1
-[[ -x "$bin/tstack-state" && -f "$dir/i.sqlite" ]] && ok "install links and inits" || bad "install"
+[[ -x "$bin/tstack-state" && -x "$bin/tstack-pr-triage" && -f "$dir/i.sqlite" ]] && ok "install links and inits" || bad "install"
 
 echo "---"
 [[ "$fail" -eq 0 ]] || { echo "$fail failure(s)"; exit 1; }
