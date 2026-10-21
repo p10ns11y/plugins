@@ -97,8 +97,14 @@ for (const [name, text] of [
 const notRun = critical.indexOf('formal proof not run')
 const proved = critical.indexOf('ALL PROOFS CHECK')
 if (notRun < 0) failures.push('flows/test/bend-critical.sh does not report an absent bend')
-if (proved < 0 || (notRun >= 0 && proved < notRun)) {
+if (proved < 0 || !critical.includes('BEND_REQUIRED')) {
   failures.push('flows/test/bend-critical.sh treats an absent bend as a pass')
+}
+if (critical.includes('All terms check')) {
+  failures.push('flows/test/bend-critical.sh accepts the forgeable "All terms check." banner')
+}
+if (!/BEND_REQUIRED=1 bash flows\/test\/bend-critical\.sh/.test(read('.github/workflows/plugins.yml'))) {
+  failures.push('CI proof job does not run bend-critical.sh with BEND_REQUIRED=1')
 }
 
 if (failures.length) {

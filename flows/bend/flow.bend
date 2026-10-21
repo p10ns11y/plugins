@@ -4,8 +4,8 @@ import Base
 # any_bad: Send, Pay, and Sign are irreversible.
 # card_ok: Emit Yes is legal only after a fresh Verify.
 # merge_ok: Merge is legal only after a fresh Verify.
-# writes_ok: a Write is legal only as the last step. That is the capture rule
-# (checked on capture-sweep only; craft-run writes before its verify).
+# writes_ok: in capture-sweep a Write is legal only as the last step. It is not
+# part of clean(): craft-run legitimately writes before its verify.
 # A Write makes any earlier Verify stale: card_ok and merge_ok reset seen to 0n.
 # Laws in LAWS.bend are checked on the named example traces, not for all traces.
 
@@ -360,6 +360,11 @@ def stale_merge() -> Steps:
 def stale_pair() -> Nat & Nat:
   a b = card_ok(stale_card(), 0n) merge_ok(stale_merge(), 0n)
   (a, b)
+
+def irreversible_clean() -> (Nat & Nat) & (Nat & Nat):
+  a b = clean(with_send()) clean(with_pay())
+  c d = clean(with_sign()) clean(fresh(Cons{Step{Same{}, Send{}, No{}}, Cons{Step{Same{}, Merge{}, No{}}, End{}}}))
+  ((a, b), (c, d))
 
 def early_write() -> Steps:
   write(read(End{}))
