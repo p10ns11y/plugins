@@ -21,3 +21,12 @@ def Laws.write_makes_verify_stale():
 
 def Laws.irreversible_never_clean():
   {==}
+
+def Laws.two_tier_variant():
+  {==}
+
+def Laws.self_check_never_counts():
+  {==}
+
+def Laws.fresh_counts_critical():
+  {==}
