@@ -63,7 +63,9 @@ def classify(pr, now, frozen=False):
     elif idle_d is not None and idle_d >= 7:
         out.update(state="propose-close", action="draft a close note for approval; never auto-close")
     else:
-        out.update(state="resume", action="green and unblocked: mark ready, merge when allowed")
+        out.update(state="resume",
+                   action="green and unblocked: mark ready for review" if out["draft"]
+                   else "green and unblocked: merge when allowed")
     return out
 
 

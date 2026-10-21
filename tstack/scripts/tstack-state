@@ -912,12 +912,15 @@ def cmd_step_start(flags):
         ).fetchone()
         if block is not None:
             conn.execute("UPDATE blocks SET heartbeat_at=? WHERE id=?", (ts, block["id"]))
-        cur = conn.execute(
-            """INSERT INTO steps (map_id, stage_id, block_id, step, status,
-                                  started_at, heartbeat_at, ended_at, note)
-               VALUES (?, ?, ?, ?, 'running', ?, ?, NULL, NULL)""",
-            (map_id, stage_id, None if block is None else block["id"], step, ts, ts),
-        )
+        try:
+            cur = conn.execute(
+                """INSERT INTO steps (map_id, stage_id, block_id, step, status,
+                                      started_at, heartbeat_at, ended_at, note)
+                   VALUES (?, ?, ?, ?, 'running', ?, ?, NULL, NULL)""",
+                (map_id, stage_id, None if block is None else block["id"], step, ts, ts),
+            )
+        except sqlite3.IntegrityError:
+            reject("step already running")
         return {"id": cur.lastrowid, "resumed": False, "started_at": ts}
 
     ok(in_tx(conn, work))

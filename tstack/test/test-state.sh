@@ -73,7 +73,7 @@ must "row 1 init" "$STATE" init
 python3 -c 'import json,sys; assert json.loads(sys.argv[1])["versions"]==[1,2,3]' "$OUT" \
   && ok "row 1 versions" || bad "row 1 versions"
 must "row 1 init again" "$STATE" init
-[[ "$(sql "SELECT COUNT(*) FROM schema_migrations")" == "3" ]] && ok "row 1 two rows" || bad "row 1 two rows"
+[[ "$(sql "SELECT COUNT(*) FROM schema_migrations")" == "3" ]] && ok "row 1 three rows" || bad "row 1 three rows"
 [[ "$(sql "SELECT GROUP_CONCAT(version) FROM (SELECT version FROM schema_migrations ORDER BY version)")" == "1,2,3" ]] \
   && ok "row 1 versions stay" || bad "row 1 versions stay"
 for extra in "$TSTACK_STATE_DB-wal" "$TSTACK_STATE_DB-shm"; do
