@@ -4,7 +4,10 @@ import Base
 # any_bad: Send, Pay, and Sign are irreversible.
 # card_ok: Emit Yes is legal only after a fresh Verify.
 # merge_ok: Merge is legal only after a fresh Verify.
-# writes_ok: a Write is legal only as the last step. That is the capture rule.
+# writes_ok: a Write is legal only as the last step. That is the capture rule
+# (checked on capture-sweep only; craft-run writes before its verify).
+# A Write makes any earlier Verify stale: card_ok and merge_ok reset seen to 0n.
+# Laws in LAWS.bend are checked on the named example traces, not for all traces.
 
 type Ctx is Data:
   Same{}
@@ -76,13 +79,13 @@ def card_ok(steps: Steps, seen: Nat) -> Nat:
                 case Write{}:
                   match emit:
                     case No{}:
-                      card_ok(rest, seen)
+                      card_ok(rest, 0n)
                     case Yes{}:
                       match seen:
                         case 0n:
                           0n
                         case 1n+p:
-                          card_ok(rest, 1n)
+                          card_ok(rest, 0n)
                 case Merge{}:
                   match emit:
                     case No{}:
@@ -148,13 +151,13 @@ def card_ok(steps: Steps, seen: Nat) -> Nat:
                 case Write{}:
                   match emit:
                     case No{}:
-                      card_ok(rest, seen)
+                      card_ok(rest, 0n)
                     case Yes{}:
                       match seen:
                         case 0n:
                           0n
                         case 1n+p:
-                          card_ok(rest, 1n)
+                          card_ok(rest, 0n)
                 case Merge{}:
                   match emit:
                     case No{}:
@@ -219,7 +222,7 @@ def merge_ok(steps: Steps, seen: Nat) -> Nat:
                 case Read{}:
                   merge_ok(rest, seen)
                 case Write{}:
-                  merge_ok(rest, seen)
+                  merge_ok(rest, 0n)
                 case Merge{}:
                   match seen:
                     case 0n:
@@ -239,7 +242,7 @@ def merge_ok(steps: Steps, seen: Nat) -> Nat:
                 case Read{}:
                   merge_ok(rest, seen)
                 case Write{}:
-                  merge_ok(rest, seen)
+                  merge_ok(rest, 0n)
                 case Merge{}:
                   match seen:
                     case 0n:
@@ -347,6 +350,16 @@ def with_sign() -> Steps:
 
 def early_card() -> Steps:
   card()
+
+def stale_card() -> Steps:
+  fresh(write(card()))
+
+def stale_merge() -> Steps:
+  fresh(write(Cons{Step{Same{}, Merge{}, No{}}, End{}}))
+
+def stale_pair() -> Nat & Nat:
+  a b = card_ok(stale_card(), 0n) merge_ok(stale_merge(), 0n)
+  (a, b)
 
 def early_write() -> Steps:
   write(read(End{}))
