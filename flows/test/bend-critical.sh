@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
-# Prove flows/bend/LAWS.bend when Bend is installed.
-# An absent bend is reported as not run. It is not a pass.
-# A bunfig.toml beside the proof can forge "All terms check." Refuse that.
+# Prove flows/bend/LAWS.bend with Bend.
+# An absent bend is reported as "formal proof not run". It is never a pass:
+# with BEND_REQUIRED=1 (CI proof job) an absent bend fails.
+# A bunfig.toml / .env / preload file can forge checker output. Refuse any
+# in flows/bend or an ancestor up to the repo root.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+REPO="$(cd "$ROOT/.." && pwd)"
 BEND_DIR="$ROOT/bend"
 
-if [[ -e "$BEND_DIR/bunfig.toml" || -e "$BEND_DIR/.env" || -e "$BEND_DIR/.p.ts" ]]; then
-  echo "FAIL bend proof directory contains a forge (bunfig.toml, .env, or .p.ts)"
-  exit 1
-fi
+dir="$BEND_DIR"
+while :; do
+  for f in bunfig.toml .bunfig.toml .env .env.local .p.ts; do
+    if [[ -e "$dir/$f" ]]; then
+      echo "FAIL forge file $dir/$f near the bend proof"
+      exit 1
+    fi
+  done
+  [[ "$dir" == "$REPO" || "$dir" == "/" ]] && break
+  dir="$(dirname "$dir")"
+done
 
 bend_bin=""
 if command -v bend >/dev/null 2>&1; then
@@ -20,17 +30,23 @@ fi
 
 if [[ -z "$bend_bin" ]]; then
   echo "bend not installed; formal proof not run (https://bend-lang.com/)"
+  [[ "${BEND_REQUIRED:-0}" == "1" ]] && exit 1
   exit 0
 fi
 
 cd "$BEND_DIR"
-out="$("$bend_bin" PROOF.bend)"
+ec=0
+out="$("$bend_bin" PROOF.bend 2>&1)" || ec=$?
 printf '%s\n' "$out"
-if printf '%s\n' "$out" | grep -q 'SOME PROOFS FAIL'; then
+if [[ "$ec" -ne 0 ]]; then
+  echo "FAIL bend exited $ec"
+  exit 1
+fi
+if printf '%s\n' "$out" | grep -qE 'FAIL'; then
   echo "FAIL bend PROOF.bend did not check"
   exit 1
 fi
-if printf '%s\n' "$out" | grep -q 'ALL PROOFS CHECK' || printf '%s\n' "$out" | grep -q 'All terms check.'; then
+if printf '%s\n' "$out" | grep -q 'ALL PROOFS CHECK'; then
   exit 0
 fi
 echo "FAIL bend PROOF.bend did not check"

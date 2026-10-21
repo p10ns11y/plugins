@@ -18,3 +18,6 @@ def Laws.early_write_blocked():
 
 def Laws.write_makes_verify_stale():
   {==}
+
+def Laws.irreversible_never_clean():
+  {==}

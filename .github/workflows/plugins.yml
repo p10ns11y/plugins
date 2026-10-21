@@ -105,17 +105,7 @@ jobs:
             exit 1
           fi
           printf '%s\n' "$proof_out" | grep -q 'ALL PROOFS CHECK'
-          proof_ec=0
-          proof_out="$(cd flows/bend && bend PROOF.bend)" || proof_ec=$?
-          printf '%s\n' "$proof_out"
-          [[ "$proof_ec" -eq 0 ]]
-          if printf '%s\n' "$proof_out" | grep -q 'SOME PROOFS FAIL'; then
-            exit 1
-          fi
-          if printf '%s\n' "$proof_out" | grep -qE '(^|[[:space:]])FAIL([[:space:]]|$)'; then
-            exit 1
-          fi
-          printf '%s\n' "$proof_out" | grep -q 'ALL PROOFS CHECK'
+          BEND_REQUIRED=1 bash flows/test/bend-critical.sh
           ./craft/test/check-proof.sh --self
 
   e2e:
