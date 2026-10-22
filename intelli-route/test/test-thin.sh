@@ -236,6 +236,12 @@ else
   bad "effort table"
 fi
 
+if python3 "$ROOT/test/test_layout.py"; then
+  ok "route layouts"
+else
+  bad "route layouts"
+fi
+
 proof="$ROOT/../trust-stack/test/bend-critical.sh"
 if [[ -f "$proof" ]]; then
   proof_out="$(bash "$proof" || true)"
