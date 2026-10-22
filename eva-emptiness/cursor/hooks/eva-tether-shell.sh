@@ -23,19 +23,22 @@ EVA_TETHER_MODE=cursor
 export EVA_TETHER_MODE
 
 HERE=$(CDPATH= cd -- "$(dirname -- "$EVA_TETHER_ARG0")" && pwd)
-ROOT=${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-${GROK_PLUGIN_ROOT:-}}}
-if [ -z "$ROOT" ]; then
-  for _try in \
-    "${HERE}/../.." \
-    "${HOME}/Work/personal/plugins/eva-emptiness" \
-    "${HOME}/.grok/plugins/eva-emptiness"
-  do
-    if [ -x "${_try}/bin/eva-tether" ] || [ -f "${_try}/bin/eva-tether-shell.inc" ]; then
-      ROOT=$(CDPATH= cd -- "$_try" && pwd)
-      break
-    fi
-  done
-fi
+# Own tree first. cursor-agent can export another plugin's root in
+# CURSOR_PLUGIN_ROOT/CLAUDE_PLUGIN_ROOT, so an env root counts only when it holds the tether.
+ROOT=""
+for _try in \
+  "${HERE}/../.." \
+  "${CURSOR_PLUGIN_ROOT:-}" \
+  "${CLAUDE_PLUGIN_ROOT:-}" \
+  "${GROK_PLUGIN_ROOT:-}" \
+  "${HOME}/Work/personal/plugins/eva-emptiness" \
+  "${HOME}/.grok/plugins/eva-emptiness"
+do
+  if [ -n "$_try" ] && { [ -x "${_try}/bin/eva-tether" ] || [ -f "${_try}/bin/eva-tether-shell.inc" ]; }; then
+    ROOT=$(CDPATH= cd -- "$_try" && pwd)
+    break
+  fi
+done
 
 for _cand in \
   "${HERE}/eva-tether" \

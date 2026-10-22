@@ -124,6 +124,30 @@ assert_empty "$out" "substituted claude root allows"
 out=$(printf '%s' '{"command":"git push"}' | "$CUR")
 assert_contains "$out" 'ask' "cursor shell git push ask"
 
+echo "=== cursor-agent sets another plugin's root ==="
+# cursor-agent exports CURSOR_PLUGIN_ROOT (and CLAUDE_PLUGIN_ROOT) of a different
+# plugin into the hook. The hook must find its own policy from its own path.
+fr_tmp=$(mktemp -d "${TMPDIR:-/tmp}/eva-foreign.XXXXXX")
+fr_home=$(mktemp -d "${TMPDIR:-/tmp}/eva-foreign-home.XXXXXX")
+mkdir -p "$fr_tmp/eva-emptiness/cursor/hooks" "$fr_tmp/eva-emptiness/bin" "$fr_tmp/superpowers"
+cp "$CUR" "$fr_tmp/eva-emptiness/cursor/hooks/eva-tether-shell.sh"
+cp "$ROOT/bin/eva-tether-shell.inc" "$fr_tmp/eva-emptiness/bin/eva-tether-shell.inc"
+chmod +x "$fr_tmp/eva-emptiness/cursor/hooks/eva-tether-shell.sh"
+fr_in='{"command":"cargo --version","cwd":"","sandbox":false,"hook_event_name":"beforeShellExecution","workspace_roots":["/tmp"]}'
+foreign_case() {
+  _label=$1
+  _out=$(
+    cd "$fr_tmp/eva-emptiness" &&
+      printf '%s' "$fr_in" | HOME="$fr_home" CURSOR_PLUGIN_ROOT="$fr_tmp/superpowers" \
+        CLAUDE_PLUGIN_ROOT="$fr_tmp/superpowers" "$fr_tmp/eva-emptiness/cursor/hooks/eva-tether-shell.sh"
+  )
+  assert_contains "$_out" '"permission":"allow"' "$_label"
+}
+foreign_case "cursor foreign root shell allow"
+cp "$BIN" "$fr_tmp/eva-emptiness/bin/eva-tether"
+foreign_case "cursor foreign root C allow"
+rm -rf "$fr_tmp" "$fr_home"
+
 echo "=== unread policy ==="
 if [ "$(id -u)" -eq 0 ]; then
   echo "FAIL unread policy case needs a non-root user"
