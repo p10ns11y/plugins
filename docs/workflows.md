@@ -30,3 +30,5 @@ Five flows share one spec each. The three variants name that spec. Laws: [flows/
 Verify has two tiers. In a critical flow or step (Send, Pay, Sign, a merge to a protected or frozen repo, or anything tagged critical), only a fresh independent verifier counts. Anywhere else a same-family verifier also counts: the same model, an earlier version or another effort level, run as a separate subagent or on the local machine. A self check in the acting session never counts. The laws model this as `Tier` (`Normal`, `Critical`) on the trace and `Ctx` (`Same`, `Variant`, `Fresh`) on each verify step.
 
 `schema` when the result feeds a decision. `model` names a verifier tier, such as `opus`. `isolation: 'worktree'` is only for parallel writers. Pass time in `args`. No `Date.now`, `Math.random`, `new Date()`, or `import()`. The script does not land a branch. Hook commands name both `${CLAUDE_PLUGIN_ROOT}` and `${GROK_PLUGIN_ROOT}`.
+
+Which combinations pay off, and the evidence for each: [use-cases.md](use-cases.md).
