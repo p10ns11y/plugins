@@ -75,6 +75,29 @@ else
   [[ ! -s "$TMP/out" ]] && ok "http ask silent" || bad "http ask printed"
 fi
 
+sed 's/^ask: .*/ask: Open HTTP now./' "$TMP/http.txt" >"$TMP/upper.txt"
+if "$BIN" emit "$TMP/upper.txt" >"$TMP/out" 2>"$TMP/err"; then
+  bad "HTTP ask should fail"
+else
+  [[ ! -s "$TMP/out" ]] && ok "HTTP ask silent" || bad "HTTP ask printed"
+fi
+
+# macOS ships bash 3.2 as /bin/bash; run under every bash on the box.
+for sh in /bin/bash "$(command -v bash)"; do
+  [[ -x "$sh" ]] || continue
+  v="$("$sh" -c 'echo "${BASH_VERSINFO[0]}"')"
+  if out="$("$sh" "$BIN" emit "$FIX/mail-none.txt" 2>"$TMP/err")" && [[ "$out" == *"- ref: mail:1" ]]; then
+    ok "bash $v emit"
+  else
+    bad "bash $v emit: $(cat "$TMP/err")"
+  fi
+  if "$sh" "$BIN" emit "$TMP/upper.txt" >"$TMP/out" 2>"$TMP/err" || ! grep -qx 'bad ask' "$TMP/err"; then
+    bad "bash $v HTTP ask"
+  else
+    ok "bash $v HTTP ask"
+  fi
+done
+
 cat >"$TMP/lie.txt" <<'EOF'
 source: mail
 kind: money

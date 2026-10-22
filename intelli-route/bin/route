@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent
 MANIFEST = ROOT / "manifest.json"
-HOUSE = REPO / "pstack-map" / "skills" / "pstack-map" / "references" / "map.md"
+MAP = Path("skills") / "pstack-map" / "references" / "map.md"
 
 LEVELS = ("low", "medium", "high", "xhigh")
 KINDS = {"", "plan", "feature", "build", "review", "fix", "rereview", "docs", "rename", "batch"}
@@ -32,6 +32,20 @@ USAGE = "usage: route WHEN [--signals JSON]\n       route --signals JSON\n"
 def die(msg, code):
     sys.stderr.write(msg if msg.endswith("\n") else msg + "\n")
     sys.exit(code)
+
+
+def house_map():
+    """Monorepo: REPO/pstack-map. Plugin cache: <cache>/pstack-map/<version>, same version first, else newest."""
+    flat = REPO / "pstack-map" / MAP
+    if flat.is_file():
+        return flat
+    cached = [d / MAP for d in (REPO.parent / "pstack-map").glob("*") if (d / MAP).is_file()]
+    same = [m for m in cached if m.parents[3].name == ROOT.name]
+    if same:
+        return same[0]
+    if cached:
+        return max(cached, key=lambda m: m.stat().st_mtime)
+    die("missing pstack-map map.md: looked in %s and %s/*" % (REPO / "pstack-map", REPO.parent / "pstack-map"), 1)
 
 
 def playbook_names(text):
@@ -231,7 +245,7 @@ def main():
     if route == "tstack":
         playbook = "skip"
     else:
-        playbook = named_playbook(situation, playbook_names(HOUSE.read_text(encoding="utf-8")))
+        playbook = named_playbook(situation, playbook_names(house_map().read_text(encoding="utf-8")))
         if playbook is None:
             playbook = "house"
     emit = {

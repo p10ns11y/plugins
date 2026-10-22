@@ -8,11 +8,11 @@ usage() {
 }
 
 ask_ok() {
-  local ask="$1" low
+  local ask="$1"
   [[ "$ask" =~ ^[A-Za-z][A-Za-z\ ]*\.$ ]] || return 1
   [[ ${#ask} -ge 2 && ${#ask} -le 120 ]] || return 1
-  low="${ask,,}"
-  [[ "$low" == *@* || "$low" == *http* ]] && return 1
+  # Case-folded glob, not ${ask,,}: macOS /bin/bash is 3.2, and PATH may lack tr.
+  [[ "$ask" == *@* || "$ask" == *[Hh][Tt][Tt][Pp]* ]] && return 1
   return 0
 }
 
