@@ -58,6 +58,9 @@ shape() {
   "$STATE" stage put --map loop --id parked --class Park --a 1 --m 1 --b 1 --label Later >/dev/null
 }
 
+# Octal mode; GNU stat on Linux, BSD stat on macOS.
+mode() { stat -c %a "$1" 2>/dev/null || stat -f %Lp "$1"; }
+
 admit() {
   "$STATE" pulse admit --key "$1" --snippet "$2" --source loop --time "$3" \
     --status user-stated --kind memory --lock "$4"
@@ -66,10 +69,10 @@ admit() {
 # Row 1, own db.
 fresh
 parent="$(dirname "$TSTACK_STATE_DB")"
-parent_mode="$(stat -c %a "$parent")"
+parent_mode="$(mode "$parent")"
 must "row 1 init" "$STATE" init
-[[ "$(stat -c %a "$TSTACK_STATE_DB")" == "600" ]] && ok "row 1 mode 600" || bad "row 1 mode"
-[[ "$(stat -c %a "$parent")" == "$parent_mode" ]] && ok "row 1 parent mode" || bad "row 1 parent mode"
+[[ "$(mode "$TSTACK_STATE_DB")" == "600" ]] && ok "row 1 mode 600" || bad "row 1 mode"
+[[ "$(mode "$parent")" == "$parent_mode" ]] && ok "row 1 parent mode" || bad "row 1 parent mode"
 python3 -c 'import json,sys; assert json.loads(sys.argv[1])["versions"]==[1,2,3]' "$OUT" \
   && ok "row 1 versions" || bad "row 1 versions"
 must "row 1 init again" "$STATE" init
@@ -78,7 +81,7 @@ must "row 1 init again" "$STATE" init
   && ok "row 1 versions stay" || bad "row 1 versions stay"
 for extra in "$TSTACK_STATE_DB-wal" "$TSTACK_STATE_DB-shm"; do
   if [[ -f "$extra" ]]; then
-    [[ "$(stat -c %a "$extra")" == "600" ]] && ok "row 1 $(basename "$extra")" || bad "row 1 $(basename "$extra")"
+    [[ "$(mode "$extra")" == "600" ]] && ok "row 1 $(basename "$extra")" || bad "row 1 $(basename "$extra")"
   fi
 done
 
@@ -236,12 +239,12 @@ else
   bad "path PULSE fallback"
 fi
 xdg="$(mktemp -d)"
-xdg_mode="$(stat -c %a "$xdg")"
+xdg_mode="$(mode "$xdg")"
 if env -u TSTACK_STATE_DB -u PULSE_MEMORY_DB XDG_DATA_HOME="$xdg" "$STATE" init >/dev/null; then
   [[ -f "$xdg/tstack/state.sqlite" ]] && ok "path xdg file" || bad "path xdg file"
-  [[ "$(stat -c %a "$xdg/tstack")" == "700" ]] && ok "path xdg dir 700" || bad "path xdg dir"
-  [[ "$(stat -c %a "$xdg")" == "$xdg_mode" ]] && ok "path xdg parent" || bad "path xdg parent"
-  [[ "$(stat -c %a "$xdg/tstack/state.sqlite")" == "600" ]] && ok "path xdg mode 600" || bad "path xdg mode"
+  [[ "$(mode "$xdg/tstack")" == "700" ]] && ok "path xdg dir 700" || bad "path xdg dir"
+  [[ "$(mode "$xdg")" == "$xdg_mode" ]] && ok "path xdg parent" || bad "path xdg parent"
+  [[ "$(mode "$xdg/tstack/state.sqlite")" == "600" ]] && ok "path xdg mode 600" || bad "path xdg mode"
 else
   bad "path xdg"
 fi
@@ -249,7 +252,7 @@ xdg="$(mktemp -d)"
 mkdir "$xdg/tstack"
 chmod 755 "$xdg/tstack"
 if env -u TSTACK_STATE_DB -u PULSE_MEMORY_DB XDG_DATA_HOME="$xdg" "$STATE" init >/dev/null; then
-  [[ "$(stat -c %a "$xdg/tstack")" == "755" ]] && ok "path existing dir" || bad "path existing dir"
+  [[ "$(mode "$xdg/tstack")" == "755" ]] && ok "path existing dir" || bad "path existing dir"
 else
   bad "path existing dir"
 fi
