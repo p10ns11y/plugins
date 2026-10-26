@@ -22,32 +22,32 @@ Hosts without Cursor Task model lists keep four CG roles. Map each to a pstack r
 
 `deep` = planner (keep the pool, strongest first). `review` = judge (one rung down the same family only if confirmed in session; else keep as-is).
 
-## Snapshot fallback (pstack 0.15.7 · read 2026-10-03)
+## Snapshot fallback (pstack 0.15.32 · read 2026-10-26)
 
-From [setup-pstack/SKILL.md](https://github.com/cursor/plugins/blob/9511e60321f7e533a187d62854a3d53a53752874/pstack/skills/setup-pstack/SKILL.md) at upstream commit `9511e603`. Re-check upstream when this drifts.
+From [setup-pstack/SKILL.md](https://github.com/cursor/plugins/blob/e73df471cd4bd918367e99f3dd9c51bd53ddf5f0/pstack/skills/setup-pstack/SKILL.md) at upstream commit `e73df471`. Re-check upstream when this drifts.
 
 ```
-# budget: unlimited (max)
+# budget: large (xhigh)
 feature, refactoring: grok-4.7-xhigh-fast
 bug-fix: grok-4.7-xhigh-fast
 perf-issue: grok-4.7-xhigh-fast
 hillclimb: grok-4.7-xhigh-fast
-judgment and prose: claude-opus-5-5-max
-hardest tasks: claude-opus-5-5-max
+judgment and prose: claude-opus-5-5-xhigh
+hardest tasks: claude-opus-5-5-xhigh
 how explorer: grok-4.7-xhigh-fast
-how explainer: claude-opus-5-5-max
+how explainer: claude-opus-5-5-xhigh
 why investigators: grok-4.7-xhigh-fast
-why synthesizer: claude-opus-5-5-max
-reflect tooling: gpt-5.6-sol-max
-reflect judgment, divergent, synthesizer: claude-opus-5-5-max
-arena runners: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-arena cross-judge pool: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
+why synthesizer: claude-opus-5-5-xhigh
+reflect tooling: grok-4.7-xhigh-fast
+reflect judgment, divergent, synthesizer: claude-opus-5-5-xhigh
+arena runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
+arena cross-judge pool: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
 swarm workers: grok-4.7-xhigh-fast
-architect runners: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
-interrogate reviewers: claude-opus-5-5-max, gpt-5.6-sol-max, grok-4.7-xhigh-fast
+architect runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
+interrogate reviewers: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
 ```
 
-Budget ladder (upstream): `unlimited` → max; `large` → xhigh; `medium` → high; `small` → medium.
+Budget ladder (upstream): `unlimited` → max; `large` → xhigh; `medium` → high; `small` → medium. Grok slugs top out at `xhigh`.
 
 ## Plan strong, judge cheap
 
