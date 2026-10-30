@@ -36,6 +36,8 @@ d="$(repo)"; put "$d" "pager" src/pager.py
 expect missing-why-what-proof fail "$d"
 d="$(repo)"; put "$d" "$good" src/pager.py billing/invoice.py
 expect two-changes-one-commit fail "$d"
+d="$(repo)"; put "$d" "${good/pager: clamp last page/docs: pager notes}" README.md
+expect docs-only pass "$d"
 d="$(repo)"; git -C "$d" switch -q -c side; put "$d" "$good" src/pager.py; git -C "$d" switch -q main; put "$d" "$good" src/list.py
 git -C "$d" merge -q --no-ff side -m "$good"
 expect merge-commit fail "$d"
