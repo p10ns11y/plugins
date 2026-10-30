@@ -9,7 +9,7 @@ d="$(repo)"; put "$d" $'pager\n\nWhy: x\nWhat: y' src/pager.py
 expect missing-proof fail "$d"
 d="$(repo)"; put "$d" "pager" src/pager.py
 expect missing-why-what-proof fail "$d"
-d="$(repo)"; put "$d" "$good" src/pager.py billing/invoice.py
+d="$(repo)"; put "$d" "$good" src/pager.py lib/module.py
 expect two-changes-one-commit fail "$d"
 d="$(repo)"; put "$d" "${good/pager: clamp last page/docs: pager notes}" README.md
 expect docs-only pass "$d"
