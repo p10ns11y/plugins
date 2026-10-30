@@ -23,7 +23,7 @@ git -C "$d" init -q; git -C "$d" config user.email craft; git -C "$d" config use
 git -C "$d" add c.py; git -C "$d" commit -qm base
 gen 96 a > "$d/a.py"; gen 96 b > "$d/b.py"; git -C "$d" add -A; git -C "$d" commit -qm touch
 (cd "$d" && "$ROOT/bin/dup-ratio" --diff HEAD~1..HEAD >/dev/null 2>&1) && bad "diff mode fails at four percent" || ok "diff mode fails at four percent"
-(cd "$d" && "$ROOT/bin/dup-ratio" --diff HEAD~1..HEAD 2>&1 | grep -q "files 2") && ok "diff mode scores touched files only" || bad "diff mode scores touched files only"
+(cd "$d" && { "$ROOT/bin/dup-ratio" --diff HEAD~1..HEAD 2>&1 || true; } | grep -q "files 2") && ok "diff mode scores touched files only" || bad "diff mode scores touched files only"
 rm -rf "$d"
 echo "---"
 if [[ "$fail" -ne 0 ]]; then echo "$fail failure(s)"; exit 1; fi

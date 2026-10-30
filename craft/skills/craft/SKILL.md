@@ -21,7 +21,7 @@ A5  This skill does not merge.
 
 1. Specifier. From a settled conversation, not a second interview. [references/acceptance.md](references/acceptance.md).
 2. Coder. Unit tests and the implementation. When LAWS.bend exists, write PROOF.bend that imports it, then run `craft/test/check-proof.sh`. Exit 2 means bend is missing. Report a hole. Do not weaken the law. The test-only commit comes first and carries `Red-run:` with the failing output; `craft/bin/check-red-commit.sh BASE..HEAD` checks it.
-3. Cleaner. `crap-score.py` for Python. `crap-score.mjs` for TypeScript, and that command dispatches Rust to the Rust runner and C or C++ to clang plus gcov. `--max` is in [references/thresholds.md](references/thresholds.md).
+3. Cleaner. `crap-score.py` for Python. `crap-score.mjs` for TypeScript, and that command dispatches Rust to the Rust runner and C or C++ to clang plus gcov. `--max` is in [references/thresholds.md](references/thresholds.md). `craft/bin/dup-ratio --diff BASE..HEAD` keeps repeated 4-line windows on touched files at 3% or less.
 4. Hardener. `mutation-score.py` for Python, or `mutation-score.mjs` for TypeScript, with `--min` from the same page, on non-Bend code.
 5. QA. Run the procedure as a script.
 6. Emit the card.
@@ -46,6 +46,7 @@ A5  This skill does not merge.
 | **touched** | |
 | **red_commit** | ok \| failed |
 | **crap_max** | |
+| **dup** | percent of touched lines, limit 3% |
 | **mutation** | |
 | **scout** | touched files only \| violated |
 | **next** | |
