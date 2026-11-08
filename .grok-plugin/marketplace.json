@@ -168,7 +168,7 @@
     {
       "name": "live-context",
       "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
-      "category": "productivity",
+      "category": "development",
       "source": {
         "type": "local",
         "path": "./live-context"
