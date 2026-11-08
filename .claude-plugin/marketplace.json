@@ -55,6 +55,11 @@
       "source": "./layout-content-view"
     },
     {
+      "name": "live-context",
+      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
+      "source": "./live-context"
+    },
+    {
       "name": "michelin-kitchen",
       "description": "Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills, and more. Several include our adaptations.",
       "source": "./michelin-kitchen"

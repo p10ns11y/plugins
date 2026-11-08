@@ -82,6 +82,7 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **steer-accel** | Five-step loop for a long stretch. A coordinator or `.steer/loop.on` arms the watch. A crash while it is on denies the call. | `/steer-accel` |
 | **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
+| **live-context** | Process workflow: one live context, few specialists, verify before irreversible acts, then recover | `/live-context` |
 | **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |
 | **craft** | Specifier, coder, cleaner, hardener, QA. CRAP on touched functions; mutation testing on non-Bend code; Bend proofs for pure transitions. [craft/README.md](craft/README.md) | `/craft` |
 | **si** | SI workflows that own the write. One profile: data, SI-native review, SI service, deterministic SaaS, infra, or devex. [si/README.md](si/README.md) | `/si` |
@@ -250,6 +251,19 @@ grok plugin install p10ns11y/plugins@feat/layout-content-view#layout-content-vie
 ```
 
 See [layout-content-view/README.md](layout-content-view/README.md).
+
+---
+
+## Live context
+
+Process workflow for coordinating work: one live context, few specialists, verify before irreversible acts, then recover. Not a bot or a second chat persona.
+
+```bash
+grok plugin install live-context --trust
+# slash: /live-context
+```
+
+See [live-context/README.md](live-context/README.md).
 
 ---
 
