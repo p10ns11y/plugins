@@ -30,11 +30,6 @@
       "source": "./control-plane"
     },
     {
-      "name": "cos",
-      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
-      "source": "./cos"
-    },
-    {
       "name": "craft",
       "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener.",
       "source": "./craft"
@@ -58,6 +53,11 @@
       "name": "layout-content-view",
       "description": "Layout-content-view stability plus lcv-implement companion for data-lcv marks. Not pixel snapshots. Web first.",
       "source": "./layout-content-view"
+    },
+    {
+      "name": "live-context",
+      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
+      "source": "./live-context"
     },
     {
       "name": "michelin-kitchen",

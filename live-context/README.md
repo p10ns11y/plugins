@@ -1,10 +1,10 @@
-# cos (CoS)
+# Live context
 
 **Process workflow for coordinating work** — not a bot, not a second chat persona, not part of flowingstack.
 
 One live context, few specialists, verify before irreversible acts, then recover.
 
-Slash: `/cos`.
+Slash: `/live-context`.
 
 ## Process
 
@@ -29,7 +29,7 @@ flowchart LR
 ```bash
 grok plugin marketplace add https://github.com/p10ns11y/plugins.git
 grok plugin marketplace update
-grok plugin install cos --trust
+grok plugin install live-context --trust
 ```
 
 ---

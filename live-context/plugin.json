@@ -1,5 +1,5 @@
 {
-  "name": "cos",
+  "name": "live-context",
   "version": "0.1.0",
   "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
   "author": {
@@ -8,7 +8,7 @@
   "homepage": "https://github.com/p10ns11y/plugins",
   "license": "MIT",
   "keywords": [
-    "cos",
+    "live-context",
     "coordination",
     "process",
     "workflow",

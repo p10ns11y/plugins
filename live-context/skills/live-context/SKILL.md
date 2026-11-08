@@ -1,10 +1,10 @@
 ---
-name: CoS
+name: Live context
 description: >-
   Use this when coordinating non-trivial work: pick one live context,
   do not spawn extra specialists, verify before irreversible acts, then recover.
 ---
-# CoS
+# Live context
 
 Work as one process: one mode, one live context, few specialists.
 

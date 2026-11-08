@@ -1,11 +1,11 @@
 ---
-description: Run the CoS process workflow on the current turn. One live context, verify before irreversible acts.
+description: Run the Live context process workflow on the current turn. One live context, verify before irreversible acts.
 argument-hint: optional live context or mode hint
 ---
 
-# /cos
+# /live-context
 
-Load skill **cos**.
+Load skill **live-context**.
 
 `$ARGUMENTS` = optional name for the live context or a mode hint (`rest`, `focus`, `sprint`, `recover`). If empty, infer from the current turn.
 

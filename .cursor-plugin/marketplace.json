@@ -4,7 +4,7 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, cos, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
+    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, live-context, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
   },
   "plugins": [
     {
@@ -33,11 +33,6 @@
       "description": "Installable control plane: rewrite a dump into a Feed, then run the control-graph. Skills-repo URLs stay canonical for intelli-route."
     },
     {
-      "name": "cos",
-      "source": "cos",
-      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover."
-    },
-    {
       "name": "craft",
       "source": "craft",
       "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener."
@@ -61,6 +56,11 @@
       "name": "layout-content-view",
       "source": "layout-content-view",
       "description": "Layout-content-view stability plus lcv-implement companion for data-lcv marks. Not pixel snapshots. Web first."
+    },
+    {
+      "name": "live-context",
+      "source": "live-context",
+      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover."
     },
     {
       "name": "michelin-kitchen",
