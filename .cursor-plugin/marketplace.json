@@ -4,7 +4,7 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, live-context, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
+    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, live-engine, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
   },
   "plugins": [
     {
@@ -58,9 +58,9 @@
       "description": "Layout-content-view stability plus lcv-implement companion for data-lcv marks. Not pixel snapshots. Web first."
     },
     {
-      "name": "live-context",
-      "source": "live-context",
-      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover."
+      "name": "live-engine",
+      "source": "live-engine",
+      "description": "Action runner for coordinating work: one live working set, few specialists, verify before irreversible acts, then recover. Works with pulse memory and Ensembly."
     },
     {
       "name": "michelin-kitchen",

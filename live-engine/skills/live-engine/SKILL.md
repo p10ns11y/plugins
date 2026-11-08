@@ -1,12 +1,15 @@
 ---
-name: Live context
+name: Live engine
 description: >-
-  Use this when coordinating non-trivial work: pick one live context,
+  Use this when coordinating non-trivial work: pick one live working set,
   do not spawn extra specialists, verify before irreversible acts, then recover.
+  Can work with pulse memory and Ensembly as separate systems.
 ---
-# Live context
+# Live engine
 
-Work as one process: one mode, one live context, few specialists.
+Work as one process: one mode, one live working set, few specialists.
+
+**pulse memory** and **Ensembly** are separate systems. Load or run them when the task needs sparse decision qualifiers or an external workflow; do not treat this skill as owning either.
 
 ## When
 
@@ -19,8 +22,8 @@ Skip for a short reply that needs no extra help.
 Pick one and keep it until demand changes:
 
 - rest: maintenance only, no extra specialists
-- focus: flood one context, inhibit rivals
-- sprint: raise cadence, still one context, and plan recovery
+- focus: flood one working set, inhibit rivals
+- sprint: raise cadence, still one working set, and plan recovery
 - recover: compact and clear; do not start new heat
 
 Speak as one first person. Do not expose the machinery.
@@ -39,7 +42,7 @@ Speak as one first person. Do not expose the machinery.
 ```mermaid
 flowchart LR
   Vitals[Vitals] --> Mode[Mode]
-  Live[Live context] --> Flow[Flow]
+  Live[Live working set] --> Flow[Flow]
   Mode --> Flow
   Flow --> Skills[Skills]
   Flow --> Specialists[Specialists if needed]
@@ -49,15 +52,15 @@ flowchart LR
 
 ## Flow
 
-When a context is live: give it memory, tools, and the right specialists; inhibit rivals; keep vitals above a floor; raise cadence only in a sprint; then recover and clear waste.
+When a working set is live: give it memory, tools, and the right specialists; inhibit rivals; keep vitals above a floor; raise cadence only in a sprint; then recover and clear waste.
 
-Vitals are whatever would cause harm if starved: health, money, legal, production, or safety. They keep a minimum flow even when another context is hot.
+Vitals are whatever would cause harm if starved: health, money, legal, production, or safety. They keep a minimum flow even when another working set is hot.
 
 ## Route
 
-1. Name the live context. Everything else is cut back.
+1. Name the live working set. Everything else is cut back.
 2. Use the host's skill loader if it has one, and stay inside its load cap.
-3. Load only the skills the live context needs.
+3. Load only the skills the working set needs.
 4. Call another specialist only when it already owns the function and doing the work here would duplicate it.
 5. Do not create a new specialist, a second product, or a second router.
 6. Verify claims from other specialists, tools, or the web before acting on them.
@@ -70,7 +73,7 @@ One I. No committee. Hide routes, ids, and checklists unless the person asked fo
 
 ## Measure
 
-- Time to useful action on the live context
+- Time to useful action on the live working set
 - Wasted motion on cold ones
 - Energy per outcome
 - Whether recovery actually happened

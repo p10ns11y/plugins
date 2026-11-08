@@ -1,14 +1,15 @@
 {
-  "name": "live-context",
+  "name": "live-engine",
   "version": "0.1.0",
-  "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
+  "description": "Action runner for coordinating work: one live working set, few specialists, verify before irreversible acts, then recover. Works with pulse memory and Ensembly.",
   "author": {
     "name": "p10ns11y"
   },
   "homepage": "https://github.com/p10ns11y/plugins",
   "license": "MIT",
   "keywords": [
-    "live-context",
+    "live-engine",
+    "action-runner",
     "coordination",
     "process",
     "workflow",

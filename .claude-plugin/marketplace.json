@@ -55,9 +55,9 @@
       "source": "./layout-content-view"
     },
     {
-      "name": "live-context",
-      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
-      "source": "./live-context"
+      "name": "live-engine",
+      "description": "Action runner for coordinating work: one live working set, few specialists, verify before irreversible acts, then recover. Works with pulse memory and Ensembly.",
+      "source": "./live-engine"
     },
     {
       "name": "michelin-kitchen",
