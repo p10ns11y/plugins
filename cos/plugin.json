@@ -1,0 +1,19 @@
+{
+  "name": "cos",
+  "version": "0.1.0",
+  "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "cos",
+    "coordination",
+    "process",
+    "workflow",
+    "focus",
+    "verify",
+    "recovery"
+  ]
+}

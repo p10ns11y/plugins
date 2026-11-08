@@ -81,6 +81,7 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **steer-log** | Door for a builder brief and a steering doc. Prose and an edited older log row are refused. | `/steer-log` |
 | **steer-accel** | Five-step loop for a long stretch. A coordinator or `.steer/loop.on` arms the watch. A crash while it is on denies the call. | `/steer-accel` |
 | **concordance** | Corroborate a closed decision. Proceed on a label match at or above tau. Hold returns to the router. | `/concordance` |
+| **cos** | Process workflow: one live context, few specialists, verify before irreversible acts, then recover | `/cos` |
 | **layout-content-view** | Web layout×content×view stability plus `/lcv-implement` for `data-lcv` marks. Not PNG parity. | `/layout-content-view` `/lcv-implement` |
 | **michelin-kitchen** | Seven kitchen habits from Lauren Tan's talk (hosted by Matt Pocock): scripts, findings-first, events over timers, workflow skills. Several include our adaptations. | `/michelin-kitchen <habit>` |
 | **craft** | Specifier, coder, cleaner, hardener, QA. CRAP on touched functions; mutation testing on non-Bend code; Bend proofs for pure transitions. [craft/README.md](craft/README.md) | `/craft` |
@@ -229,6 +230,19 @@ grok plugin install ./concordance --trust
 ```
 
 See [concordance/README.md](concordance/README.md) and [concordance/NOTICE.md](concordance/NOTICE.md).
+
+---
+
+## cos
+
+Process workflow for coordinating work: one live context, few specialists, verify before irreversible acts, then recover. Not a bot or a second chat persona.
+
+```bash
+grok plugin install cos --trust
+# slash: /cos
+```
+
+See [cos/README.md](cos/README.md).
 
 ---
 

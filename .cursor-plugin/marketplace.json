@@ -4,7 +4,7 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
+    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, cos, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
   },
   "plugins": [
     {
@@ -31,6 +31,11 @@
       "name": "control-plane",
       "source": "control-plane",
       "description": "Installable control plane: rewrite a dump into a Feed, then run the control-graph. Skills-repo URLs stay canonical for intelli-route."
+    },
+    {
+      "name": "cos",
+      "source": "cos",
+      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover."
     },
     {
       "name": "craft",

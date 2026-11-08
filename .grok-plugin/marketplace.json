@@ -1,6 +1,6 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws",
+  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, cos, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
@@ -78,6 +78,25 @@
         "control-feeder",
         "control-graph",
         "higher-order-decision-architect"
+      ]
+    },
+    {
+      "name": "cos",
+      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
+      "category": "productivity",
+      "source": {
+        "type": "local",
+        "path": "./cos"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "cos",
+        "coordination",
+        "process",
+        "workflow",
+        "focus",
+        "verify",
+        "recovery"
       ]
     },
     {

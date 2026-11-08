@@ -30,6 +30,11 @@
       "source": "./control-plane"
     },
     {
+      "name": "cos",
+      "description": "Process for coordinating work: one live context, few specialists, verify before irreversible acts, then recover.",
+      "source": "./cos"
+    },
+    {
       "name": "craft",
       "description": "Specifier, coder, cleaner, hardener, QA, after Robert C. Martin's ongoing multi-agent experiment (talk with Matt Pocock, 19 Aug 2026). CRAP on touched functions; mutation testing by the hardener.",
       "source": "./craft"
