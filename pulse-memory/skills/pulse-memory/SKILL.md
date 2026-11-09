@@ -89,6 +89,16 @@ pulse:
   hint:    { source, time, status, kind, lock }
 ```
 
+Retrieve with the CLI. Inject one verified pulse, not a transcript dump:
+
+```text
+pulse_retrieve.py apply/example/constraints
+pulse_retrieve.py --prefetch apply/example/fact
+pulse_retrieve.py --limit 3 apply/example
+```
+
+`PULSE_MEMORY_DB` selects the store. The command checks `verify_hash` before it returns a snippet. A mismatch or a superseded row comes back as `unknown` / not in the evidence. Prefetch keys are `{topic}/{kind}` from `nat_key`, kind, and topic. Admit computes both fields; `pulse_backfill.py` fills empty rows without deleting any.
+
 ---
 
 ## Done when

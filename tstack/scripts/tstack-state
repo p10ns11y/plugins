@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Shared SQLite state for the tstack loop."""
 
+import hashlib
 import json
 import os
 import re
@@ -272,14 +273,50 @@ def parse_depends(conn, raw, map_id, stage_id):
     return parts
 
 
+def content_hash(snippet):
+    digest = hashlib.sha256(snippet.encode("utf-8")).hexdigest()
+    return f"sha256:{digest}"
+
+
+def topic_of(nat_key):
+    key = nat_key.split("#", 1)[0]
+    if "/" in key:
+        parts = [part for part in key.split("/") if part]
+        if len(parts) >= 2:
+            return "/".join(parts[:-1])
+        return parts[0] if parts else key
+    if ":" in key:
+        return key.split(":", 1)[0]
+    return key
+
+
+def prefetch_key_for(nat_key, kind, topic=None):
+    chosen = (topic or topic_of(nat_key)).strip()
+    if not chosen:
+        chosen = nat_key.split("#", 1)[0]
+    return f"{chosen}/{kind}"
+
+
 def insert_trace(conn, key, snippet, source, time_s, status, kind, lock):
     return conn.execute(
         """INSERT INTO memory_traces (
              nat_key, snippet, source, time, status, kind, lock,
              verify_hash, prefetch_key, seen_count, superseded_by,
              first_seen, last_seen
-           ) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL, 1, NULL, ?, ?)""",
-        (key, snippet, source, time_s, status, kind, lock, time_s, time_s),
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, NULL, ?, ?)""",
+        (
+            key,
+            snippet,
+            source,
+            time_s,
+            status,
+            kind,
+            lock,
+            content_hash(snippet),
+            prefetch_key_for(key, kind),
+            time_s,
+            time_s,
+        ),
     )
 
 
@@ -748,6 +785,10 @@ def cmd_pulse_admit(flags):
     lock = flags.get("lock", "open")
     if lock not in LOCKS:
         reject("bad lock")
+    if status == "inferred" and lock == "locked":
+        reject("inferred write cannot be locked")
+    if len(snippet) > 800:
+        reject("snippet too long for a pulse")
     conn = connect()
 
     def work():
@@ -815,6 +856,43 @@ def cmd_pulse_list(flags):
         (limit,),
     ).fetchall()
     ok({"rows": [{name: row[name] for name in cols} for row in rows]})
+
+
+def load_pulse_common():
+    root = Path(__file__).resolve().parents[2] / "pulse-memory" / "scripts"
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    try:
+        import pulse_common
+        return pulse_common
+    except ImportError:
+        return None
+
+
+def cmd_pulse_retrieve(flags):
+    only(flags, "query", "key", "prefetch", "limit")
+    query = flags.get("query", "")
+    key = flags.get("key")
+    prefetch = flags.get("prefetch")
+    limit = 1
+    if "limit" in flags:
+        if not re.fullmatch(r"[1-9][0-9]*", flags["limit"]):
+            usage("usage")
+        limit = int(flags["limit"])
+    if not (query or key or prefetch):
+        reject("empty query")
+    helper = load_pulse_common()
+    if helper is None:
+        reject("retrieve helper missing")
+    conn = connect()
+    payload = helper.retrieve(
+        conn,
+        query=query,
+        limit=limit,
+        key=key,
+        prefetch_key=prefetch,
+    )
+    ok(payload)
 
 
 def cmd_pulse_conflict(flags):
@@ -1109,6 +1187,7 @@ COMMANDS = {
     "pulse archive": cmd_pulse_archive,
     "pulse admit": cmd_pulse_admit,
     "pulse list": cmd_pulse_list,
+    "pulse retrieve": cmd_pulse_retrieve,
     "pulse conflict": cmd_pulse_conflict,
 }
 
