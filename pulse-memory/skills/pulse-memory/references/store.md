@@ -9,6 +9,7 @@ Default file: $XDG_DATA_HOME/tstack/state.sqlite, or ~/.local/share/tstack/state
 | Tool | Job |
 |------|-----|
 | `tstack-state` | writes, FTS rebuild, and migrations. The `sqlite3` CLI is inspect only. |
+| `scripts/pulse_init_db.py` | create the store at `PULSE_MEMORY_DB`, mode 0600; idempotent |
 | `scripts/pulse_admit.py` | admit one tagged snippet; store `verify_hash` and `prefetch_key` |
 | `scripts/pulse_retrieve.py` | return one verified pulse, or a few, never the whole store |
 | `scripts/pulse_backfill.py` | fill empty hash and prefetch values; no deletes |
@@ -73,14 +74,31 @@ CREATE TABLE IF NOT EXISTS conflicts (
 );
 ```
 
-Upsert: `ON CONFLICT(nat_key) DO UPDATE SET seen_count = seen_count + 1, last_seen = excluded.last_seen` **unless** `lock = 'locked'` and the new row disagrees — then insert a *new* key suffix and row in `conflicts`.
+Upsert: one path, `admit_row` in `scripts/pulse_common.py`. `pulse_admit.py` and `tstack-state pulse admit` both call it.
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e0f2fe","primaryBorderColor":"#0284c7","lineColor":"#7c3aed","secondaryColor":"#dcfce7","tertiaryColor":"#fef3c7"}}}%%
+flowchart LR
+  A[pulse_admit.py]:::cli --> R[admit_row]:::core
+  T[tstack-state pulse admit]:::cli --> R
+  R -->|new key| I[insert + hash + prefetch]:::ok
+  R -->|open| U[seen+1, newest wins]:::ok
+  R -->|locked, same text| S[seen+1]:::ok
+  R -->|locked, new text| F[key-2 + conflict row]:::warn
+  classDef cli fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+  classDef core fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+  classDef ok fill:#dcfce7,stroke:#16a34a,color:#14532d
+  classDef warn fill:#fef3c7,stroke:#d97706,color:#78350f
+```
+
+tstack-state also refuses `@` in any field.
 
 ## Admissions write path
 
 1. Candidate claim → hint tags required; else reject.
 2. Test: would it change **this** next action? No → `archive_events` only. The CLI also rejects an empty snippet, a snippet over 800 characters, an inferred write with no explicit source, and an inferred write marked locked.
 3. Conflict with existing `nat_key` → do not average; rank time then status; loser stays archive; winner is memory; log `conflicts`.
-4. Retrieve injects current `fact` or `memory` rows with a matching hash, `superseded_by IS NULL`, newest and locked first, **LIMIT 8**. A mismatch or a stale row is unknown, not a dump.
+4. Retrieve injects current `fact`, `memory`, or `context` rows with a matching hash, `superseded_by IS NULL`, newest and locked first, **LIMIT 8**. A `data` row comes back only by exact key. A mismatch or a stale row is unknown, not a dump.
 
 ## What not to add (YAGNI)
 

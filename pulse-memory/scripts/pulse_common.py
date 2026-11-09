@@ -160,9 +160,15 @@ def sync_fts(conn):
         pass
 
 
+MAX_KEY_CHARS = 200
+
+
 def check_admit(nat_key, snippet, source, status, kind, lock, source_explicit=True):
-    if not nat_key or not str(nat_key).strip():
+    key = "" if nat_key is None else str(nat_key).strip()
+    if not key:
         raise AdmitRejected("empty nat_key")
+    if len(key) > MAX_KEY_CHARS or "@" in key:
+        raise AdmitRejected("bad nat_key")
     if status not in STATUSES:
         raise AdmitRejected("bad status")
     if kind not in KINDS:
@@ -180,10 +186,36 @@ def check_admit(nat_key, snippet, source, status, kind, lock, source_explicit=Tr
         raise AdmitRejected("inferred write needs a source", archive=True)
     if status == "inferred" and lock == "locked":
         raise AdmitRejected("inferred write cannot be locked")
-    return text
+    return key, text
 
 
-def admit(
+def fresh_key(conn, base):
+    n = 2
+    while True:
+        candidate = f"{base}-{n}"
+        if len(candidate) > MAX_KEY_CHARS:
+            raise AdmitRejected("bad nat_key")
+        taken = conn.execute(
+            "SELECT 1 FROM memory_traces WHERE nat_key=?", (candidate,)
+        ).fetchone()
+        if taken is None:
+            return candidate
+        n += 1
+
+
+def insert_trace(conn, key, text, source, t, status, kind, lock, topic=None):
+    return conn.execute(
+        """INSERT INTO memory_traces
+        (nat_key, snippet, source, time, status, kind, lock,
+         verify_hash, prefetch_key, seen_count, superseded_by,
+         first_seen, last_seen)
+        VALUES (?,?,?,?,?,?,?,?,?,1,NULL,?,?)""",
+        (key, text, source, t, status, kind, lock,
+         content_hash(text), prefetch_key_for(key, kind, topic), t, t),
+    ).lastrowid
+
+
+def admit_row(
     conn,
     nat_key,
     snippet,
@@ -196,71 +228,62 @@ def admit(
     source_explicit=True,
     topic=None,
 ):
-    text = check_admit(nat_key, snippet, source, status, kind, lock, source_explicit)
+    """One admit path for pulse_admit.py and tstack-state. Caller commits."""
+    key, text = check_admit(nat_key, snippet, source, status, kind, lock, source_explicit)
     t = time or now()
-    vhash = content_hash(text)
-    pkey = prefetch_key_for(nat_key, kind, topic)
     row = conn.execute(
-        "SELECT * FROM memory_traces WHERE nat_key=?", (nat_key,)
+        "SELECT id, snippet, lock, seen_count FROM memory_traces WHERE nat_key=?", (key,)
     ).fetchone()
     if row is None:
-        conn.execute(
-            """INSERT INTO memory_traces
-            (nat_key, snippet, source, time, status, kind, lock,
-             verify_hash, prefetch_key, seen_count, superseded_by,
-             first_seen, last_seen)
-            VALUES (?,?,?,?,?,?,?,?,?,1,NULL,?,?)""",
-            (nat_key, text, source, t, status, kind, lock, vhash, pkey, t, t),
-        )
-        _maybe_supersede(conn, nat_key, supersede)
+        new_id = insert_trace(conn, key, text, source, t, status, kind, lock, topic)
+        _maybe_supersede(conn, key, supersede)
         if kind == "data":
             archive_event(
                 conn,
                 source,
-                {"nat_key": nat_key, "kind": kind, "reason": "data stays in archive"},
-                nat_key,
+                {"nat_key": key, "kind": kind, "reason": "data stays in archive"},
+                key,
             )
         sync_fts(conn)
-        conn.commit()
-        return "inserted"
-    if row["lock"] == "locked" and (row["snippet"] != text or row["status"] != status):
-        suffix = t.replace(":", "").replace("-", "")[:15]
-        new_key = f"{nat_key}#{suffix}"
-        fork_hash = content_hash(text)
-        fork_prefetch = prefetch_key_for(nat_key, kind, topic)
-        conn.execute(
-            """INSERT INTO memory_traces
-            (nat_key, snippet, source, time, status, kind, lock,
-             verify_hash, prefetch_key, seen_count, superseded_by,
-             first_seen, last_seen)
-            VALUES (?,?,?,?,?,?,?,?,?,1,NULL,?,?)""",
-            (new_key, text, source, t, status, kind, "open", fork_hash, fork_prefetch, t, t),
-        )
-        new_id = conn.execute(
-            "SELECT id FROM memory_traces WHERE nat_key=?", (new_key,)
-        ).fetchone()["id"]
+        return {"action": "inserted", "id": new_id, "nat_key": key, "seen_count": 1}
+    if row["lock"] == "locked" and row["snippet"] != text:
+        fork = fresh_key(conn, key)
+        new_id = insert_trace(conn, fork, text, source, t, status, kind, lock, topic)
         conn.execute(
             "INSERT INTO conflicts(subject, left_id, right_id, resolution, ts) VALUES (?,?,?,?,?)",
-            (nat_key, row["id"], new_id, "not averaged", t),
+            (key, row["id"], new_id, "not in the evidence", t),
         )
         sync_fts(conn)
-        conn.commit()
-        return f"conflict->{new_key}"
+        return {"action": "conflict", "id": new_id, "nat_key": fork, "seen_count": 1}
     conn.execute(
         """UPDATE memory_traces SET seen_count=seen_count+1, last_seen=?,
            snippet=CASE WHEN lock='open' THEN ? ELSE snippet END,
+           time=CASE WHEN lock='open' THEN ? ELSE time END,
            status=CASE WHEN lock='open' THEN ? ELSE status END,
            source=CASE WHEN lock='open' THEN ? ELSE source END,
            verify_hash=CASE WHEN lock='open' THEN ? ELSE verify_hash END,
            prefetch_key=CASE WHEN lock='open' THEN ? ELSE prefetch_key END,
            kind=CASE WHEN lock='open' THEN ? ELSE kind END
-           WHERE nat_key=?""",
-        (t, text, status, source, vhash, pkey, kind, nat_key),
+           WHERE id=?""",
+        (t, text, t, status, source, content_hash(text),
+         prefetch_key_for(key, kind, topic), kind, row["id"]),
     )
-    _maybe_supersede(conn, nat_key, supersede)
+    _maybe_supersede(conn, key, supersede)
     sync_fts(conn)
+    return {
+        "action": "upserted",
+        "id": row["id"],
+        "nat_key": key,
+        "seen_count": row["seen_count"] + 1,
+    }
+
+
+def admit(conn, nat_key, snippet, *args, **kwargs):
+    result = admit_row(conn, nat_key, snippet, *args, **kwargs)
     conn.commit()
-    return "upserted"
+    if result["action"] == "conflict":
+        return f"conflict->{result['nat_key']}"
+    return result["action"]
 
 
 def _maybe_supersede(conn, winner, superseded):
