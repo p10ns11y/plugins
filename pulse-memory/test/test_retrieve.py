@@ -4,6 +4,7 @@
 import json
 import os
 import sqlite3
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -341,6 +342,88 @@ class CliSmoke(unittest.TestCase):
         )
         self.assertEqual(filled["before"], filled["after"])
         tmp.cleanup()
+
+
+class OneAdmitPath(unittest.TestCase):
+    def run_py(self, script, *args, env):
+        return subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / script), *args],
+            env=env, text=True, capture_output=True,
+        )
+
+    def test_init_db_creates_private_store(self):
+        tmp = tempfile.TemporaryDirectory()
+        db = Path(tmp.name) / "nested" / "pulse.sqlite"
+        env = os.environ.copy()
+        env["PULSE_MEMORY_DB"] = str(db)
+        first = self.run_py("pulse_init_db.py", env=env)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertEqual(json.loads(first.stdout)["db"], "created")
+        self.assertEqual(db.stat().st_mode & 0o777, 0o600)
+        again = self.run_py("pulse_init_db.py", env=env)
+        self.assertEqual(json.loads(again.stdout)["db"], "ready")
+        admitted = self.run_py("pulse_admit.py", "a/b", "kept", "test", env=env)
+        self.assertEqual(admitted.stdout.strip(), "inserted")
+        tmp.cleanup()
+
+    def test_locked_disagreement_forks_without_averaging(self):
+        tmp, conn = fresh()
+        admit(conn, "trace", "alpha", source="test", lock="locked")
+        self.assertEqual(admit(conn, "trace", "beta", source="test", lock="locked"), "conflict->trace-2")
+        self.assertEqual(admit(conn, "trace", "gamma", source="test", lock="locked"), "conflict->trace-3")
+        row = conn.execute("SELECT snippet FROM memory_traces WHERE nat_key='trace'").fetchone()
+        self.assertEqual(row["snippet"], "alpha")
+        res = {r[0] for r in conn.execute("SELECT resolution FROM conflicts")}
+        self.assertEqual(res, {"not in the evidence"})
+        self.assertEqual(admit(conn, "trace", "alpha", source="test", lock="locked"), "upserted")
+        conn.close()
+        tmp.cleanup()
+
+    def test_bad_key_rejected(self):
+        tmp, conn = fresh()
+        for key in ("", "a@b", "k" * 201):
+            with self.assertRaises(AdmitRejected):
+                admit(conn, key, "kept", source="test")
+        conn.close()
+        tmp.cleanup()
+
+    def test_tstack_and_cli_write_the_same_row(self):
+        state = ROOT.parent / "tstack" / "scripts" / "tstack-state"
+        if not state.exists():
+            self.skipTest("tstack not beside pulse-memory")
+        rows = []
+        for via in ("cli", "tstack"):
+            tmp = tempfile.TemporaryDirectory()
+            db = Path(tmp.name) / "pulse.sqlite"
+            env = os.environ.copy()
+            env.pop("TSTACK_STATE_DB", None)
+            env["PULSE_MEMORY_DB"] = str(db)
+            self.run_py("pulse_init_db.py", env=env)
+            when = "2026-01-01T00:00:00Z"
+            for snippet in ("one", "two"):
+                if via == "cli":
+                    obj = {"nat_key": "loop/turn", "snippet": snippet, "source": "test",
+                           "status": "tool-verified", "kind": "memory", "lock": "locked", "time": when}
+                    out = subprocess.run(
+                        [sys.executable, str(ROOT / "scripts" / "pulse_admit.py"), "--json"],
+                        input=json.dumps(obj), env=env, text=True, capture_output=True,
+                    )
+                else:
+                    out = subprocess.run(
+                        [sys.executable, str(state), "pulse", "admit", "--key", "loop/turn",
+                         "--snippet", snippet, "--source", "test", "--time", when,
+                         "--status", "tool-verified", "--kind", "memory", "--lock", "locked"],
+                        env=env, text=True, capture_output=True,
+                    )
+                self.assertEqual(out.returncode, 0, out.stdout + out.stderr)
+            conn = sqlite3.connect(db)
+            rows.append(conn.execute(
+                """SELECT nat_key, snippet, status, kind, lock, verify_hash, prefetch_key, seen_count
+                   FROM memory_traces ORDER BY nat_key"""
+            ).fetchall() + conn.execute("SELECT subject, resolution FROM conflicts").fetchall())
+            conn.close()
+            tmp.cleanup()
+        self.assertEqual(rows[0], rows[1])
 
 
 if __name__ == "__main__":
