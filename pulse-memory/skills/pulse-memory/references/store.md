@@ -13,6 +13,7 @@ Default file: $XDG_DATA_HOME/tstack/state.sqlite, or ~/.local/share/tstack/state
 | `scripts/pulse_admit.py` | admit one tagged snippet; store `verify_hash` and `prefetch_key` |
 | `scripts/pulse_retrieve.py` | return one verified pulse, or a few, never the whole store |
 | `scripts/pulse_backfill.py` | fill empty hash and prefetch values; no deletes |
+| `scripts/pulse_rank.py` | rank traces by earned keep; propose prunes; dry run; no deletes |
 | `/pulse-memory` skill | tag + resolve in the conversation |
 | `/workflow pulse-memory` | one pulse cycle over thinking + harness files |
 | scheduler (host) | fire the workflow; pass `as_of` (script has no wall clock) |
@@ -99,6 +100,35 @@ tstack-state also refuses `@` in any field.
 2. Test: would it change **this** next action? No → `archive_events` only. The CLI also rejects an empty snippet, a snippet over 800 characters, an inferred write with no explicit source, and an inferred write marked locked.
 3. Conflict with existing `nat_key` → do not average; rank time then status; loser stays archive; winner is memory; log `conflicts`.
 4. Retrieve injects current `fact`, `memory`, or `context` rows with a matching hash, `superseded_by IS NULL`, newest and locked first, **LIMIT 8**. A `data` row comes back only by exact key. A mismatch or a stale row is unknown, not a dump.
+
+## Rank: Key Decision Indicators
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#e0f2fe","primaryBorderColor":"#0284c7","lineColor":"#7c3aed"}}}%%
+flowchart LR
+  O[observe: retrieve hit log]:::o --> R[rank: KDI score]:::r --> T[tighten: prune proposals]:::t --> I[improve sparsely: a person prunes]:::i
+  I -.-> O
+  classDef o fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+  classDef r fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+  classDef t fill:#fef3c7,stroke:#d97706,color:#78350f
+  classDef i fill:#dcfce7,stroke:#16a34a,color:#14532d
+```
+
+```text
+hit(k)    = archive_events where source = pulse/retrieve and k ∈ keys, inside the window
+KDI(k)    = 3·hit + (seen_count − 1) + 4·locked + 2·supersedes + 1·tool-verified
+stale     ⇐ superseded_by ≠ ∅
+repair    ⇐ verify_hash ≠ sha256(snippet)
+earned    ⇐ locked ∨ hit > 0 ∨ seen_count > 1 ∨ supersedes > 0
+young     ⇐ age < min_age (14d)
+unproven  ⇐ hit log starts after the window start
+idle      ⇐ otherwise
+prune     = (stale ++ idle)[:8]; nothing is deleted
+```
+
+Retrieve logs keys and mode only, never the query or snippet. `PULSE_RETRIEVE_LOG=0` turns it off. Gate outcomes are not stored per trace yet, so they do not score.
+
+`pulse_rank.py --weekly` prints the week report. `--record` appends it to `archive_events`.
 
 ## What not to add (YAGNI)
 

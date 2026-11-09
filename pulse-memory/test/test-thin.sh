@@ -27,6 +27,9 @@ need scripts/pulse_init_db.py
 need scripts/pulse_admit.py
 need scripts/pulse_retrieve.py
 need scripts/pulse_backfill.py
+need scripts/pulse_rank.py
+need commands/pulse-rank.md
+need cursor/commands/pulse-rank.md
 
 if [[ -d "$ROOT/c" ]]; then bad "c/ present — EVA owns tether"; else ok "no c/"; fi
 if [[ -d "$ROOT/hooks" ]] || [[ -f "$ROOT/hooks.json" ]]; then bad "hooks — Winds"; else ok "no hooks"; fi
@@ -99,6 +102,12 @@ if python3 "$ROOT/test/test_retrieve.py"; then
   ok "retrieve tests"
 else
   bad "retrieve tests"
+fi
+
+if python3 "$ROOT/test/test_rank.py"; then
+  ok "rank tests"
+else
+  bad "rank tests"
 fi
 
 echo "---"

@@ -46,13 +46,15 @@ ln -sfn "$(pwd)/pulse-memory/skills/pulse-memory" ~/.grok/skills/pulse-memory
 ```text
 plugin.json
 commands/pulse-memory.md
+commands/pulse-rank.md
 cursor/commands/pulse-memory.md
+cursor/commands/pulse-rank.md
 agents/pulse-memory.md
 skills/pulse-memory/          # filter SoT
   SKILL.md
   references/admissions.md
   references/store.md         # SQLite archive vs memory
-scripts/                      # init, admit, retrieve, backfill
+scripts/                      # init, admit, retrieve, backfill, rank
 .grok/workflows/pulse-memory.rhai
 test/
 ```
@@ -66,9 +68,10 @@ PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_init_db.py
 PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_admit.py apply/example/constraints "Keep the cap." test tool-verified fact locked
 PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_retrieve.py --key apply/example/constraints
 PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_backfill.py
+PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_rank.py --weekly
 ```
 
-Retrieve returns JSON: one pulse (or a few, max 8), or `{ "ok": false, "status": "unknown" }`. It never prints the whole store.
+Retrieve returns JSON: one pulse (or a few, max 8), or `{ "ok": false, "status": "unknown" }`. It never prints the whole store. Each hit is logged as keys only; `pulse_rank.py` ranks traces by those hits and proposes prunes, deleting nothing.
 
 ## Tests
 

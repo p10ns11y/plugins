@@ -424,7 +424,24 @@ def lookup_rows(conn, wanted: str, key=None, prefetch_key=None):
     return fts_or_like(conn, wanted), False
 
 
-def retrieve(conn, query="", limit=DEFAULT_RETRIEVE, key=None, prefetch_key=None):
+HIT_SOURCE = "pulse/retrieve"
+
+
+def log_hits(conn, keys, mode):
+    """Best effort: one archive row per retrieve that returned pulses. Keys only."""
+    if not keys or os.environ.get("PULSE_RETRIEVE_LOG", "1") == "0":
+        return
+    own = not conn.in_transaction
+    try:
+        archive_event(conn, HIT_SOURCE, {"keys": keys, "mode": mode}, keys[0])
+        if own:
+            conn.commit()
+    except sqlite3.Error:
+        if own:
+            conn.rollback()
+
+
+def retrieve(conn, query="", limit=DEFAULT_RETRIEVE, key=None, prefetch_key=None, log=True):
     try:
         limit = int(limit)
     except (TypeError, ValueError):
@@ -486,6 +503,9 @@ def retrieve(conn, query="", limit=DEFAULT_RETRIEVE, key=None, prefetch_key=None
         candidates = narrowed
     chosen = candidates[:limit]
     pulses = [pulse_packet(row) for row in chosen]
+    if log:
+        mode = "key" if key else "prefetch" if prefetch_key else "query"
+        log_hits(conn, [pulse["key"] for pulse in pulses], mode)
     returned_chars = sum(len(pulse["snippet"]) for pulse in pulses)
     return {
         "ok": True,
