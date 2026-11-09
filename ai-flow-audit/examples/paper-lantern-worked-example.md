@@ -54,7 +54,7 @@ flowchart LR
 |---|---|---|---|---|
 | I-01 | SupportAgent | Ticket replies | Automate → **Do** (human rewrites and sends) | Q-01, T-02 |
 | I-02 | CrawlerBot | SEO scan | **Automate**, orphaned from support path | M-01 |
-| I-03 | Manual status | Status page | **Do** | T-03 |
+| I-03 | Manual status | Status page | **Do** | F-03 |
 
 Rung move for F-01: stay on **Do**, one step from false Automate (remove auto-send, keep draft assist).
 
@@ -62,11 +62,11 @@ Rung move for F-01: stay on **Do**, one step from false Automate (remove auto-se
 
 | ID | Date / roles | Purpose | Min × people | Shipped? | Verdict | Evidence |
 |---|---|---|---:|---|---|---|
-| MT-01 | Week 1 / sponsor, vendor | "AI transformation roadmap" for support | 90 × 4 | No | Shorten | M-02 (manager: no ticket change after) |
+| MT-01 | Week 1 / sponsor, vendor | "AI transformation roadmap" for support | 90 × 4 (once in window) | No | Shorten | Q-01 paraphrase: no ticket change after |
 
 ### Totals (example arithmetic)
 
-Rework about 4 hrs/wk; meeting load about 6 person-hrs/wk for the sample row above. Tool leakage about 205/mo allocated to this process at rough 70% → about 143/mo. Rework time cost left unknown.
+Rework about 4 hrs/wk; meeting load about 3 person-hrs/wk (6 person-hrs once in the two-week window ÷ 2). Tool leakage about 205/mo allocated to this process at rough 70% → about 143/mo. Rework time cost left unknown.
 
 ## 3. Myth card (supported)
 
@@ -90,6 +90,7 @@ Rework about 4 hrs/wk; meeting load about 6 person-hrs/wk for the sample row abo
 | Workaround | Support lead rewrites and sends manually |
 | Cost signal | About 22 min plus trust hit on three of ten tickets |
 | Ask | Can draft-only plus a fixed send check stay on the Do rung? |
+| Next evidence | Support lead role; confirm the send check on the next refund by end of sample window |
 
 ## 5. Autopsy A-01
 
