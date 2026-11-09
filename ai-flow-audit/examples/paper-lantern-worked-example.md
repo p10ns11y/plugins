@@ -9,8 +9,8 @@ flowchart LR
     M1["Fully autonomous shop"]
   end
   subgraph fix["Fix"]
-    K1["Kill duplicate SEO bot"]
-    T1["Test invoice agent with check"]
+    K1["Kill orphaned CrawlerBot"]
+    T1["Test SupportAgent draft-only + send check"]
   end
   INV[Interviews] --> LED[Ledger]
   LED --> MYTH[Myth card]
@@ -40,13 +40,33 @@ flowchart LR
 
 ## 2. Waste ledger (filled rows)
 
+### Flow rows
+
 | ID | Flow | Tool | Monthly cost | Time (hrs/wk) | Waste type | Fix | Disposition |
 |---|---|---|---:|---:|---|---|---|
-| F-01 | Ticket draft → send | SupportAgent | 120 | −4 (rework) | Rework | Shrink to draft-only; human send | TEST |
-| F-02 | Nightly SEO scan | CrawlerBot | 85 | −0.5 (alerts) | Orphan | Not in support path | KILL |
+| F-01 | Ticket draft → send | SupportAgent | 120 | −4 (rework) | Rework | Stay on Do: draft-only; add send check | TEST |
+| F-02 | Nightly SEO scan | CrawlerBot | 85 | −0.5 (alerts) | Orphan | Kill from this process | KILL |
 | F-03 | Status page update | Manual | 0 | +1 (saved) | — | Keep manual | KEEP |
 
-**Totals (example arithmetic):** rework about 4 hrs/wk; tool leakage about 205/mo allocated to this process at rough 70% → about 143/mo plus rework time cost left as unknown hours.
+### Inventory (rung)
+
+| ID | System | Job | Rung claimed → actual | Evidence |
+|---|---|---|---|---|
+| I-01 | SupportAgent | Ticket replies | Automate → **Do** (human rewrites and sends) | Q-01, T-02 |
+| I-02 | CrawlerBot | SEO scan | **Automate**, orphaned from support path | M-01 |
+| I-03 | Manual status | Status page | **Do** | T-03 |
+
+Rung move for F-01: stay on **Do**, one step from false Automate (remove auto-send, keep draft assist).
+
+### AI-theater meetings
+
+| ID | Date / roles | Purpose | Min × people | Shipped? | Verdict | Evidence |
+|---|---|---|---:|---|---|---|
+| MT-01 | Week 1 / sponsor, vendor | "AI transformation roadmap" for support | 90 × 4 | No | Shorten | M-02 (manager: no ticket change after) |
+
+### Totals (example arithmetic)
+
+Rework about 4 hrs/wk; meeting load about 6 person-hrs/wk for the sample row above. Tool leakage about 205/mo allocated to this process at rough 70% → about 143/mo. Rework time cost left unknown.
 
 ## 3. Myth card (supported)
 
@@ -57,9 +77,21 @@ flowchart LR
 | Evidence | Q-01 quote; T-02 time sample; A-01 autopsy below |
 | Flow shows | Agent drafts; human rewrites and sends every refund |
 | Cost of believing | Continued rework; false confidence to add more auto-send |
+| Audit question | Which support-agent actions cannot be undone, and what fixed check sits in front of each? |
 | Decision | **TEST** draft-only with irreversible check on send |
 
-## 4. Autopsy A-01
+## 4. Confusion card
+
+| Field | Content |
+|---|---|
+| Moment | F-01 refund email step |
+| Expected | Agent sends correct policy email |
+| Actual | Wrong return window; agent tried to send |
+| Workaround | Support lead rewrites and sends manually |
+| Cost signal | About 22 min plus trust hit on three of ten tickets |
+| Ask | Can draft-only plus a fixed send check stay on the Do rung? |
+
+## 5. Autopsy A-01
 
 | Field | Content |
 |---|---|
@@ -69,7 +101,7 @@ flowchart LR
 | Rework | 22 min; support lead caught before customer saw it |
 | Fix | Remove auto-send; fixed check on Send class |
 
-## 5. Irreversible checklist (excerpt)
+## 6. Irreversible checklist (excerpt)
 
 | Flow | Step | Class | Fixed check | Status before audit |
 |---|---|---|---|---|
@@ -79,16 +111,16 @@ flowchart LR
 
 **Audit result:** one unchecked Send path. Ship blocked until check added.
 
-## 6. Kill / keep / test
+## 7. Kill / keep / test
 
 | Decision | Item | Why |
 |---|---|---|
-| KILL | CrawlerBot for this process | Orphan; M-01; not in support path |
-| KEEP | Manual status updates | Saves time; no rework signal |
-| TEST | SupportAgent draft-only + send check | Rework Q-01 T-02; myth card |
+| KILL | CrawlerBot for this process | Orphan Automate; M-01; not in support path |
+| KEEP | Manual status updates | Do rung; saves time; no rework signal |
+| TEST | SupportAgent draft-only + send check | Do not jump to Automate; Q-01 T-02; myth card |
 
-## 7. How the pieces fit
+## 8. How the pieces fit
 
-Interviews surfaced rework and an orphan tool. The ledger tied money and time to each flow. The myth card needed quote plus time plus autopsy. The irreversible list showed the real risk: auto-send without a fixed check. Decision: kill waste, test the agent only where humans still own send and pay.
+Interviews surfaced rework and an orphan tool. Inventory showed Automate theater on SupportAgent while work stayed on Do. The ledger tied money, time, and one theater meeting. The myth card and audit question pointed at irreversible send. The confusion card pinned the refund moment. Decision: kill CrawlerBot, test SupportAgent on Do with checks, keep manual status.
 
 Use this shape on your org. Replace every value with your samples.

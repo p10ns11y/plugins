@@ -14,7 +14,7 @@ Use placeholders only. Not legal advice. Sends, payments, deletes, merges, and p
 | Currency | `USD` or your unit |
 | Scope / sample window | `1 process` / dates |
 
-**Evidence bar:** a myth needs at least **two** of: time sample, money sample, frontline quote, failed-task autopsy. Record evidence IDs below.
+**Evidence bar:** a myth or maturity claim needs at least **two** of: time sample, money sample, frontline quote, failed-task autopsy. Record evidence IDs below.
 
 ## Flow rows (core)
 
@@ -33,10 +33,12 @@ Use placeholders only. Not legal advice. Sends, payments, deletes, merges, and p
 
 ## Inventory (systems in the process)
 
-| ID | System / tool | Job in process | Owner role | Cost / month | Mode: Ask / Do / Automate / Staff | Evidence | Disposition |
+| ID | System / tool | Job in process | Owner role | Cost / month | Rung: Ask / Do / Automate / Staff | Evidence | Disposition |
 |---|---|---|---|---:|---|---|---|
 | I-01 | | | | | | | |
 | I-02 | | | | | | | |
+
+**Rungs (one step at a time):** Ask → Do → Automate → Staff. Name the actual rung before any fix. Move a flow at most one rung per change.
 
 ## Time samples
 
@@ -58,6 +60,13 @@ Use placeholders only. Not legal advice. Sends, payments, deletes, merges, and p
 |---|---|---|---:|---|---|
 | A-01 | | | | | |
 | A-02 | | | | | |
+
+## AI-theater meetings
+
+| ID | Date / roles | Purpose | Minutes × people | Decision shipped? | Keep / shorten / kill | Evidence |
+|---|---|---|---:|---|---|---|
+| MT-01 | `YYYY-MM-DD / roles` | `____` | `____` | Yes / No | `____` | `E-__` |
+| MT-02 | | | | | | |
 
 ## Totals (show arithmetic, not false precision)
 

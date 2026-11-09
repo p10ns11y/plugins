@@ -9,6 +9,7 @@ Use only when the claim has at least two evidence types: time, money, frontline 
 | Evidence IDs and types | `E-__` time / money / quote / autopsy |
 | What the flow shows | Bounded fact in the sample window |
 | Cost of believing it | hours / money / rework / attention |
+| **Audit question** | One line that would settle the claim in the sample window |
 | Confidence / unknowns | High / medium / low; gaps |
 | Decision | Kill / keep / test / measure again |
 

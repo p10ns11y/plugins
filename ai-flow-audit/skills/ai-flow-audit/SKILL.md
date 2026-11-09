@@ -60,7 +60,7 @@ flowchart TB
 | Piece | File | Job |
 |-------|------|-----|
 | Waste ledger | [references/waste-ledger.md](references/waste-ledger.md) | One row per flow: tool, monthly cost, time saved or lost, waste type, fix |
-| Myth card | [references/myth-card.md](references/myth-card.md) | Claim, evidence types, what the flow shows, cost of believing |
+| Myth card | [references/myth-card.md](references/myth-card.md) | Claim, evidence, cost of believing, audit question |
 | Irreversible checklist | [references/irreversible-checklist.md](references/irreversible-checklist.md) | Every undoable agent action plus fixed human check |
 | Interview guide | [references/interview-guide.md](references/interview-guide.md) | Frontline first, then manager, then sponsor |
 | Worked example | [../../examples/paper-lantern-worked-example.md](../../examples/paper-lantern-worked-example.md) | Fictional company end to end |
@@ -83,10 +83,11 @@ Slash: `/ai-flow-audit`. Match “waste ledger”, “myth card”, “audit AI 
 1. Pick **one process** and a sample window. Set a stop date if evidence stays thin.
 2. Run **interview-guide** frontline first. Capture evidence IDs, not names.
 3. Fill **waste-ledger** inventory and time or money samples. Mark unknowns.
-4. Write **myth cards** only when the evidence bar is met.
-5. Walk **irreversible-checklist** for every automated or agent step in the flow.
-6. Emit kill / keep / test with owners and next check dates.
-7. Point the user at the fictional worked example when they want a full walkthrough.
+4. Name each flow's **rung** (Ask → Do → Automate → Staff) before proposing a fix. Move at most one rung per change.
+5. Write **myth cards** only when the evidence bar is met.
+6. Walk **irreversible-checklist** for every automated or agent step in the flow.
+7. Emit kill / keep / test with owners and next check dates.
+8. Point the user at the fictional worked example when they want a full walkthrough.
 
 ## Emit (required)
 

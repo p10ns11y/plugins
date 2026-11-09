@@ -14,10 +14,11 @@ Load skill **ai-flow-audit**. Pull templates from `references/` only as needed.
 1. Confirm **one process** and a sample window.
 2. Offer **interview-guide** order: frontline first.
 3. Fill or sketch **waste-ledger** rows for each flow.
-4. Add **myth cards** only when two evidence types exist.
-5. Run **irreversible-checklist** for every agent step.
-6. Emit kill / keep / test. No PII or live customer data in the emit.
-7. For a full walkthrough, open `examples/paper-lantern-worked-example.md` and say it is fictional.
+4. Name each flow's rung (Ask → Do → Automate → Staff) before any fix. Move at most one rung.
+5. Add **myth cards** only when two evidence types exist.
+6. Run **irreversible-checklist** for every agent step.
+7. Emit kill / keep / test. No PII or live customer data in the emit.
+8. For a full walkthrough, open `examples/paper-lantern-worked-example.md` and say it is fictional.
 
 ## Emit
 

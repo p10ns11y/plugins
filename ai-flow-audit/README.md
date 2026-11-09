@@ -27,7 +27,7 @@ Slash: `/ai-flow-audit`.
 ## Kit contents
 
 1. [Waste ledger](skills/ai-flow-audit/references/waste-ledger.md) — flows, tools, cost, time, waste type, fix
-2. [Myth card](skills/ai-flow-audit/references/myth-card.md) — claim, evidence, cost of believing
+2. [Myth card](skills/ai-flow-audit/references/myth-card.md) — claim, evidence, cost of believing, audit question (e.g. which agent actions cannot be undone and what fixed check sits in front of each)
 3. [Irreversible checklist](skills/ai-flow-audit/references/irreversible-checklist.md) — send, pay, delete, merge, publish, and fixed human checks
 4. [Interview guide](skills/ai-flow-audit/references/interview-guide.md) — frontline first
 5. [Paper Lantern Labs example](examples/paper-lantern-worked-example.md) — fictional end to end
