@@ -264,6 +264,20 @@ else
   bad "path existing dir"
 fi
 
+wide="$(mktemp -d)/pulse.sqlite"
+env -u TSTACK_STATE_DB PULSE_MEMORY_DB="$wide" "$STATE" init >/dev/null
+chmod 644 "$wide"
+touch "$wide-wal" "$wide-shm"
+chmod 644 "$wide-wal" "$wide-shm"
+if env -u TSTACK_STATE_DB PULSE_MEMORY_DB="$wide" "$STATE" init >/dev/null; then
+  [[ "$(mode "$wide")" == "600" ]] && ok "existing store narrowed 600" || bad "existing store mode $(mode "$wide")"
+  for f in "$wide-wal" "$wide-shm"; do
+    [[ ! -e "$f" || "$(mode "$f")" == "600" ]] && ok "sidecar 600 ${f##*-}" || bad "sidecar mode ${f##*-}"
+  done
+else
+  bad "existing store init"
+fi
+
 echo "---"
 [[ "$fail" -eq 0 ]] || { echo "$fail failure(s)"; exit 1; }
 echo "ALL CHECKS PASSED"

@@ -90,10 +90,30 @@ def db_path() -> Path:
     return Path.home() / ".local/share/pulse-memory/pulse.sqlite"
 
 
+STORE_MODE = 0o600
+STORE_SIDECARS = ("", "-wal", "-shm", "-journal")
+
+
+def secure_store(path) -> list:
+    """Narrow the store and its SQLite sidecars to 0600 when wider. Data untouched."""
+    narrowed = []
+    for suffix in STORE_SIDECARS:
+        file = Path(f"{path}{suffix}")
+        try:
+            mode = file.stat().st_mode & 0o777
+        except FileNotFoundError:
+            continue
+        if mode & ~STORE_MODE:
+            os.chmod(file, mode & STORE_MODE)
+            narrowed.append(file.name)
+    return narrowed
+
+
 def connect():
     path = db_path()
     if not path.exists():
         raise SystemExit(f"missing db: {path} (run pulse_init_db.py)")
+    secure_store(path)
     conn = sqlite3.connect(path)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")

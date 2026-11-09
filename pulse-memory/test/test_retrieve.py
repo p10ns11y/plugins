@@ -366,6 +366,56 @@ class OneAdmitPath(unittest.TestCase):
         self.assertEqual(admitted.stdout.strip(), "inserted")
         tmp.cleanup()
 
+    def test_wide_store_narrowed_to_0600_data_kept(self):
+        tmp = tempfile.TemporaryDirectory()
+        db = Path(tmp.name) / "pulse.sqlite"
+        env = os.environ.copy()
+        env["PULSE_MEMORY_DB"] = str(db)
+        self.assertEqual(self.run_py("pulse_init_db.py", env=env).returncode, 0)
+        self.run_py("pulse_admit.py", "a/b", "kept", "test", env=env)
+        conn = sqlite3.connect(db)
+        before = conn.execute(
+            "SELECT nat_key, snippet, verify_hash FROM memory_traces").fetchall()
+        conn.close()
+        sidecars = [Path(f"{db}-wal"), Path(f"{db}-shm")]
+        for file in [db, *sidecars]:
+            file.touch()
+            os.chmod(file, 0o644)
+        admitted = self.run_py("pulse_admit.py", "a/c", "next", "test", env=env)
+        self.assertEqual(admitted.stdout.strip(), "inserted", admitted.stderr)
+        for file in [db, *sidecars]:
+            if file.exists():
+                self.assertEqual(file.stat().st_mode & 0o777, 0o600, file.name)
+        os.chmod(db, 0o664)
+        ready = self.run_py("pulse_init_db.py", env=env)
+        self.assertEqual(json.loads(ready.stdout)["db"], "ready")
+        self.assertEqual(db.stat().st_mode & 0o777, 0o600)
+        conn = sqlite3.connect(db)
+        after = conn.execute(
+            "SELECT nat_key, snippet, verify_hash FROM memory_traces WHERE nat_key='a/b'"
+        ).fetchall()
+        self.assertEqual(before, after)
+        self.assertEqual(conn.execute("SELECT COUNT(*) FROM memory_traces").fetchone()[0], 2)
+        conn.close()
+        tmp.cleanup()
+
+    def test_secure_store_never_widens(self):
+        from pulse_common import secure_store
+        tmp = tempfile.TemporaryDirectory()
+        db = Path(tmp.name) / "pulse.sqlite"
+        db.touch()
+        os.chmod(db, 0o400)
+        self.assertEqual(secure_store(db), [])
+        self.assertEqual(db.stat().st_mode & 0o777, 0o400)
+        os.chmod(db, 0o755)
+        wal = Path(f"{db}-wal")
+        wal.touch()
+        os.chmod(wal, 0o644)
+        self.assertEqual(secure_store(db), ["pulse.sqlite", "pulse.sqlite-wal"])
+        self.assertEqual(db.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(wal.stat().st_mode & 0o777, 0o600)
+        tmp.cleanup()
+
     def test_locked_disagreement_forks_without_averaging(self):
         tmp, conn = fresh()
         admit(conn, "trace", "alpha", source="test", lock="locked")
