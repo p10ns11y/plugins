@@ -22,6 +22,10 @@ need skills/pulse-memory/references/usecases.md
 need .grok/workflows/pulse-memory.rhai
 need test/fixtures/thinking.md
 need test/fixtures/harness.md
+need scripts/pulse_common.py
+need scripts/pulse_admit.py
+need scripts/pulse_retrieve.py
+need scripts/pulse_backfill.py
 
 if [[ -d "$ROOT/c" ]]; then bad "c/ present — EVA owns tether"; else ok "no c/"; fi
 if [[ -d "$ROOT/hooks" ]] || [[ -f "$ROOT/hooks.json" ]]; then bad "hooks — Winds"; else ok "no hooks"; fi
@@ -89,6 +93,12 @@ check("kingsparrow" not in blob.lower(), "agent text omits the essay credit")
 sys.exit(fail)
 PY
 if [[ "$python_rc" -ne 0 ]]; then fail=$((fail + python_rc)); fi
+
+if python3 "$ROOT/test/test_retrieve.py"; then
+  ok "retrieve tests"
+else
+  bad "retrieve tests"
+fi
 
 echo "---"
 if [[ "$fail" -ne 0 ]]; then

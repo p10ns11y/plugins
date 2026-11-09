@@ -219,6 +219,13 @@ must "row 15 close" "$STATE" block close --map loop
 must "row 15 archive" "$STATE" pulse archive --source harvest --payload "merged sha"
 must "row 15 admit" "$STATE" pulse admit --key loop/turn --snippet shipped --source harvest \
   --time 2026-10-16T03:00:00Z --status tool-verified --kind memory
+[[ "$(sql "SELECT substr(verify_hash,1,7) FROM memory_traces WHERE nat_key='loop/turn'")" == "sha256:" ]] \
+  && ok "row 15 hash prefix" || bad "row 15 hash prefix"
+[[ "$(sql "SELECT prefetch_key FROM memory_traces WHERE nat_key='loop/turn'")" == "loop/memory" ]] \
+  && ok "row 15 prefetch" || bad "row 15 prefetch"
+must "row 15 retrieve" "$STATE" pulse retrieve --key loop/turn
+python3 -c 'import json,sys; d=json.loads(sys.argv[1]); assert d["ok"] and d["pulses"][0]["key"]=="loop/turn"' "$OUT" \
+  && ok "row 15 retrieve key" || bad "row 15 retrieve key"
 must "row 15 done" "$STATE" stage put --map loop --id one --class Done --a 1 --m 2 --b 3 --label First
 must "row 15 report" "$STATE" apply-report --map loop --critical two --next two
 must "row 15 next" "$STATE" next --map loop
