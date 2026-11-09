@@ -5,6 +5,11 @@
   },
   "plugins": [
     {
+      "name": "ai-flow-audit",
+      "description": "Free public kit to audit AI tools and agent flows before waste lands: waste ledger, myth cards, irreversible-action checks, frontline interviews, and a fictional worked example.",
+      "source": "./ai-flow-audit"
+    },
+    {
       "name": "aihero-map",
       "description": "Alignment map from Matt Pocock's AI Hero skills onto house skills. Does not copy those bodies. On an overlap, the house claim wins.",
       "source": "./aihero-map"
