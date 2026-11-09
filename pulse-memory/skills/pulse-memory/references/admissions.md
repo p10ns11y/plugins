@@ -30,3 +30,5 @@ snippet             # ~120 verified tokens, not a dump
 ```
 
 Dumping grows *n* in the wrong direction (noise, heat, lost-in-the-middle). Pulse keeps the working set small and barriers high.
+
+`pulse_retrieve.py` is the inject path. It checks the hash, skips superseded rows, prefers locked traces over open belief, and returns unknown when the check fails.

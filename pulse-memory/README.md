@@ -52,11 +52,22 @@ skills/pulse-memory/          # filter SoT
   SKILL.md
   references/admissions.md
   references/store.md         # SQLite archive vs memory
+scripts/                      # admit, retrieve, backfill
 .grok/workflows/pulse-memory.rhai
 test/
 ```
 
 Plugins do not auto-register Rhai. Copy/symlink the workflow.
+
+## CLI
+
+```bash
+PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_admit.py apply/example/constraints "Keep the cap." test tool-verified fact locked
+PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_retrieve.py --key apply/example/constraints
+PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_backfill.py
+```
+
+Retrieve returns JSON: one pulse (or a few, max 8), or `{ "ok": false, "status": "unknown" }`. It never prints the whole store.
 
 ## Tests
 

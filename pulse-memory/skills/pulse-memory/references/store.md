@@ -9,6 +9,9 @@ Default file: $XDG_DATA_HOME/tstack/state.sqlite, or ~/.local/share/tstack/state
 | Tool | Job |
 |------|-----|
 | `tstack-state` | writes, FTS rebuild, and migrations. The `sqlite3` CLI is inspect only. |
+| `scripts/pulse_admit.py` | admit one tagged snippet; store `verify_hash` and `prefetch_key` |
+| `scripts/pulse_retrieve.py` | return one verified pulse, or a few, never the whole store |
+| `scripts/pulse_backfill.py` | fill empty hash and prefetch values; no deletes |
 | `/pulse-memory` skill | tag + resolve in the conversation |
 | `/workflow pulse-memory` | one pulse cycle over thinking + harness files |
 | scheduler (host) | fire the workflow; pass `as_of` (script has no wall clock) |
@@ -75,9 +78,9 @@ Upsert: `ON CONFLICT(nat_key) DO UPDATE SET seen_count = seen_count + 1, last_se
 ## Admissions write path
 
 1. Candidate claim → hint tags required; else reject.
-2. Test: would it change **this** next action? No → `archive_events` only.
+2. Test: would it change **this** next action? No → `archive_events` only. The CLI also rejects an empty snippet, a snippet over 800 characters, an inferred write with no explicit source, and an inferred write marked locked.
 3. Conflict with existing `nat_key` → do not average; rank time then status; loser stays archive; winner is memory; log `conflicts`.
-4. Inject only `kind = memory` rows with `superseded_by IS NULL`, newest `time` first, **LIMIT 8**.
+4. Retrieve injects current `fact` or `memory` rows with a matching hash, `superseded_by IS NULL`, newest and locked first, **LIMIT 8**. A mismatch or a stale row is unknown, not a dump.
 
 ## What not to add (YAGNI)
 
