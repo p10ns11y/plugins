@@ -4,9 +4,14 @@
     "name": "p10ns11y"
   },
   "metadata": {
-    "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, live-engine, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
+    "description": "Grok Build plugins: ai-flow-audit, aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, live-engine, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws"
   },
   "plugins": [
+    {
+      "name": "ai-flow-audit",
+      "source": "ai-flow-audit",
+      "description": "Free public kit to audit AI tools and agent flows before waste lands: waste ledger, myth cards, irreversible-action checks, frontline interviews, and a fictional worked example."
+    },
     {
       "name": "aihero-map",
       "source": "aihero-map",

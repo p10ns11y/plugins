@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MARKET_NAME = "p10ns11y-plugins"
 OWNER = {"name": "p10ns11y"}
-PRODUCTIVITY = {"premflow", "uncertainty-laws"}
+PRODUCTIVITY = {"ai-flow-audit", "premflow", "uncertainty-laws"}
 
 
 def plugins():

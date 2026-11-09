@@ -89,6 +89,7 @@ This marketplace is the control plane beside pstack and [Matt Pocock's skills](h
 | **control-plane** | Feeder plus control-graph. Skills-repo URLs stay canonical for intelli-route. [control-plane/README.md](control-plane/README.md) | `/feed` `/control-graph` |
 | **context-ignite** | Spec (prune, then synthesis), policy (skills-repo URLs stay canonical; fusion-sage is not copied), and a before/after on the pull request. [context-ignite/README.md](context-ignite/README.md) | `/context-ignite` |
 | **dependency-harden** | Dependency security, upgrades, allowBuilds, IDE deps, and a hardened devcontainer. Skills-repo URLs stay canonical for intelli-route. [dependency-harden/README.md](dependency-harden/README.md) | `/dependency-harden` `/devcontainer` |
+| **ai-flow-audit** | Free kit: waste ledger, myth cards, irreversible checks, frontline interviews, fictional worked example | `/ai-flow-audit` |
 
 ---
 
@@ -137,6 +138,17 @@ grok plugin install uncertainty-laws --trust
 ```
 
 See [uncertainty-laws/README.md](uncertainty-laws/README.md).
+
+## ai-flow-audit
+
+Free kit to audit AI tools and agent flows: waste ledger, myth cards, irreversible checks, frontline interviews, fictional worked example.
+
+```bash
+grok plugin install ai-flow-audit --trust
+# slash: /ai-flow-audit
+```
+
+See [ai-flow-audit/README.md](ai-flow-audit/README.md).
 
 ## odysseus-navigator
 
