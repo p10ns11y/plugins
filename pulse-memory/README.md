@@ -52,7 +52,7 @@ skills/pulse-memory/          # filter SoT
   SKILL.md
   references/admissions.md
   references/store.md         # SQLite archive vs memory
-scripts/                      # admit, retrieve, backfill
+scripts/                      # init, admit, retrieve, backfill
 .grok/workflows/pulse-memory.rhai
 test/
 ```
@@ -62,6 +62,7 @@ Plugins do not auto-register Rhai. Copy/symlink the workflow.
 ## CLI
 
 ```bash
+PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_init_db.py
 PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_admit.py apply/example/constraints "Keep the cap." test tool-verified fact locked
 PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_retrieve.py --key apply/example/constraints
 PULSE_MEMORY_DB=./pulse.sqlite scripts/pulse_backfill.py

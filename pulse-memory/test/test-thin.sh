@@ -23,6 +23,7 @@ need .grok/workflows/pulse-memory.rhai
 need test/fixtures/thinking.md
 need test/fixtures/harness.md
 need scripts/pulse_common.py
+need scripts/pulse_init_db.py
 need scripts/pulse_admit.py
 need scripts/pulse_retrieve.py
 need scripts/pulse_backfill.py

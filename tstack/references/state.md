@@ -43,7 +43,7 @@ tstack-state ask admit --ask TEXT
 tstack-state pulse archive --source TEXT --payload TEXT [--correlation TEXT]
 tstack-state pulse admit --key TEXT --snippet TEXT --source TEXT --time TEXT \
   --status user-stated|tool-verified|inferred|unknown \
-  --kind data|context|fact|memory [--lock open|locked]
+  --kind data|context|fact|memory [--lock open|locked] [--supersede KEY]
 tstack-state pulse list [--limit 8]
 tstack-state pulse conflict --subject TEXT --left ID --right ID --resolution TEXT
 tstack-state step start --map ID --stage ID --step NAME
@@ -77,7 +77,7 @@ Map ids and stage ids match `^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$` before insert. `d
 
 `pulse list` returns `kind = memory` and `superseded_by IS NULL`, newest `time` first, default limit 8.
 
-`pulse admit` inserts `seen_count = 1`, `lock` from `--lock` or `open`, and null `verify_hash`, `prefetch_key`, and `superseded_by`. `first_seen` and `last_seen` equal `--time`. On the same `nat_key`, an open lock, or a locked lock with the same snippet, bumps `seen_count` and sets `last_seen` to the new `--time`. Snippet, status, kind, and lock stay as stored. A locked key with a different snippet keeps the old row, inserts `nat_key-2` then `nat_key-3`, skipping keys that exist, and inserts `conflicts`. That path exits 0. `conflicts.subject` is the original `nat_key`, `left_id` and `right_id` are the row ids, `resolution` is `not in the evidence`, and `ts` is the new `--time`. The script does not pick a winner.
+`pulse admit` calls `admit_row` in pulse-memory `scripts/pulse_common.py`, the same path as `pulse_admit.py`. It exits 3 with `pulse helper missing` when pulse-memory is not beside tstack. A new key inserts `seen_count = 1`, `verify_hash`, `prefetch_key`, and `first_seen = last_seen = --time`. An open key bumps `seen_count` and takes the newer snippet, time, status, kind, source, hash, and prefetch. A locked key with the same snippet only bumps `seen_count` and `last_seen`. A locked key with a different snippet keeps the old row, inserts `nat_key-2` then `nat_key-3`, skipping keys that exist, and inserts `conflicts`. That path exits 0. `conflicts.subject` is the original `nat_key`, `left_id` and `right_id` are the row ids, `resolution` is `not in the evidence`, and `ts` is the new `--time`. The script does not pick a winner. `--supersede KEY` marks that older key stale.
 
 `pulse conflict --left` and `--right` are `nat_key` values. A missing key exits 3. After every `pulse admit` or `pulse conflict`, on the same connection, before commit:
 
