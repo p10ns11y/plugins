@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from pulse_common import db_path, init_schema
+from pulse_common import db_path, init_schema, secure_store
 
 
 def main():
@@ -19,12 +19,14 @@ def main():
     path = db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     created = not path.exists()
+    secure_store(path)
     conn = sqlite3.connect(path)
     try:
         init_schema(conn)
     finally:
         conn.close()
     os.chmod(path, 0o600)
+    secure_store(path)
     print(json.dumps({"db": "created" if created else "ready", "mode": "0600"}))
 
 
