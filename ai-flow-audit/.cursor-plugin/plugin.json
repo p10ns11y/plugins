@@ -1,0 +1,22 @@
+{
+  "name": "ai-flow-audit",
+  "version": "0.1.0",
+  "description": "Free public kit to audit AI tools and agent flows before waste lands: waste ledger, myth cards, irreversible-action checks, frontline interviews, and a fictional worked example.",
+  "author": {
+    "name": "p10ns11y"
+  },
+  "homepage": "https://github.com/p10ns11y/plugins",
+  "license": "MIT",
+  "keywords": [
+    "ai-audit",
+    "agent-flow",
+    "waste-ledger",
+    "myth-card",
+    "hitl",
+    "small-business",
+    "interview",
+    "irreversible"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/"
+}

@@ -1,10 +1,30 @@
 {
   "name": "p10ns11y-plugins",
-  "description": "Grok Build plugins: aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, live-engine, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws",
+  "description": "Grok Build plugins: ai-flow-audit, aihero-map, arch-machine, concordance, context-ignite, control-plane, craft, dependency-harden, eva-emptiness, intelli-route, layout-content-view, live-engine, michelin-kitchen, mission-map, odysseus-navigator, premflow, pstack-map, pulse-memory, si, split-machine, steer-accel, steer-log, trust-stack, tstack, uncertainty-laws",
   "owner": {
     "name": "p10ns11y"
   },
   "plugins": [
+    {
+      "name": "ai-flow-audit",
+      "description": "Free public kit to audit AI tools and agent flows before waste lands: waste ledger, myth cards, irreversible-action checks, frontline interviews, and a fictional worked example.",
+      "category": "productivity",
+      "source": {
+        "type": "local",
+        "path": "./ai-flow-audit"
+      },
+      "homepage": "https://github.com/p10ns11y/plugins",
+      "keywords": [
+        "ai-audit",
+        "agent-flow",
+        "waste-ledger",
+        "myth-card",
+        "hitl",
+        "small-business",
+        "interview",
+        "irreversible"
+      ]
+    },
     {
       "name": "aihero-map",
       "description": "Alignment map from Matt Pocock's AI Hero skills onto house skills. Does not copy those bodies. On an overlap, the house claim wins.",
