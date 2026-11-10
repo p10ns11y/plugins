@@ -3,7 +3,8 @@
 Grok Build / agent **marketplace plugins** (installable skill + command + agent + hook packages).
 
 **Location:** `~/Work/personal/plugins` (not `~/plugins`).  
-**Catalogs:** `.grok-plugin/marketplace.json`, `.claude-plugin/marketplace.json`, `.cursor-plugin/marketplace.json`
+**Catalogs:** `.grok-plugin/marketplace.json`, `.claude-plugin/marketplace.json`, `.cursor-plugin/marketplace.json`  
+**Sibling catalog:** [thecuriousts-plugins](https://github.com/thecuriousts/ensembly/blob/master/.cursor-plugin/marketplace.json) (flowingstack, ensembly)
 
 ## Install by name
 
@@ -49,7 +50,7 @@ The same command is `cursor-agent plugin marketplace add` when the program is in
 | **Workflow `.rhai`** | `~/.grok/workflows/` or project `.grok/workflows/` | Host-owned background `agent()` phases | `/workflow <meta.name>` · dashboard `/workflows` |
 | **Portable skill library** | [p10ns11y/skills](https://github.com/p10ns11y/skills) | Cursor + shared procedures; workflow *docs* + some `.rhai` | symlink skills; **copy** `.rhai` into Grok workflows dirs |
 
-**Plugins do not auto-register Rhai.** If a plugin ships `.grok/workflows/*.rhai` (eva-emptiness, arch-machine), you still **copy** (or symlink) into a discovery root. Official discovery: project `<repo-root>/.grok/workflows/`, user `~/.grok/workflows/` ([Grok config](https://docs.x.ai/build)).
+**Plugins do not auto-register Rhai.** If a plugin ships `.grok/workflows/*.rhai` (eva-emptiness, arch-machine), you still **copy** (or symlink) into a discovery root. Official discovery: project `<repo-root>/.grok/workflows/`, user `~/.grok/workflows/` ([Grok config](https://docs.x.ai/build/settings/reference)).
 
 ```text
 skills library ──symlink──► plugin skills/     (procedure SoT for Cursor + Grok)
