@@ -2,7 +2,14 @@
 
 Do not dump transcripts into the context window. Keep **archive** (append-only) and **memory** (admitted, tagged) as two tables. Pattern from `agent-local-db`: WAL, best-effort writes, never block the agent loop.
 
-Default file: $XDG_DATA_HOME/tstack/state.sqlite, or ~/.local/share/tstack/state.sqlite when XDG_DATA_HOME is unset. TSTACK_STATE_DB overrides, else PULSE_MEMORY_DB. Writes, FTS rebuild, and migrations go through tstack-state (see references/state.md in the tstack plugin). Do not move or delete ~/.local/share/pulse-memory/pulse.sqlite. Point PULSE_MEMORY_DB at that file to keep using it. Mode 0600: init and every open narrow a wider store and its -wal, -shm, -journal to 0600; rows untouched.
+Store path differs by tool when no variable is set. Set one variable so both write the same file.
+
+| Tool | Order |
+|------|-------|
+| `scripts/pulse_*.py` | `PULSE_MEMORY_DB` → `~/.local/share/pulse-memory/pulse.sqlite` |
+| `tstack-state` | `TSTACK_STATE_DB` → `PULSE_MEMORY_DB` → `$XDG_DATA_HOME/tstack/state.sqlite` → `~/.local/share/tstack/state.sqlite` |
+
+`PULSE_MEMORY_DB` set, `TSTACK_STATE_DB` unset ⇒ one store. Neither set ⇒ two stores. Writes, FTS rebuild, and migrations go through tstack-state (see references/state.md in the tstack plugin). Do not move or delete ~/.local/share/pulse-memory/pulse.sqlite. Mode 0600: init and every open narrow a wider store and its -wal, -shm, -journal to 0600; rows untouched.
 
 ## Tools
 
